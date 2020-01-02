@@ -2,28 +2,47 @@ import React from 'react';
 
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 
-const Button = ({title, active, disabled, onPress, style}) => {
+export const ButtonDefault = ({title, active, onPress, style}) => {
   const {btn, btnWrap, btnText, notActiveBtn} = styles;
   return (
     <View style={btnWrap}>
-      <TouchableOpacity disabled={disabled} onPress={onPress}>
+      <TouchableOpacity onPress={onPress}>
         <View
           style={[
             style,
             btn,
-            active
-              ? {backgroundColor: '#B986DA'}
-              : disabled
-              ? {backgroundColor: '#D5D8DA'}
-              : notActiveBtn,
+            active ? {backgroundColor: '#B986DA'} : notActiveBtn,
           ]}>
           <Text
-            style={[
-              btnText,
-              active || disabled ? {color: '#fff'} : {color: '#B986DA'},
-            ]}>
+            style={[btnText, active ? {color: '#fff'} : {color: '#B986DA'}]}>
             {title}
           </Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+export const ButtonDisabled = ({title, onPress, style}) => {
+  const {btn, btnWrap, btnText} = styles;
+  return (
+    <View style={btnWrap}>
+      <TouchableOpacity disabled={true} onPress={onPress}>
+        <View style={[style, btn, {backgroundColor: '#D5D8DA'}]}>
+          <Text style={[btnText, {color: '#fff'}]}>{title}</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+export const ButtonError = ({title, onPress, style}) => {
+  const {btn, btnWrap, btnText} = styles;
+  return (
+    <View style={btnWrap}>
+      <TouchableOpacity disabled={true} onPress={onPress}>
+        <View style={[style, btn, {backgroundColor: '#FF3D4B'}]}>
+          <Text style={[btnText, {color: '#fff'}]}>{title}</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -51,5 +70,3 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
 });
-
-export default Button;

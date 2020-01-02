@@ -9,26 +9,66 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-const Input = ({
+export const InputWithText = ({
   text,
   placeholder,
-  secureTextEntry,
   keyboardType,
-  icon,
-  onPress,
+  validationErr,
+  onChangeText,
 }) => {
-  const {inputWrap, input, eye, wrapper, eyeWrap, maxLength} = styles;
+  const {inputWrap, input, wrapper, maxLength, topInputTextWrap} = styles;
 
   return (
-    <View style={wrapper}>
-      <Text>{text}</Text>
+    <View style={[wrapper, {height: 60}]}>
+      <View style={topInputTextWrap}>
+        <Text>{text}</Text>
+      </View>
       <View style={inputWrap}>
         <TextInput
           maxLength={maxLength}
           placeholder={placeholder}
-          style={input}
-          secureTextEntry={secureTextEntry}
+          style={[input, {color: validationErr ? '#FF3D4B' : '#011627'}]}
           keyboardType={keyboardType}
+          onChangeText={text => onChangeText(text)}
+        />
+      </View>
+    </View>
+  );
+};
+
+export const InputWithPassword = ({
+  text,
+  placeholder,
+  secureTextEntry,
+  icon,
+  onPress,
+  forgetPassword,
+  validationErr,
+  onPressPassRecovery,
+}) => {
+  const {
+    inputWrap,
+    input,
+    eye,
+    wrapper,
+    eyeWrap,
+    maxLength,
+    forgetText,
+    topInputTextWrap,
+    forgetTextWrap,
+  } = styles;
+
+  return (
+    <View style={[wrapper, {height: forgetPassword ? 95 : 60}]}>
+      <View style={topInputTextWrap}>
+        <Text>{text}</Text>
+      </View>
+      <View style={inputWrap}>
+        <TextInput
+          maxLength={maxLength}
+          placeholder={placeholder}
+          style={[input, {color: validationErr ? '#FF3D4B' : '#011627'}]}
+          secureTextEntry={secureTextEntry}
         />
         {icon && (
           <TouchableOpacity onPress={onPress}>
@@ -49,17 +89,22 @@ const Input = ({
           </TouchableOpacity>
         )}
       </View>
+      {forgetPassword && (
+        <TouchableOpacity style={forgetTextWrap} onPress={onPressPassRecovery}>
+          <Text style={forgetText}>Забыли свой пароль?</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   wrapper: {
-    height: 60,
     backgroundColor: '#fff',
     borderRadius: 2,
     marginVertical: 5,
     paddingHorizontal: 16,
+    paddingVertical: 5,
     fontSize: 10,
     shadowColor: 'rgba(0, 0, 0, 0.17)',
     shadowOffset: {
@@ -70,18 +115,28 @@ const styles = StyleSheet.create({
     shadowRadius: 1.41,
     elevation: 2,
   },
+
+  topInputTextWrap: {
+    height: 15,
+    marginTop: 5,
+  },
+  inputWrap: {
+    flexDirection: 'row',
+    height: 35,
+  },
+  forgetTextWrap: {
+    height: 30,
+  },
+
   input: {
     paddingHorizontal: 0,
     flex: 9,
     fontWeight: 'bold',
+    height: 35,
   },
   eye: {
     width: 16,
     height: 8,
-  },
-  inputWrap: {
-    flex: 1,
-    flexDirection: 'row',
   },
   eyeWrap: {
     flex: 1,
@@ -89,6 +144,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  forgetText: {
+    fontFamily: 'Futura PT',
+    fontSize: 13,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
 });
-
-export default Input;

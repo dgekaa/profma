@@ -9,7 +9,7 @@ import {
   Dimensions,
   Image,
 } from 'react-native';
-import Button from '../components/Button';
+import {ButtonDefault} from '../components/Button';
 
 const screen = Dimensions.get('window');
 
@@ -40,12 +40,18 @@ const Start = ({navigation}) => {
           }}
         />
         <View style={{flex: 2, padding: 5}}>
-          <Button title="Войти" active={false} />
-          <Button
+          <ButtonDefault
+            title="Войти"
+            active={false}
+            onPress={() => {
+              navigation.navigate('Login');
+            }}
+          />
+          <ButtonDefault
             title="Зарегистрироваться"
             active={true}
             onPress={() => {
-              navigation.navigate('ClientRegistration');
+              navigation.navigate('Registration');
             }}
           />
         </View>

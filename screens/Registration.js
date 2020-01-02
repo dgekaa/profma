@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
 
 import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
-import Button from '../components/Button';
-import Input from '../components/Input';
+import {ButtonDefault, ButtonDisabled} from '../components/Button';
+import {InputWithText, InputWithPassword} from '../components/Input';
 
-const ClientRegistration = ({}) => {
+const Registration = ({}) => {
   const {
     container,
     topText,
@@ -22,16 +22,16 @@ const ClientRegistration = ({}) => {
     'Лучшие мастера маникюра по самой низкой цене + Кэшбэк☝',
   );
   const [personType, setPersonType] = useState('client');
-  const [validationErr, setValidationErr] = useState('some err');
+  const [fillErr, setFillErr] = useState('some err');
   const [regBtnText, setRegBtnText] = useState('');
   const [iconName, setIconName] = useState('openedEye');
   const [hidePassword, setHidePassword] = useState(true);
 
   useEffect(() => {
-    validationErr
+    fillErr
       ? setRegBtnText('Не достаточно данных для регистрации')
       : setRegBtnText('Зарегистрироваться');
-  }, [validationErr]);
+  }, [fillErr]);
 
   useEffect(() => {
     personType === 'client'
@@ -60,7 +60,7 @@ const ClientRegistration = ({}) => {
         <Text style={topText}>{textAd}</Text>
       </View>
       <View style={btnGroup}>
-        <Button
+        <ButtonDefault
           title="Я - КЛИЕНТ"
           active={personType === 'client'}
           onPress={() => {
@@ -68,7 +68,7 @@ const ClientRegistration = ({}) => {
           }}
           style={{marginRight: 5}}
         />
-        <Button
+        <ButtonDefault
           title="Я - МАСТЕР"
           active={personType === 'master'}
           onPress={() => {
@@ -77,12 +77,12 @@ const ClientRegistration = ({}) => {
         />
       </View>
       <View style={inputGroup}>
-        <Input
+        <InputWithText
           text="Введите адрес электронной почты"
           placeholder="example@site.com"
           keyboardType="email-address"
         />
-        <Input
+        <InputWithPassword
           text="Придумайте пароль"
           placeholder="PLACEHOLDER"
           secureTextEntry={hidePassword}
@@ -98,11 +98,8 @@ const ClientRegistration = ({}) => {
             <Text style={specialText}> Условиями использования</Text>
           </Text>
         </View>
-        <Button
-          title={regBtnText}
-          disabled={!!validationErr}
-          active={!validationErr}
-        />
+        {!!fillErr && <ButtonDisabled title={regBtnText} />}
+        {!fillErr && <ButtonDefault title={regBtnText} active={true} />}
       </View>
     </View>
   );
@@ -160,4 +157,4 @@ const stylesClientRegistration = StyleSheet.create({
   },
 });
 
-export default ClientRegistration;
+export default Registration;
