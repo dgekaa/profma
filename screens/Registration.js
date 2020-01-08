@@ -63,6 +63,7 @@ const Registration = ({navigation}) => {
       </View>
       <View style={btnGroup}>
         <ButtonDefault
+          flex={true}
           title="Я - КЛИЕНТ"
           active={personType === 'client'}
           onPress={() => {
@@ -71,6 +72,7 @@ const Registration = ({navigation}) => {
           style={{marginRight: 5}}
         />
         <ButtonDefault
+          flex={true}
           title="Я - МАСТЕР"
           active={personType === 'master'}
           onPress={() => {

@@ -2,10 +2,10 @@ import React from 'react';
 
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 
-export const ButtonDefault = ({title, active, onPress, style}) => {
+export const ButtonDefault = ({title, active, onPress, style, flex}) => {
   const {btn, btnWrap, btnText, notActiveBtn} = styles;
   return (
-    <View style={btnWrap}>
+    <View style={[btnWrap, flex ? {flex: 1} : null]}>
       <TouchableOpacity onPress={onPress}>
         <View
           style={[
@@ -26,7 +26,7 @@ export const ButtonDefault = ({title, active, onPress, style}) => {
 export const ButtonDisabled = ({title, onPress, style}) => {
   const {btn, btnWrap, btnText} = styles;
   return (
-    <View style={btnWrap}>
+    <View style={[btnWrap]}>
       <TouchableOpacity disabled={true} onPress={onPress}>
         <View style={[style, btn, {backgroundColor: '#D5D8DA'}]}>
           <Text style={[btnText, {color: '#fff'}]}>{title}</Text>
@@ -51,7 +51,7 @@ export const ButtonError = ({title, onPress, style}) => {
 
 const styles = StyleSheet.create({
   btnWrap: {
-    flex: 1,
+    // flex: 1,
   },
   btn: {
     height: 50,

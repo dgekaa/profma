@@ -18,6 +18,7 @@ export const InputWithText = ({
   onChangeText,
   hideShadow,
   style,
+  withoutShadow,
 }) => {
   const {
     inputWrap,
@@ -29,7 +30,16 @@ export const InputWithText = ({
   } = styles;
 
   return (
-    <View style={[wrapper, style, {height: 60}]}>
+    <View
+      style={[
+        wrapper,
+        style,
+        {
+          height: 60,
+          shadowOpacity: withoutShadow ? 0 : 0.5,
+          elevation: withoutShadow ? 0 : 1.5,
+        },
+      ]}>
       <View style={topInputTextWrap}>
         <Text style={smallText}>{text}</Text>
       </View>
@@ -57,6 +67,7 @@ export const InputWithPassword = ({
   validationErr,
   onPressPassRecovery,
   onChangeText,
+  withoutShadow,
 }) => {
   const {
     inputWrap,
@@ -72,7 +83,15 @@ export const InputWithPassword = ({
   } = styles;
 
   return (
-    <View style={[wrapper, {height: forgetPassword ? 95 : 60}]}>
+    <View
+      style={[
+        wrapper,
+        {
+          shadowOpacity: withoutShadow ? 0 : 0.5,
+          elevation: withoutShadow ? 0 : 1.5,
+          height: forgetPassword ? 95 : 60,
+        },
+      ]}>
       <View style={topInputTextWrap}>
         <Text style={smallText}>{text}</Text>
       </View>
@@ -116,8 +135,6 @@ const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: '#fff',
     borderRadius: 2,
-    borderWidth: 0.5,
-    borderColor: '#BFBFBF',
     marginVertical: 5,
     paddingHorizontal: 16,
     paddingVertical: 5,
@@ -127,8 +144,8 @@ const styles = StyleSheet.create({
       width: 2,
       height: 2,
     },
-    shadowOpacity: 0.5,
     shadowRadius: 1.41,
+    shadowOpacity: 0.5,
     elevation: 1.5,
   },
 

@@ -15,6 +15,11 @@ import {
 const NoteInformation = ({navigation}) => {
   const {first, text, blockTitle, groupBlock} = styles;
   const {name, services, date, time, address} = navigation.state.params;
+
+  const isActive = false;
+  const isCompleted = false;
+  const isAbort = true;
+
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader
@@ -105,13 +110,29 @@ const NoteInformation = ({navigation}) => {
               <Text style={{fontWeight: 'bold'}}>{address.address}</Text>
             </View>
           </View>
-
-          <ButtonDefault
-            title="Повторить запись"
-            onPress={() => {
-              alert('Будет повтор записи');
-            }}
-          />
+          {isActive ||
+            (isAbort && (
+              <View style={{marginBottom: 20, paddingHorizontal: 8}}>
+                <Text>Итоговая стоимость сеанса</Text>
+                <Text style={{fontWeight: 'bold'}}>1800 руб.</Text>
+              </View>
+            ))}
+          {isCompleted && (
+            <ButtonDefault
+              title="Повторить запись"
+              onPress={() => {
+                alert('Будет повтор записи');
+              }}
+            />
+          )}
+          {isActive && (
+            <ButtonDefault
+              title="Хочу отменить запись к мастеру"
+              onPress={() => {
+                alert('Будет отмена записи');
+              }}
+            />
+          )}
         </View>
       </ScrollView>
     </View>

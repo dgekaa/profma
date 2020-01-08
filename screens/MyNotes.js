@@ -19,47 +19,48 @@ const Block = ({el, navigation}) => {
   return (
     <TouchableOpacity
       key={el.id}
-      style={block}
       onPress={() => {
         navigation.navigate('NoteInformation', el);
       }}>
-      <View style={topBlock}>
-        <View style={{flexDirection: 'row', flex: 6}}>
+      <View style={block}>
+        <View style={topBlock}>
+          <View style={{flexDirection: 'row', flex: 6}}>
+            <Image
+              style={{marginRight: 5}}
+              source={require('../img/CalendarColor.png')}
+            />
+            <Text style={dateText}>
+              {el.date} В {el.time}
+            </Text>
+          </View>
+          <View style={{flex: 4}}>
+            <Text style={textBold}>1250р</Text>
+          </View>
+        </View>
+        <View style={bottomBlock}>
           <Image
-            style={{marginRight: 5}}
-            source={require('../img/CalendarColor.png')}
+            style={img}
+            source={{
+              uri:
+                'https://m.day.kyiv.ua/sites/default/files/styles/460-news/public/news/31082019/2019-08-30t225105z_1893876549_rc1ab1e58710_rtrmadp_3_usa-trump.jpg?itok=ooNOC63X',
+            }}
           />
-          <Text style={dateText}>
-            {el.date} В {el.time}
-          </Text>
-        </View>
-        <View style={{flex: 4}}>
-          <Text style={textBold}>1250р</Text>
-        </View>
-      </View>
-      <View style={bottomBlock}>
-        <Image
-          style={img}
-          source={{
-            uri:
-              'https://m.day.kyiv.ua/sites/default/files/styles/460-news/public/news/31082019/2019-08-30t225105z_1893876549_rc1ab1e58710_rtrmadp_3_usa-trump.jpg?itok=ooNOC63X',
-          }}
-        />
-        <View style={{flex: 1}}>
           <View style={{flex: 1}}>
-            <Text style={{fontSize: 10}}>Мастер</Text>
-            <Text style={textBold}>{el.name}</Text>
-          </View>
-          <View style={{flex: 1}}>
-            <Text style={textBold}>{el.address.address}</Text>
-          </View>
-        </View>
-        <View style={{flex: 1}}>
-          <View style={{flex: 1}}>
-            <Text style={{fontSize: 10}}>Услуга</Text>
-            {el.services.map(el => (
+            <View style={{flex: 1}}>
+              <Text style={{fontSize: 10}}>Мастер</Text>
               <Text style={textBold}>{el.name}</Text>
-            ))}
+            </View>
+            <View style={{flex: 1}}>
+              <Text style={textBold}>{el.address.address}</Text>
+            </View>
+          </View>
+          <View style={{flex: 1}}>
+            <View style={{flex: 1}}>
+              <Text style={{fontSize: 10}}>Услуга</Text>
+              {el.services.map(el => (
+                <Text style={textBold}>{el.name}</Text>
+              ))}
+            </View>
           </View>
         </View>
       </View>
@@ -68,13 +69,7 @@ const Block = ({el, navigation}) => {
 };
 
 const MyNotes = ({navigation}) => {
-  const {
-    bigText,
-    smallText,
-
-    textBold,
-    blockTitle,
-  } = styles;
+  const {bigText, smallText, textBold, blockTitle, block} = styles;
   return (
     <View style={{flex: 1}}>
       {!navigation.state.params.length && (
@@ -99,18 +94,16 @@ const MyNotes = ({navigation}) => {
       {!!navigation.state.params.length && (
         <View style={{flex: 1}}>
           <BackgroundHeader navigation={navigation} title="Мои записи" />
-          <View style={{flex: 1}}>
-            <ScrollView style={{paddingHorizontal: 8, marginTop: 10}}>
-              <Text style={blockTitle}>Активные записи</Text>
-              {navigation.state.params.map(el => (
-                <Block el={el} navigation={navigation} />
-              ))}
-              <Text style={blockTitle}>Архив записей</Text>
-              {navigation.state.params.map(el => (
-                <Block el={el} navigation={navigation} />
-              ))}
-            </ScrollView>
-          </View>
+          <ScrollView style={{paddingHorizontal: 8, marginTop: 10}}>
+            <Text style={blockTitle}>Активные записи</Text>
+            {navigation.state.params.map(el => (
+              <Block el={el} navigation={navigation} />
+            ))}
+            <Text style={blockTitle}>Архив записей</Text>
+            {navigation.state.params.map(el => (
+              <Block el={el} navigation={navigation} />
+            ))}
+          </ScrollView>
         </View>
       )}
     </View>
@@ -131,15 +124,16 @@ const styles = StyleSheet.create({
     height: 125,
     shadowColor: '#000',
     shadowOpacity: 1,
-    elevation: 5,
+    elevation: 1,
     marginBottom: 8,
     paddingLeft: 8,
+    backgroundColor: '#fff',
   },
   topBlock: {
     height: 33,
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomColor: '#011627',
+    borderBottomColor: '#aaa',
     borderBottomWidth: 0.3,
   },
   img: {
@@ -156,7 +150,8 @@ const styles = StyleSheet.create({
     color: '#011627',
     textTransform: 'uppercase',
     opacity: 0.35,
-    marginLeft: 8,
+    marginLeft: 18,
+    marginTop: 15,
   },
   dateText: {
     color: '#B986DA',

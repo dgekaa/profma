@@ -1,11 +1,45 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
-import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Animated,
+} from 'react-native';
 import BackgroundHeader from '../components/BackgroundHeader';
 import {ButtonDefault} from '../components/Button';
+import SaveSuccess from '../components/SaveSuccess';
 
 const ClientProfile = ({navigation}) => {
   const {first, text, groupBlock, blockInGroup, borderBottom} = styles;
+
+  const [isChangePassword, setIsChangePassword] = useState();
+
+  const [fadeAnimation, setFadeAnimation] = useState(new Animated.Value(1));
+
+  // useEffect(() => {
+  //   Animated.timing(fadeAnimation, {
+  //     toValue: 0.2,
+  //     duration: 2000,
+  //   }).start();
+  // }, [isChangePassword]);
+
+  const onGoBackFromPasword = isSuccess => {
+    if (isSuccess) {
+      setIsChangePassword(true);
+      Animated.timing(fadeAnimation, {
+        toValue: 0,
+        duration: 1500,
+      }).start();
+    } else {
+      setIsChangePassword(false);
+    }
+    setTimeout(() => {
+      setIsChangePassword(false);
+    }, 1500);
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -31,10 +65,8 @@ const ClientProfile = ({navigation}) => {
             <TouchableOpacity
               style={[blockInGroup, borderBottom]}
               onPress={() => {
-                navigation.navigate(
-                  'PersonalData',
-                  navigation.state.params[0].bonus,
-                );
+                navigation.navigate('PersonalData');
+                // alert('Будут персональные данные');
               }}>
               <Image
                 style={{height: 13, width: 13}}
@@ -46,7 +78,10 @@ const ClientProfile = ({navigation}) => {
             <TouchableOpacity
               style={blockInGroup}
               onPress={() => {
-                navigation.navigate('ChangePassword');
+                navigation.navigate('ChangePassword', {
+                  onGoBack: isSuccess => onGoBackFromPasword(isSuccess),
+                });
+                // alert('Изменить пароль');
               }}>
               <Image
                 style={{height: 13, width: 13}}
@@ -58,13 +93,18 @@ const ClientProfile = ({navigation}) => {
         </View>
         <View style={{flex: 6}}>
           <View style={groupBlock}>
-            <TouchableOpacity style={[blockInGroup, borderBottom]}>
+            <TouchableOpacity
+              style={[blockInGroup, borderBottom]}
+              onPress={() => {
+                alert('Политика конфиденциальности');
+              }}>
               <Text>Политика конфиденциальности и Условия использования</Text>
             </TouchableOpacity>
             {/* ВАШ ГОРОД*/}
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('ChangeCity');
+                // alert('Выбор города');
               }}>
               <View
                 style={[
@@ -81,12 +121,22 @@ const ClientProfile = ({navigation}) => {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={blockInGroup}>
+            <TouchableOpacity
+              style={blockInGroup}
+              onPress={() => {
+                alert('Связь с поддержкой');
+              }}>
               <Text>Связаться с поддержкой Prof.Ma</Text>
             </TouchableOpacity>
           </View>
         </View>
         <View style={{flex: 1}}>
+          {isChangePassword && (
+            <SaveSuccess
+              title="👍 Новый пароль успешно сохранён."
+              style={{opacity: fadeAnimation}}
+            />
+          )}
           <ButtonDefault
             title="выйти из профиля"
             onPress={() => {
@@ -132,7 +182,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   borderBottom: {
-    borderBottomColor: '#011627',
+    borderBottomColor: '#aaa',
     borderBottomWidth: 0.4,
   },
 });

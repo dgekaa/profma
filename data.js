@@ -21,16 +21,6 @@ const data = [
             howLong: 60,
             howMach: 250,
           },
-          {
-            name: 'Аппаратный маникюр',
-            howLong: 60,
-            howMach: 1250,
-          },
-          {
-            name: 'Реставрация ногтя',
-            howLong: 60,
-            howMach: 250,
-          },
         ],
         date: '25 июн 2019',
         time: '10:00',
@@ -66,6 +56,16 @@ const data = [
         img:
           'https://m.day.kyiv.ua/sites/default/files/styles/460-news/public/news/31082019/2019-08-30t225105z_1893876549_rc1ab1e58710_rtrmadp_3_usa-trump.jpg?itok=ooNOC63X',
         services: [
+          {
+            name: 'Аппаратный маникюр',
+            howLong: 60,
+            howMach: 1250,
+          },
+          {
+            name: 'Реставрация ногтя',
+            howLong: 60,
+            howMach: 250,
+          },
           {
             name: 'Аппаратный маникюр',
             howLong: 60,
