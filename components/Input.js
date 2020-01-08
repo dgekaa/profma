@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  onChangeText,
 } from 'react-native';
 
 export const InputWithText = ({
@@ -15,16 +16,26 @@ export const InputWithText = ({
   keyboardType,
   validationErr,
   onChangeText,
+  hideShadow,
+  style,
 }) => {
-  const {inputWrap, input, wrapper, maxLength, topInputTextWrap} = styles;
+  const {
+    inputWrap,
+    input,
+    wrapper,
+    maxLength,
+    topInputTextWrap,
+    smallText,
+  } = styles;
 
   return (
-    <View style={[wrapper, {height: 60}]}>
+    <View style={[wrapper, style, {height: 60}]}>
       <View style={topInputTextWrap}>
-        <Text>{text}</Text>
+        <Text style={smallText}>{text}</Text>
       </View>
       <View style={inputWrap}>
         <TextInput
+          onChangeText={onChangeText}
           maxLength={maxLength}
           placeholder={placeholder}
           style={[input, {color: validationErr ? '#FF3D4B' : '#011627'}]}
@@ -45,6 +56,7 @@ export const InputWithPassword = ({
   forgetPassword,
   validationErr,
   onPressPassRecovery,
+  onChangeText,
 }) => {
   const {
     inputWrap,
@@ -56,15 +68,17 @@ export const InputWithPassword = ({
     forgetText,
     topInputTextWrap,
     forgetTextWrap,
+    smallText,
   } = styles;
 
   return (
     <View style={[wrapper, {height: forgetPassword ? 95 : 60}]}>
       <View style={topInputTextWrap}>
-        <Text>{text}</Text>
+        <Text style={smallText}>{text}</Text>
       </View>
       <View style={inputWrap}>
         <TextInput
+          onChangeText={onChangeText}
           maxLength={maxLength}
           placeholder={placeholder}
           style={[input, {color: validationErr ? '#FF3D4B' : '#011627'}]}
@@ -102,23 +116,28 @@ const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: '#fff',
     borderRadius: 2,
+    borderWidth: 0.5,
+    borderColor: '#BFBFBF',
     marginVertical: 5,
     paddingHorizontal: 16,
     paddingVertical: 5,
     fontSize: 10,
     shadowColor: 'rgba(0, 0, 0, 0.17)',
     shadowOffset: {
-      width: 0,
-      height: 1,
+      width: 2,
+      height: 2,
     },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.5,
     shadowRadius: 1.41,
-    elevation: 2,
+    elevation: 1.5,
   },
 
   topInputTextWrap: {
-    height: 15,
-    marginTop: 5,
+    height: 8,
+    marginTop: 10,
+  },
+  smallText: {
+    fontSize: 10,
   },
   inputWrap: {
     flexDirection: 'row',
@@ -127,12 +146,12 @@ const styles = StyleSheet.create({
   forgetTextWrap: {
     height: 30,
   },
-
   input: {
     paddingHorizontal: 0,
     flex: 9,
     fontWeight: 'bold',
     height: 35,
+    fontSize: 13,
   },
   eye: {
     width: 16,

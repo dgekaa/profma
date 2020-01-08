@@ -3,6 +3,9 @@ import React, {useState, useEffect} from 'react';
 import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
 import {ButtonDefault, ButtonDisabled, ButtonError} from '../components/Button';
 import {InputWithText, InputWithPassword} from '../components/Input';
+import BackgroundHeader from '../components/BackgroundHeader';
+
+import DATA from '../data';
 
 const Login = ({navigation}) => {
   const {
@@ -41,47 +44,60 @@ const Login = ({navigation}) => {
       : setRegBtnText('Войти');
   }, [fillErr, validationErr]);
 
+  const onChangeText = text => {
+    console.log(text);
+  };
+
   return (
-    <View style={container}>
-      <View style={topTextWrap}>
-        <Text style={ProfMa}>Prof.Ma</Text>
-        <Text style={topText}>
-          Войдите в свой аккаунт, чтобы начать использовать приложение😎
-        </Text>
-      </View>
-      <View style={inputGroup}>
-        <InputWithText
-          text="Введите адрес электронной почты"
-          placeholder="example@site.com"
-          keyboardType="email-address"
-          validationErr={validationErr}
-        />
-        <InputWithPassword
-          text="Придумайте пароль"
-          placeholder="PLACEHOLDER"
-          secureTextEntry={hidePassword}
-          icon={iconName}
-          onPress={openCloseEye}
-          forgetPassword={true}
-          validationErr={validationErr}
-          onPressPassRecovery={() => {
-            navigation.navigate('PasswordRecovery');
-          }}
-        />
-      </View>
-      <View style={login}>
-        <View style={politic}>
-          <Text style={politicText}>
-            Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей
-            <Text style={specialText}> Политикой конфиденциальности</Text> и
-            <Text style={specialText}> Условиями использования</Text>
+    <View style={{flex: 1}}>
+      <BackgroundHeader blackArrow={true} navigation={navigation} />
+      <View style={container}>
+        <View style={topTextWrap}>
+          <Text style={ProfMa}>Prof.Ma</Text>
+          <Text style={topText}>
+            Войдите в свой аккаунт, чтобы начать использовать приложение😎
           </Text>
         </View>
-        {!!fillErr && !validationErr && <ButtonDisabled title={regBtnText} />}
-        {!fillErr && !validationErr && (
-          <ButtonDefault title={regBtnText} active={true} />
-        )}
-        {!!validationErr && <ButtonError title={regBtnText} />}
+        <View style={inputGroup}>
+          <InputWithText
+            text="Введите адрес электронной почты"
+            placeholder="example@site.com"
+            keyboardType="email-address"
+            validationErr={validationErr}
+            onChangeText={onChangeText}
+          />
+          <InputWithPassword
+            text="Придумайте пароль"
+            placeholder="будет PLACEHOLDER"
+            secureTextEntry={hidePassword}
+            icon={iconName}
+            onPress={openCloseEye}
+            forgetPassword={true}
+            validationErr={validationErr}
+            onPressPassRecovery={() => {
+              navigation.navigate('PasswordRecovery');
+            }}
+            onChangeText={onChangeText}
+          />
+        </View>
+        <View style={login}>
+          <View style={politic}>
+            <Text style={politicText}>
+              <Text>Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей</Text>
+              <Text style={specialText}> Политикой конфиденциальности</Text> и
+              <Text style={specialText}> Условиями использования</Text>
+            </Text>
+          </View>
+          {!!fillErr && !validationErr && <ButtonDisabled title={regBtnText} />}
+          {!fillErr && !validationErr && (
+            <ButtonDefault
+              title={regBtnText}
+              active={true}
+              onPress={() => navigation.navigate('ClientProfile', DATA)}
+            />
+          )}
+          {!!validationErr && <ButtonError title={regBtnText} />}
+        </View>
       </View>
     </View>
   );
@@ -109,13 +125,13 @@ const stylesClientRegistration = StyleSheet.create({
     fontFamily: 'Futura PT',
     fontSize: 23,
     marginTop: 16,
-    width: '81%',
+    width: '85%',
   },
   inputGroup: {
     flex: 5,
   },
   login: {
-    flex: 2,
+    flex: 2.5,
   },
   politic: {
     textAlign: 'center',

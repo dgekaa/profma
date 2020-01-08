@@ -1,15 +1,29 @@
 import React from 'react';
-import {ImageBackground, Text, StyleSheet, View} from 'react-native';
-import {LeftArrowWhite} from './LeftArrow';
+import {
+  ImageBackground,
+  Text,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
+import {LeftArrowWhite, LeftArrowBlack} from './LeftArrow';
 
-const BackgroundHeader = ({navigation}) => {
+const BackgroundHeader = ({navigation, title, blackArrow}) => {
   const {bg, container, headerTitle} = styles;
-  console.log(navigation);
   return (
-    <ImageBackground source={require('../img/headerBG.png')} style={bg}>
+    <ImageBackground
+      source={!blackArrow && require('../img/headerBG.png')}
+      style={[bg, {paddingTop: blackArrow ? 25 : 0}]}>
       <View style={container}>
-        <LeftArrowWhite onPress={() => navigation.goBack(null)} />
-        <Text style={headerTitle}>Восстановление пароля</Text>
+        {!!blackArrow ? (
+          <LeftArrowBlack onPress={() => navigation.goBack(null)} />
+        ) : (
+          <LeftArrowWhite onPress={() => navigation.goBack(null)} />
+        )}
+        <View style={{flex: 1, flexDirection: 'column'}}>
+          <Text style={headerTitle}>{title}</Text>
+        </View>
       </View>
     </ImageBackground>
   );
@@ -33,6 +47,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     width: '95%',
     textAlign: 'center',
+  },
+  headerBtn: {
+    borderRadius: 33,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    width: 185,
+    height: 33,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    marginTop: 8,
   },
 });
 

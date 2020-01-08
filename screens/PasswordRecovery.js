@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {InputWithText} from '../components/Input';
 import {ButtonDefault} from '../components/Button';
+import ModalWindow from '../components/ModalWindow';
 
 import {
   Text,
@@ -10,28 +11,6 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-
-const ModalWindow = ({modalVisible, onPress}) => {
-  return (
-    <Modal
-      animationType="slide"
-      transparent={false}
-      visible={modalVisible}
-      onRequestClose={() => {}}>
-      <View style={{marginTop: 22}}>
-        <View>
-          <Text>Hello World</Text>
-          <TouchableOpacity
-            onPress={() => {
-              onPress(false);
-            }}>
-            <Text>Hide Modal</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Modal>
-  );
-};
 
 const PasswordRecovery = () => {
   const {
@@ -101,7 +80,11 @@ const PasswordRecovery = () => {
           />
         )}
       </View>
-      <ModalWindow modalVisible={modalVisible} onPress={recoveryPassword} />
+      {/* <ModalWindow
+        modalVisible={modalVisible}
+        onPress={recoveryPassword}
+        mail={address}
+      /> */}
     </View>
   );
 };
@@ -110,7 +93,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 8,
-    paddingTop: 10,
+    paddingVertical: 10,
   },
   inputContainer: {
     flex: 2,
@@ -140,6 +123,15 @@ const styles = StyleSheet.create({
   helpText: {fontSize: 13},
   btnContainer: {
     flex: 1,
+  },
+  modal: {
+    backgroundColor: 'pink',
+    width: '90%',
+    height: 290,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginTop: 200,
   },
 });
 

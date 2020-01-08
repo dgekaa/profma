@@ -7,6 +7,15 @@ import Start from './screens/Start';
 import Registration from './screens/Registration';
 import Login from './screens/Login';
 import PasswordRecovery from './screens/PasswordRecovery';
+import ErrorSomethingWentWrong from './screens/ErrorSomethingWentWrong';
+import ClientProfile from './screens/ClientProfile';
+import ChangeCity from './screens/ChangeCity';
+import MyNotes from './screens/MyNotes';
+import NoteInformation from './screens/NoteInformation';
+import ChangePassword from './screens/ChangePassword';
+import PersonalData from './screens/PersonalData';
+import ErrorInternetProblems from './screens/ErrorInternetProblems';
+import ErrorDepartmentConstruction from './screens/ErrorDepartmentConstruction';
 import BackgroundHeader from './components/BackgroundHeader';
 import {LeftArrowBlack} from './components/LeftArrow';
 
@@ -29,26 +38,90 @@ const App = createStackNavigator(
     Registration: {
       screen: Registration,
       navigationOptions: {
-        headerBackImage: <LeftArrowBlack />,
+        header: null,
+        // headerBackImage: <LeftArrowBlack />,
         headerStyle: styles.header,
       },
     },
     Login: {
       screen: Login,
       navigationOptions: {
-        headerBackImage: <LeftArrowBlack />,
+        header: null,
+        // headerBackImage: <LeftArrowBlack />,
         headerStyle: styles.header,
       },
     },
     PasswordRecovery: {
       screen: PasswordRecovery,
       navigationOptions: {
-        header: props => <BackgroundHeader {...props} />,
+        header: props => (
+          <BackgroundHeader {...props} title="Восстановление пароля" />
+        ),
         headerStyle: {...styles.header},
       },
     },
+    ErrorSomethingWentWrong: {
+      screen: ErrorSomethingWentWrong,
+      navigationOptions: {
+        headerStyle: {...styles.header},
+      },
+    },
+    ErrorInternetProblems: {
+      screen: ErrorInternetProblems,
+      navigationOptions: {
+        headerStyle: {...styles.header},
+      },
+    },
+    ErrorDepartmentConstruction: {
+      screen: ErrorDepartmentConstruction,
+      navigationOptions: {
+        headerStyle: {...styles.header},
+      },
+    },
+    ClientProfile: {
+      screen: ClientProfile,
+      navigationOptions: {
+        header: null,
+        headerStyle: {...styles.header},
+      },
+    },
+    PersonalData: {
+      screen: PersonalData,
+      navigationOptions: {
+        header: null,
+        headerStyle: {...styles.header},
+      },
+    },
+    ChangePassword: {
+      screen: ChangePassword,
+      navigationOptions: {
+        header: null,
+        headerStyle: {...styles.header},
+      },
+    },
+    MyNotes: {
+      screen: MyNotes,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
+    },
+    ChangeCity: {
+      screen: ChangeCity,
+      navigationOptions: {
+        header: null,
+        headerStyle: {...styles.header},
+      },
+    },
+    NoteInformation: {
+      screen: NoteInformation,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
+    },
   },
-  {initialRouteName: 'PasswordRecovery'},
+  {initialRouteName: 'Start'},
 );
 
 export default createAppContainer(App);

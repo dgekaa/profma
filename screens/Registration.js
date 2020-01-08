@@ -3,8 +3,9 @@ import React, {useState, useEffect} from 'react';
 import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
 import {ButtonDefault, ButtonDisabled} from '../components/Button';
 import {InputWithText, InputWithPassword} from '../components/Input';
+import BackgroundHeader from '../components/BackgroundHeader';
 
-const Registration = ({}) => {
+const Registration = ({navigation}) => {
   const {
     container,
     topText,
@@ -55,6 +56,7 @@ const Registration = ({}) => {
 
   return (
     <View style={container}>
+      <BackgroundHeader blackArrow={true} navigation={navigation} />
       <View style={topTextWrap}>
         <Text style={ProfMa}>Prof.Ma</Text>
         <Text style={topText}>{textAd}</Text>
@@ -84,7 +86,7 @@ const Registration = ({}) => {
         />
         <InputWithPassword
           text="Придумайте пароль"
-          placeholder="PLACEHOLDER"
+          placeholder="будет PLACEHOLDER"
           secureTextEntry={hidePassword}
           icon={iconName}
           onPress={openCloseEye}
