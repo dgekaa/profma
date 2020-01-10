@@ -60,10 +60,14 @@ const BorderImage = ({width, height, number, photoSize, top, master}) => {
   );
 };
 
-const Block = ({}) => {
+const Block = ({navigation}) => {
   const {block, blockImg, timeBlock} = styles;
   return (
-    <View style={block}>
+    <TouchableOpacity
+      style={block}
+      onPress={() => {
+        navigation.navigate('PublickMasterProfile');
+      }}>
       <View style={{width: 140}}>
         <Image
           style={blockImg}
@@ -146,7 +150,8 @@ const Block = ({}) => {
           </View>
         </View>
       </View>
-    </View>
+      {/* </View> */}
+    </TouchableOpacity>
   );
 };
 
@@ -240,10 +245,16 @@ const Main = ({navigation}) => {
       });
     }
   };
+  const [pickerY, setPickerY] = useState();
+  const onLayout = event => {
+    const {x, y, width, height} = event.nativeEvent.layout;
+    setPickerY(y);
+    console.log(event.nativeEvent.layout, 'event.nativeEvent.layout');
+  };
 
   return (
     <View style={{flex: 1}}>
-      <ScrollView>
+      <ScrollView style={{}}>
         <ImageBackground
           style={header}
           source={require('../img/headerBGBig.png')}>
@@ -303,7 +314,7 @@ const Main = ({navigation}) => {
             <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
             <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
           </ScrollView>
-          <View style={{position: 'relative'}}>
+          <View onLayout={onLayout} style={{height: 100, marginTop: 22}}>
             <TouchableOpacity
               onPress={() => {
                 isShowPicker ? setIsShowPicker(false) : setIsShowPicker(true);
@@ -327,46 +338,10 @@ const Main = ({navigation}) => {
                 style={{width: 8, height: 8}}
               />
             </TouchableOpacity>
-            {isShowPicker && (
-              <ScrollView
-                nestedScrollEnabled={true}
-                style={{
-                  // zIndex: 100,
-                  position: 'absolute',
-                  maxHeight: 290,
-                  width: '70%',
-                  top: 60,
-                  elevation: 1.5,
-                  backgroundColor: 'red',
-                  shadowColor: '#000',
-                  shadowOpacity: 0.5,
-                }}>
-                <View>
-                  {pickerData.map(el => (
-                    <TouchableOpacity
-                      onPress={() => {
-                        setSelectedPicker(el.value);
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          textTransform: 'uppercase',
-                          padding: 8,
-                          color:
-                            el.value == selectedPicker ? '#B986DA' : 'black',
-                        }}>
-                        {el.label}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </ScrollView>
-            )}
           </View>
-
-          <Block />
-          <Block />
-          <Block />
+          <Block navigation={navigation} />
+          <Block navigation={navigation} />
+          <Block navigation={navigation} />
         </View>
       </ScrollView>
       <TouchableOpacity
@@ -384,6 +359,39 @@ const Main = ({navigation}) => {
           onClose={setIsCalendarVisible}
           clearCalendar={setMarkedDates}
         />
+      )}
+      {isShowPicker && (
+        <ScrollView
+          nestedScrollEnabled={true}
+          style={{
+            position: 'absolute',
+            top: pickerY + 250,
+            maxHeight: 290,
+            width: '70%',
+            elevation: 1.5,
+            backgroundColor: '#fff',
+            shadowColor: '#000',
+            shadowOpacity: 0.5,
+          }}>
+          <View>
+            {pickerData.map(el => (
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedPicker(el.value);
+                }}>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    textTransform: 'uppercase',
+                    padding: 8,
+                    color: el.value == selectedPicker ? '#B986DA' : 'black',
+                  }}>
+                  {el.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
       )}
     </View>
   );

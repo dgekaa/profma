@@ -9,8 +9,14 @@ import {
 } from 'react-native';
 import {LeftArrowWhite, LeftArrowBlack} from './LeftArrow';
 
-const BackgroundHeader = ({navigation, title, blackArrow}) => {
-  const {bg, container, headerTitle} = styles;
+const BackgroundHeader = ({
+  navigation,
+  title,
+  blackArrow,
+  description,
+  children,
+}) => {
+  const {bg, container, headerTitle, headerdescription} = styles;
   return (
     <ImageBackground
       source={!blackArrow && require('../img/headerBG.png')}
@@ -23,6 +29,8 @@ const BackgroundHeader = ({navigation, title, blackArrow}) => {
         )}
         <View style={{flex: 1, flexDirection: 'column'}}>
           <Text style={headerTitle}>{title}</Text>
+          <Text style={headerdescription}>{description}</Text>
+          {children}
         </View>
       </View>
     </ImageBackground>
@@ -43,8 +51,15 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: '#fff',
     fontFamily: 'Futura PT',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
+    width: '95%',
+    textAlign: 'center',
+  },
+  headerdescription: {
+    color: '#fff',
+    fontFamily: 'Futura PT',
+    fontSize: 13,
     width: '95%',
     textAlign: 'center',
   },

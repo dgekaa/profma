@@ -12,6 +12,7 @@ import ClientProfile from './screens/ClientProfile';
 import ChangeCity from './screens/ChangeCity';
 import Main from './screens/Main';
 import MyNotes from './screens/MyNotes';
+import PublickMasterProfile from './screens/PublickMasterProfile';
 import NoteInformation from './screens/NoteInformation';
 import ChangePassword from './screens/ChangePassword';
 import PersonalData from './screens/PersonalData';
@@ -128,8 +129,15 @@ const App = createStackNavigator(
         headerStyle: styles.header,
       },
     },
+    PublickMasterProfile: {
+      screen: PublickMasterProfile,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
+    },
   },
-  {initialRouteName: 'Start'},
+  {initialRouteName: 'PublickMasterProfile'},
 );
 
 export default createAppContainer(App);
