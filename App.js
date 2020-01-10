@@ -10,6 +10,7 @@ import PasswordRecovery from './screens/PasswordRecovery';
 import ErrorSomethingWentWrong from './screens/ErrorSomethingWentWrong';
 import ClientProfile from './screens/ClientProfile';
 import ChangeCity from './screens/ChangeCity';
+import Main from './screens/Main';
 import MyNotes from './screens/MyNotes';
 import NoteInformation from './screens/NoteInformation';
 import ChangePassword from './screens/ChangePassword';
@@ -115,6 +116,13 @@ const App = createStackNavigator(
     },
     NoteInformation: {
       screen: NoteInformation,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
+    },
+    Main: {
+      screen: Main,
       navigationOptions: {
         header: null,
         headerStyle: styles.header,

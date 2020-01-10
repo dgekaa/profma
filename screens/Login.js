@@ -5,8 +5,6 @@ import {ButtonDefault, ButtonDisabled, ButtonError} from '../components/Button';
 import {InputWithText, InputWithPassword} from '../components/Input';
 import BackgroundHeader from '../components/BackgroundHeader';
 
-import DATA from '../data';
-
 const Login = ({navigation}) => {
   const {
     container,
@@ -93,7 +91,7 @@ const Login = ({navigation}) => {
             <ButtonDefault
               title={regBtnText}
               active={true}
-              onPress={() => navigation.navigate('ClientProfile', DATA)}
+              onPress={() => navigation.navigate('Main')}
             />
           )}
           {!!validationErr && <ButtonError title={regBtnText} />}
