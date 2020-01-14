@@ -26,9 +26,12 @@ const ErrorInternetProblems = ({navigation}) => {
       <View style={imgContainer}>
         <Image style={img} source={require('../img/girl3.png')} />
       </View>
-
       <View style={buttonGroup}>
-        <ButtonDefault title="обновить страницу" active={true} />
+        <ButtonDefault
+          style={{marginBottom: 8}}
+          title="обновить страницу"
+          active={true}
+        />
         <ButtonDefault title="обратиться в поддержку Prof.ma" />
       </View>
     </View>
@@ -59,7 +62,7 @@ const styles = StyleSheet.create({
     flex: 5.5,
   },
   buttonGroup: {
-    flex: 2,
+    marginBottom: 8,
   },
   img: {},
 });

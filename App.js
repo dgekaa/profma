@@ -137,7 +137,7 @@ const App = createStackNavigator(
       },
     },
   },
-  {initialRouteName: 'PublickMasterProfile'},
+  {initialRouteName: 'Start'},
 );
 
 export default createAppContainer(App);

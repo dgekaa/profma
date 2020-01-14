@@ -1,35 +1,34 @@
 import React from 'react';
-import {
-  ImageBackground,
-  Text,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import {ImageBackground, Text, StyleSheet, View} from 'react-native';
 import {LeftArrowWhite, LeftArrowBlack} from './LeftArrow';
 
-const BackgroundHeader = ({
-  navigation,
-  title,
-  blackArrow,
-  description,
-  children,
-}) => {
+export const Header = ({navigation, title, description, children}) => {
   const {bg, container, headerTitle, headerdescription} = styles;
   return (
-    <ImageBackground
-      source={!blackArrow && require('../img/headerBG.png')}
-      style={[bg, {paddingTop: blackArrow ? 25 : 0}]}>
+    <View style={[bg, {paddingTop: 25}]}>
       <View style={container}>
-        {!!blackArrow ? (
-          <LeftArrowBlack onPress={() => navigation.goBack(null)} />
-        ) : (
-          <LeftArrowWhite onPress={() => navigation.goBack(null)} />
-        )}
+        <LeftArrowBlack onPress={() => navigation.goBack(null)} />
         <View style={{flex: 1, flexDirection: 'column'}}>
           <Text style={headerTitle}>{title}</Text>
           <Text style={headerdescription}>{description}</Text>
+          {children}
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const BackgroundHeader = ({navigation, title, description, children}) => {
+  const {bg, container, headerTitle, headerdescription} = styles;
+  return (
+    <ImageBackground
+      source={require('../img/headerBG.png')}
+      style={[bg, {paddingTop: 0}]}>
+      <View style={container}>
+        <LeftArrowWhite onPress={() => navigation.goBack(null)} />
+        <View style={{flex: 1, flexDirection: 'column'}}>
+          <Text style={headerTitle}>{title}</Text>
+          {description && <Text style={headerdescription}>{description}</Text>}
           {children}
         </View>
       </View>

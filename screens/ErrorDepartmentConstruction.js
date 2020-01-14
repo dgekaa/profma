@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     flex: 5.5,
   },
   buttonGroup: {
-    flex: 2,
+    marginBottom: 8,
   },
   img: {},
 });

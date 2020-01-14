@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 
 import {
   Text,
@@ -7,7 +7,6 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  onChangeText,
 } from 'react-native';
 
 export const InputWithText = ({
@@ -19,6 +18,7 @@ export const InputWithText = ({
   hideShadow,
   style,
   withoutShadow,
+  longText,
 }) => {
   const {
     inputWrap,
@@ -35,16 +35,17 @@ export const InputWithText = ({
         wrapper,
         style,
         {
-          height: 60,
+          height: longText ? 70 : 60,
           shadowOpacity: withoutShadow ? 0 : 0.5,
           elevation: withoutShadow ? 0 : 1.5,
         },
       ]}>
-      <View style={topInputTextWrap}>
+      <View style={[topInputTextWrap, {height: longText ? 18 : 8}]}>
         <Text style={smallText}>{text}</Text>
       </View>
       <View style={inputWrap}>
         <TextInput
+          placeholderTextColor="rgba(0,0,0,0.2)"
           onChangeText={onChangeText}
           maxLength={maxLength}
           placeholder={placeholder}
@@ -82,6 +83,9 @@ export const InputWithPassword = ({
     smallText,
   } = styles;
 
+  const [isShowPlaceholder, setIsShowPlaceholder] = useState(true);
+  const [passwordText, setPasswordText] = useState('');
+
   return (
     <View
       style={[
@@ -97,12 +101,34 @@ export const InputWithPassword = ({
       </View>
       <View style={inputWrap}>
         <TextInput
-          onChangeText={onChangeText}
+          placeholderTextColor="rgba(0,0,0,0.2)"
+          onFocus={() => {
+            setIsShowPlaceholder(false);
+          }}
+          onBlur={() => {
+            passwordText
+              ? setIsShowPlaceholder(false)
+              : setIsShowPlaceholder(true);
+          }}
+          onChangeText={text => {
+            setPasswordText(text);
+          }}
           maxLength={maxLength}
           placeholder={placeholder}
-          style={[input, {color: validationErr ? '#FF3D4B' : '#011627'}]}
+          style={[
+            input,
+            {
+              color: validationErr ? '#FF3D4B' : '#011627',
+            },
+          ]}
           secureTextEntry={secureTextEntry}
         />
+        {isShowPlaceholder && (
+          <Image
+            style={{position: 'absolute', top: 12}}
+            source={require('../img/dots.png')}
+          />
+        )}
         {icon && (
           <TouchableOpacity onPress={onPress}>
             <View style={eyeWrap}>
@@ -148,9 +174,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     elevation: 1.5,
   },
-
   topInputTextWrap: {
-    height: 8,
+    // height: 8,
     marginTop: 10,
   },
   smallText: {

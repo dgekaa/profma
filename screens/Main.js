@@ -16,6 +16,7 @@ import {
   ScrollView,
   ImageBackground,
   Dimensions,
+  // Picker,
 } from 'react-native';
 
 const screen = Dimensions.get('window');
@@ -87,13 +88,13 @@ const Block = ({navigation}) => {
           <Text style={{fontWeight: 'bold', fontSize: 13}}>
             Людмила Заглубоцкая
           </Text>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Image
               style={{marginRight: 3}}
               source={require('../img/Star.png')}
             />
             <Text style={{fontWeight: 'bold', fontSize: 13}}>5.0</Text>
-          </View>
+          </View> */}
         </View>
         <View
           style={{
@@ -203,6 +204,7 @@ const NearestSeansBlock = ({img}) => {
     </View>
   );
 };
+
 const Main = ({navigation}) => {
   const {
     prifileBtn,
@@ -212,22 +214,7 @@ const Main = ({navigation}) => {
     foundMasters,
     closeBtn,
     nearestSeans,
-    nearestSeansBlock,
   } = styles;
-  const [isShowPicker, setIsShowPicker] = useState(false);
-
-  const [selectedPicker, setSelectedPicker] = useState(1);
-  const [pickerData, setPickerData] = useState([
-    {label: 'Все мастера', value: 0},
-    {label: 'Аппаратный маникюр', value: 1},
-    {label: 'SPA-маникюр', value: 2},
-    {label: 'Горячий маникюр', value: 3},
-    {label: 'Классический маникюр', value: 4},
-    {label: 'Классический педикюр', value: 5},
-    {label: 'Комбинированный маникюр', value: 6},
-    {label: 'Комбинированный педикюр', value: 7},
-    {label: 'Коррекция ногтей', value: 8},
-  ]);
 
   const [markedDates, setMarkedDates] = useState({});
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
@@ -245,16 +232,10 @@ const Main = ({navigation}) => {
       });
     }
   };
-  const [pickerY, setPickerY] = useState();
-  const onLayout = event => {
-    const {x, y, width, height} = event.nativeEvent.layout;
-    setPickerY(y);
-    console.log(event.nativeEvent.layout, 'event.nativeEvent.layout');
-  };
 
   return (
     <View style={{flex: 1}}>
-      <ScrollView style={{}}>
+      <ScrollView>
         <ImageBackground
           style={header}
           source={require('../img/headerBGBig.png')}>
@@ -266,7 +247,7 @@ const Main = ({navigation}) => {
             <Image source={require('../img/UserWhite.png')} />
             <Text style={{color: '#fff', marginLeft: 5}}>Мой профиль</Text>
           </TouchableOpacity>
-          <View style={photosWrap}>
+          {/* <View style={photosWrap}>
             <BorderImage
               width={90}
               height={120}
@@ -291,9 +272,17 @@ const Main = ({navigation}) => {
               top={5}
               master={'Виктория Стец'}
             />
-          </View>
+          </View> */}
         </ImageBackground>
         <View style={{paddingHorizontal: 8}}>
+          <ScrollView
+            style={nearestSeans}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}>
+            <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
+            <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
+            <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
+          </ScrollView>
           <View style={foundMasters}>
             <View>
               <Text>Найдено 243 мастера на указанные даты:</Text>
@@ -306,42 +295,21 @@ const Main = ({navigation}) => {
               <Image source={require('../img/cross.png')} />
             </TouchableOpacity>
           </View>
-          <ScrollView
-            style={nearestSeans}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}>
-            <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
-            <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
-            <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
-          </ScrollView>
-          <View onLayout={onLayout} style={{height: 100, marginTop: 22}}>
-            <TouchableOpacity
-              onPress={() => {
-                isShowPicker ? setIsShowPicker(false) : setIsShowPicker(true);
-              }}
-              style={{
-                backgroundColor: 'pink',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize: 10,
-                  textTransform: 'uppercase',
-                  fontWeight: 'bold',
-                  padding: 8,
-                }}>
-                {pickerData[selectedPicker].label}
-              </Text>
-              <Image
-                source={require('../img/Arrow.png')}
-                style={{width: 8, height: 8}}
-              />
-            </TouchableOpacity>
+          {/* <Picker
+            mode="dropdown"
+            selectedValue={selectedPicker}
+            onValueChange={(itemValue, itemIndex) =>
+              setSelectedPicker(itemIndex)
+            }>
+            {pickerData.map((el, i) => (
+              <Picker.Item label={el.label} value={el.value} key={i} />
+            ))}
+          </Picker> */}
+          <View>
+            <Block navigation={navigation} />
+            <Block navigation={navigation} />
+            <Block navigation={navigation} />
           </View>
-          <Block navigation={navigation} />
-          <Block navigation={navigation} />
-          <Block navigation={navigation} />
         </View>
       </ScrollView>
       <TouchableOpacity
@@ -352,6 +320,7 @@ const Main = ({navigation}) => {
         <Image source={require('../img/calendar.png')} />
         <Text style={{marginLeft: 5}}>Выбрать дату</Text>
       </TouchableOpacity>
+      {/* КАЛЕНДАРЬ */}
       {isCalendarVisible && (
         <CalendarCustom
           markedDates={markedDates}
@@ -360,39 +329,6 @@ const Main = ({navigation}) => {
           clearCalendar={setMarkedDates}
         />
       )}
-      {isShowPicker && (
-        <ScrollView
-          nestedScrollEnabled={true}
-          style={{
-            position: 'absolute',
-            top: pickerY + 250,
-            maxHeight: 290,
-            width: '70%',
-            elevation: 1.5,
-            backgroundColor: '#fff',
-            shadowColor: '#000',
-            shadowOpacity: 0.5,
-          }}>
-          <View>
-            {pickerData.map(el => (
-              <TouchableOpacity
-                onPress={() => {
-                  setSelectedPicker(el.value);
-                }}>
-                <Text
-                  style={{
-                    fontSize: 10,
-                    textTransform: 'uppercase',
-                    padding: 8,
-                    color: el.value == selectedPicker ? '#B986DA' : 'black',
-                  }}>
-                  {el.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </ScrollView>
-      )}
     </View>
   );
 };
@@ -400,7 +336,7 @@ const Main = ({navigation}) => {
 const styles = StyleSheet.create({
   header: {
     width: '100%',
-    height: 500,
+    height: 400,
   },
   prifileBtn: {
     height: 33,
@@ -408,7 +344,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
     borderRadius: 33,
     alignSelf: 'center',
-    marginTop: 70,
+    marginTop: 150,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
@@ -462,6 +398,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 8,
+    paddingVertical: 8,
   },
   closeBtn: {
     borderColor: 'rgba(185, 134, 218, 0.3)',
@@ -472,14 +409,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   nearestSeans: {
-    height: 63,
+    height: 65,
     flexDirection: 'row',
-    marginTop: 8,
+    marginBottom: 8,
   },
   nearestSeansBlock: {
     padding: 8,
     marginRight: 8,
-    elevation: 3,
+    elevation: 2,
     height: 63,
     backgroundColor: '#fff',
     shadowColor: '#000',

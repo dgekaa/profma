@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react';
 import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
 import {ButtonDefault, ButtonDisabled, ButtonError} from '../components/Button';
 import {InputWithText, InputWithPassword} from '../components/Input';
-import BackgroundHeader from '../components/BackgroundHeader';
+import {Header} from '../components/BackgroundHeader';
 
 const Login = ({navigation}) => {
   const {
@@ -42,14 +42,10 @@ const Login = ({navigation}) => {
       : setRegBtnText('Войти');
   }, [fillErr, validationErr]);
 
-  const onChangeText = text => {
-    console.log(text);
-  };
-
   return (
     <View style={{flex: 1}}>
-      <BackgroundHeader blackArrow={true} navigation={navigation} />
-      <View style={container}>
+      <Header navigation={navigation} />
+      <View style={[container, {flex: 1}]}>
         <View style={topTextWrap}>
           <Text style={ProfMa}>Prof.Ma</Text>
           <Text style={topText}>
@@ -62,11 +58,9 @@ const Login = ({navigation}) => {
             placeholder="example@site.com"
             keyboardType="email-address"
             validationErr={validationErr}
-            onChangeText={onChangeText}
           />
           <InputWithPassword
             text="Придумайте пароль"
-            placeholder="будет PLACEHOLDER"
             secureTextEntry={hidePassword}
             icon={iconName}
             onPress={openCloseEye}
@@ -75,13 +69,12 @@ const Login = ({navigation}) => {
             onPressPassRecovery={() => {
               navigation.navigate('PasswordRecovery');
             }}
-            onChangeText={onChangeText}
           />
         </View>
         <View style={login}>
           <View style={politic}>
             <Text style={politicText}>
-              <Text>Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей</Text>
+              Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей
               <Text style={specialText}> Политикой конфиденциальности</Text> и
               <Text style={specialText}> Условиями использования</Text>
             </Text>
@@ -103,7 +96,6 @@ const Login = ({navigation}) => {
 
 const stylesClientRegistration = StyleSheet.create({
   container: {
-    flex: 1,
     paddingHorizontal: 8,
   },
   topTextWrap: {
@@ -111,7 +103,6 @@ const stylesClientRegistration = StyleSheet.create({
     paddingHorizontal: 12,
   },
   ProfMa: {
-    fontFamily: 'Futura PT',
     fontSize: 23,
     color: '#B986DA',
     fontWeight: 'bold',
@@ -137,6 +128,7 @@ const stylesClientRegistration = StyleSheet.create({
     paddingBottom: 15,
   },
   politicText: {
+    fontSize: 13,
     textAlign: 'center',
     fontFamily: 'Futura PT',
   },

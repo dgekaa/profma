@@ -1,11 +1,9 @@
 import React, {useState, useEffect} from 'react';
 
 import BackgroundHeader from '../components/BackgroundHeader';
-import {InputWithText} from '../components/Input';
 
 import {
   Text,
-  Modal,
   View,
   StyleSheet,
   Image,
@@ -19,8 +17,22 @@ const Border = () => (
 );
 
 const ChangeCity = ({navigation}) => {
-  const data = ['qwe', 'asd', 'zxc'];
   const {groupBlock} = styles;
+  const data = [
+    'qwe',
+    'asd',
+    'zxc',
+    'qwe',
+    'asd',
+    'zxc',
+    'qwe',
+    'asd',
+    'zxc',
+    'qwe',
+    'asd',
+    'zxc',
+  ];
+  const [city, setCity] = useState('Укажите город');
 
   return (
     <View style={{flex: 1}}>
@@ -36,9 +48,8 @@ const ChangeCity = ({navigation}) => {
             justifyContent: 'center',
           }}>
           <Text style={{fontSize: 10}}>Ваш город</Text>
-          <Text style={{fontSize: 13, fontWeight: 'bold'}}>Питер</Text>
+          <Text style={{fontSize: 13, fontWeight: 'bold'}}>{city}</Text>
         </View>
-
         <View
           style={{
             height: 60,
@@ -55,12 +66,14 @@ const ChangeCity = ({navigation}) => {
           />
           <TextInput placeholder="Найти город.." />
         </View>
-
         <View style={[groupBlock]}>
           <ScrollView>
-            {data.map(el => (
-              <View>
+            {data.map((el, i) => (
+              <View key={i}>
                 <TouchableOpacity
+                  onPress={e => {
+                    setCity(data[i]);
+                  }}
                   style={{
                     height: 50,
                     justifyContent: 'center',
@@ -79,6 +92,7 @@ const ChangeCity = ({navigation}) => {
 
 const styles = StyleSheet.create({
   groupBlock: {
+    flex: 1,
     borderRadius: 2,
     shadowColor: 'red',
     shadowOpacity: 4,
@@ -86,6 +100,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     marginTop: 20,
     paddingLeft: 16,
+    marginBottom: 8,
   },
 });
 

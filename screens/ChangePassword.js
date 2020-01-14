@@ -25,7 +25,6 @@ const ChangePassword = ({navigation}) => {
           <View style={groupBlock}>
             <InputWithPassword
               text="Введите новый пароль"
-              placeholder="будет PLACEHOLDER"
               withoutShadow={true}
               secureTextEntry={true}
             />
@@ -34,11 +33,8 @@ const ChangePassword = ({navigation}) => {
             />
             <InputWithPassword
               text="Повторите новый пароль"
-              placeholder="будет PLACEHOLDER"
               withoutShadow={true}
               secureTextEntry={true}
-              // icon={iconName}
-              // onPress={openCloseEye}
             />
           </View>
         </View>
@@ -81,7 +77,6 @@ const ChangePassword = ({navigation}) => {
             title="Сохранить новый пароль"
             active={true}
             onPress={() => {
-              // console.log(navigation);
               navigation.state.params.onGoBack(true);
               navigation.goBack();
             }}

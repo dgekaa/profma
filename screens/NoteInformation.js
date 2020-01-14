@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 
 import BackgroundHeader from '../components/BackgroundHeader';
 import {ButtonDefault} from '../components/Button';
+import ModalWindow from '../components/ModalWindow';
 
 import {
   Text,
@@ -16,6 +17,9 @@ const NoteInformation = ({navigation}) => {
   const {first, text, blockTitle, groupBlock} = styles;
   const {name, services, date, time, address} = navigation.state.params;
 
+  const [cancelNote, setCancelNote] = useState(false);
+  const [canceledNote, setCanceledNote] = useState(false);
+
   const isActive = false;
   const isCompleted = false;
   const isAbort = true;
@@ -24,9 +28,9 @@ const NoteInformation = ({navigation}) => {
     <View style={{flex: 1}}>
       <BackgroundHeader
         navigation={navigation}
-        title={`Вы записаны к мастеру`}
+        title={isAbort ? `Запись к мастеру завершена` : `Вы записаны к мастеру`}
       />
-      <ScrollView>
+      <ScrollView style={{}}>
         <View style={{flex: 1, paddingHorizontal: 8, paddingTop: 15}}>
           <View style={first}>
             <Text style={text}>{name}</Text>
@@ -36,8 +40,9 @@ const NoteInformation = ({navigation}) => {
             <Text style={blockTitle}>Услуги</Text>
             <View>
               <View style={groupBlock}>
-                {services.map(el => (
+                {services.map((el, i) => (
                   <View
+                    key={i}
                     style={{
                       height: 60,
                       flexDirection: 'row',
@@ -80,7 +85,8 @@ const NoteInformation = ({navigation}) => {
                     flexDirection: 'row',
                   }}>
                   <Image source={require('../img/Plus.png')} />
-                  <Text style={{fontSize: 13, fontWeight: 'bold'}}>
+                  <Text
+                    style={{fontSize: 13, fontWeight: 'bold', paddingLeft: 5}}>
                     Добавить услугу
                   </Text>
                 </TouchableOpacity>
@@ -91,10 +97,11 @@ const NoteInformation = ({navigation}) => {
           <View>
             <Text style={blockTitle}>дата и время сеанса</Text>
             <View style={[first, {flexDirection: 'row'}]}>
-              <Text>{date}</Text>
+              <Text style={{fontWeight: 'bold'}}>{date}</Text>
               <Text> в {time}</Text>
             </View>
           </View>
+          {/* АДРЕС ПРОВЕДЕНИЯ СЕАНСА */}
           <View style={{marginBottom: 20}}>
             <Text style={blockTitle}>Адрес проведения сеанса</Text>
             <View
@@ -107,34 +114,94 @@ const NoteInformation = ({navigation}) => {
                 },
               ]}>
               <Text>У мастера на дому</Text>
-              <Text style={{fontWeight: 'bold'}}>{address.address}</Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Text style={{fontSize: 13, fontWeight: 'bold', flex: 1}}>
+                  {address.address}
+                </Text>
+                <Text style={{fontSize: 10, flex: 1}}>Ломоносовская</Text>
+              </View>
             </View>
           </View>
-          {isActive ||
-            (isAbort && (
-              <View style={{marginBottom: 20, paddingHorizontal: 8}}>
-                <Text>Итоговая стоимость сеанса</Text>
-                <Text style={{fontWeight: 'bold'}}>1800 руб.</Text>
-              </View>
-            ))}
-          {isCompleted && (
-            <ButtonDefault
-              title="Повторить запись"
-              onPress={() => {
-                alert('Будет повтор записи');
-              }}
-            />
-          )}
-          {isActive && (
-            <ButtonDefault
-              title="Хочу отменить запись к мастеру"
-              onPress={() => {
-                alert('Будет отмена записи');
-              }}
-            />
-          )}
         </View>
+        {isActive ||
+          (isAbort && (
+            <View style={{marginBottom: 20, paddingHorizontal: 8}}>
+              <Text>Итоговая стоимость сеанса</Text>
+              <Text style={{fontWeight: 'bold'}}>1800 руб.</Text>
+            </View>
+          ))}
       </ScrollView>
+      <View style={{paddingHorizontal: 8, paddingBottom: 8}}>
+        {isCompleted && (
+          <ButtonDefault
+            title="Повторить запись"
+            onPress={() => {
+              alert('Будет повтор записи');
+            }}
+          />
+        )}
+        {isActive && (
+          <ButtonDefault
+            title="Хочу отменить запись к мастеру"
+            onPress={() => {
+              setCancelNote(true);
+            }}
+          />
+        )}
+      </View>
+      {cancelNote && (
+        <ModalWindow>
+          <Text style={{width: '70%', textAlign: 'center', fontSize: 13}}>
+            Вы собираетесь отменить запись на
+            <Text style={{fontWeight: 'bold'}}>25 июн 2019</Text> в 10:00 к
+            мастеру
+          </Text>
+          <Text style={{paddingVertical: 8, fontWeight: 'bold', fontSize: 13}}>
+            Людмила Заглубоцкая
+          </Text>
+          <Image source={require('../img/girl5.png')} />
+          <Text style={{paddingVertical: 8, fontSize: 13}}>
+            Вы уверены в своём решении?
+          </Text>
+          <View style={{width: '100%'}}>
+            <ButtonDefault
+              title="нет, не отменять запись"
+              active={true}
+              style={{marginVertical: 8}}
+              onPress={() => {
+                setCancelNote(false);
+              }}
+            />
+            <ButtonDefault
+              title="отменить запись к мастеру"
+              onPress={() => {
+                setCancelNote(false);
+                setCanceledNote(true);
+              }}
+            />
+          </View>
+        </ModalWindow>
+      )}
+      {canceledNote && (
+        <ModalWindow>
+          <Text style={{width: '85%', textAlign: 'center', fontSize: 13}}>
+            Ваша запись успешно отменена.
+          </Text>
+          <View style={{width: '100%', marginTop: 16}}>
+            <ButtonDefault
+              title="Благодарю"
+              onPress={() => {
+                setCanceledNote(false);
+              }}
+            />
+          </View>
+        </ModalWindow>
+      )}
     </View>
   );
 };
@@ -155,6 +222,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Futura PT',
   },
   blockTitle: {
+    fontSize: 10,
     marginTop: 20,
     marginBottom: 8,
     color: '#011627',

@@ -2,21 +2,34 @@ import React from 'react';
 
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 
-export const ButtonDefault = ({title, active, onPress, style, flex}) => {
-  const {btn, btnWrap, btnText, notActiveBtn} = styles;
+export const ButtonDefault = ({
+  title,
+  active,
+  onPress,
+  style,
+  flex,
+  rightTitle,
+}) => {
+  const {btn, btnText, notActiveBtn} = styles;
   return (
-    <View style={[btnWrap, flex ? {flex: 1} : null]}>
+    <View style={flex ? {flex: 1} : null}>
       <TouchableOpacity onPress={onPress}>
         <View
           style={[
-            style,
             btn,
+            style,
             active ? {backgroundColor: '#B986DA'} : notActiveBtn,
           ]}>
           <Text
             style={[btnText, active ? {color: '#fff'} : {color: '#B986DA'}]}>
             {title}
           </Text>
+          {rightTitle && (
+            <Text
+              style={[btnText, active ? {color: '#fff'} : {color: '#B986DA'}]}>
+              {rightTitle}
+            </Text>
+          )}
         </View>
       </TouchableOpacity>
     </View>
@@ -24,9 +37,9 @@ export const ButtonDefault = ({title, active, onPress, style, flex}) => {
 };
 
 export const ButtonDisabled = ({title, onPress, style}) => {
-  const {btn, btnWrap, btnText} = styles;
+  const {btn, btnText} = styles;
   return (
-    <View style={[btnWrap]}>
+    <View>
       <TouchableOpacity disabled={true} onPress={onPress}>
         <View style={[style, btn, {backgroundColor: '#D5D8DA'}]}>
           <Text style={[btnText, {color: '#fff'}]}>{title}</Text>
@@ -37,9 +50,9 @@ export const ButtonDisabled = ({title, onPress, style}) => {
 };
 
 export const ButtonError = ({title, onPress, style}) => {
-  const {btn, btnWrap, btnText} = styles;
+  const {btn, btnText} = styles;
   return (
-    <View style={btnWrap}>
+    <View>
       <TouchableOpacity disabled={true} onPress={onPress}>
         <View style={[style, btn, {backgroundColor: '#FF3D4B'}]}>
           <Text style={[btnText, {color: '#fff'}]}>{title}</Text>
@@ -50,11 +63,9 @@ export const ButtonError = ({title, onPress, style}) => {
 };
 
 const styles = StyleSheet.create({
-  btnWrap: {
-    // flex: 1,
-  },
   btn: {
     height: 50,
+    paddingHorizontal: 16,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 2,
@@ -65,7 +76,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(185, 134, 218, 0.25)',
   },
   btnText: {
-    fontFamily: 'Futura PT',
+    fontSize: 13,
     fontWeight: 'bold',
     textTransform: 'uppercase',
   },

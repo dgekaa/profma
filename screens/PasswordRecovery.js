@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {InputWithText} from '../components/Input';
 import {ButtonDefault} from '../components/Button';
-import ModalWindow from '../components/ModalWindow';
 
 import {
   Text,
@@ -80,11 +79,6 @@ const PasswordRecovery = () => {
           />
         )}
       </View>
-      {/* <ModalWindow
-        modalVisible={modalVisible}
-        onPress={recoveryPassword}
-        mail={address}
-      /> */}
     </View>
   );
 };

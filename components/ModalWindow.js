@@ -1,65 +1,49 @@
 import React from 'react';
-import {ButtonDefault} from '../components/Button';
 
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  Image,
-} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 
-const ModalWindow = ({modalVisible, onPress, mail}) => {
-  const {modal, img, text} = styles;
+const ModalWindow = ({children}) => {
+  const {container, modal, bg} = styles;
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={modalVisible}
-      presentationStyle="fullScreen"
-      onRequestClose={() => {}}>
-      <View style={modal}>
-        <View>
-          <Text style={text}>
-            Мы отправили вам письмо с ссылкой для восстановления пароля на адрес
-          </Text>
-          <Text style={[text, {fontWeight: 'bold'}]}>{mail}</Text>
-          <Image style={img} source={require('../img/girl1.png')} />
-          <ButtonDefault
-            title="спасибо, закрыть окно"
-            active={true}
-            onPress={() => onPress(false)}
-          />
-          <TouchableOpacity
-            onPress={() => {
-              onPress(false);
-            }}>
-            <Text>спасибо, закрыть окно</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Modal>
+    <View style={container}>
+      <View style={bg}></View>
+      <View style={modal}>{children}</View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bg: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: '100%',
+    width: '100%',
+    backgroundColor: '#000',
+    opacity: 0.45,
+  },
   modal: {
-    backgroundColor: 'pink',
+    borderRadius: 2,
+    padding: 24,
     width: '90%',
-    height: 290,
-    padding: 25,
-    alignSelf: 'center',
-    marginTop: 200,
-  },
-  img: {
-    alignSelf: 'center',
-    marginBottom: 10,
-  },
-  text: {
-    fontFamily: 'Futura PT',
-    textAlign: 'center',
-    marginBottom: 10,
+    backgroundColor: '#FFFFFF',
+    opacity: 1,
+    shadowColor: 'rgba(0, 0, 0, 0.17)',
+    elevation: 2,
+    shadowOpacity: 0.5,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

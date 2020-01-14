@@ -1,12 +1,12 @@
 import React from 'react';
-import {View, Text, StyleSheet, Animated} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 
 const SaveSuccess = ({title, style}) => {
   const {alert} = styles;
   return (
-    <Animated.View style={[alert, style]}>
+    <View style={[alert, style]}>
       <Text style={{color: '#fff'}}>{title}</Text>
-    </Animated.View>
+    </View>
   );
 };
 

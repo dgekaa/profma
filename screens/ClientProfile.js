@@ -17,33 +17,20 @@ const ClientProfile = ({navigation}) => {
 
   const [isChangePassword, setIsChangePassword] = useState();
 
-  const [fadeAnimation, setFadeAnimation] = useState(new Animated.Value(1));
-
-  // useEffect(() => {
-  //   Animated.timing(fadeAnimation, {
-  //     toValue: 0.2,
-  //     duration: 2000,
-  //   }).start();
-  // }, [isChangePassword]);
-
   const onGoBackFromPasword = isSuccess => {
     if (isSuccess) {
       setIsChangePassword(true);
-      Animated.timing(fadeAnimation, {
-        toValue: 0,
-        duration: 1500,
-      }).start();
     } else {
       setIsChangePassword(false);
     }
     setTimeout(() => {
       setIsChangePassword(false);
-    }, 1500);
+    }, 1000);
   };
 
   return (
     <View style={{flex: 1}}>
-      <BackgroundHeader navigation={navigation} title={``} />
+      <BackgroundHeader navigation={navigation} />
       <View style={{paddingHorizontal: 10, flex: 1}}>
         <View style={{flex: 1}}>
           {/* МОИ ЗАПИСИ */}
@@ -66,7 +53,6 @@ const ClientProfile = ({navigation}) => {
               style={[blockInGroup, borderBottom]}
               onPress={() => {
                 navigation.navigate('PersonalData');
-                // alert('Будут персональные данные');
               }}>
               <Image
                 style={{height: 13, width: 13}}
@@ -81,7 +67,6 @@ const ClientProfile = ({navigation}) => {
                 navigation.navigate('ChangePassword', {
                   onGoBack: isSuccess => onGoBackFromPasword(isSuccess),
                 });
-                // alert('Изменить пароль');
               }}>
               <Image
                 style={{height: 13, width: 13}}
@@ -93,18 +78,20 @@ const ClientProfile = ({navigation}) => {
         </View>
         <View style={{flex: 6}}>
           <View style={groupBlock}>
+            {/* ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ*/}
             <TouchableOpacity
               style={[blockInGroup, borderBottom]}
               onPress={() => {
                 alert('Политика конфиденциальности');
               }}>
-              <Text>Политика конфиденциальности и Условия использования</Text>
+              <Text style={{fontSize: 13}}>
+                Политика конфиденциальности и Условия использования
+              </Text>
             </TouchableOpacity>
             {/* ВАШ ГОРОД*/}
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('ChangeCity');
-                // alert('Выбор города');
               }}>
               <View
                 style={[
@@ -115,7 +102,7 @@ const ClientProfile = ({navigation}) => {
                     justifyContent: 'space-between',
                   },
                 ]}>
-                <Text>Ваш город</Text>
+                <Text style={{fontSize: 13}}>Ваш город</Text>
                 <Text style={{fontWeight: 'bold', paddingRight: 18}}>
                   {navigation.state.params[0].city}
                 </Text>
@@ -126,24 +113,23 @@ const ClientProfile = ({navigation}) => {
               onPress={() => {
                 alert('Связь с поддержкой');
               }}>
-              <Text>Связаться с поддержкой Prof.Ma</Text>
+              <Text style={{fontSize: 13}}>Связаться с поддержкой Prof.Ma</Text>
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{flex: 1}}>
-          {isChangePassword && (
-            <SaveSuccess
-              title="👍 Новый пароль успешно сохранён."
-              style={{opacity: fadeAnimation}}
-            />
-          )}
+      </View>
+      <View style={{margin: 8}}>
+        {isChangePassword && (
+          <SaveSuccess title="👍 Новый пароль успешно сохранён." />
+        )}
+        {!isChangePassword && (
           <ButtonDefault
             title="выйти из профиля"
             onPress={() => {
               alert('Выход из профиля');
             }}
           />
-        </View>
+        )}
       </View>
     </View>
   );
@@ -161,7 +147,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
   },
   text: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: 'bold',
     marginLeft: 13,
     fontFamily: 'Futura PT',
@@ -180,6 +166,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    paddingRight: 8,
   },
   borderBottom: {
     borderBottomColor: '#aaa',
