@@ -19,6 +19,7 @@ export const InputWithText = ({
   style,
   withoutShadow,
   longText,
+  err,
 }) => {
   const {
     inputWrap,
@@ -54,6 +55,7 @@ export const InputWithText = ({
           onChangeText={text => onChangeText(text)}
         />
       </View>
+      {err && <Text style={{}}>!!!!!!!!!!</Text>}
     </View>
   );
 };

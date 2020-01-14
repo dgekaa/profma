@@ -1,19 +1,11 @@
 import React, {useState, useEffect} from 'react';
 
-import BackgroundHeader from '../components/BackgroundHeader';
-import {InputWithText, InputWithPassword} from '../components/Input';
-import {ButtonDisabled, ButtonDefault} from '../components/Button';
-import SaveSuccess from '../components/SaveSuccess';
+import BackgroundHeader from '../../components/BackgroundHeader';
+import {InputWithText, InputWithPassword} from '../../components/Input';
+import {ButtonDisabled, ButtonDefault} from '../../components/Button';
+import SaveSuccess from '../../components/SaveSuccess';
 
-import {
-  Text,
-  Modal,
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  TextInput,
-} from 'react-native';
+import {Text, View, StyleSheet} from 'react-native';
 
 const Border = () => (
   <View

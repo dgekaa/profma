@@ -18,6 +18,7 @@ import {
   Dimensions,
   // Picker,
 } from 'react-native';
+import {ButtonDefault} from '../components/Button';
 
 const screen = Dimensions.get('window');
 
@@ -242,84 +243,80 @@ const Main = ({navigation}) => {
           <TouchableOpacity
             style={prifileBtn}
             onPress={() => {
-              navigation.navigate('ClientProfile', DATA);
+              {
+                false && navigation.navigate('ClientProfile', DATA);
+              }
+              {
+                true && navigation.navigate('MasterProfile', DATA);
+              }
             }}>
             <Image source={require('../img/UserWhite.png')} />
             <Text style={{color: '#fff', marginLeft: 5}}>Мой профиль</Text>
           </TouchableOpacity>
-          {/* <View style={photosWrap}>
-            <BorderImage
-              width={90}
-              height={120}
-              number={2}
-              photoSize={45}
-              top={5}
-              master={'Виктория Стец'}
-            />
-            <BorderImage
-              width={110}
-              height={150}
-              number={1}
-              photoSize={60}
-              top={12}
-              master={'Виктория Стец'}
-            />
-            <BorderImage
-              width={90}
-              height={120}
-              number={3}
-              photoSize={45}
-              top={5}
-              master={'Виктория Стец'}
-            />
-          </View> */}
         </ImageBackground>
         <View style={{paddingHorizontal: 8}}>
-          <ScrollView
-            style={nearestSeans}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}>
-            <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
-            <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
-            <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
-          </ScrollView>
-          <View style={foundMasters}>
-            <View>
-              <Text>Найдено 243 мастера на указанные даты:</Text>
-              <Text
-                style={{color: '#B986DA', fontSize: 13, fontWeight: 'bold'}}>
-                13 апр, 16 апр, 17 апр, 25 апр
-              </Text>
+          {false && (
+            <ScrollView
+              style={nearestSeans}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}>
+              <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
+              <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
+              <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
+            </ScrollView>
+          )}
+          {false && (
+            <View style={foundMasters}>
+              <View>
+                <Text>Найдено 243 мастера на указанные даты:</Text>
+                <Text
+                  style={{color: '#B986DA', fontSize: 13, fontWeight: 'bold'}}>
+                  13 апр, 16 апр, 17 апр, 25 апр
+                </Text>
+              </View>
+              <TouchableOpacity style={closeBtn}>
+                <Image source={require('../img/cross.png')} />
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity style={closeBtn}>
-              <Image source={require('../img/cross.png')} />
-            </TouchableOpacity>
-          </View>
-          {/* <Picker
-            mode="dropdown"
-            selectedValue={selectedPicker}
-            onValueChange={(itemValue, itemIndex) =>
-              setSelectedPicker(itemIndex)
-            }>
-            {pickerData.map((el, i) => (
-              <Picker.Item label={el.label} value={el.value} key={i} />
-            ))}
-          </Picker> */}
-          <View>
-            <Block navigation={navigation} />
-            <Block navigation={navigation} />
-            <Block navigation={navigation} />
-          </View>
+          )}
+          {false && (
+            <View>
+              <Block navigation={navigation} />
+              <Block navigation={navigation} />
+              <Block navigation={navigation} />
+            </View>
+          )}
+          {true && (
+            <View style={{flex: 1}}>
+              <View style={{marginTop: 20, flex: 1}}>
+                <Text style={{fontSize: 13}}>
+                  Пока на сервисе нет ни одного мастера.
+                </Text>
+                <Text style={{fontSize: 13}}>
+                  таньте первым и попадите на пьедестал лучших.
+                </Text>
+              </View>
+            </View>
+          )}
         </View>
       </ScrollView>
-      <TouchableOpacity
-        style={[openCalendar, {top: screen.height - 80}]}
-        onPress={() => {
-          setIsCalendarVisible(true);
-        }}>
-        <Image source={require('../img/calendar.png')} />
-        <Text style={{marginLeft: 5}}>Выбрать дату</Text>
-      </TouchableOpacity>
+      {true && (
+        <ButtonDefault
+          title="заполнить профиль мастера"
+          active={true}
+          style={{margin: 8}}
+        />
+      )}
+      {false && (
+        <TouchableOpacity
+          style={[openCalendar, {top: screen.height - 80}]}
+          onPress={() => {
+            setIsCalendarVisible(true);
+          }}>
+          <Image source={require('../img/calendar.png')} />
+          <Text style={{marginLeft: 5}}>Выбрать дату</Text>
+        </TouchableOpacity>
+      )}
       {/* КАЛЕНДАРЬ */}
       {isCalendarVisible && (
         <CalendarCustom
@@ -336,7 +333,7 @@ const Main = ({navigation}) => {
 const styles = StyleSheet.create({
   header: {
     width: '100%',
-    height: 400,
+    height: 420,
   },
   prifileBtn: {
     height: 33,

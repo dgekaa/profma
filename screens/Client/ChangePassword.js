@@ -1,17 +1,10 @@
 import React, {useState, useEffect} from 'react';
 
-import BackgroundHeader from '../components/BackgroundHeader';
-import {InputWithPassword} from '../components/Input';
-import {ButtonDisabled, ButtonDefault} from '../components/Button';
+import BackgroundHeader from '../../components/BackgroundHeader';
+import {InputWithPassword} from '../../components/Input';
+import {ButtonDisabled, ButtonDefault} from '../../components/Button';
 
-import {
-  Text,
-  Modal,
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, Modal, View, StyleSheet, Image} from 'react-native';
 
 const ChangePassword = ({navigation}) => {
   const {blockTitle, groupBlock} = styles;
@@ -49,7 +42,7 @@ const ChangePassword = ({navigation}) => {
             <View style={{width: '20%', marginRight: 5}}>
               <Image
                 style={{height: 75, width: 75}}
-                source={require('../img/girl4.png')}
+                source={require('../../img/girl4.png')}
               />
             </View>
             <View

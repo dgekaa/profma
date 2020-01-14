@@ -8,9 +8,9 @@ import {
   TouchableOpacity,
   Animated,
 } from 'react-native';
-import BackgroundHeader from '../components/BackgroundHeader';
-import {ButtonDefault} from '../components/Button';
-import SaveSuccess from '../components/SaveSuccess';
+import BackgroundHeader from '../../components/BackgroundHeader';
+import {ButtonDefault} from '../../components/Button';
+import SaveSuccess from '../../components/SaveSuccess';
 
 const ClientProfile = ({navigation}) => {
   const {first, text, groupBlock, blockInGroup, borderBottom} = styles;
@@ -32,7 +32,7 @@ const ClientProfile = ({navigation}) => {
     <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} />
       <View style={{paddingHorizontal: 10, flex: 1}}>
-        <View style={{flex: 1}}>
+        <View>
           {/* МОИ ЗАПИСИ */}
           <TouchableOpacity
             style={first}
@@ -41,42 +41,79 @@ const ClientProfile = ({navigation}) => {
             }}>
             <Image
               style={{height: 13, width: 13}}
-              source={require('../img/calendar.png')}
+              source={require('../../img/calendar.png')}
             />
             <Text style={text}>Мои записи</Text>
           </TouchableOpacity>
         </View>
-        <View style={{flex: 2}}>
+        <View>
           <View style={groupBlock}>
-            {/* ПЕРСОНАЛЬНЫЕ ДАННЫЕ*/}
+            {/* КАЛЕНДАРЬ*/}
+            <TouchableOpacity
+              style={[
+                blockInGroup,
+                borderBottom,
+                {justifyContent: 'space-between', alignItems: 'center'},
+              ]}
+              onPress={() => {
+                // navigation.navigate('PersonalData');
+              }}>
+              <View style={{alignItems: 'center', flexDirection: 'row'}}>
+                <Image
+                  style={{height: 13, width: 13}}
+                  source={require('../../img/calendar.png')}
+                />
+                <Text style={text}>Мой календарь мастера</Text>
+              </View>
+              <View
+                style={{
+                  width: 12,
+                  height: 12,
+                  borderRadius: 12,
+                  backgroundColor: '#DCC3EC',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <View
+                  style={{
+                    backgroundColor: '#B986DA',
+                    width: 4,
+                    height: 4,
+                    borderRadius: 4,
+                  }}></View>
+              </View>
+            </TouchableOpacity>
+            {/* МОИ УСЛУГИ*/}
             <TouchableOpacity
               style={[blockInGroup, borderBottom]}
               onPress={() => {
-                navigation.navigate('PersonalData');
+                console.log(navigation, 'navigation MyServices');
+
+                navigation.navigate('MyServices');
               }}>
               <Image
                 style={{height: 13, width: 13}}
-                source={require('../img/user.png')}
+                source={require('../../img/Manicure.png')}
               />
-              <Text style={text}>Персональные данные</Text>
+              <Text style={text}>Мои услуги (0)</Text>
             </TouchableOpacity>
-            {/* ИЗМЕНИТЬ ПАРОЛЬ*/}
+            {/* НАСТРОИТЬ РАСПИСАНИЕ*/}
             <TouchableOpacity
               style={blockInGroup}
               onPress={() => {
-                navigation.navigate('ChangePassword', {
-                  onGoBack: isSuccess => onGoBackFromPasword(isSuccess),
-                });
+                // navigation.navigate('ChangePassword', {
+                //   onGoBack: isSuccess => onGoBackFromPasword(isSuccess),
+                // });
               }}>
               <Image
                 style={{height: 13, width: 13}}
-                source={require('../img/password.png')}
+                source={require('../../img/calendar.png')}
               />
-              <Text style={text}>Изменить пароль</Text>
+              <Text style={text}>Настроить рабочее расписание</Text>
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{flex: 6}}>
+        <View style={{}}>
           <View style={groupBlock}>
             {/* ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ*/}
             <TouchableOpacity
@@ -113,7 +150,10 @@ const ClientProfile = ({navigation}) => {
               onPress={() => {
                 alert('Связь с поддержкой');
               }}>
-              <Text style={{fontSize: 13}}>Связаться с поддержкой Prof.Ma</Text>
+              <Text style={{fontSize: 13}}>
+                Связаться с поддержкой{' '}
+                <Text style={{color: '#B986DA'}}>Prof.Ma</Text>
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -159,6 +199,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     flexDirection: 'column',
     paddingLeft: 18,
+    paddingRight: 8,
   },
   blockInGroup: {
     height: 50,
