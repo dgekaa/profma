@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 
-import BackgroundHeader, {Header} from '../components/BackgroundHeader';
-import {InputWithText} from '../components/Input';
-import {ButtonDefault} from '../components/Button';
+import BackgroundHeader, {Header} from '../../components/BackgroundHeader';
+import {InputWithText} from '../../components/Input';
+import {ButtonDefault} from '../../components/Button';
 
 import {
   Text,
@@ -20,7 +20,7 @@ const Block = ({el, navigation, key, archive}) => {
       style={block}
       key={key}
       onPress={() => {
-        navigation.navigate('NoteInformation', el);
+        navigation.navigate('NoteInformationMaster', el);
       }}>
       <View style={topBlock}>
         <View style={{flexDirection: 'row', flex: 6}}>
@@ -28,8 +28,8 @@ const Block = ({el, navigation, key, archive}) => {
             style={{marginRight: 5}}
             source={
               archive
-                ? require('../img/CalendarGray.png')
-                : require('../img/CalendarColor.png')
+                ? require('../../img/CalendarGray.png')
+                : require('../../img/CalendarColor.png')
             }
           />
           <Text style={[dateText, {color: archive ? '#A6ADB3' : 'black'}]}>
@@ -46,14 +46,13 @@ const Block = ({el, navigation, key, archive}) => {
         <Image
           style={img}
           source={{
-            uri:
-              'https://m.day.kyiv.ua/sites/default/files/styles/460-news/public/news/31082019/2019-08-30t225105z_1893876549_rc1ab1e58710_rtrmadp_3_usa-trump.jpg?itok=ooNOC63X',
+            uri: el.img,
           }}
         />
         <View style={{flex: 1}}>
           <View style={{flex: 1}}>
             <Text style={{fontSize: 10, color: archive ? '#A6ADB3' : 'black'}}>
-              Мастер
+              Клиент
             </Text>
             <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
               {el.name}
@@ -83,10 +82,10 @@ const Block = ({el, navigation, key, archive}) => {
   );
 };
 
-const MyNotes = ({navigation}) => {
+const MyNotesMaster = ({navigation}) => {
   const {bigText, smallText, textBold, blockTitle, block} = styles;
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: '#fafafa'}}>
       {!navigation.state.params.length && (
         <View style={{flex: 1}}>
           <Header navigation={navigation} />
@@ -140,13 +139,13 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   block: {
-    flex: 1,
-    elevation: 2,
+    elevation: 1,
     shadowColor: '#000',
     shadowOpacity: 0.5,
     backgroundColor: '#fff',
     marginBottom: 8,
     paddingLeft: 8,
+    marginHorizontal: 8,
   },
   topBlock: {
     height: 33,
@@ -186,4 +185,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyNotes;
+export default MyNotesMaster;

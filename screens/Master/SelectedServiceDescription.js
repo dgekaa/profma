@@ -16,16 +16,15 @@ import {
   TextInput,
 } from 'react-native';
 
-const ServiceDescription = ({navigation}) => {
+const SelectedServiceDescription = ({navigation}) => {
   const {groupBlock, blockTitle, blockInGroup, borderBottom} = styles;
 
   const [howPay, setHowPay] = useState('time');
   const [deleteModal, setDeleteModal] = useState(false);
-  const [deleteService, setDeleteService] = useState(false);
 
   return (
     <View style={{flex: 1}}>
-      <BackgroundHeader navigation={navigation} title="Описание услуги (1\4)" />
+      <BackgroundHeader navigation={navigation} title="Описание услуги" />
       <ScrollView>
         <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
           <Text style={blockTitle}>ваша специализация</Text>
@@ -82,6 +81,9 @@ const ServiceDescription = ({navigation}) => {
                   <Image source={require('../../img/Pressed.png')} />
                 )}
                 <InputWithText
+                  editable={false}
+                  selectTextOnFocus={false}
+                  value="asdad!!!!!!"
                   text={
                     howPay == 'time'
                       ? `Продолжительность услуги (в часах)`
@@ -92,7 +94,7 @@ const ServiceDescription = ({navigation}) => {
                   onChangeText={text => {
                     console.log(text);
                   }}
-                  style={[borderBottom, {flex: 1}]}
+                  style={[borderBottom, {flex: 1, marginRight: 8}]}
                   // err="Поле обязательно для заполнения"
                   errStyle={{paddingBottom: 10}}
                 />
@@ -105,6 +107,9 @@ const ServiceDescription = ({navigation}) => {
                 }}>
                 <Image source={require('../../img/Default.png')} />
                 <InputWithText
+                  editable={false}
+                  selectTextOnFocus={false}
+                  value="asdad!!!!!!"
                   text={`Стоимость услуги`}
                   placeholder={`Укажите стоимость сеанса`}
                   withoutShadow={true}
@@ -127,55 +132,21 @@ const ServiceDescription = ({navigation}) => {
             </View>
           </View>
           <Text style={blockTitle}>Описание услуги</Text>
-          <View style={[groupBlock, blockInGroup]}>
-            <TextInput placeholder="Расскажите об услуге поподробнее" />
-          </View>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            width: '85%',
-            alignItems: 'center',
-            alignSelf: 'center',
-            marginVertical: 16,
-          }}>
-          <View>
-            <Image source={require('../../img/girl6.png')} />
-          </View>
-          <View style={{marginLeft: 8}}>
-            <Text style={{fontSize: 13, paddingRight: 25}}>
-              Чтобы клиенты могли начать пользоваться вашей услугой,
-              <Text style={{fontWeight: 'bold'}}>
-                сначала укажите её детали.
-              </Text>
+          <View style={[groupBlock, {padding: 8}]}>
+            <Text style={{fontSize: 13, color: '#011627'}}>
+              Во время европейского маникюра, кожа кутикулы не обрезается, а
+              деликатно отодвигается апельсиновой палочкой со специальным
+              средством.
             </Text>
           </View>
         </View>
       </ScrollView>
       <View style={{margin: 8}}>
-        {!deleteService && (
-          <ButtonDefault
-            title={`удалить услугу`}
-            style={{marginBottom: 8}}
-            onPress={() => {
-              setDeleteModal(true);
-            }}
-          />
-        )}
-        {deleteService && (
-          <SaveSuccess
-            title="🗑 Услуга “Европейский маникюр” успешно удалена."
-            style={{marginBottom: 8}}
-          />
-        )}
         <ButtonDefault
+          title="удалить услугу"
           onPress={() => {
-            navigation.state.params.save(true);
+            setDeleteModal(true);
           }}
-          title={
-            false ? 'ВЫ не указали детали услуги' : `сохранить услугу (1/4)`
-          }
-          active={true}
         />
       </View>
       {deleteModal && (
@@ -200,11 +171,9 @@ const ServiceDescription = ({navigation}) => {
             />
             <ButtonDefault
               onPress={() => {
-                setDeleteService(true);
-                setDeleteModal(false);
-                setTimeout(() => {
-                  setDeleteService(false);
-                }, 1000);
+                navigation.state.params.deleteService(true);
+                setDeleteModal(true);
+                navigation.goBack();
               }}
               title="удалить услугу"
             />
@@ -252,4 +221,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ServiceDescription;
+export default SelectedServiceDescription;

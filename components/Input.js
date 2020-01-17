@@ -12,14 +12,16 @@ import {
 export const InputWithText = ({
   text,
   placeholder,
-  keyboardType,
-  validationErr,
   onChangeText,
-  hideShadow,
+  keyboardType,
   style,
-  withoutShadow,
-  longText,
+  editable,
+  selectTextOnFocus,
+  value,
+  validationErr,
   err,
+  errStyle,
+  withoutShadow,
 }) => {
   const {
     inputWrap,
@@ -36,16 +38,18 @@ export const InputWithText = ({
         wrapper,
         style,
         {
-          height: longText ? 70 : 60,
           shadowOpacity: withoutShadow ? 0 : 0.5,
           elevation: withoutShadow ? 0 : 1.5,
         },
       ]}>
-      <View style={[topInputTextWrap, {height: longText ? 18 : 8}]}>
+      <View style={[topInputTextWrap]}>
         <Text style={smallText}>{text}</Text>
       </View>
       <View style={inputWrap}>
         <TextInput
+          editable={editable}
+          selectTextOnFocus={selectTextOnFocus}
+          value={value}
           placeholderTextColor="rgba(0,0,0,0.2)"
           onChangeText={onChangeText}
           maxLength={maxLength}
@@ -55,7 +59,9 @@ export const InputWithText = ({
           onChangeText={text => onChangeText(text)}
         />
       </View>
-      {err && <Text style={{}}>!!!!!!!!!!</Text>}
+      {err && (
+        <Text style={[{color: '#FF3D4B', fontSize: 10}, errStyle]}>{err}</Text>
+      )}
     </View>
   );
 };
@@ -95,7 +101,6 @@ export const InputWithPassword = ({
         {
           shadowOpacity: withoutShadow ? 0 : 0.5,
           elevation: withoutShadow ? 0 : 1.5,
-          height: forgetPassword ? 95 : 60,
         },
       ]}>
       <View style={topInputTextWrap}>
@@ -177,13 +182,14 @@ const styles = StyleSheet.create({
     elevation: 1.5,
   },
   topInputTextWrap: {
-    // height: 8,
     marginTop: 10,
   },
   smallText: {
     fontSize: 10,
+    backgroundColor: 'red',
   },
   inputWrap: {
+    backgroundColor: 'pink',
     flexDirection: 'row',
     height: 35,
   },
@@ -196,6 +202,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     height: 35,
     fontSize: 13,
+    backgroundColor: 'gold',
   },
   eye: {
     width: 16,

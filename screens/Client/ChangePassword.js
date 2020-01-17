@@ -13,7 +13,7 @@ const ChangePassword = ({navigation}) => {
     <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} title={`Изменить пароль`} />
       <View style={{flex: 1, paddingHorizontal: 8}}>
-        <View style={{flex: 3}}>
+        <View style={{}}>
           <Text style={blockTitle}>изменить пароль</Text>
           <View style={groupBlock}>
             <InputWithPassword
@@ -31,7 +31,7 @@ const ChangePassword = ({navigation}) => {
             />
           </View>
         </View>
-        <View style={{flex: 4}}>
+        <View style={{marginTop: 16}}>
           <View
             style={{
               flexDirection: 'row',
@@ -50,7 +50,8 @@ const ChangePassword = ({navigation}) => {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 paddingHorizontal: 5,
-                width: '80%',
+                marginLeft: 8,
+                width: '75%',
               }}>
               <Text style={{fontWeight: 'bold', fontSize: 13}}>
                 Мы советуем вам

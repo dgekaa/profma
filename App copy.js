@@ -26,9 +26,7 @@ import MyNotesMaster from './screens/Master/MyNotesMaster';
 import NoteInformationMaster from './screens/Master/NoteInformationMaster';
 import CompleteSeance from './screens/Master/CompleteSeance';
 import MasterCalendar from './screens/Master/MasterCalendar';
-import WorkTimeSettings from './screens/Master/WorkTimeSettings';
-import SelectWorkTime from './screens/Master/SelectWorkTime';
-import PersonalDataMaster from './screens/Master/PersonalDataMaster';
+import CalendarSettings from './screens/Master/CalendarSettings';
 
 import ChangeCity from './screens/ChangeCity';
 import PublickMasterProfile from './screens/PublickMasterProfile';
@@ -46,11 +44,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const navigationOptions = {
-  header: null,
-  headerStyle: styles.header,
-};
-
 const App = createStackNavigator(
   {
     Start: {
@@ -61,19 +54,33 @@ const App = createStackNavigator(
     },
     Registration: {
       screen: Registration,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
     },
     Login: {
       screen: Login,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
     },
     PasswordRecovery: {
       screen: PasswordRecovery,
-      navigationOptions,
+      navigationOptions: {
+        header: props => (
+          <BackgroundHeader {...props} title="Восстановление пароля" />
+        ),
+        headerStyle: {...styles.header},
+      },
     },
     Main: {
       screen: Main,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
     },
     ErrorSomethingWentWrong: {
       screen: ErrorSomethingWentWrong,
@@ -95,83 +102,129 @@ const App = createStackNavigator(
     },
     ClientProfile: {
       screen: ClientProfile,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: {...styles.header},
+      },
     },
     MasterProfile: {
       screen: MasterProfile,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: {...styles.header},
+      },
     },
     PersonalData: {
       screen: PersonalData,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: {...styles.header},
+      },
     },
     ChangePassword: {
       screen: ChangePassword,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: {...styles.header},
+      },
     },
     MyNotes: {
       screen: MyNotes,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
     },
     ChangeCity: {
       screen: ChangeCity,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: {...styles.header},
+      },
     },
     NoteInformation: {
       screen: NoteInformation,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
     },
     PublickMasterProfile: {
       screen: PublickMasterProfile,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
     },
     MyServices: {
       screen: MyServices,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
     },
     SelectSpecialization: {
       screen: SelectSpecialization,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
     },
     SelectServices: {
       screen: SelectServices,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
     },
     ServiceDescription: {
       screen: ServiceDescription,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
     },
     SelectedServiceDescription: {
       screen: SelectedServiceDescription,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
     },
     MyNotesMaster: {
       screen: MyNotesMaster,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
     },
     NoteInformationMaster: {
       screen: NoteInformationMaster,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
     },
     CompleteSeance: {
       screen: CompleteSeance,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
     },
     MasterCalendar: {
       screen: MasterCalendar,
-      navigationOptions,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
     },
-    WorkTimeSettings: {
-      screen: WorkTimeSettings,
-      navigationOptions,
-    },
-    SelectWorkTime: {
-      screen: SelectWorkTime,
-      navigationOptions,
-    },
-    PersonalDataMaster: {
-      screen: PersonalDataMaster,
-      navigationOptions,
+    CalendarSettings: {
+      screen: CalendarSettings,
+      navigationOptions: {
+        header: null,
+        headerStyle: styles.header,
+      },
     },
   },
   {initialRouteName: 'Start'},

@@ -65,6 +65,7 @@ const PersonalData = ({navigation}) => {
                   title="Сохранить изменения"
                   onPress={() => {
                     setSavedSuccess(true);
+                    setShowBtn(false);
                     setTimeout(() => {
                       setSavedSuccess(false);
                     }, 1000);

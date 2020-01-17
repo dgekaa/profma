@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(185, 134, 218, 0.25)',
   },
   btnText: {
+    textAlign: 'center',
     fontSize: 13,
     fontWeight: 'bold',
     textTransform: 'uppercase',

@@ -1,5 +1,12 @@
 import React from 'react';
-import {ImageBackground, Text, StyleSheet, View} from 'react-native';
+import {
+  ImageBackground,
+  Text,
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import {LeftArrowWhite, LeftArrowBlack} from './LeftArrow';
 
 export const Header = ({navigation, title, description, children}) => {
@@ -18,8 +25,15 @@ export const Header = ({navigation, title, description, children}) => {
   );
 };
 
-const BackgroundHeader = ({navigation, title, description, children}) => {
-  const {bg, container, headerTitle, headerdescription} = styles;
+const BackgroundHeader = ({
+  navigation,
+  title,
+  description,
+  children,
+  settings,
+  onSettingsPress,
+}) => {
+  const {bg, container, headerTitle, headerdescription, settingsStyle} = styles;
   return (
     <ImageBackground
       source={require('../img/headerBG.png')}
@@ -31,6 +45,11 @@ const BackgroundHeader = ({navigation, title, description, children}) => {
           {description && <Text style={headerdescription}>{description}</Text>}
           {children}
         </View>
+        {settings && (
+          <TouchableOpacity style={settingsStyle} onPress={onSettingsPress}>
+            <Image source={require('../img/Settings.png')} />
+          </TouchableOpacity>
+        )}
       </View>
     </ImageBackground>
   );
@@ -72,6 +91,12 @@ const styles = StyleSheet.create({
     height: 33,
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
     marginTop: 8,
+  },
+  settingsStyle: {
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

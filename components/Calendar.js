@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import moment from 'moment';
 
 import BackgroundHeader from '../components/BackgroundHeader';
 import {InputWithText} from '../components/Input';
@@ -6,19 +7,7 @@ import {Calendar, LocaleConfig} from 'react-native-calendars';
 import {ButtonDefault, ButtonDisabled} from '../components/Button';
 
 import DATA from '../data';
-import {
-  Text,
-  Modal,
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-  ImageBackground,
-  Picker,
-  Dimensions,
-} from 'react-native';
+import {Text, Modal, View, StyleSheet, Image} from 'react-native';
 
 const shortMonthName = [
   'Янв',
@@ -33,6 +22,15 @@ const shortMonthName = [
   'Окт',
   'Нояб',
   'Дек',
+];
+const dayNames = [
+  'Воскресенье',
+  'Понедельник',
+  'Вторник',
+  'Среда',
+  'Четверг',
+  'Пятница',
+  'Суббота',
 ];
 LocaleConfig.locales['fr'] = {
   monthNames: [
@@ -50,21 +48,20 @@ LocaleConfig.locales['fr'] = {
     'Декабрь',
   ],
   monthNamesShort: shortMonthName,
-  dayNames: [
-    'Понедельник',
-    'Вторник',
-    'Среда',
-    'Четверг',
-    'Пятница',
-    'Суббота',
-    'Воскресенье',
-  ],
+  dayNames,
   dayNamesShort: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
 };
 LocaleConfig.defaultLocale = 'fr';
 
-const CalendarCustom = ({markedDates, onDayPress, onClose, clearCalendar}) => {
-  // console.log(markedDates, 'markedDates');
+const CalendarCustom = ({
+  markedDates,
+  onDayPress,
+  onClose,
+  clearCalendar,
+  singleDate,
+  todayInfo,
+  chooseThisDate,
+}) => {
   const {
     monthText,
     dayText,
@@ -75,39 +72,39 @@ const CalendarCustom = ({markedDates, onDayPress, onClose, clearCalendar}) => {
     bg,
   } = styles;
 
-  const date = new Date().getDate();
-  const month = new Date().getMonth() + 1;
+  let date = new Date().getDate();
+  date.toString().length == 1 ? (date = '0' + date) : null;
+  let month = new Date().getMonth() + 1;
+  month.toString().length == 1 ? (month = '0' + month) : null;
   const year = new Date().getFullYear();
-  const now = `${year}-${month}-${date}`;
+  const now = `${date}/${month}/${year}`;
 
-  const [dayOfWeek, setDayOfWeek] = useState('Среда???');
-  const [monthTitle, setMonthTitle] = useState(shortMonthName[month - 1]);
-  const [dayTitle, setDayTitle] = useState(date);
-  const [yearTitle, setYearTitle] = useState(year);
+  useEffect(() => {
+    todayInfo({
+      dayOfWeek: dayNames[new Date().getDay()],
+      monthName: shortMonthName[month - 1],
+      date: date,
+    });
+  }, [date]);
 
   return (
     <View style={bg}>
-      <ScrollView style={container}>
+      <View style={container}>
         <View style={topBlock}>
-          <Text style={{color: '#FFF'}}>{dayOfWeek}</Text>
+          <Text style={{color: '#FFF'}}>{dayNames[new Date().getDay()]}</Text>
         </View>
         <View style={middleBlock}>
-          <Text style={monthText}>{monthTitle}</Text>
-          <Text style={dayText}>{dayTitle}</Text>
-          <Text style={yearText}>{yearTitle}</Text>
+          <Text style={monthText}>{shortMonthName[month - 1]}</Text>
+          <Text style={dayText}>{date}</Text>
+          <Text style={yearText}>{year}</Text>
         </View>
         <Calendar
-          current={now}
+          current={moment(now, 'DD/MM/YYYY', true).format()}
+          minDate={moment(now, 'DD/MM/YYYY', true).format()}
           markedDates={markedDates}
-          minDate={now}
           hideExtraDays={true}
           hideArrows={true}
-          // maxDate={'2100-01-01'}
           onDayPress={day => {
-            console.log(day, '!!!');
-            setMonthTitle(shortMonthName[day.month - 1]);
-            setYearTitle(day.year);
-            setDayTitle(day.day);
             onDayPress(day);
           }}
           theme={{
@@ -125,13 +122,26 @@ const CalendarCustom = ({markedDates, onDayPress, onClose, clearCalendar}) => {
             },
           }}
         />
-        <View style={{backgroundColor: '#fff', padding: 16}}>
-          {false && <ButtonDisabled title="нет найти мастеров на эту дату😞" />}
-          {true && (
+        <View style={{backgroundColor: '#fff', padding: 8}}>
+          {!singleDate && false && (
+            <ButtonDisabled title="нет найти мастеров на эту дату😞" />
+          )}
+          {!singleDate && true && (
             <ButtonDefault
               title="Показать мастеров (243)"
               active={true}
               style={{marginBottom: 8}}
+            />
+          )}
+          {singleDate && true && (
+            <ButtonDefault
+              title="выбрать эту дату"
+              active={true}
+              style={{marginBottom: 8}}
+              onPress={() => {
+                chooseThisDate(true);
+                onClose(false);
+              }}
             />
           )}
           <ButtonDefault
@@ -142,24 +152,28 @@ const CalendarCustom = ({markedDates, onDayPress, onClose, clearCalendar}) => {
             }}
           />
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   bg: {
+    flex: 1,
     width: '100%',
-    height: '100%',
     position: 'absolute',
     top: 0,
     left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: 'rgba(0,0,0,.4)',
   },
   container: {
+    flex: 1,
     width: '85%',
     alignSelf: 'center',
-    marginVertical: 20,
+    justifyContent: 'center',
+    margin: 8,
   },
   topBlock: {
     height: 40,
@@ -168,8 +182,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   middleBlock: {
-    paddingVertical: 50,
-    height: 170,
     backgroundColor: '#B986DA',
     justifyContent: 'center',
     alignItems: 'center',

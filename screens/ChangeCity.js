@@ -35,7 +35,7 @@ const ChangeCity = ({navigation}) => {
   const [city, setCity] = useState('Укажите город');
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
       <BackgroundHeader
         navigation={navigation}
         title={`Выбрать другой город`}

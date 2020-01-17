@@ -40,6 +40,7 @@ const ErrorInternetProblems = ({navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#FAFAFA',
     flex: 1,
     paddingHorizontal: 16,
   },

@@ -19,8 +19,8 @@ const Start = ({navigation}) => {
     <View style={{flex: 1}}>
       <ImageBackground
         source={require('../img/startBG.png')}
-        style={{width: '100%', height: '100%', flex: 1}}>
-        <View style={{flex: 2.5, paddingLeft: 20}}>
+        style={{flex: 1, marginTop: -400}}>
+        <View style={{paddingLeft: 20, marginBottom: 8, marginTop: 400}}>
           <Text style={topText}>
             Удобная запись клиентов + Мы́ доплачиваем вам, а не вы нам😉
           </Text>
@@ -29,33 +29,40 @@ const Start = ({navigation}) => {
             каждого сеанса
           </Text>
         </View>
-        <Image
-          source={require('../img/startImg.png')}
+        <View
           style={{
-            width: screen.width - 150,
-            height: (screen.width - 150) * 1.7,
-            flex: 5.5,
-            alignSelf: 'center',
+            flex: 1,
             justifyContent: 'center',
-          }}
-        />
-        <View style={{flex: 2, padding: 5}}>
-          <ButtonDefault
-            title="Войти"
-            active={false}
-            onPress={() => {
-              navigation.navigate('Login');
-            }}
-          />
-          <ButtonDefault
-            title="Зарегистрироваться"
-            active={true}
-            onPress={() => {
-              navigation.navigate('Registration');
+            alignItems: 'center',
+          }}>
+          <Image
+            source={require('../img/startImg.png')}
+            style={{
+              width: screen.width - 140,
+              height: (screen.width - 200) * 1.7,
+              alignSelf: 'center',
+              justifyContent: 'center',
             }}
           />
         </View>
       </ImageBackground>
+      <View style={{margin: 8}}>
+        <ButtonDefault
+          style={{marginBottom: 8}}
+          title="Войти"
+          active={false}
+          onPress={() => {
+            navigation.navigate('Login');
+          }}
+        />
+        <ButtonDefault
+          title="Зарегистрироваться"
+          active={true}
+          onPress={() => {
+            navigation.navigate('Registration');
+          }}
+        />
+      </View>
     </View>
   );
 };
@@ -67,7 +74,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Futura PT',
     fontSize: 23,
     marginTop: 16,
-    width: '81%',
+    width: '85%',
   },
   bottomText: {
     fontFamily: 'Futura PT',

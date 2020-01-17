@@ -13,8 +13,8 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import {act} from 'react-test-renderer';
 
+// CheckBox
 const Block = ({title, active, onPress, key, border}) => {
   const {blockInGroup, borderBottom, text} = styles;
 
@@ -51,7 +51,9 @@ const Block = ({title, active, onPress, key, border}) => {
 const SelectServices = ({navigation}) => {
   const {groupBlock, blockTitle} = styles;
 
-  const [services, setServices] = useState(navigation.state.params[0].services);
+  const [services, setServices] = useState(
+    navigation.state.params.activeRadioBtn[0].services,
+  );
 
   const [count, setCount] = useState(0);
 
@@ -85,7 +87,11 @@ const SelectServices = ({navigation}) => {
       </View>
       <ButtonDefault
         onPress={() => {
-          navigation.navigate('ServiceDescription');
+          navigation.navigate('ServiceDescription', {
+            save: bool => {
+              navigation.state.params.save(bool);
+            },
+          });
         }}
         title={`выбрать эти услуги (${count})`}
         active={true}

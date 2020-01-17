@@ -7,7 +7,7 @@ const data = [
     notes: [
       {
         id: '0',
-        name: 'Людмила Заглубоцкая',
+        name: 'Людмила Заглубоцкая !',
         img:
           'http://nogti.by/upload/resize_cache/iblock/0ea/400_300_240cd750bba9870f18aada2478b24840a/0eace166e2c0070125bccd5ce5dd4c97.jpg',
         services: [
@@ -34,7 +34,7 @@ const data = [
         id: '1',
         name: 'Людмила Заглубоцкая',
         img:
-          'https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1http://nogti.by/upload/resize_cache/iblock/0ea/400_300_240cd750bba9870f18aada2478b24840a/0eace166e2c0070125bccd5ce5dd4c97.jpg',
+          'http://nogti.by/upload/resize_cache/iblock/0ea/400_300_240cd750bba9870f18aada2478b24840a/0eace166e2c0070125bccd5ce5dd4c97.jpg',
         services: [
           {
             name: 'Реставрация ногтя',

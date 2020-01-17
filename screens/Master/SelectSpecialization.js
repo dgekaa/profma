@@ -59,7 +59,7 @@ const SelectSpecialization = ({navigation}) => {
       title: 'Мастер маникюра',
       active: true,
       services: [
-        {title: 'Аппаратный маникюр', active: false},
+        {title: 'Аппаратный маникюр', active: true},
         {title: 'Градиентное покрытие', active: false},
         {title: 'Европейский маникюр', active: false},
         {title: 'Классический маникюр', active: false},
@@ -67,9 +67,21 @@ const SelectSpecialization = ({navigation}) => {
         {title: 'Покрытие “Лунки”', active: false},
       ],
     },
-    {title: 'Мастер педикюра', active: false},
-    {title: 'Мастер медицинского маникюра', active: false},
-    {title: 'Мастер медицинского педикюра', active: false},
+    {
+      title: 'Мастер педикюра',
+      active: false,
+      services: [{title: 'Аппаратный маникюр', active: true}],
+    },
+    {
+      title: 'Мастер медицинского маникюра',
+      active: false,
+      services: [{title: 'Аппаратный маникюр', active: true}],
+    },
+    {
+      title: 'Мастер медицинского педикюра',
+      active: false,
+      services: [{title: 'Аппаратный маникюр', active: true}],
+    },
   ]);
 
   return (
@@ -107,7 +119,12 @@ const SelectSpecialization = ({navigation}) => {
         style={{margin: 8}}
         onPress={() => {
           const activeRadioBtn = specialization.filter(el => el.active);
-          navigation.navigate('SelectServices', activeRadioBtn);
+          navigation.navigate('SelectServices', {
+            activeRadioBtn,
+            save: bool => {
+              navigation.state.params.save(bool);
+            },
+          });
         }}
       />
     </View>

@@ -25,7 +25,7 @@ const Registration = ({navigation}) => {
   const [personType, setPersonType] = useState('client');
   const [fillErr, setFillErr] = useState('some err');
   const [regBtnText, setRegBtnText] = useState('');
-  const [iconName, setIconName] = useState('openedEye');
+  const [iconName, setIconName] = useState('closedEye');
   const [hidePassword, setHidePassword] = useState(true);
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const Registration = ({navigation}) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
       <Header navigation={navigation} />
       <View style={[container, {flex: 1}]}>
         <View style={[topTextWrap, {flex: 2.5}]}>

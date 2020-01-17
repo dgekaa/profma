@@ -11,8 +11,11 @@
   },
   "dependencies": {
     "@react-native-community/checkbox": "^0.2.2",
+    "@react-native-community/geolocation": "^2.0.2",
+    "moment": "^2.24.0",
     "react": "16.9.0",
     "react-native": "0.61.5",
+    "react-native-calendar-strip": "^1.4.0",
     "react-native-calendars": "^1.220.0",
     "react-native-gesture-handler": "^1.5.2",
     "react-native-modal-datetime-picker": "^7.6.1",

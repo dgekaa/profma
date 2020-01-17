@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {InputWithText} from '../components/Input';
 import {ButtonDefault} from '../components/Button';
+import ModalWindow from '../components/ModalWindow';
+import BackgroundHeader from '../components/BackgroundHeader';
 
 import {
   Text,
@@ -11,7 +13,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-const PasswordRecovery = () => {
+const PasswordRecovery = ({navigation}) => {
   const {
     container,
     topText,
@@ -27,7 +29,7 @@ const PasswordRecovery = () => {
   const [address, setAddress] = useState('');
   const [btnText, setBtnText] = useState('');
   const [activeBtn, setActiveBtn] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [savePass, setSavePass] = useState(false);
 
   useEffect(() => {
     if (address.length > 0) {
@@ -39,46 +41,82 @@ const PasswordRecovery = () => {
     }
   }, [address, btnText]);
 
-  const recoveryPassword = visible => {
-    setModalVisible(visible);
-  };
-
   return (
-    <View style={container}>
-      <View style={inputContainer}>
-        <Text style={topText}>Восстановить пароль</Text>
-        <View>
-          <InputWithText
-            text="Введите адрес электронной почты"
-            placeholder="example@site.com"
-            keyboardType="email-address"
-            onChangeText={setAddress}
-          />
+    <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
+      <BackgroundHeader title="Восстановление пароля" navigation={navigation} />
+      <View style={container}>
+        <View style={inputContainer}>
+          <Text style={topText}>Восстановить пароль</Text>
+          <View>
+            <InputWithText
+              text="Введите адрес электронной почты"
+              placeholder="example@site.com"
+              keyboardType="email-address"
+              onChangeText={setAddress}
+            />
+          </View>
+        </View>
+        <View style={instruction}>
+          <View style={image}>
+            <Image source={require('../img/girl.png')} />
+          </View>
+          <View style={textWrap}>
+            <Text style={questionText}>Как восстановить пароль?</Text>
+            <Text style={helpText}>
+              Введите адрес электронной почты, на которую мы отправим ссылку для
+              восстановления пароля
+            </Text>
+          </View>
+        </View>
+        <View style={btnContainer}>
+          {!!btnText && (
+            <ButtonDefault
+              title={btnText}
+              active={activeBtn}
+              onPress={() => {
+                setSavePass(true);
+              }}
+            />
+          )}
         </View>
       </View>
-      <View style={instruction}>
-        <View style={image}>
-          <Image source={require('../img/girl.png')} />
-        </View>
-        <View style={textWrap}>
-          <Text style={questionText}>Как восстановить пароль?</Text>
-          <Text style={helpText}>
-            Введите адрес электронной почты, на которую мы отправим ссылку для
-            восстановления пароля
-          </Text>
-        </View>
-      </View>
-      <View style={btnContainer}>
-        {!!btnText && (
-          <ButtonDefault
-            title={btnText}
-            active={activeBtn}
-            onPress={() => {
-              recoveryPassword(true);
-            }}
-          />
-        )}
-      </View>
+      {savePass && (
+        <ModalWindow>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '90%',
+            }}>
+            <Text style={{textAlign: 'center', fontSize: 13}}>
+              Мы отправили вам письмо с ссылкой для восстановления пароля на
+              адрес
+            </Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+                marginTop: 8,
+                fontSize: 13,
+              }}>
+              myadress@gmail.com
+            </Text>
+            <Image
+              style={{marginVertical: 16}}
+              source={require('../img/girl.png')}
+            />
+            <View style={{width: '100%'}}>
+              <ButtonDefault
+                title="спасибо, закрыть окно"
+                active={true}
+                onPress={() => {
+                  setSavePass(false);
+                }}
+              />
+            </View>
+          </View>
+        </ModalWindow>
+      )}
     </View>
   );
 };
@@ -89,9 +127,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 10,
   },
-  inputContainer: {
-    flex: 2,
-  },
   topText: {
     paddingLeft: 8,
     textTransform: 'uppercase',
@@ -99,7 +134,7 @@ const styles = StyleSheet.create({
     opacity: 0.35,
   },
   instruction: {
-    flex: 7,
+    flex: 1,
     flexDirection: 'row',
     marginHorizontal: 15,
     marginTop: 25,
@@ -115,9 +150,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   helpText: {fontSize: 13},
-  btnContainer: {
-    flex: 1,
-  },
   modal: {
     backgroundColor: 'pink',
     width: '90%',

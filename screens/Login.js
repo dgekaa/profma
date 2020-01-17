@@ -18,7 +18,7 @@ const Login = ({navigation}) => {
     specialText,
   } = stylesClientRegistration;
 
-  const [iconName, setIconName] = useState('openedEye');
+  const [iconName, setIconName] = useState('closedEye');
   const [hidePassword, setHidePassword] = useState(true);
   const [fillErr, setFillErr] = useState('');
   const [validationErr, setValidationErr] = useState('');
@@ -34,6 +34,8 @@ const Login = ({navigation}) => {
     }
   };
 
+  const [mail, setMail] = useState('');
+
   useEffect(() => {
     fillErr
       ? setRegBtnText('Не достаточно данных для регистрации')
@@ -43,7 +45,7 @@ const Login = ({navigation}) => {
   }, [fillErr, validationErr]);
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
       <Header navigation={navigation} />
       <View style={[container, {flex: 1}]}>
         <View style={topTextWrap}>
@@ -54,6 +56,10 @@ const Login = ({navigation}) => {
         </View>
         <View style={inputGroup}>
           <InputWithText
+            onChangeText={text => {
+              setMail(text);
+            }}
+            value={mail}
             text="Введите адрес электронной почты"
             placeholder="example@site.com"
             keyboardType="email-address"
@@ -84,7 +90,7 @@ const Login = ({navigation}) => {
             <ButtonDefault
               title={regBtnText}
               active={true}
-              onPress={() => navigation.navigate('Main')}
+              onPress={() => navigation.navigate('Main', {mail: mail})}
             />
           )}
           {!!validationErr && <ButtonError title={regBtnText} />}

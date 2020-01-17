@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 
-import BackgroundHeader from '../components/BackgroundHeader';
-import {ButtonDefault} from '../components/Button';
-import ModalWindow from '../components/ModalWindow';
+import BackgroundHeader from '../../components/BackgroundHeader';
+import {ButtonDefault} from '../../components/Button';
+import SaveSuccess from '../../components/SaveSuccess';
 
 import {
   Text,
@@ -13,49 +13,65 @@ import {
   ScrollView,
 } from 'react-native';
 
-const NoteInformation = ({navigation}) => {
-  const {first, text, blockTitle, groupBlock} = styles;
+const NoteInformationMaster = ({navigation}) => {
+  const {
+    first,
+    text,
+    blockTitle,
+    groupBlock,
+    blockInGroup,
+    borderBottom,
+  } = styles;
   const {name, services, date, time, address} = navigation.state.params;
 
-  const [cancelNote, setCancelNote] = useState(false);
+  //   const [cancelNote, setCancelNote] = useState(false);
   const [canceledNote, setCanceledNote] = useState(false);
 
-  const isActive = false;
-  const isCompleted = false;
-  const isAbort = true;
+  const isActive = true;
+  const [isCompleted, setIsCompleted] = useState(false);
+  //   const isAbort = false;
 
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader
         navigation={navigation}
-        title={isAbort ? `Запись к мастеру завершена` : `Вы записаны к мастеру`}
+        title={isCompleted ? 'Сеанс завершён' : 'Запись оформлена'}
       />
       <ScrollView style={{}}>
         <View style={{flex: 1, paddingHorizontal: 8, paddingTop: 15}}>
-          <View style={first}>
-            <Text style={text}>{name}</Text>
+          <Text style={blockTitle}>персональные данные</Text>
+          <View style={groupBlock}>
+            <View style={[blockInGroup, borderBottom]}>
+              <Text style={{fontSize: 10}}>Имя клиента</Text>
+              <Text style={text}>{name}</Text>
+            </View>
+            <View style={blockInGroup}>
+              <Text style={{fontSize: 10}}>Мобильный телефон клиента</Text>
+              <Text style={text}>+375 25 1234567</Text>
+            </View>
           </View>
           {/* УСЛУГИ */}
-          <View style={{}}>
+          <View>
             <Text style={blockTitle}>Услуги</Text>
             <View>
               <View style={groupBlock}>
                 {services.map((el, i) => (
                   <View
                     key={i}
-                    style={{
-                      height: 60,
-                      flexDirection: 'row',
-                      borderBottomColor: '#aaa',
-                      borderBottomWidth: 0.3,
-                    }}>
+                    style={[
+                      borderBottom,
+                      {
+                        height: 60,
+                        flexDirection: 'row',
+                      },
+                    ]}>
                     <View
                       style={{
                         flex: 4,
                         flexDirection: 'row',
                         alignItems: 'center',
                       }}>
-                      <Image source={require('../img/Default.png')} />
+                      <Image source={require('../../img/Default.png')} />
                       <View style={{paddingHorizontal: 5}}>
                         <Text style={{fontSize: 13, fontWeight: 'bold'}}>
                           {el.name}
@@ -84,7 +100,7 @@ const NoteInformation = ({navigation}) => {
                     alignItems: 'center',
                     flexDirection: 'row',
                   }}>
-                  <Image source={require('../img/Plus.png')} />
+                  <Image source={require('../../img/Plus.png')} />
                   <Text
                     style={{fontSize: 13, fontWeight: 'bold', paddingLeft: 5}}>
                     Добавить услугу
@@ -113,7 +129,7 @@ const NoteInformation = ({navigation}) => {
                   justifyContent: 'center',
                 },
               ]}>
-              <Text>У мастера на дому</Text>
+              <Text style={{fontSize: 10}}>У мастера на дому</Text>
               <View
                 style={{
                   flexDirection: 'row',
@@ -128,80 +144,45 @@ const NoteInformation = ({navigation}) => {
             </View>
           </View>
         </View>
-        {isActive ||
-          (isAbort && (
-            <View style={{marginBottom: 20, paddingHorizontal: 8}}>
-              <Text>Итоговая стоимость сеанса</Text>
-              <Text style={{fontWeight: 'bold'}}>1800 руб.</Text>
-            </View>
-          ))}
+        {isActive && (
+          <View style={{marginBottom: 20, paddingHorizontal: 16}}>
+            <Text>Итоговая стоимость сеанса</Text>
+            <Text style={{fontWeight: 'bold'}}>1800 руб.</Text>
+          </View>
+        )}
       </ScrollView>
       <View style={{paddingHorizontal: 8, paddingBottom: 8}}>
-        {isCompleted && (
-          <ButtonDefault
-            title="Повторить запись"
-            onPress={() => {
-              alert('Будет повтор записи');
-            }}
-          />
-        )}
         {isActive && (
-          <ButtonDefault
-            title="Хочу отменить запись к мастеру"
-            onPress={() => {
-              setCancelNote(true);
-            }}
-          />
+          <View>
+            <ButtonDefault
+              style={{marginBottom: 8}}
+              active={true}
+              title="завершить сеанс"
+              onPress={() => {
+                navigation.navigate('CompleteSeance', {
+                  complete: bool => {
+                    setIsCompleted(bool);
+                    // setTimeout(() => {
+                    //   setIsCompleted(false);
+                    // }, 1000);
+                  },
+                });
+              }}
+            />
+            {isCompleted && (
+              <SaveSuccess title="👍 Сеанс был успешно завершён." />
+            )}
+            {!isCompleted && (
+              <ButtonDefault
+                title="отменить запись"
+                onPress={() => {
+                  // setCancelNote(true);
+                }}
+              />
+            )}
+          </View>
         )}
       </View>
-      {cancelNote && (
-        <ModalWindow>
-          <Text style={{width: '70%', textAlign: 'center', fontSize: 13}}>
-            Вы собираетесь отменить запись на
-            <Text style={{fontWeight: 'bold'}}>25 июн 2019</Text> в 10:00 к
-            мастеру
-          </Text>
-          <Text style={{paddingVertical: 8, fontWeight: 'bold', fontSize: 13}}>
-            Людмила Заглубоцкая
-          </Text>
-          <Image source={require('../img/girl5.png')} />
-          <Text style={{paddingVertical: 8, fontSize: 13}}>
-            Вы уверены в своём решении?
-          </Text>
-          <View style={{width: '100%'}}>
-            <ButtonDefault
-              title="нет, не отменять запись"
-              active={true}
-              style={{marginVertical: 8}}
-              onPress={() => {
-                setCancelNote(false);
-              }}
-            />
-            <ButtonDefault
-              title="отменить запись к мастеру"
-              onPress={() => {
-                setCancelNote(false);
-                setCanceledNote(true);
-              }}
-            />
-          </View>
-        </ModalWindow>
-      )}
-      {canceledNote && (
-        <ModalWindow>
-          <Text style={{width: '85%', textAlign: 'center', fontSize: 13}}>
-            Ваша запись успешно отменена.
-          </Text>
-          <View style={{width: '100%', marginTop: 16}}>
-            <ButtonDefault
-              title="Благодарю"
-              onPress={() => {
-                setCanceledNote(false);
-              }}
-            />
-          </View>
-        </ModalWindow>
-      )}
     </View>
   );
 };
@@ -211,15 +192,14 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 2,
     shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 2,
+    elevation: 1,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 18,
   },
   text: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: 'bold',
-    fontFamily: 'Futura PT',
   },
   blockTitle: {
     fontSize: 10,
@@ -233,10 +213,21 @@ const styles = StyleSheet.create({
   groupBlock: {
     borderRadius: 2,
     shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 2,
+    elevation: 1,
     flexDirection: 'column',
     paddingLeft: 18,
   },
+  blockInGroup: {
+    height: 50,
+    borderRadius: 2,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    paddingRight: 8,
+  },
+  borderBottom: {
+    borderBottomColor: '#aaa',
+    borderBottomWidth: 0.3,
+  },
 });
 
-export default NoteInformation;
+export default NoteInformationMaster;

@@ -1,24 +1,21 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 
-import BackgroundHeader from '../components/BackgroundHeader';
-import {InputWithText} from '../components/Input';
 import CalendarCustom from '../components/Calendar';
-
-import DATA from '../data';
+import ModalWindow from '../components/ModalWindow';
+import {ButtonDefault} from '../components/Button';
+import {TextInput} from 'react-native-gesture-handler';
 import {
   Text,
-  Modal,
   View,
   StyleSheet,
   Image,
   TouchableOpacity,
-  TextInput,
   ScrollView,
   ImageBackground,
   Dimensions,
-  // Picker,
 } from 'react-native';
-import {ButtonDefault} from '../components/Button';
+
+import DATA from '../data';
 
 const screen = Dimensions.get('window');
 
@@ -209,7 +206,6 @@ const NearestSeansBlock = ({img}) => {
 const Main = ({navigation}) => {
   const {
     prifileBtn,
-    photosWrap,
     openCalendar,
     header,
     foundMasters,
@@ -221,6 +217,7 @@ const Main = ({navigation}) => {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   const onDayPress = day => {
+    console.log(day, 'day');
     if (markedDates[day.dateString]) {
       delete markedDates[day.dateString];
       setMarkedDates({
@@ -234,8 +231,10 @@ const Main = ({navigation}) => {
     }
   };
 
+  // Geolocation.getCurrentPosition(info => console.log(info));
+
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
       <ScrollView>
         <ImageBackground
           style={header}
@@ -244,10 +243,9 @@ const Main = ({navigation}) => {
             style={prifileBtn}
             onPress={() => {
               {
-                false && navigation.navigate('ClientProfile', DATA);
-              }
-              {
-                true && navigation.navigate('MasterProfile', DATA);
+                navigation.state.params.mail === 'c'
+                  ? navigation.navigate('ClientProfile', DATA)
+                  : navigation.navigate('MasterProfile', DATA);
               }
             }}>
             <Image source={require('../img/UserWhite.png')} />
@@ -255,7 +253,7 @@ const Main = ({navigation}) => {
           </TouchableOpacity>
         </ImageBackground>
         <View style={{paddingHorizontal: 8}}>
-          {false && (
+          {true && (
             <ScrollView
               style={nearestSeans}
               horizontal={true}
@@ -265,7 +263,7 @@ const Main = ({navigation}) => {
               <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
             </ScrollView>
           )}
-          {false && (
+          {true && (
             <View style={foundMasters}>
               <View>
                 <Text>Найдено 243 мастера на указанные даты:</Text>
@@ -279,14 +277,14 @@ const Main = ({navigation}) => {
               </TouchableOpacity>
             </View>
           )}
-          {false && (
+          {true && (
             <View>
               <Block navigation={navigation} />
               <Block navigation={navigation} />
               <Block navigation={navigation} />
             </View>
           )}
-          {true && (
+          {false && (
             <View style={{flex: 1}}>
               <View style={{marginTop: 20, flex: 1}}>
                 <Text style={{fontSize: 13}}>
@@ -300,14 +298,14 @@ const Main = ({navigation}) => {
           )}
         </View>
       </ScrollView>
-      {true && (
+      {false && (
         <ButtonDefault
           title="заполнить профиль мастера"
           active={true}
           style={{margin: 8}}
         />
       )}
-      {false && (
+      {true && (
         <TouchableOpacity
           style={[openCalendar, {top: screen.height - 80}]}
           onPress={() => {
@@ -326,6 +324,65 @@ const Main = ({navigation}) => {
           clearCalendar={setMarkedDates}
         />
       )}
+      {false && (
+        <ModalWindow>
+          <Text style={{fontSize: 13}}>Мы хотим показать вам</Text>
+          <Text style={{fontSize: 13}}>Мастеров рядом с вами.</Text>
+          <Image
+            source={require('../img/girl5.png')}
+            style={{marginVertical: 16}}
+          />
+          <Text style={{fontSize: 13}}>
+            Для этого разрешите нам возпользоваться
+          </Text>
+          <Text style={{fontSize: 13}}> геолокацией на этом устройстве.</Text>
+          <View style={{width: '100%', marginTop: 16}}>
+            <ButtonDefault
+              title="разрешить"
+              active={true}
+              style={{marginBottom: 8}}
+            />
+            <ButtonDefault title="В другой раз" />
+          </View>
+        </ModalWindow>
+      )}
+      {false && (
+        <ModalWindow>
+          <Text style={{fontSize: 13}}>Вы находитесь сейчас в..</Text>
+          <Text style={{fontSize: 13, fontWeight: 'bold', marginVertical: 16}}>
+            Москве
+          </Text>
+          <Text style={{fontSize: 13}}>Это так?🤔</Text>
+          <View style={{width: '100%', marginTop: 16}}>
+            <ButtonDefault
+              title="да, всё верно"
+              active={true}
+              style={{marginBottom: 8}}
+            />
+            <ButtonDefault title="нет, выбрать другой город" />
+          </View>
+        </ModalWindow>
+      )}
+      {false && (
+        <ModalWindow>
+          <Text style={{fontSize: 13, textAlign: 'center'}}>
+            Укажите город, в котором находитесь для персонализированного подбора
+            мастеров
+          </Text>
+          <TextInput
+            placeholder="Введите ваш город.."
+            style={{textAlign: 'center'}}
+          />
+          <View style={{width: '100%', marginTop: 16}}>
+            <ButtonDefault
+              title={true ? 'Введите город' : '  выбрать этот город'}
+              active={true}
+              style={{marginBottom: 8}}
+            />
+            <ButtonDefault title="в другой раз" />
+          </View>
+        </ModalWindow>
+      )}
     </View>
   );
 };
@@ -334,31 +391,26 @@ const styles = StyleSheet.create({
   header: {
     width: '100%',
     height: 420,
+    marginTop: -170,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   prifileBtn: {
+    marginTop: 100,
     height: 33,
     width: 135,
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
     borderRadius: 33,
     alignSelf: 'center',
-    marginTop: 150,
+
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
   },
-  photosWrap: {
-    width: '80%',
-    height: 200,
-    marginTop: 40,
-    alignSelf: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
   block: {
     flex: 1,
     height: 145,
-    elevation: 2,
+    elevation: 1,
     shadowColor: '#000',
     shadowOpacity: 0.5,
     padding: 8,
@@ -406,15 +458,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   nearestSeans: {
-    height: 65,
     flexDirection: 'row',
     marginBottom: 8,
   },
   nearestSeansBlock: {
     padding: 8,
     marginRight: 8,
-    elevation: 2,
-    height: 63,
+    marginVertical: 8,
+    elevation: 1,
     backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOpacity: 1,
