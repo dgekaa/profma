@@ -85,15 +85,20 @@ const Login = ({navigation}) => {
               <Text style={specialText}> Условиями использования</Text>
             </Text>
           </View>
-          {!!fillErr && !validationErr && <ButtonDisabled title={regBtnText} />}
+          {!!fillErr && !validationErr && (
+            <ButtonDisabled title={regBtnText} style={{marginBottom: 8}} />
+          )}
           {!fillErr && !validationErr && (
             <ButtonDefault
+              style={{marginBottom: 8}}
               title={regBtnText}
               active={true}
               onPress={() => navigation.navigate('Main', {mail: mail})}
             />
           )}
-          {!!validationErr && <ButtonError title={regBtnText} />}
+          {!!validationErr && (
+            <ButtonError title={regBtnText} style={{marginBottom: 8}} />
+          )}
         </View>
       </View>
     </View>
@@ -124,9 +129,6 @@ const stylesClientRegistration = StyleSheet.create({
   },
   inputGroup: {
     flex: 5,
-  },
-  login: {
-    flex: 2.5,
   },
   politic: {
     textAlign: 'center',

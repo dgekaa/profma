@@ -3,7 +3,6 @@ import React, {useState} from 'react';
 import CalendarCustom from '../components/Calendar';
 import ModalWindow from '../components/ModalWindow';
 import {ButtonDefault} from '../components/Button';
-import {TextInput} from 'react-native-gesture-handler';
 import {
   Text,
   View,
@@ -13,6 +12,7 @@ import {
   ScrollView,
   ImageBackground,
   Dimensions,
+  TextInput,
 } from 'react-native';
 
 import DATA from '../data';
@@ -154,54 +154,54 @@ const Block = ({navigation}) => {
   );
 };
 
-const NearestSeansBlock = ({img}) => {
-  const {nearestSeansBlock} = styles;
-  return (
-    <View style={nearestSeansBlock}>
-      <View>
-        <Image
-          source={{uri: img}}
-          style={{width: 47, height: 47, marginRight: 8}}
-        />
-      </View>
-      <View style={{flexDirection: 'column', flex: 1}}>
-        <View>
-          <Text style={{color: '#B986DA', fontSize: 10}}>
-            💅Ближайший сеанс запланирован на
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            flex: 1,
-            marginTop: 5,
-          }}>
-          <View style={{flex: 1}}>
-            <View style={{flexDirection: 'row'}}>
-              <Image source={require('../img/CalendarColor.png')} />
-              <Text
-                style={{
-                  fontSize: 13,
-                  color: '#B986DA',
-                  fontWeight: 'bold',
-                  marginLeft: 5,
-                }}>
-                12 авг в 12:30
-              </Text>
-            </View>
-            <Text style={{fontSize: 10}}>Людмила Заглубоцкая</Text>
-          </View>
-          <View tyle={{flex: 1}}>
-            <Text style={{fontSize: 10}}>Услуга</Text>
-            <Text style={{fontSize: 10, fontWeight: 'bold'}}>
-              Аппаратный маникюр
-            </Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-};
+// const NearestSeansBlock = ({img}) => {
+//   const {nearestSeansBlock} = styles;
+//   return (
+//     <View style={nearestSeansBlock}>
+//       <View>
+//         <Image
+//           source={{uri: img}}
+//           style={{width: 47, height: 47, marginRight: 8}}
+//         />
+//       </View>
+//       <View style={{flexDirection: 'column', flex: 1}}>
+//         <View>
+//           <Text style={{color: '#B986DA', fontSize: 10}}>
+//             💅Ближайший сеанс запланирован на
+//           </Text>
+//         </View>
+//         <View
+//           style={{
+//             flexDirection: 'row',
+//             flex: 1,
+//             marginTop: 5,
+//           }}>
+//           <View style={{flex: 1}}>
+//             <View style={{flexDirection: 'row'}}>
+//               <Image source={require('../img/CalendarColor.png')} />
+//               <Text
+//                 style={{
+//                   fontSize: 13,
+//                   color: '#B986DA',
+//                   fontWeight: 'bold',
+//                   marginLeft: 5,
+//                 }}>
+//                 12 авг в 12:30
+//               </Text>
+//             </View>
+//             <Text style={{fontSize: 10}}>Людмила Заглубоцкая</Text>
+//           </View>
+//           <View tyle={{flex: 1}}>
+//             <Text style={{fontSize: 10}}>Услуга</Text>
+//             <Text style={{fontSize: 10, fontWeight: 'bold'}}>
+//               Аппаратный маникюр
+//             </Text>
+//           </View>
+//         </View>
+//       </View>
+//     </View>
+//   );
+// };
 
 const Main = ({navigation}) => {
   const {
@@ -231,8 +231,6 @@ const Main = ({navigation}) => {
     }
   };
 
-  // Geolocation.getCurrentPosition(info => console.log(info));
-
   return (
     <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
       <ScrollView>
@@ -253,7 +251,7 @@ const Main = ({navigation}) => {
           </TouchableOpacity>
         </ImageBackground>
         <View style={{paddingHorizontal: 8}}>
-          {true && (
+          {/* {true && (
             <ScrollView
               style={nearestSeans}
               horizontal={true}
@@ -262,7 +260,7 @@ const Main = ({navigation}) => {
               <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
               <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
             </ScrollView>
-          )}
+          )} */}
           {true && (
             <View style={foundMasters}>
               <View>
@@ -278,7 +276,7 @@ const Main = ({navigation}) => {
             </View>
           )}
           {true && (
-            <View>
+            <View style={{paddingBottom: 60}}>
               <Block navigation={navigation} />
               <Block navigation={navigation} />
               <Block navigation={navigation} />
@@ -305,7 +303,7 @@ const Main = ({navigation}) => {
           style={{margin: 8}}
         />
       )}
-      {true && (
+      {true && !isCalendarVisible && (
         <TouchableOpacity
           style={[openCalendar, {top: screen.height - 80}]}
           onPress={() => {
@@ -441,6 +439,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     position: 'absolute',
     backgroundColor: '#fff',
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOpacity: 0.5,
   },
   foundMasters: {
     flexDirection: 'row',

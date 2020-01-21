@@ -31,7 +31,7 @@ const Block = ({navigation, deleteService}) => {
           style={{width: 75, height: 75, marginRight: 8}}
           source={{
             uri:
-              'http://nogti.by/upload/resize_cache/iblock/0ea/400_300_240cd750bba9870f18aada2478b24840a/0eace166e2c0070125bccd5ce5dd4c97.jpg',
+              'http://rs.img.com.ua/crop?v2=1&w=600&h=0&url=%2F%2Fv.img.com.ua%2Fb%2Forig%2Fa%2F46%2F9bb403323c7330b1431ff70432c5a46a.jpg',
           }}
         />
       </View>

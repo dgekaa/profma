@@ -62,7 +62,7 @@ const Registration = ({navigation}) => {
           <Text style={ProfMa}>Prof.Ma</Text>
           <Text style={topText}>{textAd}</Text>
         </View>
-        <View style={[btnGroup, {flex: 1.5}]}>
+        <View style={[btnGroup]}>
           <ButtonDefault
             flex={true}
             title="Я - КЛИЕНТ"
@@ -94,7 +94,7 @@ const Registration = ({navigation}) => {
             onPress={openCloseEye}
           />
         </View>
-        <View style={[registration, {flex: 2}]}>
+        <View style={[registration]}>
           <View style={politic}>
             <Text style={politicText}>
               Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей
@@ -102,7 +102,9 @@ const Registration = ({navigation}) => {
               <Text style={specialText}> Условиями использования</Text>
             </Text>
           </View>
-          {!!fillErr && <ButtonDisabled title={regBtnText} />}
+          {!!fillErr && (
+            <ButtonDisabled title={regBtnText} style={{marginBottom: 8}} />
+          )}
           {!fillErr && <ButtonDefault title={regBtnText} active={true} />}
         </View>
       </View>

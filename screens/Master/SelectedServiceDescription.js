@@ -81,9 +81,9 @@ const SelectedServiceDescription = ({navigation}) => {
                   <Image source={require('../../img/Pressed.png')} />
                 )}
                 <InputWithText
-                  editable={false}
+                  // editable={false}
                   selectTextOnFocus={false}
-                  value="asdad!!!!!!"
+                  // value=""
                   text={
                     howPay == 'time'
                       ? `Продолжительность услуги (в часах)`
@@ -107,9 +107,9 @@ const SelectedServiceDescription = ({navigation}) => {
                 }}>
                 <Image source={require('../../img/Default.png')} />
                 <InputWithText
-                  editable={false}
+                  // editable={false}
                   selectTextOnFocus={false}
-                  value="asdad!!!!!!"
+                  // value="asdad!!!!!!"
                   text={`Стоимость услуги`}
                   placeholder={`Укажите стоимость сеанса`}
                   withoutShadow={true}

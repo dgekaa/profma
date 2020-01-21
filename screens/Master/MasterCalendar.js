@@ -1,6 +1,9 @@
 import React, {useState, useEffect, useRef} from 'react';
 import CalendarStrip from 'react-native-calendar-strip';
 
+import moment from 'moment';
+import 'moment/locale/fr';
+
 import BackgroundHeader from '../../components/BackgroundHeader';
 
 import {
@@ -20,6 +23,7 @@ const Block = ({el, navigation, key}) => {
       style={block}
       key={key}
       onPress={() => {
+        alert('Не настроен');
         // navigation.navigate('NoteInformationMaster', el);
       }}>
       <View style={topBlock}>
@@ -39,7 +43,7 @@ const Block = ({el, navigation, key}) => {
           style={img}
           source={{
             uri:
-              'https://m.day.kyiv.ua/sites/default/files/styles/460-news/public/news/31082019/2019-08-30t225105z_1893876549_rc1ab1e58710_rtrmadp_3_usa-trump.jpg?itok=ooNOC63X',
+              'http://rs.img.com.ua/crop?v2=1&w=600&h=0&url=%2F%2Fv.img.com.ua%2Fb%2Forig%2Fa%2F46%2F9bb403323c7330b1431ff70432c5a46a.jpg',
           }}
         />
         <View style={{flex: 1}}>
@@ -101,12 +105,22 @@ const MasterCalendar = ({navigation}) => {
     Dec: {name: 'Дек', number: 12},
   };
 
+  moment.locale('ru', {
+    config: {
+      weekdaysShort: 'Вс_Пн_Вт_Ср_Чт_Пт_Сб'.split('_'),
+    },
+  });
+
   const locale = {
-    name: 'fr',
+    name: 'ru',
     config: {
       weekdaysShort: 'Вс_Пн_Вт_Ср_Чт_Пт_Сб'.split('_'),
     },
   };
+
+  // moment.updateLocale('ru', {
+  //   weekdaysShort: 'Вс_Пн_Вт_Ср_Чт_Пт_Сб'.split('_'),
+  // });
 
   const [weekFirst, setWeekFirst] = useState();
   const [weekLast, setWeekLast] = useState();
@@ -188,15 +202,15 @@ const MasterCalendar = ({navigation}) => {
           calendarColor={'#fff'}
           dateNumberStyle={{color: '#A6ADB3'}}
           dateNameStyle={{color: '#A6ADB3'}}
-          iconContainer={{flex: 0.07}}
+          // iconContainer={{flex: 0.07}}
+          iconStyle={{height: 0, width: 0}}
         />
       </View>
       <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
-        <Block />
-        <Block />
-        <Block />
-        <Block />
-        <Block />
+        <Block navigation={navigation} />
+        <Block navigation={navigation} />
+        <Block navigation={navigation} />
+        <Block navigation={navigation} />
       </ScrollView>
     </View>
   );

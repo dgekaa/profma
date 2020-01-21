@@ -47,7 +47,6 @@ export const InputWithText = ({
       </View>
       <View style={inputWrap}>
         <TextInput
-          editable={editable}
           selectTextOnFocus={selectTextOnFocus}
           value={value}
           placeholderTextColor="rgba(0,0,0,0.2)"
@@ -57,6 +56,7 @@ export const InputWithText = ({
           style={[input, {color: validationErr ? '#FF3D4B' : '#011627'}]}
           keyboardType={keyboardType}
           onChangeText={text => onChangeText(text)}
+          editable={editable}
         />
       </View>
       {err && (
@@ -186,10 +186,8 @@ const styles = StyleSheet.create({
   },
   smallText: {
     fontSize: 10,
-    backgroundColor: 'red',
   },
   inputWrap: {
-    backgroundColor: 'pink',
     flexDirection: 'row',
     height: 35,
   },
@@ -202,7 +200,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     height: 35,
     fontSize: 13,
-    backgroundColor: 'gold',
   },
   eye: {
     width: 16,

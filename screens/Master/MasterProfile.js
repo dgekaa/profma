@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 2,
     shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 2,
+    elevation: 1,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 18,
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   },
   borderBottom: {
     borderBottomColor: '#aaa',
-    borderBottomWidth: 0.4,
+    borderBottomWidth: 0.3,
   },
   outsideCircle: {
     width: 12,

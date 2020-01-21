@@ -5,7 +5,7 @@ const SaveSuccess = ({title, style}) => {
   const {alert} = styles;
   return (
     <View style={[alert, style]}>
-      <Text style={{color: '#fff'}}>{title}</Text>
+      <Text style={{color: '#fff', textAlign: 'center'}}>{title}</Text>
     </View>
   );
 };

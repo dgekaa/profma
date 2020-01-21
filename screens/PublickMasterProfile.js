@@ -276,6 +276,7 @@ const PublickMasterProfile = ({navigation}) => {
               ]}>
               <View
                 style={{
+                  flex: 1,
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}>
@@ -287,15 +288,29 @@ const PublickMasterProfile = ({navigation}) => {
               </View>
               <View
                 style={{
+                  flex: 1,
                   flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  justifyContent: 'space-between',
                 }}>
                 <TimeBlock
+                  style={{width: '30%'}}
                   time="12:00"
                   active={true}
-                  // onPress={() => console.log(timeBlockRef, '!!!!')}
+                  onPress={() => {}}
                 />
-                <TimeBlock time="13:00" active={false} onPress={() => {}} />
-                <TimeBlock time="14:00" active={false} onPress={() => {}} />
+                <TimeBlock
+                  style={{width: '30%'}}
+                  time="13:00"
+                  active={false}
+                  onPress={() => {}}
+                />
+                <TimeBlock
+                  style={{width: '30%'}}
+                  time="14:00"
+                  active={false}
+                  onPress={() => {}}
+                />
               </View>
             </View>
             <AnotherBlock
@@ -477,7 +492,7 @@ const PublickMasterProfile = ({navigation}) => {
               marginBottom: 16,
               flexDirection: 'row',
               flexWrap: 'wrap',
-              justifyContent: 'space-around',
+              justifyContent: 'space-between',
               marginHorizontal: 24,
             }}>
             <TimeBlock
@@ -486,13 +501,30 @@ const PublickMasterProfile = ({navigation}) => {
               active={false}
               onPress={() => {}}
             />
-            <TimeBlock time="13:00" active={true} onPress={() => {}} />
-            <TimeBlock time="13:00" active={false} onPress={() => {}} />
-            <TimeBlock time="13:00" active={false} onPress={() => {}} />
-            <TimeBlock time="13:00" active={false} onPress={() => {}} />
-            <TimeBlock time="13:00" active={false} onPress={() => {}} />
-            <TimeBlock time="13:00" active={false} onPress={() => {}} />
-            <TimeBlock time="13:00" active={false} onPress={() => {}} />
+            <TimeBlock
+              style={{marginBottom: 8}}
+              time="13:00"
+              active={true}
+              onPress={() => {}}
+            />
+            <TimeBlock
+              style={{marginBottom: 8}}
+              time="13:00"
+              active={false}
+              onPress={() => {}}
+            />
+            <TimeBlock
+              style={{marginBottom: 8}}
+              time="13:00"
+              active={false}
+              onPress={() => {}}
+            />
+            <TimeBlock
+              style={{marginBottom: 8}}
+              time="13:00"
+              active={false}
+              onPress={() => {}}
+            />
           </View>
           <View style={{width: '100%'}}>
             <ButtonDefault
@@ -644,7 +676,7 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
   },
   timeBlock: {
-    width: 70,
+    width: '20%',
     height: 33,
     borderRadius: 2,
     borderColor: '#B986DA',

@@ -13,12 +13,12 @@ import {
   ScrollView,
 } from 'react-native';
 
-const Block = ({el, navigation, key, archive}) => {
+const Block = ({el, navigation, archive, keyBlock}) => {
   const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
   return (
     <TouchableOpacity
       style={block}
-      key={key}
+      key={keyBlock}
       onPress={() => {
         navigation.navigate('NoteInformationMaster', el);
       }}>
@@ -46,7 +46,8 @@ const Block = ({el, navigation, key, archive}) => {
         <Image
           style={img}
           source={{
-            uri: el.img,
+            uri:
+              'http://rs.img.com.ua/crop?v2=1&w=600&h=0&url=%2F%2Fv.img.com.ua%2Fb%2Forig%2Fa%2F46%2F9bb403323c7330b1431ff70432c5a46a.jpg',
           }}
         />
         <View style={{flex: 1}}>
@@ -70,8 +71,10 @@ const Block = ({el, navigation, key, archive}) => {
             <Text style={{fontSize: 10, color: archive ? '#A6ADB3' : 'black'}}>
               Услуга
             </Text>
-            {el.services.map(el => (
-              <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
+            {el.services.map((el, i) => (
+              <Text
+                key={i}
+                style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
                 {el.name}
               </Text>
             ))}
@@ -115,7 +118,7 @@ const MyNotesMaster = ({navigation}) => {
           <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
             <Text style={blockTitle}>Активные записи</Text>
             {navigation.state.params.map((el, i) => (
-              <Block el={el} navigation={navigation} key={i} />
+              <Block el={el} navigation={navigation} keyBlock={i} />
             ))}
             <Text style={blockTitle}>Архив записей</Text>
             {navigation.state.params.map((el, i) => (
