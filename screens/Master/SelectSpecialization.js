@@ -1,18 +1,9 @@
 import React, {useState, useEffect} from 'react';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
-import {InputWithText, InputWithPassword} from '../../components/Input';
-import {ButtonDisabled, ButtonDefault} from '../../components/Button';
-import SaveSuccess from '../../components/SaveSuccess';
+import {ButtonDefault} from '../../components/Button';
 
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 
 const Block = ({title, active, onPress, key, border}) => {
   const {blockInGroup, borderBottom, text} = styles;
@@ -70,17 +61,38 @@ const SelectSpecialization = ({navigation}) => {
     {
       title: 'Мастер педикюра',
       active: false,
-      services: [{title: 'Аппаратный маникюр', active: true}],
+      services: [
+        {title: 'Аппаратный маникюр', active: true},
+        {title: 'Градиентное покрытие', active: false},
+        {title: 'Европейский маникюр', active: false},
+        {title: 'Классический маникюр', active: false},
+        {title: 'Покрытие гель-лаком', active: false},
+        {title: 'Покрытие “Лунки”', active: false},
+      ],
     },
     {
       title: 'Мастер медицинского маникюра',
       active: false,
-      services: [{title: 'Аппаратный маникюр', active: true}],
+      services: [
+        {title: 'Аппаратный маникюр', active: true},
+        {title: 'Градиентное покрытие', active: false},
+        {title: 'Европейский маникюр', active: false},
+        {title: 'Классический маникюр', active: false},
+        {title: 'Покрытие гель-лаком', active: false},
+        {title: 'Покрытие “Лунки”', active: false},
+      ],
     },
     {
       title: 'Мастер медицинского педикюра',
       active: false,
-      services: [{title: 'Аппаратный маникюр', active: true}],
+      services: [
+        {title: 'Аппаратный маникюр', active: true},
+        {title: 'Градиентное покрытие', active: false},
+        {title: 'Европейский маникюр', active: false},
+        {title: 'Классический маникюр', active: false},
+        {title: 'Покрытие гель-лаком', active: false},
+        {title: 'Покрытие “Лунки”', active: false},
+      ],
     },
   ]);
 
@@ -106,6 +118,7 @@ const SelectSpecialization = ({navigation}) => {
                 specialization[i] = {
                   title: el.title,
                   active: el.active ? false : true,
+                  services: el.services,
                 };
                 setSpecialization([...specialization]);
               }}

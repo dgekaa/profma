@@ -1,10 +1,12 @@
 import React, {useState, useEffect, useRef} from 'react';
 import CalendarStrip from 'react-native-calendar-strip';
+import SvgUri from 'react-native-svg-uri';
 
 import moment from 'moment';
 import 'moment/locale/fr';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
+import {people} from '../../data';
 
 import {
   Text,
@@ -13,58 +15,130 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  TextInput,
 } from 'react-native';
+
+const shortMonthName = [
+  'Янв',
+  'Фев',
+  'Март',
+  'Апр',
+  'Май',
+  'Июнь',
+  'Июль',
+  'Авг',
+  'Сент',
+  'Окт',
+  'Нояб',
+  'Дек',
+];
+const monthNames = [
+  'января',
+  'февраля',
+  'марта',
+  'апреля',
+  'мая',
+  'июня',
+  'июля',
+  'августа',
+  'сентября',
+  'октября',
+  'ноября',
+  'декабря',
+];
+const monthsNamesHeader = {
+  Jan: {name: 'Январь', number: 1},
+  Feb: {name: 'Февраль', number: 2},
+  Mar: {name: 'Март', number: 3},
+  Apr: {name: 'Апрель', number: 4},
+  May: {name: 'Май', number: 5},
+  Jun: {name: 'Июнь', number: 6},
+  Jul: {name: 'Июль', number: 7},
+  Aug: {name: 'Август', number: 8},
+  Sep: {name: 'Сентябрь', number: 9},
+  Oct: {name: 'Октябрь', number: 10},
+  Nov: {name: 'Ноябрь', number: 11},
+  Dec: {name: 'Декабрь', number: 12},
+};
 
 const Block = ({el, navigation, key}) => {
   const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
+
+  const [price, setPrice] = useState();
+
+  useEffect(() => {
+    el.services.length > 1
+      ? el.services.reduce((el, i) =>
+          setPrice(Number(el.how_mach) + Number(i.how_mach)),
+        )
+      : el.services.length && setPrice(el.services[0].how_mach);
+  }, []);
+
   return (
     <TouchableOpacity
       style={block}
       key={key}
       onPress={() => {
-        alert('Не настроен');
-        // navigation.navigate('NoteInformationMaster', el);
+        navigation.navigate('NoteInformationMaster', el);
       }}>
       <View style={topBlock}>
         <View style={{flexDirection: 'row', flex: 6}}>
-          <Image
+          <SvgUri
             style={{marginRight: 5}}
-            source={require('../../img/CalendarColor.png')}
+            source={require('../../img/CalendarColor.svg')}
           />
-          <Text style={[dateText]}>12.01 в 10:00</Text>
+          <Text style={[dateText]}>
+            {el.day} {shortMonthName[+el.month - 1]} в {el.time}
+          </Text>
         </View>
         <View style={{flex: 4}}>
-          <Text style={[textBold]}>1250р</Text>
+          <Text style={[textBold]}>{price} руб</Text>
         </View>
       </View>
       <View style={bottomBlock}>
         <Image
           style={img}
           source={{
-            uri:
-              'http://rs.img.com.ua/crop?v2=1&w=600&h=0&url=%2F%2Fv.img.com.ua%2Fb%2Forig%2Fa%2F46%2F9bb403323c7330b1431ff70432c5a46a.jpg',
+            uri: 'https://hornews.com/upload/images/blank-avatar.jpg',
           }}
         />
         <View style={{flex: 1}}>
           <View style={{flex: 1}}>
             <Text style={{fontSize: 10}}>Клиент</Text>
-            <Text style={[textBold]}> Иванова </Text>
+            {people
+              .filter(index => index.id == el.client_id)
+              .map(index => (
+                <Text style={[textBold]}> {index.client_name} </Text>
+              ))}
           </View>
           <View style={{flex: 1}}>
-            <Text style={[textBold]}>Какой-то адрес</Text>
-            <Text style={{fontSize: 10}}>Садовая</Text>
+            {people
+              .filter(index => index.id == el.client_id)
+              .map(index => (
+                <Text style={[textBold]}> {index.address} </Text>
+              ))}
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View
+                style={{
+                  width: 4,
+                  height: 4,
+                  backgroundColor: '#9155FF',
+                }}></View>
+              {people
+                .filter(index => index.id == el.client_id)
+                .map(index => (
+                  <Text style={{fontSize: 10}}> {index.metro} </Text>
+                ))}
+            </View>
           </View>
         </View>
         <View style={{flex: 1}}>
           <View style={{flex: 1}}>
             <Text style={{fontSize: 10}}>Услуга</Text>
-            <Text style={[textBold]}> Маникюр </Text>
-            {/* {el.services.map(el => (
-              <Text style={[textBold]}>
+            {el.services.map((el, i) => (
+              <Text key={i} style={[textBold]}>
                 {el.name}
               </Text>
-            ))} */}
+            ))}
           </View>
         </View>
       </View>
@@ -74,36 +148,6 @@ const Block = ({el, navigation, key}) => {
 
 const MasterCalendar = ({navigation}) => {
   const {calendarContainer, arrow, headerText, hederArrowContainer} = styles;
-
-  const monthNames = [
-    'января',
-    'февраля',
-    'марта',
-    'апреля',
-    'мая',
-    'июня',
-    'июля',
-    'августа',
-    'сентября',
-    'октября',
-    'ноября',
-    'декабря',
-  ];
-
-  const monthsShort = {
-    Jan: {name: 'Янв', number: 1},
-    Feb: {name: 'Февр', number: 2},
-    Mar: {name: 'Март', number: 3},
-    Apr: {name: 'Апр', number: 4},
-    May: {name: 'Май', number: 5},
-    Jun: {name: 'Июнь', number: 6},
-    Jul: {name: 'Июль', number: 7},
-    Aug: {name: 'Авг', number: 8},
-    Sep: {name: 'Сент', number: 9},
-    Oct: {name: 'Окт', number: 10},
-    Nov: {name: 'Нояб', number: 11},
-    Dec: {name: 'Дек', number: 12},
-  };
 
   moment.locale('ru', {
     config: {
@@ -118,13 +162,11 @@ const MasterCalendar = ({navigation}) => {
     },
   };
 
-  // moment.updateLocale('ru', {
-  //   weekdaysShort: 'Вс_Пн_Вт_Ср_Чт_Пт_Сб'.split('_'),
-  // });
-
   const [weekFirst, setWeekFirst] = useState();
   const [weekLast, setWeekLast] = useState();
   const [month, setMonth] = useState();
+
+  const calendarRef = useRef(null);
 
   useEffect(() => {
     if (!weekLast) {
@@ -135,15 +177,17 @@ const MasterCalendar = ({navigation}) => {
     }
   }, []);
 
-  const calendarRef = useRef(null);
-
   const onWeekChanged = date => {
     const dateArr = date._d.toString().split(' ');
 
-    setMonth(monthsShort[dateArr[1]].name);
+    setMonth(monthsNamesHeader[dateArr[1]].name);
 
-    const date1 = new Date(dateArr[3], monthsShort[dateArr[1]].number - 1, 1);
-    const date2 = new Date(dateArr[3], monthsShort[dateArr[1]].number, 1);
+    const date1 = new Date(
+      dateArr[3],
+      monthsNamesHeader[dateArr[1]].number - 1,
+      1,
+    );
+    const date2 = new Date(dateArr[3], monthsNamesHeader[dateArr[1]].number, 1);
     const maxDayInMonth = Math.round((date2 - date1) / 1000 / 3600 / 24);
 
     setWeekFirst(dateArr[2]);
@@ -161,6 +205,41 @@ const MasterCalendar = ({navigation}) => {
   const stringMonth = monthNames[monthNumber];
   const dayNumber = new Date().getDate();
 
+  const [notes, setNotes] = useState(navigation.state.params.my_notes);
+  let dateNowSorted = [];
+
+  useEffect(() => {
+    dateNowSorted = notes.filter((el, i) => {
+      if (
+        Number(el.day) == Number(new Date().toString().split(' ')[2]) &&
+        Number(el.month) ==
+          Number(
+            monthsNamesHeader[new Date().toString().split(' ')[1]].number,
+          ) &&
+        Number(el.year) == Number(new Date().toString().split(' ')[3])
+      ) {
+        return el;
+      }
+    });
+    setSortNotes([...dateNowSorted]);
+  }, [notes]);
+
+  const [sortNotes, setSortNotes] = useState([]);
+
+  const onDateSelected = date => {
+    const sorted = notes.filter((el, i) => {
+      if (
+        Number(el.day) == Number(date._d.toString().split(' ')[2]) &&
+        Number(el.month) ==
+          Number(monthsNamesHeader[date._d.toString().split(' ')[1]].number) &&
+        Number(el.year) == Number(date._d.toString().split(' ')[3])
+      ) {
+        return el;
+      }
+    });
+    setSortNotes([...sorted]);
+  };
+
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader
@@ -176,7 +255,7 @@ const MasterCalendar = ({navigation}) => {
               calendarRef.current.getPreviousWeek();
             }}
             style={arrow}>
-            <Image source={require('../../img/arrowL.png')} />
+            <SvgUri source={require('../../img/ArrowL.svg')} />
           </TouchableOpacity>
           <Text style={headerText}>
             {month} {weekFirst}-{weekLast}
@@ -186,14 +265,16 @@ const MasterCalendar = ({navigation}) => {
               calendarRef.current.getNextWeek();
             }}
             style={arrow}>
-            <Image source={require('../../img/ArrowR.png')} />
+            <SvgUri source={require('../../img/ArrowR.svg')} />
           </TouchableOpacity>
         </View>
       </BackgroundHeader>
       <View style={calendarContainer}>
         <CalendarStrip
           locale={locale}
-          //   onDateSelected={onDateSelected}
+          onDateSelected={date => {
+            onDateSelected(date);
+          }}
           onWeekChanged={onWeekChanged}
           ref={calendarRef}
           style={{height: 60}}
@@ -207,10 +288,17 @@ const MasterCalendar = ({navigation}) => {
         />
       </View>
       <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
-        <Block navigation={navigation} />
-        <Block navigation={navigation} />
-        <Block navigation={navigation} />
-        <Block navigation={navigation} />
+        {sortNotes.length
+          ? sortNotes.map((el, i) => (
+              <View key={i}>
+                <Block navigation={navigation} el={el} />
+              </View>
+            ))
+          : sortNotes.map((el, i) => (
+              <View key={i}>
+                <Block navigation={navigation} el={el} />
+              </View>
+            ))}
       </ScrollView>
     </View>
   );

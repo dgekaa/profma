@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useReducer} from 'react';
+import SvgUri from 'react-native-svg-uri';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
-import {InputWithText, InputWithPassword} from '../../components/Input';
-import {ButtonDisabled, ButtonDefault} from '../../components/Button';
-import SaveSuccess from '../../components/SaveSuccess';
+import {InputWithText} from '../../components/Input';
+import {ButtonDefault} from '../../components/Button';
 
 import {
   Text,
@@ -12,15 +12,18 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  TextInput,
   Switch,
 } from 'react-native';
 
-const Block = ({el, index, weekDays, setWeekDays, navigation}) => {
+const Block = ({el, index, workTime, setWorkTime, navigation}) => {
   const {groupBlock, blockTitle, blockInGroup, textBold, borderBottom} = styles;
 
+  useEffect(() => {
+    console.log(workTime, 'workTime');
+  }, []);
+
   return (
-    <View key={index}>
+    <View>
       <View
         style={{
           marginTop: 20,
@@ -28,9 +31,10 @@ const Block = ({el, index, weekDays, setWeekDays, navigation}) => {
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-        <Text style={[blockTitle, {color: el.active ? '#B986DA' : '#D4D7DA'}]}>
+        <Text
+          style={[blockTitle, {color: el.is_holiday ? '#B986DA' : '#D4D7DA'}]}>
           {el.name}
-          {el.active && '😎'}
+          {el.is_holiday && '😎'}
         </Text>
         <View
           style={{
@@ -41,13 +45,13 @@ const Block = ({el, index, weekDays, setWeekDays, navigation}) => {
           <Text style={{fontSize: 13, fontWeight: 'bold'}}>Выходной</Text>
           <View style={{marginLeft: 8}} />
           <Switch
-            thumbColor={weekDays[index].active ? '#B986DA' : '#F0F0F0'}
+            thumbColor={workTime[index].is_holiday ? '#B986DA' : '#F0F0F0'}
             trackColor={{true: '#e1ceee', false: '#F0F0F0'}}
             onValueChange={bool => {
-              weekDays[index].active = bool;
-              setWeekDays([...weekDays]);
+              workTime[index].is_holiday = bool;
+              setWorkTime([...workTime]);
             }}
-            value={weekDays[index].active}
+            value={workTime[index].is_holiday}
           />
         </View>
       </View>
@@ -55,8 +59,10 @@ const Block = ({el, index, weekDays, setWeekDays, navigation}) => {
         <View style={[blockInGroup, borderBottom]}>
           <InputWithText
             onChangeText={text => {
-              console.log('!!!');
+              workTime[index].start_time = text;
+              setWorkTime([...workTime]);
             }}
+            value={el.start_time}
             style={{width: '100%'}}
             text="Начало рабочего дня"
             placeholder="10:00"
@@ -65,15 +71,20 @@ const Block = ({el, index, weekDays, setWeekDays, navigation}) => {
         </View>
         <View style={[blockInGroup, borderBottom]}>
           <InputWithText
+            onChangeText={text => {
+              workTime[index].end_time = text;
+              setWorkTime([...workTime]);
+            }}
+            value={el.end_time}
             style={{width: '100%'}}
             text="Конец рабочего дня"
-            placeholder="20:00"
+            placeholder="22:00"
             withoutShadow={true}
           />
         </View>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('SelectWorkTime');
+            navigation.navigate('SelectWorkTime', el);
           }}
           style={[
             blockInGroup,
@@ -85,7 +96,7 @@ const Block = ({el, index, weekDays, setWeekDays, navigation}) => {
             },
           ]}>
           <Text style={textBold}>Выбрать время для записи</Text>
-          <Image source={require('../../img/ArrowRight.png')} />
+          <SvgUri source={require('../../img/ArrowRight.svg')} />
         </TouchableOpacity>
       </View>
     </View>
@@ -95,16 +106,9 @@ const Block = ({el, index, weekDays, setWeekDays, navigation}) => {
 const WorkTimeSettings = ({navigation}) => {
   const {} = styles;
 
-  const [weekDays, setWeekDays] = useState([
-    {name: 'понедельник', active: false},
-    {name: 'вторник', active: false},
-    {name: 'среда', active: false},
-    {name: 'четверг', active: false},
-    {name: 'пятница', active: false},
-    {name: 'суббота', active: false},
-    {name: 'воскресенье', active: false},
-  ]);
+  const [workTime, setWorkTime] = useState(navigation.state.params.work_time);
 
+  // console.log(navigation.state.params, 'WORK TIME !');
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader
@@ -112,14 +116,16 @@ const WorkTimeSettings = ({navigation}) => {
         title="Настройка рабочего времени"
       />
       <ScrollView style={{paddingHorizontal: 8}}>
-        {weekDays.map((el, i) => (
-          <Block
-            el={el}
-            index={i}
-            weekDays={weekDays}
-            setWeekDays={setWeekDays}
-            navigation={navigation}
-          />
+        {workTime.map((el, i) => (
+          <View key={i}>
+            <Block
+              el={el}
+              index={i}
+              workTime={workTime}
+              setWorkTime={setWorkTime}
+              navigation={navigation}
+            />
+          </View>
         ))}
         {true && (
           <ButtonDefault

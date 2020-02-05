@@ -17,14 +17,56 @@ const Border = () => (
 const PersonalDataMaster = ({navigation}) => {
   const {blockTitle, groupBlock} = styles;
 
+  const {
+    e_mail,
+    master_name,
+    phone_number_second,
+    phone_number,
+    city,
+    address,
+    work_address,
+    website,
+    about_me,
+  } = navigation.state.params;
+
   const [showBtn, setShowBtn] = useState(false);
-  const [name, setName] = useState(false);
-  const [inputLength, setInputLength] = useState(0);
+  const [name, setName] = useState('');
+  const [e_mailText, setE_mail] = useState('');
+  const [phone_number_secondText, setPhone_number_second] = useState('');
+  const [phone_numberText, setPhone_number] = useState('');
+  const [cityText, setCity] = useState('');
+  const [addressText, setAddress] = useState('');
+  const [workAddressText, setWorkAddress] = useState('');
+  const [about_meText, setAbout_me] = useState('');
+  const [websiteText, setWebsiteText] = useState('');
+  const [inputLength, setInputLength] = useState(
+    about_me.length > 140 ? 140 : about_me.length,
+  );
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   useEffect(() => {
-    name ? setShowBtn(true) : setShowBtn(false);
-  }, [name]);
+    websiteText ||
+    name ||
+    e_mailText ||
+    phone_number_secondText ||
+    phone_numberText ||
+    cityText ||
+    addressText ||
+    workAddressText ||
+    about_meText
+      ? setShowBtn(true)
+      : setShowBtn(false);
+  }, [
+    websiteText,
+    name,
+    e_mailText,
+    phone_number_secondText,
+    phone_numberText,
+    cityText,
+    addressText,
+    workAddressText,
+    about_meText,
+  ]);
 
   return (
     <View style={{flex: 1}}>
@@ -38,6 +80,7 @@ const PersonalDataMaster = ({navigation}) => {
                 text="Ваше имя"
                 placeholder="Начните вводить имя"
                 withoutShadow={true}
+                value={name || master_name}
                 onChangeText={text => {
                   setName(text);
                 }}
@@ -47,12 +90,20 @@ const PersonalDataMaster = ({navigation}) => {
                 text="Ваш e-mail"
                 placeholder="Начните вводить e-mail"
                 withoutShadow={true}
+                value={e_mailText || e_mail}
+                onChangeText={text => {
+                  setE_mail(text);
+                }}
               />
               <Border />
               <InputWithText
                 text="Ваш мобильный телефон"
                 placeholder="Начните вводить номер телефона"
                 withoutShadow={true}
+                value={phone_numberText || phone_number}
+                onChangeText={text => {
+                  setPhone_number(text);
+                }}
               />
               <Border />
               <InputWithText
@@ -60,6 +111,10 @@ const PersonalDataMaster = ({navigation}) => {
                 text="Дополнительный номер телефона"
                 placeholder="Начните вводить номер мобильного телефона"
                 withoutShadow={true}
+                value={phone_number_secondText || phone_number_second}
+                onChangeText={text => {
+                  setPhone_number_second(text);
+                }}
               />
             </View>
             <View style={[groupBlock, {marginBottom: 16}]}>
@@ -67,8 +122,9 @@ const PersonalDataMaster = ({navigation}) => {
                 text="Город, в котором вы работаете"
                 placeholder="Начните вводить город"
                 withoutShadow={true}
+                value={cityText || city}
                 onChangeText={text => {
-                  setName(text);
+                  setCity(text);
                 }}
               />
               <Border />
@@ -76,12 +132,20 @@ const PersonalDataMaster = ({navigation}) => {
                 text="Домашний адрес (необходим для мастеров, которые работают с выездом)"
                 placeholder="Начните вводить адрес"
                 withoutShadow={true}
+                value={addressText || address}
+                onChangeText={text => {
+                  setAddress(text);
+                }}
               />
               <Border />
               <InputWithText
                 text="Рабочий адрес (необходим для ваших клиентов)"
                 placeholder="Начните вводить адрес"
                 withoutShadow={true}
+                value={workAddressText || work_address}
+                onChangeText={text => {
+                  setWorkAddress(text);
+                }}
               />
               <Border />
               <InputWithText
@@ -89,6 +153,10 @@ const PersonalDataMaster = ({navigation}) => {
                 text="Ваш персональный сайт или страничка с портфолио"
                 placeholder="Укажите адрес странички с вашими работами"
                 withoutShadow={true}
+                value={websiteText || website}
+                onChangeText={text => {
+                  setWebsiteText(text);
+                }}
               />
             </View>
             <View
@@ -108,7 +176,9 @@ const PersonalDataMaster = ({navigation}) => {
               style={[groupBlock, {marginBottom: 16, paddingHorizontal: 16}]}>
               <TextInput
                 maxLength={140}
+                value={about_meText || about_me}
                 onChangeText={text => {
+                  setAbout_me(text);
                   setInputLength(text.length);
                 }}
                 returnKeyLabel="go"
@@ -126,6 +196,7 @@ const PersonalDataMaster = ({navigation}) => {
                   setSavedSuccess(true);
                   setTimeout(() => {
                     setSavedSuccess(false);
+                    // setShowBtn(false);
                   }, 1000);
                 }}
               />
@@ -150,7 +221,7 @@ const styles = StyleSheet.create({
     shadowColor: 'red',
     shadowOpacity: 4,
     backgroundColor: '#fff',
-    elevation: 2,
+    elevation: 1,
   },
   blockTitle: {
     marginTop: 20,

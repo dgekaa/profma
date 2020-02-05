@@ -4,6 +4,7 @@ import BackgroundHeader from '../../components/BackgroundHeader';
 import {InputWithText, InputWithPassword} from '../../components/Input';
 import {ButtonDisabled, ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
+import SvgUri from 'react-native-svg-uri';
 
 import {
   Text,
@@ -12,32 +13,87 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  TextInput,
 } from 'react-native';
 
 const CompleteSeance = ({navigation}) => {
-  const {groupBlock, blockTitle, blockInGroup, textBold} = styles;
+  const {groupBlock, blockTitle, blockInGroup, textBold, borderBottom} = styles;
 
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} title="Завершить сеанс" />
-      <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
-        <Text style={blockTitle}>итоги сеанса</Text>
-        <View style={[groupBlock, blockInGroup]}>
-          <View style={{flex: 1}}>
-            <Text style={{fontSize: 13}}>Полученная от клиента сумма</Text>
-            <Text style={{fontWeight: 'bold', fontSize: 13}}>2 750</Text>
+      <ScrollView>
+        <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
+          <Text style={blockTitle}>итоги сеанса</Text>
+          <View style={[groupBlock, blockInGroup]}>
+            <View style={{flex: 1}}>
+              <Text style={{fontSize: 13}}>Полученная от клиента сумма</Text>
+              <Text style={{fontWeight: 'bold', fontSize: 13}}>
+                !!!!!!!!!!!
+              </Text>
+            </View>
+            <View>
+              <Text></Text>
+              <Text style={{fontWeight: 'bold', fontSize: 13}}>руб</Text>
+            </View>
           </View>
-          <View>
-            <Text></Text>
-            <Text style={{fontWeight: 'bold', fontSize: 13}}>руб</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <Text style={blockTitle}>фотографии законченной работы</Text>
+            <Text style={[blockTitle, {marginRight: 8}]}>
+              {navigation.state.params.data.photo.length}\5
+            </Text>
+          </View>
+          <View style={[groupBlock]}>
+            {navigation.state.params.data.photo.map((el, i) => (
+              <View
+                key={i}
+                style={[blockInGroup, borderBottom, {paddingRight: 8}]}>
+                <SvgUri source={require('../../img/Gallery.svg')} />
+                <Text style={{fontSize: 13, flex: 1, marginLeft: 16}}>
+                  {el}
+                </Text>
+                <TouchableOpacity
+                  style={{
+                    padding: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    alert('Удалит фото');
+                  }}>
+                  <SvgUri source={require('../../img/Trash.svg')} />
+                </TouchableOpacity>
+              </View>
+            ))}
+            <TouchableOpacity
+              style={[blockInGroup]}
+              onPress={() => {
+                navigation.state.params.data.photo.length == 5
+                  ? alert('Больше добавить нельзя')
+                  : alert('Прикрепить фото');
+              }}>
+              <SvgUri source={require('../../img/Plus.svg')} />
+              <Text
+                style={{
+                  fontSize: 13,
+                  flex: 1,
+                  marginLeft: 16,
+                  fontWeight: 'bold',
+                }}>
+                Прикрепить фото
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{padding: 8, marginTop: 8}}>
+            <Text style={{fontSize: 13}}>Итоговая стоимость сеанса</Text>
+            <Text style={textBold}>{navigation.state.params.price} руб</Text>
           </View>
         </View>
-        <View style={{padding: 8, marginTop: 8}}>
-          <Text style={{fontSize: 13}}>Итоговая стоимость сеанса</Text>
-          <Text style={textBold}>1 800 руб</Text>
-        </View>
-      </View>
+      </ScrollView>
       <ButtonDefault
         onPress={() => {
           navigation.state.params.complete(true);

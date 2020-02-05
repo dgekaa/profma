@@ -17,8 +17,8 @@ import {
 const SelectWorkTime = ({navigation}) => {
   const {container, topBlock, timeBlock, timeContainer} = styles;
 
-  const startTime = '10:15';
-  const endTime = '20:14';
+  const startTime = navigation.state.params.start_time || '10:00';
+  const endTime = navigation.state.params.end_time || '20:00';
 
   const startHour = +startTime.split(':')[0];
   const startMinutes = +startTime.split(':')[1];
@@ -41,8 +41,17 @@ const SelectWorkTime = ({navigation}) => {
   }
   endMinutes < 15 && timeArr.pop();
 
+  for (let i = 0; i < timeArr.length; i++) {
+    for (let j = 0; j < navigation.state.params.all_time.length; j++) {
+      if (timeArr[i].time == navigation.state.params.all_time[j]) {
+        timeArr[i].active = true;
+      }
+    }
+  }
+
   const [activeArr, setActiveArr] = useState(timeArr);
 
+  console.log(navigation.state.params, 'navigation.state.params');
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader
@@ -63,8 +72,7 @@ const SelectWorkTime = ({navigation}) => {
                 Начало и конец рабочего дня ограничено ранее указанным временем:
                 <Text
                   style={{fontSize: 13, color: '#B986DA', fontWeight: 'bold'}}>
-                  {' '}
-                  10:00 - 20:00
+                  {startTime} - {endTime}
                 </Text>
               </Text>
             </View>
@@ -100,7 +108,11 @@ const SelectWorkTime = ({navigation}) => {
       </ScrollView>
       <ButtonDefault
         style={{margin: 8}}
-        title="сохранить указанное время (8)"
+        title={
+          'сохранить указанное время (' +
+          activeArr.filter(el => el.active).length +
+          ')'
+        }
         active={true}
         onPress={() => {
           navigation.goBack();

@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from 'react';
+import SvgUri from 'react-native-svg-uri';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
+import {people} from '../../data';
 
 import {
   Text,
@@ -12,7 +14,20 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-
+const shortMonthName = [
+  'Янв',
+  'Фев',
+  'Март',
+  'Апр',
+  'Май',
+  'Июн',
+  'Июл',
+  'Авг',
+  'Сент',
+  'Окт',
+  'Нояб',
+  'Дек',
+];
 const NoteInformationMaster = ({navigation}) => {
   const {
     first,
@@ -22,14 +37,21 @@ const NoteInformationMaster = ({navigation}) => {
     blockInGroup,
     borderBottom,
   } = styles;
-  const {name, services, date, time, address} = navigation.state.params;
 
-  //   const [cancelNote, setCancelNote] = useState(false);
-  const [canceledNote, setCanceledNote] = useState(false);
+  const {client_id, services, time, day, month, year} = navigation.state.params;
 
   const isActive = true;
   const [isCompleted, setIsCompleted] = useState(false);
-  //   const isAbort = false;
+
+  const [price, setPrice] = useState();
+
+  useEffect(() => {
+    services.length > 1
+      ? services.reduce((el, i) =>
+          setPrice(Number(el.how_mach) + Number(i.how_mach)),
+        )
+      : services.length && setPrice(services[0].how_mach);
+  }, []);
 
   return (
     <View style={{flex: 1}}>
@@ -43,11 +65,23 @@ const NoteInformationMaster = ({navigation}) => {
           <View style={groupBlock}>
             <View style={[blockInGroup, borderBottom]}>
               <Text style={{fontSize: 10}}>Имя клиента</Text>
-              <Text style={text}>{name}</Text>
+              {people
+                .filter(index => index.id == client_id)
+                .map(index => (
+                  <Text key={index.id} style={text}>
+                    {index.client_name}
+                  </Text>
+                ))}
             </View>
             <View style={blockInGroup}>
               <Text style={{fontSize: 10}}>Мобильный телефон клиента</Text>
-              <Text style={text}>+375 25 1234567</Text>
+              {people
+                .filter(index => index.id == client_id)
+                .map(index => (
+                  <Text key={index.id} style={text}>
+                    {index.phone_number}
+                  </Text>
+                ))}
             </View>
           </View>
           {/* УСЛУГИ */}
@@ -71,12 +105,12 @@ const NoteInformationMaster = ({navigation}) => {
                         flexDirection: 'row',
                         alignItems: 'center',
                       }}>
-                      <Image source={require('../../img/Default.png')} />
+                      <SvgUri source={require('../../img/Default.svg')} />
                       <View style={{paddingHorizontal: 5}}>
                         <Text style={{fontSize: 13, fontWeight: 'bold'}}>
                           {el.name}
                         </Text>
-                        <Text style={{fontSize: 10}}>{el.howLong} мин.</Text>
+                        <Text style={{fontSize: 10}}>{el.how_long} час.</Text>
                       </View>
                     </View>
                     <View
@@ -86,7 +120,7 @@ const NoteInformationMaster = ({navigation}) => {
                       }}>
                       <Text style={{fontSize: 10}}>Стоимость услуги</Text>
                       <Text style={{fontSize: 13, fontWeight: 'bold'}}>
-                        {el.howMach} руб.
+                        {el.how_mach} руб.
                       </Text>
                     </View>
                   </View>
@@ -100,7 +134,7 @@ const NoteInformationMaster = ({navigation}) => {
                     alignItems: 'center',
                     flexDirection: 'row',
                   }}>
-                  <Image source={require('../../img/Plus.png')} />
+                  <SvgUri source={require('../../img/Plus.svg')} />
                   <Text
                     style={{fontSize: 13, fontWeight: 'bold', paddingLeft: 5}}>
                     Добавить услугу
@@ -113,7 +147,9 @@ const NoteInformationMaster = ({navigation}) => {
           <View>
             <Text style={blockTitle}>дата и время сеанса</Text>
             <View style={[first, {flexDirection: 'row'}]}>
-              <Text style={{fontWeight: 'bold'}}>{date}</Text>
+              <Text style={{fontWeight: 'bold'}}>
+                {day} {shortMonthName[+month - 1].toLowerCase()} {year}
+              </Text>
               <Text> в {time}</Text>
             </View>
           </View>
@@ -129,7 +165,7 @@ const NoteInformationMaster = ({navigation}) => {
                   justifyContent: 'center',
                 },
               ]}>
-              <Text style={{fontSize: 10}}>У мастера на дому</Text>
+              <Text style={{fontSize: 10}}>!!!!!!!!!!!!</Text>
               <View
                 style={{
                   flexDirection: 'row',
@@ -137,9 +173,9 @@ const NoteInformationMaster = ({navigation}) => {
                   alignItems: 'center',
                 }}>
                 <Text style={{fontSize: 13, fontWeight: 'bold', flex: 1}}>
-                  {address.address}
+                  !!!!!!!!!!!!!!
                 </Text>
-                <Text style={{fontSize: 10, flex: 1}}>Ломоносовская</Text>
+                <Text style={{fontSize: 10, flex: 1}}>!!!!!!!!!!!!!!!!!</Text>
               </View>
             </View>
           </View>
@@ -147,42 +183,44 @@ const NoteInformationMaster = ({navigation}) => {
         {isActive && (
           <View style={{marginBottom: 20, paddingHorizontal: 16}}>
             <Text>Итоговая стоимость сеанса</Text>
-            <Text style={{fontWeight: 'bold'}}>1800 руб.</Text>
+            <Text style={{fontWeight: 'bold'}}>{price} руб</Text>
           </View>
         )}
-      </ScrollView>
-      <View style={{paddingHorizontal: 8, paddingBottom: 8}}>
-        {isActive && (
-          <View>
-            <ButtonDefault
-              style={{marginBottom: 8}}
-              active={true}
-              title="завершить сеанс"
-              onPress={() => {
-                navigation.navigate('CompleteSeance', {
-                  complete: bool => {
-                    setIsCompleted(bool);
-                    // setTimeout(() => {
-                    //   setIsCompleted(false);
-                    // }, 1000);
-                  },
-                });
-              }}
-            />
-            {isCompleted && (
-              <SaveSuccess title="👍 Сеанс был успешно завершён." />
-            )}
-            {!isCompleted && (
+        <View style={{paddingHorizontal: 8, paddingBottom: 8}}>
+          {isActive && (
+            <View>
               <ButtonDefault
-                title="отменить запись"
+                style={{marginBottom: 8}}
+                active={true}
+                title="завершить сеанс"
                 onPress={() => {
-                  // setCancelNote(true);
+                  navigation.navigate('CompleteSeance', {
+                    complete: bool => {
+                      setIsCompleted(bool);
+                      // setTimeout(() => {
+                      //   setIsCompleted(false);
+                      // }, 1000);
+                    },
+                    price,
+                    data: navigation.state.params,
+                  });
                 }}
               />
-            )}
-          </View>
-        )}
-      </View>
+              {isCompleted && (
+                <SaveSuccess title="👍 Сеанс был успешно завершён." />
+              )}
+              {!isCompleted && (
+                <ButtonDefault
+                  title="отменить запись"
+                  onPress={() => {
+                    alert('Отмена записи');
+                  }}
+                />
+              )}
+            </View>
+          )}
+        </View>
+      </ScrollView>
     </View>
   );
 };

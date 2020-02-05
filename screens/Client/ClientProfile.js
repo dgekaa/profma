@@ -4,6 +4,7 @@ import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
+import SvgUri from 'react-native-svg-uri';
 
 const ClientProfile = ({navigation}) => {
   const {first, text, groupBlock, blockInGroup, borderBottom} = styles;
@@ -30,11 +31,12 @@ const ClientProfile = ({navigation}) => {
           <TouchableOpacity
             style={first}
             onPress={() => {
-              navigation.navigate('MyNotes', navigation.state.params[0].notes);
+              navigation.navigate('MyNotes', navigation.state.params.my_notes);
             }}>
-            <Image
-              style={{height: 13, width: 13}}
-              source={require('../../img/calendar.png')}
+            <SvgUri
+              width="13"
+              height="13"
+              source={require('../../img/CalendarSVG.svg')}
             />
             <Text style={text}>Мои записи</Text>
           </TouchableOpacity>
@@ -45,11 +47,13 @@ const ClientProfile = ({navigation}) => {
             <TouchableOpacity
               style={[blockInGroup, borderBottom]}
               onPress={() => {
-                navigation.navigate('PersonalData');
+                navigation.navigate('PersonalData', navigation.state.params);
               }}>
-              <Image
-                style={{height: 13, width: 13}}
-                source={require('../../img/user.png')}
+              <SvgUri
+                style={{marginRight: 10}}
+                width="13"
+                height="13"
+                source={require('../../img/User.svg')}
               />
               <Text style={text}>Персональные данные</Text>
             </TouchableOpacity>
@@ -59,11 +63,13 @@ const ClientProfile = ({navigation}) => {
               onPress={() => {
                 navigation.navigate('ChangePassword', {
                   onGoBack: isSuccess => onGoBackFromPasword(isSuccess),
+                  person: navigation.state.params,
                 });
               }}>
-              <Image
-                style={{height: 13, width: 13}}
-                source={require('../../img/password.png')}
+              <SvgUri
+                width="13"
+                height="13"
+                source={require('../../img/Password.svg')}
               />
               <Text style={text}>Изменить пароль</Text>
             </TouchableOpacity>
@@ -84,7 +90,9 @@ const ClientProfile = ({navigation}) => {
             {/* ВАШ ГОРОД*/}
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('ChangeCity');
+                navigation.navigate('ChangeCity', {
+                  city: navigation.state.params.city,
+                });
               }}>
               <View
                 style={[
@@ -97,10 +105,11 @@ const ClientProfile = ({navigation}) => {
                 ]}>
                 <Text style={{fontSize: 13}}>Ваш город</Text>
                 <Text style={{fontWeight: 'bold', paddingRight: 18}}>
-                  {navigation.state.params[0].city}
+                  {navigation.state.params.city}
                 </Text>
               </View>
             </TouchableOpacity>
+            {/* СВЯЗЬ С ПООДЕРЖКОЙ*/}
             <TouchableOpacity
               style={blockInGroup}
               onPress={() => {
@@ -134,7 +143,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 2,
     shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 2,
+    elevation: 1,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 18,
@@ -149,7 +158,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 2,
     shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 2,
+    elevation: 1,
     flexDirection: 'column',
     paddingLeft: 18,
   },

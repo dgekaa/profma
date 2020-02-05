@@ -17,13 +17,19 @@ const PersonalData = ({navigation}) => {
   const {blockTitle, groupBlock} = styles;
 
   const [showBtn, setShowBtn] = useState(false);
-  const [name, setName] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneMumber, setPhoneMumber] = useState('');
+  const [homeAddress, setHomeAddress] = useState('');
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   useEffect(() => {
-    name ? setShowBtn(true) : setShowBtn(false);
-  }, [name]);
+    name || email || phoneMumber || homeAddress
+      ? setShowBtn(true)
+      : setShowBtn(false);
+  }, [name, email, phoneMumber, homeAddress]);
 
+  const {client_name, e_mail, phone_number, address} = navigation.state.params;
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} />
@@ -32,6 +38,7 @@ const PersonalData = ({navigation}) => {
           <Text style={blockTitle}>персональные данные</Text>
           <View style={groupBlock}>
             <InputWithText
+              value={name || client_name}
               text="Ваше имя"
               placeholder="Начните вводить имя"
               withoutShadow={true}
@@ -44,12 +51,20 @@ const PersonalData = ({navigation}) => {
               text="Ваш e-mail"
               placeholder="Начните вводить e-mail"
               withoutShadow={true}
+              value={email || e_mail}
+              onChangeText={text => {
+                setEmail(text);
+              }}
             />
             <Border />
             <InputWithText
               text="Ваш мобильный телефон"
               placeholder="Начните вводить номер телефона"
               withoutShadow={true}
+              value={phoneMumber || phone_number}
+              onChangeText={text => {
+                setPhoneMumber(text);
+              }}
             />
             <Border />
             <InputWithText
@@ -58,6 +73,10 @@ const PersonalData = ({navigation}) => {
               text="Домашний адрес (необходим для мастеров, которые работают с выездом)"
               placeholder="Начните вводить домашний адрес"
               withoutShadow={true}
+              value={homeAddress || address}
+              onChangeText={text => {
+                setHomeAddress(text);
+              }}
             />
             {showBtn && (
               <View style={{padding: 16}}>
@@ -92,7 +111,7 @@ const styles = StyleSheet.create({
     shadowColor: 'red',
     shadowOpacity: 4,
     backgroundColor: '#fff',
-    elevation: 2,
+    elevation: 1,
   },
   blockTitle: {
     marginTop: 20,

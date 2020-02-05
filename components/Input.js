@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
+import SvgUri from 'react-native-svg-uri';
 
 import {
   Text,
@@ -55,13 +56,10 @@ export const InputWithText = ({
           placeholder={placeholder}
           style={[input, {color: validationErr ? '#FF3D4B' : '#011627'}]}
           keyboardType={keyboardType}
-          onChangeText={text => onChangeText(text)}
           editable={editable}
         />
       </View>
-      {err && (
-        <Text style={[{color: '#FF3D4B', fontSize: 10}, errStyle]}>{err}</Text>
-      )}
+      {!!err && <Text style={[errStyleLocal, errStyle]}>{err}</Text>}
     </View>
   );
 };
@@ -77,6 +75,7 @@ export const InputWithPassword = ({
   onPressPassRecovery,
   onChangeText,
   withoutShadow,
+  value,
 }) => {
   const {
     inputWrap,
@@ -112,12 +111,14 @@ export const InputWithPassword = ({
           onFocus={() => {
             setIsShowPlaceholder(false);
           }}
+          value={value}
           onBlur={() => {
             passwordText
               ? setIsShowPlaceholder(false)
               : setIsShowPlaceholder(true);
           }}
           onChangeText={text => {
+            onChangeText(text);
             setPasswordText(text);
           }}
           maxLength={maxLength}
@@ -131,24 +132,28 @@ export const InputWithPassword = ({
           secureTextEntry={secureTextEntry}
         />
         {isShowPlaceholder && (
-          <Image
+          <SvgUri
             style={{position: 'absolute', top: 12}}
-            source={require('../img/dots.png')}
+            source={require('../img/Dots.svg')}
           />
         )}
         {icon && (
           <TouchableOpacity onPress={onPress}>
             <View style={eyeWrap}>
               {icon === 'openedEye' && (
-                <Image
+                <SvgUri
                   style={eye}
-                  source={require(`../img/${'openedEye'}.png`)}
+                  width="16"
+                  height="16"
+                  source={require(`../img/${'Open'}.svg`)}
                 />
               )}
               {icon === 'closedEye' && (
-                <Image
+                <SvgUri
                   style={eye}
-                  source={require(`../img/${'closedEye'}.png`)}
+                  width="13"
+                  height="13"
+                  source={require(`../img/${'Closed'}.svg`)}
                 />
               )}
             </View>
@@ -190,6 +195,10 @@ const styles = StyleSheet.create({
   inputWrap: {
     flexDirection: 'row',
     height: 35,
+  },
+  errStyleLocal: {
+    color: '#FF3D4B',
+    fontSize: 10,
   },
   forgetTextWrap: {
     height: 30,

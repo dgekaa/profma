@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
+import SvgUri from 'react-native-svg-uri';
 
 import BackgroundHeader, {Header} from '../../components/BackgroundHeader';
-import {InputWithText} from '../../components/Input';
 import {ButtonDefault} from '../../components/Button';
+import {people} from '../../data';
 
 import {
   Text,
@@ -13,6 +14,21 @@ import {
   ScrollView,
 } from 'react-native';
 
+const shortMonthName = [
+  'Янв',
+  'Фев',
+  'Март',
+  'Апр',
+  'Май',
+  'Июнь',
+  'Июль',
+  'Авг',
+  'Сент',
+  'Окт',
+  'Нояб',
+  'Дек',
+];
+
 const Block = ({el, navigation, key, archive}) => {
   const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
   return (
@@ -20,48 +36,69 @@ const Block = ({el, navigation, key, archive}) => {
       style={block}
       key={key}
       onPress={() => {
-        navigation.navigate('NoteInformation', el);
+        navigation.navigate('NoteInformation', {
+          person: el,
+          people,
+        });
       }}>
       <View style={topBlock}>
-        <View style={{flexDirection: 'row', flex: 6}}>
-          <Image
+        <View style={{flexDirection: 'row', flex: 6, alignItems: 'center'}}>
+          <SvgUri
             style={{marginRight: 5}}
+            width="14"
+            height="14"
             source={
               archive
-                ? require('../../img/CalendarGray.png')
-                : require('../../img/CalendarColor.png')
+                ? require('../../img/calendarGray.svg')
+                : require('../../img/CalendarColor.svg')
             }
           />
           <Text style={[dateText, {color: archive ? '#A6ADB3' : '#B986DA'}]}>
-            {el.date} В {el.time}
+            {el.day} {shortMonthName[+el.month - 1]} В {el.time}
           </Text>
         </View>
         <View style={{flex: 4}}>
           <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-            1250р
+            {el.how_mach} руб.
           </Text>
         </View>
       </View>
       <View style={bottomBlock}>
-        <Image
-          style={img}
-          source={{
-            uri: el.img,
-          }}
-        />
+        {people
+          .filter(index => el.master_id == index.id)
+          .map((el, i) => (
+            <Image
+              style={img}
+              source={{
+                uri: el.img,
+              }}
+            />
+          ))}
         <View style={{flex: 1}}>
           <View style={{flex: 1}}>
             <Text style={{fontSize: 10, color: archive ? '#A6ADB3' : 'black'}}>
               Мастер
             </Text>
-            <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-              {el.name}
-            </Text>
+            {people
+              .filter(index => el.master_id == index.id)
+              .map((el, i) => (
+                <Text
+                  key={i}
+                  style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
+                  {el.master_name}
+                </Text>
+              ))}
           </View>
           <View style={{flex: 1}}>
-            <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-              {el.address.address}
-            </Text>
+            {people
+              .filter(index => el.master_id == index.id)
+              .map((el, i) => (
+                <Text
+                  key={i}
+                  style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
+                  {el.address}
+                </Text>
+              ))}
             <Text style={{fontSize: 10}}>Садовая</Text>
           </View>
         </View>
@@ -70,8 +107,10 @@ const Block = ({el, navigation, key, archive}) => {
             <Text style={{fontSize: 10, color: archive ? '#A6ADB3' : 'black'}}>
               Услуга
             </Text>
-            {el.services.map(el => (
-              <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
+            {el.services.map((el, i) => (
+              <Text
+                key={i}
+                style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
                 {el.name}
               </Text>
             ))}
@@ -84,6 +123,7 @@ const Block = ({el, navigation, key, archive}) => {
 
 const MyNotes = ({navigation}) => {
   const {bigText, smallText, textBold, blockTitle, block} = styles;
+
   return (
     <View style={{flex: 1}}>
       {!navigation.state.params.length && (
@@ -114,13 +154,24 @@ const MyNotes = ({navigation}) => {
           <BackgroundHeader navigation={navigation} title="Мои записи" />
           <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
             <Text style={blockTitle}>Активные записи</Text>
-            {navigation.state.params.map((el, i) => (
-              <Block el={el} navigation={navigation} key={i} />
-            ))}
+            {navigation.state.params.map((el, i) => {
+              if (el.is_active) {
+                return <Block el={el} navigation={navigation} key={i} />;
+              }
+            })}
             <Text style={blockTitle}>Архив записей</Text>
-            {navigation.state.params.map((el, i) => (
-              <Block el={el} navigation={navigation} archive={true} key={i} />
-            ))}
+            {navigation.state.params.map((el, i) => {
+              if (el.is_archive) {
+                return (
+                  <Block
+                    el={el}
+                    navigation={navigation}
+                    archive={true}
+                    key={i}
+                  />
+                );
+              }
+            })}
           </ScrollView>
         </View>
       )}

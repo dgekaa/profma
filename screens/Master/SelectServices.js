@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import SvgUri from 'react-native-svg-uri';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {InputWithText, InputWithPassword} from '../../components/Input';
@@ -42,7 +43,7 @@ const Block = ({title, active, onPress, key, border}) => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Image source={require('../../img/Vector.png')} />
+        <SvgUri source={require('../../img/Vector.svg')} />
       </View>
     </TouchableOpacity>
   );
@@ -55,10 +56,10 @@ const SelectServices = ({navigation}) => {
     navigation.state.params.activeRadioBtn[0].services,
   );
 
-  const [count, setCount] = useState(0);
+  const active = services.filter(el => el.active);
+  const [count, setCount] = useState(active.length);
 
   useEffect(() => {
-    const active = services.filter(el => el.active);
     setCount(active.length);
   }, [services]);
 
@@ -91,6 +92,8 @@ const SelectServices = ({navigation}) => {
             save: bool => {
               navigation.state.params.save(bool);
             },
+            active,
+            title: navigation.state.params.activeRadioBtn[0].title,
           });
         }}
         title={`выбрать эти услуги (${count})`}

@@ -1,61 +1,56 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {InputWithPassword} from '../../components/Input';
 import {ButtonDisabled, ButtonDefault} from '../../components/Button';
 
-import {Text, Modal, View, StyleSheet, Image} from 'react-native';
+import {Text, View, StyleSheet, Image} from 'react-native';
 
 const ChangePassword = ({navigation}) => {
-  const {blockTitle, groupBlock} = styles;
+  const {
+    blockTitle,
+    groupBlock,
+    border,
+    wrapper,
+    rightBlock,
+    imgSize,
+    textWrap,
+    textBold,
+  } = styles;
 
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} title={`Изменить пароль`} />
       <View style={{flex: 1, paddingHorizontal: 8}}>
-        <View style={{}}>
+        <View>
           <Text style={blockTitle}>изменить пароль</Text>
           <View style={groupBlock}>
             <InputWithPassword
               text="Введите новый пароль"
               withoutShadow={true}
               secureTextEntry={true}
+              onChangeText={text => {
+                console.log(text);
+              }}
             />
-            <View
-              style={{height: 0.5, backgroundColor: '#aaa', marginLeft: 16}}
-            />
+            <View style={border} />
             <InputWithPassword
               text="Повторите новый пароль"
               withoutShadow={true}
               secureTextEntry={true}
+              onChangeText={text => {
+                console.log(text);
+              }}
             />
           </View>
         </View>
         <View style={{marginTop: 16}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              height: 75,
-              width: '90%',
-              alignSelf: 'center',
-            }}>
-            <View style={{width: '20%', marginRight: 5}}>
-              <Image
-                style={{height: 75, width: 75}}
-                source={require('../../img/girl4.png')}
-              />
+          <View style={wrapper}>
+            <View style={rightBlock}>
+              <Image style={imgSize} source={require('../../img/girl4.png')} />
             </View>
-            <View
-              style={{
-                flexDirection: 'column',
-                justifyContent: 'center',
-                paddingHorizontal: 5,
-                marginLeft: 8,
-                width: '75%',
-              }}>
-              <Text style={{fontWeight: 'bold', fontSize: 13}}>
-                Мы советуем вам
-              </Text>
+            <View style={textWrap}>
+              <Text style={textBold}>Мы советуем вам</Text>
               <Text style={{fontSize: 13}}>
                 Использовать пароль, содержащий не менее 6-ти знаков и хотя бы с
                 одним специальным символом
@@ -86,8 +81,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     shadowOpacity: 4,
     backgroundColor: '#fff',
-    elevation: 2,
-    // paddingLeft: 18,
+    elevation: 1,
   },
   blockTitle: {
     marginTop: 20,
@@ -96,6 +90,36 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     opacity: 0.35,
     marginLeft: 8,
+  },
+  border: {
+    height: 0.5,
+    backgroundColor: '#aaa',
+    marginLeft: 16,
+  },
+  wrapper: {
+    flexDirection: 'row',
+    height: 75,
+    width: '90%',
+    alignSelf: 'center',
+  },
+  rightBlock: {
+    width: '20%',
+    marginRight: 5,
+  },
+  imgSize: {
+    height: 75,
+    width: 75,
+  },
+  textWrap: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    paddingHorizontal: 5,
+    marginLeft: 8,
+    width: '75%',
+  },
+  textBold: {
+    fontWeight: 'bold',
+    fontSize: 13,
   },
 });
 

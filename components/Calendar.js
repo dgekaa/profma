@@ -1,13 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import moment from 'moment';
 
-import BackgroundHeader from '../components/BackgroundHeader';
-import {InputWithText} from '../components/Input';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 import {ButtonDefault, ButtonDisabled} from '../components/Button';
 
-import DATA from '../data';
-import {Text, Modal, View, StyleSheet, Image, ScrollView} from 'react-native';
+import {Text, View, StyleSheet, ScrollView} from 'react-native';
 
 const shortMonthName = [
   'Янв',
@@ -70,13 +67,17 @@ const CalendarCustom = ({
     topBlock,
     container,
     bg,
+    btnDisabledWrap,
+    mb,
   } = styles;
 
   let date = new Date().getDate();
+
   date.toString().length == 1 ? (date = '0' + date) : null;
   let month = new Date().getMonth() + 1;
   month.toString().length == 1 ? (month = '0' + month) : null;
   const year = new Date().getFullYear();
+
   const now = `${date}/${month}/${year}`;
 
   useEffect(() => {
@@ -92,8 +93,8 @@ const CalendarCustom = ({
 
   return (
     <View style={bg}>
-      <ScrollView>
-        <View style={container}>
+      <View style={container}>
+        <ScrollView>
           <View style={topBlock}>
             <Text style={{color: '#FFF'}}>{dayNames[new Date().getDay()]}</Text>
           </View>
@@ -103,8 +104,12 @@ const CalendarCustom = ({
             <Text style={yearText}>{year}</Text>
           </View>
           <Calendar
-            current={moment(now, 'DD/MM/YYYY', true).format()}
-            minDate={moment(now, 'DD/MM/YYYY', true).format()}
+            current={moment(now, 'DD/MM/YYYY', true)
+              .format()
+              .slice(0, 10)}
+            minDate={moment(now, 'DD/MM/YYYY', true)
+              .format()
+              .slice(0, 10)}
             markedDates={markedDates}
             hideExtraDays={true}
             hideArrows={true}
@@ -126,26 +131,28 @@ const CalendarCustom = ({
               },
             }}
           />
-          <View style={{backgroundColor: '#fff', padding: 8}}>
+          <View style={btnDisabledWrap}>
             {!singleDate && false && (
-              <ButtonDisabled title="нет найти мастеров на эту дату😞" />
+              <ButtonDisabled
+                title="нет найти мастеров на эту дату😞"
+                style={mb}
+              />
             )}
             {!singleDate && true && (
               <ButtonDefault
                 onPress={() => {
-                  clearCalendar({});
                   onClose(false);
                 }}
-                title="Показать мастеров (243)"
+                title="Показать мастеров (!!!!!)"
                 active={true}
-                style={{marginBottom: 8}}
+                style={mb}
               />
             )}
             {singleDate && true && (
               <ButtonDefault
                 title="выбрать эту дату"
                 active={true}
-                style={{marginBottom: 8}}
+                style={mb}
                 onPress={() => {
                   chooseThisDate(true);
                   onClose(false);
@@ -160,8 +167,8 @@ const CalendarCustom = ({
               }}
             />
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </View>
   );
 };
@@ -177,19 +184,22 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: 'rgba(0,0,0,.4)',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   container: {
-    flex: 1,
     width: '85%',
     alignSelf: 'center',
     justifyContent: 'center',
-    margin: 8,
   },
   topBlock: {
     height: 40,
     backgroundColor: '#C092DE',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  btnDisabledWrap: {
+    backgroundColor: '#fff',
+    padding: 8,
   },
   middleBlock: {
     backgroundColor: '#B986DA',
@@ -212,6 +222,9 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 24,
     fontFamily: 'Futura PT',
+  },
+  mb: {
+    marginBottom: 8,
   },
 });
 

@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import SvgUri from 'react-native-svg-uri';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {InputWithText, InputWithPassword} from '../../components/Input';
@@ -76,14 +77,14 @@ const SelectedServiceDescription = ({navigation}) => {
                   paddingLeft: 8,
                 }}>
                 {true ? (
-                  <Image source={require('../../img/Default.png')} />
+                  <SvgUri source={require('../../img/Default.svg')} />
                 ) : (
-                  <Image source={require('../../img/Pressed.png')} />
+                  <SvgUri source={require('../../img/Pressed.svg')} />
                 )}
                 <InputWithText
-                  // editable={false}
+                  editable={false}
                   selectTextOnFocus={false}
-                  // value=""
+                  value="asdasdasdvvvv"
                   text={
                     howPay == 'time'
                       ? `Продолжительность услуги (в часах)`
@@ -91,11 +92,8 @@ const SelectedServiceDescription = ({navigation}) => {
                   }
                   placeholder={`Укажите продолжительность сеанса`}
                   withoutShadow={true}
-                  onChangeText={text => {
-                    console.log(text);
-                  }}
+                  onChangeText={text => {}}
                   style={[borderBottom, {flex: 1, marginRight: 8}]}
-                  // err="Поле обязательно для заполнения"
                   errStyle={{paddingBottom: 10}}
                 />
               </View>
@@ -105,17 +103,15 @@ const SelectedServiceDescription = ({navigation}) => {
                   alignItems: 'center',
                   paddingHorizontal: 8,
                 }}>
-                <Image source={require('../../img/Default.png')} />
+                <SvgUri source={require('../../img/Default.svg')} />
                 <InputWithText
-                  // editable={false}
+                  editable={false}
                   selectTextOnFocus={false}
-                  // value="asdad!!!!!!"
+                  value="asdad!!!!!!"
                   text={`Стоимость услуги`}
                   placeholder={`Укажите стоимость сеанса`}
                   withoutShadow={true}
-                  onChangeText={text => {
-                    console.log(text);
-                  }}
+                  onChangeText={text => {}}
                   style={{flex: 1}}
                 />
                 <Text

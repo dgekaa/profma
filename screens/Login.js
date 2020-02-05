@@ -5,6 +5,8 @@ import {ButtonDefault, ButtonDisabled, ButtonError} from '../components/Button';
 import {InputWithText, InputWithPassword} from '../components/Input';
 import {Header} from '../components/BackgroundHeader';
 
+import {people} from '../data';
+
 const Login = ({navigation}) => {
   const {
     container,
@@ -20,7 +22,7 @@ const Login = ({navigation}) => {
 
   const [iconName, setIconName] = useState('closedEye');
   const [hidePassword, setHidePassword] = useState(true);
-  const [fillErr, setFillErr] = useState('');
+  const [fillErr, setFillErr] = useState('Поля не заполнены');
   const [validationErr, setValidationErr] = useState('');
   const [regBtnText, setRegBtnText] = useState('');
 
@@ -35,6 +37,7 @@ const Login = ({navigation}) => {
   };
 
   const [mail, setMail] = useState('');
+  const [password, setPassword] = useState('');
 
   useEffect(() => {
     fillErr
@@ -43,6 +46,14 @@ const Login = ({navigation}) => {
       ? setRegBtnText('проверьте введённые данные')
       : setRegBtnText('Войти');
   }, [fillErr, validationErr]);
+
+  useEffect(() => {
+    if (mail && password) {
+      setFillErr('');
+    } else {
+      setFillErr('Поля не заполнены');
+    }
+  }, [mail, password]);
 
   return (
     <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
@@ -57,6 +68,7 @@ const Login = ({navigation}) => {
         <View style={inputGroup}>
           <InputWithText
             onChangeText={text => {
+              setValidationErr('');
               setMail(text);
             }}
             value={mail}
@@ -66,7 +78,12 @@ const Login = ({navigation}) => {
             validationErr={validationErr}
           />
           <InputWithPassword
-            text="Придумайте пароль"
+            onChangeText={text => {
+              setValidationErr('');
+              setPassword(text);
+            }}
+            value={password}
+            text="Введите пароль"
             secureTextEntry={hidePassword}
             icon={iconName}
             onPress={openCloseEye}
@@ -93,11 +110,30 @@ const Login = ({navigation}) => {
               style={{marginBottom: 8}}
               title={regBtnText}
               active={true}
-              onPress={() => navigation.navigate('Main', {mail: mail})}
+              onPress={() => {
+                const person = people.filter(el => el.e_mail == mail);
+                if (!password || !mail) {
+                  setFillErr('Поля не заполнены');
+                } else if (!person.length || person[0].password != password) {
+                  setValidationErr('Неверно введенные данные');
+                } else {
+                  const masters = people.filter(el => el.is_master);
+                  const clients = people.filter(el => el.is_client);
+                  navigation.navigate('Main', {
+                    person,
+                    masters,
+                    clients,
+                  });
+                }
+              }}
             />
           )}
           {!!validationErr && (
-            <ButtonError title={regBtnText} style={{marginBottom: 8}} />
+            <ButtonError
+              title={regBtnText}
+              style={{marginBottom: 8}}
+              onPress={() => {}}
+            />
           )}
         </View>
       </View>

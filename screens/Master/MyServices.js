@@ -14,7 +14,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-const Block = ({navigation, deleteService}) => {
+const Block = ({navigation, deleteService, el}) => {
   const {block, headerText, text, textBold} = styles;
   return (
     <TouchableOpacity
@@ -30,15 +30,14 @@ const Block = ({navigation, deleteService}) => {
         <Image
           style={{width: 75, height: 75, marginRight: 8}}
           source={{
-            uri:
-              'http://rs.img.com.ua/crop?v2=1&w=600&h=0&url=%2F%2Fv.img.com.ua%2Fb%2Forig%2Fa%2F46%2F9bb403323c7330b1431ff70432c5a46a.jpg',
+            uri: 'https://hornews.com/upload/images/blank-avatar.jpg',
           }}
         />
       </View>
       <View style={{flex: 1, justifyContent: 'space-between'}}>
         <View>
-          <Text style={headerText}>Европейский маникюр</Text>
-          <Text style={{color: '#B986DA', fontSize: 10}}>Мастер маникюра</Text>
+          <Text style={headerText}>{el.name}</Text>
+          <Text style={{color: '#B986DA', fontSize: 10}}>!!!!!!!!!</Text>
         </View>
         <View
           style={{
@@ -47,11 +46,11 @@ const Block = ({navigation, deleteService}) => {
           }}>
           <View style={{flex: 1}}>
             <Text style={text}>Стоимость сеанса</Text>
-            <Text style={textBold}>750 руб</Text>
+            <Text style={textBold}>{el.how_mach} руб</Text>
           </View>
           <View style={{flex: 1}}>
             <Text style={text}>Стоимость указана за</Text>
-            <Text style={textBold}>1</Text>
+            <Text style={textBold}>!!!!!!</Text>
           </View>
         </View>
       </View>
@@ -79,18 +78,13 @@ const MyServices = ({navigation}) => {
           <BackgroundHeader title="Мои услуги" navigation={navigation} />
           <View style={{paddingHorizontal: 8, flex: 1}}>
             <Text style={blockTitle}>мои активные услуги</Text>
-            <Block
-              navigation={navigation}
-              deleteService={bool => deleteOneService(bool)}
-            />
-            <Block
-              navigation={navigation}
-              deleteService={bool => deleteOneService(bool)}
-            />
-            <Block
-              navigation={navigation}
-              deleteService={bool => deleteOneService(bool)}
-            />
+            {navigation.state.params.my_services.map(el => (
+              <Block
+                el={el}
+                navigation={navigation}
+                deleteService={bool => deleteOneService(bool)}
+              />
+            ))}
           </View>
           {successDeleted && (
             <SaveSuccess
@@ -161,7 +155,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     flexDirection: 'row',
     padding: 8,
-    elevation: 2,
+    elevation: 1,
     shadowColor: '#000',
     shadowOpacity: 0.5,
     backgroundColor: '#fff',

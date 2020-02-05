@@ -1,4 +1,5 @@
 import React from 'react';
+import SvgUri from 'react-native-svg-uri';
 import {
   ImageBackground,
   Text,
@@ -47,7 +48,11 @@ const BackgroundHeader = ({
         </View>
         {settings && (
           <TouchableOpacity style={settingsStyle} onPress={onSettingsPress}>
-            <Image source={require('../img/Settings.png')} />
+            <SvgUri
+              width="13"
+              height="13"
+              source={require('../img/Settings.svg')}
+            />
           </TouchableOpacity>
         )}
       </View>

@@ -5,12 +5,12 @@ import {InputWithText, InputWithPassword} from '../../components/Input';
 import {ButtonDisabled, ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
 import ModalWindow from '../../components/ModalWindow';
+import SvgUri from 'react-native-svg-uri';
 
 import {
   Text,
   View,
   StyleSheet,
-  TouchableOpacity,
   Image,
   ScrollView,
   TextInput,
@@ -23,21 +23,32 @@ const ServiceDescription = ({navigation}) => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteService, setDeleteService] = useState(false);
 
+  const [err, setErr] = useState('');
+
+  const [howLong, setHowLong] = useState('');
+  const [nailCount, setNailCount] = useState('');
+
+  console.log(navigation.state.params.active, 'active');
+  console.log(navigation.state.params.title, 'title');
+
   return (
     <View style={{flex: 1}}>
-      <BackgroundHeader navigation={navigation} title="Описание услуги (1\4)" />
+      <BackgroundHeader
+        navigation={navigation}
+        title={`Описание услуги (1\\${navigation.state.params.active.length})`}
+      />
       <ScrollView>
         <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
           <Text style={blockTitle}>ваша специализация</Text>
           <View style={[groupBlock, blockInGroup]}>
             <Text style={{fontWeight: 'bold', fontSize: 13}}>
-              Мастер маникюра
+              !!!!!!!!!!!!!!!!!
             </Text>
           </View>
           <Text style={blockTitle}>ваша услуга</Text>
           <View style={[groupBlock, blockInGroup]}>
             <Text style={{fontWeight: 'bold', fontSize: 13}}>
-              Европейский маникюр
+              !!!!!!!!!!!!!!
             </Text>
           </View>
           <View
@@ -77,9 +88,9 @@ const ServiceDescription = ({navigation}) => {
                   paddingLeft: 8,
                 }}>
                 {true ? (
-                  <Image source={require('../../img/Default.png')} />
+                  <SvgUri source={require('../../img/Default.svg')} />
                 ) : (
-                  <Image source={require('../../img/Pressed.png')} />
+                  <SvgUri source={require('../../img/Pressed.svg')} />
                 )}
                 <InputWithText
                   text={
@@ -90,10 +101,12 @@ const ServiceDescription = ({navigation}) => {
                   placeholder={`Укажите продолжительность сеанса`}
                   withoutShadow={true}
                   onChangeText={text => {
-                    console.log(text);
+                    setErr('');
+                    howPay == 'time' ? setHowLong(text) : setNailCount(text);
                   }}
                   style={[borderBottom, {flex: 1}]}
-                  // err="Поле обязательно для заполнения"
+                  err={err}
+                  value={howPay == 'time' ? howLong : nailCount}
                   errStyle={{paddingBottom: 10}}
                 />
               </View>
@@ -103,14 +116,12 @@ const ServiceDescription = ({navigation}) => {
                   alignItems: 'center',
                   paddingHorizontal: 8,
                 }}>
-                <Image source={require('../../img/Default.png')} />
+                <SvgUri source={require('../../img/Default.svg')} />
                 <InputWithText
                   text={`Стоимость услуги`}
                   placeholder={`Укажите стоимость сеанса`}
                   withoutShadow={true}
-                  onChangeText={text => {
-                    console.log(text);
-                  }}
+                  onChangeText={text => {}}
                   style={{flex: 1}}
                 />
                 <Text
@@ -170,10 +181,16 @@ const ServiceDescription = ({navigation}) => {
         )}
         <ButtonDefault
           onPress={() => {
-            navigation.state.params.save(true);
+            !howLong || !nailCount
+              ? setErr('Поле обязательно для заполнения')
+              : setErr('');
+
+            howLong && nailCount && navigation.state.params.save(true);
           }}
           title={
-            false ? 'ВЫ не указали детали услуги' : `сохранить услугу (1/4)`
+            false
+              ? 'ВЫ не указали детали услуги'
+              : `сохранить услугу (1/${navigation.state.params.active.length})`
           }
           active={true}
         />

@@ -1,15 +1,13 @@
 import React from 'react';
-
+import {ButtonDefault} from '../components/Button';
 import {
   Text,
   View,
   StyleSheet,
-  TouchableOpacity,
   ImageBackground,
   Dimensions,
   Image,
 } from 'react-native';
-import {ButtonDefault} from '../components/Button';
 
 const screen = Dimensions.get('window');
 

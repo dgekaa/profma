@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import SvgUri from 'react-native-svg-uri';
 
 import CalendarCustom from '../components/Calendar';
 import ModalWindow from '../components/ModalWindow';
@@ -10,200 +11,202 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  FlatList,
   ImageBackground,
   Dimensions,
   TextInput,
 } from 'react-native';
 
-import DATA from '../data';
+const shortMonthName = [
+  'Янв',
+  'Фев',
+  'Март',
+  'Апр',
+  'Май',
+  'Июнь',
+  'Июль',
+  'Авг',
+  'Сент',
+  'Окт',
+  'Нояб',
+  'Дек',
+];
 
 const screen = Dimensions.get('window');
 
-const BorderImage = ({width, height, number, photoSize, top, master}) => {
-  return (
-    <View>
-      <ImageBackground
-        style={{
-          width: width,
-          height: height,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        source={
-          number === 1
-            ? require(`../img/Component1.png`)
-            : number === 2
-            ? require(`../img/Component2.png`)
-            : require(`../img/Component3.png`)
-        }>
-        <Image
-          style={{
-            width: photoSize,
-            height: photoSize,
-            borderRadius: photoSize,
-            marginTop: top,
-          }}
-          source={{
-            uri:
-              'https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg',
-          }}
-        />
-      </ImageBackground>
-      <View style={{alignItems: 'center', marginTop: -10}}>
-        <Text style={{fontSize: 13, color: '#fff'}}>{master}</Text>
-        <TouchableOpacity>
-          <Text style={{color: '#fff', fontSize: 13}}>К профилю</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-
-const Block = ({navigation}) => {
-  const {block, blockImg, timeBlock} = styles;
+const Block = ({navigation, el}) => {
+  const {block, blockImg, timeBlock, timeBlockWrapp} = styles;
+  console.log(el, 'EL');
   return (
     <TouchableOpacity
       style={block}
       onPress={() => {
-        navigation.navigate('PublickMasterProfile');
+        navigation.navigate('PublickMasterProfile', el);
       }}>
       <View style={{width: 140}}>
-        <Image
-          style={blockImg}
-          source={{
-            uri:
-              'https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg',
-          }}
-        />
+        <Image style={blockImg} source={{uri: el.img}} />
       </View>
       <View style={{flex: 1}}>
         <View
           style={{
-            flex: 1,
             flexDirection: 'row',
             justifyContent: 'space-between',
           }}>
           <Text style={{fontWeight: 'bold', fontSize: 13}}>
-            Людмила Заглубоцкая
+            {el.master_name}
           </Text>
-          {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image
-              style={{marginRight: 3}}
-              source={require('../img/Star.png')}
-            />
-            <Text style={{fontWeight: 'bold', fontSize: 13}}>5.0</Text>
-          </View> */}
         </View>
         <View
           style={{
-            flex: 2,
             flexDirection: 'row',
             justifyContent: 'space-between',
             marginVertical: 5,
           }}>
-          <View style={{}}>
+          <View style={{flex: 1}}>
             <Text style={{fontSize: 10}}>Стоимость сеанса</Text>
-            <Text style={{fontWeight: 'bold', fontSize: 10}}>1250 руб.</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 10}}>!!!!!! руб</Text>
           </View>
           <View style={{alignItems: 'flex-end'}}>
-            <Text style={{fontSize: 10}}>ул. Колонтай, 17к3</Text>
-            <Text style={{fontSize: 10}}>Что-то еще</Text>
+            <Text style={{fontSize: 10}}>{el.address}</Text>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              {el.metro && (
+                <View
+                  style={{
+                    height: 4,
+                    width: 4,
+                    borderRadius: 4,
+                    backgroundColor: '#9155FF',
+                    marginRight: 5,
+                  }}></View>
+              )}
+              <Text style={{fontSize: 10}}>{el.metro}</Text>
+            </View>
           </View>
         </View>
-        <View style={{flex: 4}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-            }}>
-            <View style={timeBlock}>
-              <Text style={{color: '#B986DA', fontSize: 10}}>25 июн</Text>
-              <Text style={{color: '#B986DA', fontSize: 10}}>12:00</Text>
-            </View>
-            <View style={timeBlock}>
-              <Text style={{color: '#B986DA', fontSize: 10}}>25 июн</Text>
-              <Text style={{color: '#B986DA', fontSize: 10}}>12:00</Text>
-            </View>
-            <View style={timeBlock}>
-              <Text style={{color: '#B986DA', fontSize: 10}}>25 июн</Text>
-              <Text style={{color: '#B986DA', fontSize: 10}}>12:00</Text>
-            </View>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-            }}>
-            <View style={timeBlock}>
-              <Text style={{color: '#B986DA', fontSize: 10}}>25 июн</Text>
-              <Text style={{color: '#B986DA', fontSize: 10}}>12:00</Text>
-            </View>
-            <View style={timeBlock}>
-              <Text style={{color: '#B986DA', fontSize: 10}}>25 июн</Text>
-              <Text style={{color: '#B986DA', fontSize: 10}}>12:00</Text>
-            </View>
-            <View style={timeBlock}>
-              <Text style={{color: '#B986DA', fontSize: 10}}>25 июн</Text>
-              <Text style={{color: '#B986DA', fontSize: 10}}>12:00</Text>
-            </View>
-          </View>
+        <View style={timeBlockWrapp}>
+          {el.work_time.map((item, index) => {
+            // console.log(item, 'item', index, el.master_name);
+            if (new Date().getDay() <= index + 1) {
+              if (!item.is_holiday) {
+                return item.all_time.map((time, ind) => {
+                  return (
+                    <View key={ind} style={timeBlock}>
+                      <Text
+                        style={{
+                          color: '#B986DA',
+                          fontSize: 10,
+                          fontWeight: 'bold',
+                        }}>
+                        {item.name}
+                      </Text>
+                      <Text style={{color: '#B986DA', fontSize: 10}}>
+                        {time} - {ind}
+                      </Text>
+                    </View>
+                  );
+                });
+              }
+            }
+          })}
         </View>
       </View>
-      {/* </View> */}
     </TouchableOpacity>
   );
 };
 
-// const NearestSeansBlock = ({img}) => {
-//   const {nearestSeansBlock} = styles;
-//   return (
-//     <View style={nearestSeansBlock}>
-//       <View>
-//         <Image
-//           source={{uri: img}}
-//           style={{width: 47, height: 47, marginRight: 8}}
-//         />
-//       </View>
-//       <View style={{flexDirection: 'column', flex: 1}}>
-//         <View>
-//           <Text style={{color: '#B986DA', fontSize: 10}}>
-//             💅Ближайший сеанс запланирован на
-//           </Text>
-//         </View>
-//         <View
-//           style={{
-//             flexDirection: 'row',
-//             flex: 1,
-//             marginTop: 5,
-//           }}>
-//           <View style={{flex: 1}}>
-//             <View style={{flexDirection: 'row'}}>
-//               <Image source={require('../img/CalendarColor.png')} />
-//               <Text
-//                 style={{
-//                   fontSize: 13,
-//                   color: '#B986DA',
-//                   fontWeight: 'bold',
-//                   marginLeft: 5,
-//                 }}>
-//                 12 авг в 12:30
-//               </Text>
-//             </View>
-//             <Text style={{fontSize: 10}}>Людмила Заглубоцкая</Text>
-//           </View>
-//           <View tyle={{flex: 1}}>
-//             <Text style={{fontSize: 10}}>Услуга</Text>
-//             <Text style={{fontSize: 10, fontWeight: 'bold'}}>
-//               Аппаратный маникюр
-//             </Text>
-//           </View>
-//         </View>
-//       </View>
-//     </View>
-//   );
-// };
+const NearestSeansBlock = ({el, index, masters, clients, navigation}) => {
+  const {nearestSeansBlock} = styles;
+
+  return (
+    <TouchableOpacity
+      style={nearestSeansBlock}
+      onPress={() => {
+        navigation.state.params.person[0].is_client
+          ? navigation.navigate('NoteInformation', {
+              person: el,
+              people: masters,
+            })
+          : navigation.navigate('NoteInformationMaster', el);
+      }}>
+      <View>
+        {masters
+          .filter(index => index.id == el.master_id)
+          .map(index => {
+            return (
+              <Image
+                source={{uri: index.img}}
+                style={{width: 50, height: 50, marginRight: 8}}
+              />
+            );
+          })}
+        {!masters.filter(index => index.id == el.master_id).length && (
+          <Image
+            source={{uri: 'https://hornews.com/upload/images/blank-avatar.jpg'}}
+            style={{width: 50, height: 50, marginRight: 8}}
+          />
+        )}
+      </View>
+      <View style={{flexDirection: 'column', flex: 1}}>
+        <View>
+          <Text style={{color: '#B986DA', fontSize: 10, fontWeight: 'bold'}}>
+            💅Ближайший сеанс запланирован на
+          </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            flex: 1,
+            marginTop: 5,
+          }}>
+          <View style={{flex: 1}}>
+            <View style={{flexDirection: 'row'}}>
+              <SvgUri source={require('../img/CalendarColor.svg')} />
+              <Text
+                style={{
+                  fontSize: 13,
+                  color: '#B986DA',
+                  fontWeight: 'bold',
+                  marginLeft: 5,
+                }}>
+                {el.day} {shortMonthName[+el.month - 1].toLowerCase()} в{' '}
+                {el.time}
+              </Text>
+            </View>
+            <Text style={{fontSize: 10}}>
+              {clients
+                .filter(index => index.id == el.client_id)
+                .map(index => {
+                  return <Text>{index.client_name}</Text>;
+                })}
+
+              {masters
+                .filter(index => index.id == el.master_id)
+                .map(index => {
+                  return <Text>{index.master_name}</Text>;
+                })}
+            </Text>
+          </View>
+          <View tyle={{flex: 1}}>
+            <Text style={{fontSize: 10}}>Услуга</Text>
+            {el.services.map((item, i) => {
+              return (
+                <Text key={i} style={{fontSize: 10, fontWeight: 'bold'}}>
+                  {item.name}
+                </Text>
+              );
+            })}
+          </View>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const Main = ({navigation}) => {
+  const person = navigation.state.params.person[0];
+  const masters = navigation.state.params.masters;
+  const clients = navigation.state.params.clients;
+
   const {
     prifileBtn,
     openCalendar,
@@ -217,7 +220,8 @@ const Main = ({navigation}) => {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   const onDayPress = day => {
-    console.log(day, 'day');
+    console.log(day, 'DAY');
+
     if (markedDates[day.dateString]) {
       delete markedDates[day.dateString];
       setMarkedDates({
@@ -231,6 +235,15 @@ const Main = ({navigation}) => {
     }
   };
 
+  function plural(number, titles) {
+    const cases = [2, 0, 1, 1, 1, 2];
+    return titles[
+      number % 100 > 4 && number % 100 < 20
+        ? 2
+        : cases[number % 10 < 5 ? number % 10 : 5]
+    ];
+  }
+
   return (
     <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
       <ScrollView>
@@ -241,75 +254,99 @@ const Main = ({navigation}) => {
             style={prifileBtn}
             onPress={() => {
               {
-                navigation.state.params.mail === 'c'
-                  ? navigation.navigate('ClientProfile', DATA)
-                  : navigation.navigate('MasterProfile', DATA);
+                person.is_client
+                  ? navigation.navigate('ClientProfile', person)
+                  : navigation.navigate('MasterProfile', person);
               }
             }}>
-            <Image source={require('../img/UserWhite.png')} />
+            <SvgUri source={require('../img/UserWhite.svg')} />
             <Text style={{color: '#fff', marginLeft: 5}}>Мой профиль</Text>
           </TouchableOpacity>
         </ImageBackground>
         <View style={{paddingHorizontal: 8}}>
-          {/* {true && (
+          {!!person.my_notes.length && (
             <ScrollView
               style={nearestSeans}
               horizontal={true}
               showsHorizontalScrollIndicator={false}>
-              <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
-              <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
-              <NearestSeansBlock img="https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg" />
+              {person.my_notes.map((el, i) => (
+                // НУЖНО ОПРЕДЕЛИТЬ ИЗ НИХ БЛИЖАЙШИЕ
+                <View key={i}>
+                  <NearestSeansBlock
+                    el={el}
+                    index={i}
+                    masters={masters}
+                    navigation={navigation}
+                    clients={clients}
+                  />
+                </View>
+              ))}
             </ScrollView>
-          )} */}
-          {true && (
+          )}
+          {!!Object.keys(markedDates).length && (
             <View style={foundMasters}>
-              <View>
-                <Text>Найдено 243 мастера на указанные даты:</Text>
+              <View style={{flex: 1}}>
+                <Text>{`Найдено ${1} !!! ${plural(1, [
+                  'мастер',
+                  'мастера',
+                  'мастеров',
+                ])} на указанные даты:`}</Text>
                 <Text
                   style={{color: '#B986DA', fontSize: 13, fontWeight: 'bold'}}>
-                  13 апр, 16 апр, 17 апр, 25 апр
+                  {Object.keys(markedDates).map(el => (
+                    <Text>
+                      {el.split('-')[2]}{' '}
+                      {shortMonthName[+el.split('-')[1] - 1].toLowerCase()},{' '}
+                    </Text>
+                  ))}
                 </Text>
               </View>
-              <TouchableOpacity style={closeBtn}>
-                <Image source={require('../img/cross.png')} />
+              <TouchableOpacity
+                style={closeBtn}
+                onPress={() => {
+                  setMarkedDates({});
+                }}>
+                <SvgUri source={require('../img/cross.svg')} />
               </TouchableOpacity>
             </View>
           )}
-          {true && (
-            <View style={{paddingBottom: 60}}>
-              <Block navigation={navigation} />
-              <Block navigation={navigation} />
-              <Block navigation={navigation} />
-            </View>
-          )}
-          {false && (
+          <View style={{paddingBottom: 80}}>
+            <FlatList
+              data={masters}
+              renderItem={({item}) => {
+                return <Block navigation={navigation} el={item} />;
+              }}
+              keyExtractor={item => item.id.toString()}
+            />
+          </View>
+          {!person.my_notes.length && (
             <View style={{flex: 1}}>
               <View style={{marginTop: 20, flex: 1}}>
                 <Text style={{fontSize: 13}}>
                   Пока на сервисе нет ни одного мастера.
                 </Text>
                 <Text style={{fontSize: 13}}>
-                  таньте первым и попадите на пьедестал лучших.
+                  Станьте первым и попадите на пьедестал лучших.
                 </Text>
               </View>
             </View>
           )}
         </View>
       </ScrollView>
-      {false && (
+      {!person.my_notes.length && (
         <ButtonDefault
           title="заполнить профиль мастера"
           active={true}
           style={{margin: 8}}
         />
       )}
-      {true && !isCalendarVisible && (
+      {!isCalendarVisible && (
         <TouchableOpacity
           style={[openCalendar, {top: screen.height - 80}]}
           onPress={() => {
             setIsCalendarVisible(true);
           }}>
-          <Image source={require('../img/calendar.png')} />
+          <SvgUri source={require('../img/CalendarSVG.svg')} />
           <Text style={{marginLeft: 5}}>Выбрать дату</Text>
         </TouchableOpacity>
       )}
@@ -400,13 +437,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
     borderRadius: 33,
     alignSelf: 'center',
-
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
   },
   block: {
-    flex: 1,
     height: 145,
     elevation: 1,
     shadowColor: '#000',
@@ -420,14 +455,23 @@ const styles = StyleSheet.create({
     width: 130,
     height: 130,
     marginRight: 10,
+    borderRadius: 3,
   },
   timeBlock: {
-    width: '33%',
+    width: '30%',
     borderColor: 'rgba(185, 134, 218, 0.15)',
     borderWidth: 1.5,
     justifyContent: 'center',
     alignItems: 'center',
     margin: 2,
+    height: 33,
+  },
+  timeBlockWrapp: {
+    height: 75,
+    overflow: 'hidden',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   openCalendar: {
     width: 160,
@@ -444,6 +488,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
   },
   foundMasters: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -461,6 +506,7 @@ const styles = StyleSheet.create({
   nearestSeans: {
     flexDirection: 'row',
     marginBottom: 8,
+    maxHeight: 95,
   },
   nearestSeansBlock: {
     padding: 8,
@@ -472,6 +518,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     flexDirection: 'row',
     width: screen.width - 50,
+    height: '85%',
     alignItems: 'center',
   },
 });

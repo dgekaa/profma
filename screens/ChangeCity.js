@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import SvgUri from 'react-native-svg-uri';
 
 import BackgroundHeader from '../components/BackgroundHeader';
 
@@ -32,7 +33,9 @@ const ChangeCity = ({navigation}) => {
     'asd',
     'zxc',
   ];
-  const [city, setCity] = useState('Укажите город');
+  const [city, setCity] = useState(
+    navigation.state.params.city || 'Укажите город',
+  );
 
   return (
     <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
@@ -60,10 +63,13 @@ const ChangeCity = ({navigation}) => {
             shadowColor: 'rgba(0, 0, 0, 0.17)',
             elevation: 2,
           }}>
-          <Image
+          <SvgUri
             style={{marginRight: 10}}
-            source={require('../img/Search.png')}
+            width="13"
+            height="13"
+            source={require('../img/Search.svg')}
           />
+
           <TextInput placeholder="Найти город.." />
         </View>
         <View style={[groupBlock]}>

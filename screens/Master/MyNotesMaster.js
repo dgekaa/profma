@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
+import SvgUri from 'react-native-svg-uri';
 
 import BackgroundHeader, {Header} from '../../components/BackgroundHeader';
-import {InputWithText} from '../../components/Input';
 import {ButtonDefault} from '../../components/Button';
+import {people} from '../../data';
 
 import {
   Text,
@@ -13,32 +14,47 @@ import {
   ScrollView,
 } from 'react-native';
 
-const Block = ({el, navigation, archive, keyBlock}) => {
+const shortMonthName = [
+  'Янв',
+  'Фев',
+  'Март',
+  'Апр',
+  'Май',
+  'Июнь',
+  'Июль',
+  'Авг',
+  'Сент',
+  'Окт',
+  'Нояб',
+  'Дек',
+];
+
+const Block = ({el, navigation, archive}) => {
   const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
+
   return (
     <TouchableOpacity
       style={block}
-      key={keyBlock}
       onPress={() => {
         navigation.navigate('NoteInformationMaster', el);
       }}>
       <View style={topBlock}>
         <View style={{flexDirection: 'row', flex: 6}}>
-          <Image
-            style={{marginRight: 5}}
+          <SvgUri
+            style={{height: 13, width: 13}}
             source={
               archive
-                ? require('../../img/CalendarGray.png')
-                : require('../../img/CalendarColor.png')
+                ? require('../../img/calendarGray.svg')
+                : require('../../img/CalendarColor.svg')
             }
           />
           <Text style={[dateText, {color: archive ? '#A6ADB3' : 'black'}]}>
-            {el.date} В {el.time}
+            {el.day} {shortMonthName[+el.month - 1]} В {el.time}
           </Text>
         </View>
         <View style={{flex: 4}}>
           <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-            1250р
+            {el.how_mach}
           </Text>
         </View>
       </View>
@@ -46,8 +62,7 @@ const Block = ({el, navigation, archive, keyBlock}) => {
         <Image
           style={img}
           source={{
-            uri:
-              'http://rs.img.com.ua/crop?v2=1&w=600&h=0&url=%2F%2Fv.img.com.ua%2Fb%2Forig%2Fa%2F46%2F9bb403323c7330b1431ff70432c5a46a.jpg',
+            uri: 'https://hornews.com/upload/images/blank-avatar.jpg',
           }}
         />
         <View style={{flex: 1}}>
@@ -55,15 +70,25 @@ const Block = ({el, navigation, archive, keyBlock}) => {
             <Text style={{fontSize: 10, color: archive ? '#A6ADB3' : 'black'}}>
               Клиент
             </Text>
-            <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-              {el.name}
-            </Text>
+            {people
+              .filter(index => index.id == el.client_id)
+              .map(index => (
+                <Text
+                  style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
+                  {index.client_name}
+                </Text>
+              ))}
           </View>
           <View style={{flex: 1}}>
-            <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-              {el.address.address}
-            </Text>
-            <Text style={{fontSize: 10}}>Садовая</Text>
+            {people
+              .filter(index => index.id == el.client_id)
+              .map(index => (
+                <Text
+                  style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
+                  {index.address}
+                </Text>
+              ))}
+            <Text style={{fontSize: 10}}>!!!!!!</Text>
           </View>
         </View>
         <View style={{flex: 1}}>
@@ -87,9 +112,10 @@ const Block = ({el, navigation, archive, keyBlock}) => {
 
 const MyNotesMaster = ({navigation}) => {
   const {bigText, smallText, textBold, blockTitle, block} = styles;
+
   return (
     <View style={{flex: 1, backgroundColor: '#fafafa'}}>
-      {!navigation.state.params.length && (
+      {!navigation.state.params.my_notes.length && (
         <View style={{flex: 1}}>
           <Header navigation={navigation} />
           <View style={{flex: 1, paddingHorizontal: 18}}>
@@ -112,18 +138,30 @@ const MyNotesMaster = ({navigation}) => {
           </View>
         </View>
       )}
-      {!!navigation.state.params.length && (
+      {!!navigation.state.params.my_notes.length && (
         <View style={{flex: 1}}>
           <BackgroundHeader navigation={navigation} title="Мои записи" />
           <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
             <Text style={blockTitle}>Активные записи</Text>
-            {navigation.state.params.map((el, i) => (
-              <Block el={el} navigation={navigation} keyBlock={i} />
-            ))}
+            {navigation.state.params.my_notes.map((el, i) => {
+              if (el.is_active) {
+                return (
+                  <View key={i}>
+                    <Block el={el} navigation={navigation} index={i} />
+                  </View>
+                );
+              }
+            })}
             <Text style={blockTitle}>Архив записей</Text>
-            {navigation.state.params.map((el, i) => (
-              <Block el={el} navigation={navigation} archive={true} key={i} />
-            ))}
+            {navigation.state.params.my_notes.map((el, i) => {
+              if (el.is_archive) {
+                return (
+                  <View key={i}>
+                    <Block el={el} navigation={navigation} archive={true} />
+                  </View>
+                );
+              }
+            })}
           </ScrollView>
         </View>
       )}

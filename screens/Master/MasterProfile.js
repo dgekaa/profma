@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 
 import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
 import {ScrollView} from 'react-native-gesture-handler';
+import SvgUri from 'react-native-svg-uri';
 
 const MasterProfile = ({navigation}) => {
   const {
@@ -40,46 +41,18 @@ const MasterProfile = ({navigation}) => {
             <TouchableOpacity
               style={first}
               onPress={() => {
-                navigation.navigate(
-                  'MyNotesMaster',
-                  navigation.state.params[0].notes,
-                );
+                navigation.navigate('MyNotesMaster', navigation.state.params);
               }}>
-              <Image
-                style={{height: 13, width: 13}}
-                source={require('../../img/calendar.png')}
+              <SvgUri
+                width="13"
+                height="13"
+                source={require('../../img/CalendarSVG.svg')}
               />
               <Text style={text}>Мои записи</Text>
             </TouchableOpacity>
           </View>
           <View>
             <View style={groupBlock}>
-              {/* ПЕРСОНАЛЬНЫЕ ДАННЫЕ*/}
-              <TouchableOpacity
-                style={[blockInGroup, borderBottom]}
-                onPress={() => {
-                  navigation.navigate('PersonalDataMaster');
-                }}>
-                <Image
-                  style={{height: 13, width: 13}}
-                  source={require('../../img/user.png')}
-                />
-                <Text style={text}>Персональные данные</Text>
-              </TouchableOpacity>
-              {/* ИЗМЕНИТЬ ПАРОЛЬ*/}
-              <TouchableOpacity
-                style={[blockInGroup, borderBottom]}
-                onPress={() => {
-                  navigation.navigate('ChangePassword', {
-                    onGoBack: isSuccess => onGoBackFromPasword(isSuccess),
-                  });
-                }}>
-                <Image
-                  style={{height: 13, width: 13}}
-                  source={require('../../img/password.png')}
-                />
-                <Text style={text}>Изменить пароль</Text>
-              </TouchableOpacity>
               {/* КАЛЕНДАРЬ*/}
               <TouchableOpacity
                 style={[
@@ -88,12 +61,16 @@ const MasterProfile = ({navigation}) => {
                   {justifyContent: 'space-between', alignItems: 'center'},
                 ]}
                 onPress={() => {
-                  navigation.navigate('MasterCalendar');
+                  navigation.navigate(
+                    'MasterCalendar',
+                    navigation.state.params,
+                  );
                 }}>
                 <View style={{alignItems: 'center', flexDirection: 'row'}}>
-                  <Image
-                    style={{height: 13, width: 13}}
-                    source={require('../../img/calendar.png')}
+                  <SvgUri
+                    width="13"
+                    height="13"
+                    source={require('../../img/CalendarSVG.svg')}
                   />
                   <Text style={text}>Мой календарь мастера</Text>
                 </View>
@@ -105,27 +82,64 @@ const MasterProfile = ({navigation}) => {
               <TouchableOpacity
                 style={[blockInGroup, borderBottom]}
                 onPress={() => {
-                  console.log(navigation, 'navigation MyServices');
-
-                  navigation.navigate('MyServices');
+                  navigation.navigate('MyServices', navigation.state.params);
                 }}>
-                <Image
-                  style={{height: 13, width: 13}}
-                  source={require('../../img/Manicure.png')}
+                <SvgUri
+                  width="13"
+                  height="13"
+                  source={require('../../img/Manicure.svg')}
                 />
-                <Text style={text}>Мои услуги (0)</Text>
+                <Text style={text}>
+                  Мои услуги ({navigation.state.params.my_services.length})
+                </Text>
               </TouchableOpacity>
               {/* НАСТРОИТЬ РАСПИСАНИЕ*/}
               <TouchableOpacity
                 style={blockInGroup}
                 onPress={() => {
-                  navigation.navigate('WorkTimeSettings');
+                  navigation.navigate(
+                    'WorkTimeSettings',
+                    navigation.state.params,
+                  );
                 }}>
-                <Image
-                  style={{height: 13, width: 13}}
-                  source={require('../../img/calendar.png')}
+                <SvgUri
+                  width="13"
+                  height="13"
+                  source={require('../../img/CalendarSVG.svg')}
                 />
                 <Text style={text}>Настроить рабочее расписание</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={groupBlock}>
+              {/* ПЕРСОНАЛЬНЫЕ ДАННЫЕ*/}
+              <TouchableOpacity
+                style={[blockInGroup, borderBottom]}
+                onPress={() => {
+                  navigation.navigate(
+                    'PersonalDataMaster',
+                    navigation.state.params,
+                  );
+                }}>
+                <SvgUri
+                  style={{height: 13, width: 13}}
+                  source={require('../../img/User.svg')}
+                />
+                <Text style={text}>Персональные данные</Text>
+              </TouchableOpacity>
+              {/* ИЗМЕНИТЬ ПАРОЛЬ*/}
+              <TouchableOpacity
+                style={[blockInGroup, borderBottom]}
+                onPress={() => {
+                  navigation.navigate('ChangePassword', {
+                    onGoBack: isSuccess => onGoBackFromPasword(isSuccess),
+                    person: navigation.state.params,
+                  });
+                }}>
+                <SvgUri
+                  style={{height: 13, width: 13}}
+                  source={require('../../img/Password.svg')}
+                />
+                <Text style={text}>Изменить пароль</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -144,7 +158,9 @@ const MasterProfile = ({navigation}) => {
               {/* ВАШ ГОРОД*/}
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate('ChangeCity');
+                  navigation.navigate('ChangeCity', {
+                    city: navigation.state.params.city,
+                  });
                 }}>
                 <View
                   style={[
@@ -157,7 +173,7 @@ const MasterProfile = ({navigation}) => {
                   ]}>
                   <Text style={{fontSize: 13}}>Ваш город</Text>
                   <Text style={{fontWeight: 'bold', paddingRight: 18}}>
-                    {navigation.state.params[0].city}
+                    {navigation.state.params.city}
                   </Text>
                 </View>
               </TouchableOpacity>

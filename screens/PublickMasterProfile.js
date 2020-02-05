@@ -2,6 +2,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import {ButtonDefault} from '../components/Button';
 import CalendarCustom from '../components/Calendar';
 import ModalWindow from '../components/ModalWindow';
+import SvgUri from 'react-native-svg-uri';
 
 import {
   StyleSheet,
@@ -50,44 +51,67 @@ const BottomImgIndicator = ({index, showActiveImg}) => {
   );
 };
 
-const DropdownBlock = ({slideBlock, setSlideBlock, active}) => {
-  const {blockInGroup, borderBottom} = styles;
+const DropdownBlock = ({
+  el,
+  index,
+  slideBlock,
+  setSlideBlock,
+  checkboxes,
+  setCheckboxes,
+}) => {
+  const {blockInGroup, borderBottom, checkbox} = styles;
+
+  function plural(number, titles) {
+    const cases = [2, 0, 1, 1, 1, 2];
+    return titles[
+      number % 100 > 4 && number % 100 < 20
+        ? 2
+        : cases[number % 10 < 5 ? number % 10 : 5]
+    ];
+  }
 
   return (
     <TouchableOpacity
       style={[blockInGroup, borderBottom]}
       onPress={() => {
-        slideBlock[0] ? setSlideBlock([false]) : setSlideBlock([true]);
+        slideBlock[index]
+          ? (slideBlock[index] = false)
+          : (slideBlock[index] = true);
+        setSlideBlock([...slideBlock]);
       }}>
       <View style={{flexDirection: 'row'}}>
         <View style={{flex: 3, flexDirection: 'row', alignItems: 'center'}}>
           <View>
-            {slideBlock[0] && (
-              <Image
-                source={require('../img/Pressed.png')}
+            {slideBlock[index] && (
+              <SvgUri
+                source={require('../img/Pressed.svg')}
                 style={{marginRight: 8}}
               />
             )}
-            {!slideBlock[0] && (
-              <Image
-                source={require('../img/Default.png')}
-                style={{marginRight: 8}}
+            {!slideBlock[index] && (
+              <SvgUri
+                source={require('../img/Default.svg')}
+                style={{
+                  marginRight: 8,
+                }}
               />
             )}
           </View>
           <View>
-            <Text style={{fontWeight: 'bold', fontSize: 13}}>
-              Аппаратный маникюр
+            <Text style={{fontWeight: 'bold', fontSize: 13}}>{el.name}</Text>
+            <Text style={{fontSize: 10}}>
+              {el.how_long} {plural(el.how_long, ['час', 'часа', 'часов'])}
             </Text>
-            <Text style={{fontSize: 10}}>1 час</Text>
           </View>
         </View>
         <View style={{flex: 2, flexDirection: 'row', alignItems: 'center'}}>
           <View style={{flex: 7}}>
             <Text style={{fontSize: 10}}>Стоимость услуги</Text>
-            <Text style={{fontWeight: 'bold', fontSize: 13}}>от 1 250 руб</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 13}}>
+              {el.how_mach} руб
+            </Text>
           </View>
-          <View style={{}}>
+          <View>
             <TouchableOpacity
               style={{
                 marginRight: 8,
@@ -95,32 +119,35 @@ const DropdownBlock = ({slideBlock, setSlideBlock, active}) => {
                 height: 30,
                 justifyContent: 'center',
                 alignItems: 'center',
+              }}
+              onPress={() => {
+                checkboxes[index]
+                  ? (checkboxes[index] = false)
+                  : (checkboxes[index] = true);
+                setCheckboxes([...checkboxes]);
               }}>
               <View
-                style={{
-                  width: 14,
-                  height: 14,
-                  borderRadius: 2,
-                  backgroundColor: '#fff',
-                  backgroundColor: active ? '#B986DA' : '#fff',
-                  borderWidth: 3,
-                  borderWidth: active ? 0 : 3,
-                  borderColor: '#DFDFE4',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Image source={require('../img/Vector.png')} />
+                style={[
+                  checkbox,
+                  {
+                    backgroundColor: checkboxes[index] ? '#B986DA' : '#fff',
+                    borderWidth: checkboxes[index] ? 0 : 3,
+                  },
+                ]}>
+                <SvgUri source={require('../img/Vector.svg')} />
               </View>
             </TouchableOpacity>
           </View>
         </View>
       </View>
-      {slideBlock[0] && (
-        <View style={{paddingTop: 8, paddingRight: 8}}>
-          <Text style={{fontSize: 13}}>
-            Не обрезной маникюр, в результате которого кутикула удаляется при
-            помощи шлифовки специальным аппаратом с различными видами насадок.
-          </Text>
+      {slideBlock[index] && (
+        <View
+          style={{
+            paddingTop: 8,
+            paddingRight: 8,
+            width: '100%',
+          }}>
+          <Text style={{fontSize: 13}}>{el.description}</Text>
         </View>
       )}
     </TouchableOpacity>
@@ -145,7 +172,7 @@ const AnotherBlock = ({title, onPress}) => {
         onPress();
       }}>
       <Text style={{fontWeight: 'bold'}}>{title}</Text>
-      <Image source={require('../img/ArrowRight.png')} />
+      <SvgUri source={require('../img/ArrowRight.svg')} />
     </TouchableOpacity>
   );
 };
@@ -190,14 +217,23 @@ const PublickMasterProfile = ({navigation}) => {
   const scrollImage = useRef(null);
   // const timeBlockRef = useRef();
 
+  // const [allPhoto, setAllPhoto] = useState([]);
+
+  useEffect(() => {
+    const arr = [];
+    navigation.state.params.my_notes.forEach((el, i) => {
+      if (el.photo && el.photo.length) {
+        el.photo.forEach(el => {
+          arr.push(el);
+        });
+      }
+    });
+    setImgArr([...arr]);
+  }, []);
+
   const [activeImg, setActiveImg] = useState(null);
-  const [imgArr, setImgArr] = useState([
-    'https://i.pinimg.com/736x/c8/fe/ff/c8feff7244af6a4d982447c5845ce08c.jpg',
-    'https://womans.ws/wp-content/uploads/2019/10/1523527373_44-1068x1068.jpg',
-    'https://zhurnal-lady.com/wp-content/uploads/2018/12/4-15.jpg',
-  ]);
+  const [imgArr, setImgArr] = useState([]);
   const [y, setY] = useState(null);
-  const [slideBlock, setSlideBlock] = useState([false]);
 
   const [showAllServices, setShowAllServices] = useState(false);
 
@@ -208,7 +244,7 @@ const PublickMasterProfile = ({navigation}) => {
   const [timeWasSelected, setTimeWasSelected] = useState(false);
 
   const [todayInfo, setTodayInfo] = useState({});
-  console.log(todayInfo);
+
   const onDayPress = day => {
     if (markedDates[day.dateString]) {
       setMarkedDates({});
@@ -219,42 +255,74 @@ const PublickMasterProfile = ({navigation}) => {
     }
   };
 
+  const [services, setServices] = useState(navigation.state.params.my_services);
+  const [slideBlock, setSlideBlock] = useState(
+    new Array(services.length).fill(false),
+  );
+  const [checkboxes, setCheckboxes] = useState(
+    new Array(services.length).fill(false),
+  );
+
+  console.log(navigation.state.params, 'navigation.state.params');
+
+  const endPrice = checkboxes.map((el, i) => {
+    if (el) {
+      return navigation.state.params.my_services[i].how_mach;
+    }
+  });
+  const endPrice2 = endPrice.filter((el, i) => {
+    return el;
+  });
+
+  const endPrice3 =
+    endPrice2.length && endPrice2.reduce((a, b) => Number(a) + Number(b));
+
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader
         navigation={navigation}
         title="Людмила Заглубоцкая"
-        description="Мастер по маникюру, Мастер по педикюру"
+        description={navigation.state.params.skills}
       />
       <ScrollView>
         <View style={container}>
-          <ScrollView
-            style={galerea}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}>
-            {imgArr.map((el, i) => (
-              <GalereaBlock
-                index={i}
-                key={i}
-                onPress={() => {
-                  setActiveImg(i);
-                }}
-                img={el}
-              />
-            ))}
-          </ScrollView>
+          {!!imgArr.length && (
+            <ScrollView
+              style={galerea}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}>
+              {imgArr.map((el, i) => (
+                <GalereaBlock
+                  index={i}
+                  key={i}
+                  onPress={() => {
+                    setActiveImg(i);
+                  }}
+                  img={el}
+                />
+              ))}
+            </ScrollView>
+          )}
           <Text style={textTitle}>Услуги</Text>
           <View style={groupBlock}>
-            <DropdownBlock
-              active={false}
-              slideBlock={slideBlock}
-              setSlideBlock={setSlideBlock}
-            />
-            <DropdownBlock
-              active={true}
-              slideBlock={slideBlock}
-              setSlideBlock={setSlideBlock}
-            />
+            {services.map((el, i) => {
+              if (i < 3) {
+                return (
+                  <View key={i}>
+                    <DropdownBlock
+                      index={i}
+                      el={el}
+                      active={false}
+                      slideBlock={slideBlock}
+                      setSlideBlock={setSlideBlock}
+                      checkboxes={checkboxes}
+                      setCheckboxes={setCheckboxes}
+                    />
+                  </View>
+                );
+              }
+            })}
+
             <AnotherBlock
               title="Посмотреть все услуги"
               onPress={() => {
@@ -280,11 +348,12 @@ const PublickMasterProfile = ({navigation}) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}>
-                <Image
-                  source={require('../img/calendar.png')}
-                  style={{marginRight: 8}}
+                <SvgUri
+                  width="13"
+                  height="13"
+                  source={require('../img/CalendarSVG.svg')}
                 />
-                <Text style={{fontWeight: 'bold'}}>25 июн 2019</Text>
+                <Text style={{fontWeight: 'bold'}}>25 июн 2019 !!!!!!!!!!</Text>
               </View>
               <View
                 style={{
@@ -301,7 +370,7 @@ const PublickMasterProfile = ({navigation}) => {
                 />
                 <TimeBlock
                   style={{width: '30%'}}
-                  time="13:00"
+                  time="!!!!!!!"
                   active={false}
                   onPress={() => {}}
                 />
@@ -323,33 +392,51 @@ const PublickMasterProfile = ({navigation}) => {
           <Text style={textTitle}>адрес мастера</Text>
           <View style={groupBlock}>
             <View style={[blockInGroup, {flexDirection: 'row'}]}>
-              <Image
-                source={require('../img/Location.png')}
+              <SvgUri
+                source={require('../img/Location.svg')}
                 style={{marginRight: 8}}
               />
               <View style={{flexDirection: 'column'}}>
                 <Text style={{fontSize: 13, fontWeight: 'bold'}}>
-                  Санкт-Петербург, ул. Колонтай, 17к3
+                  {navigation.state.params.city},{' '}
+                  {navigation.state.params.address}
                 </Text>
-                <Text style={{fontSize: 13}}>Садовая</Text>
+                <View style={{alignItems: 'center', flexDirection: 'row'}}>
+                  <View
+                    style={{
+                      height: 4,
+                      width: 4,
+                      backgrounColor: '#9155F',
+                      borderRadius: 4,
+                      marginRight: 5,
+                    }}></View>
+                  <Text style={{fontSize: 13}}>
+                    {navigation.state.params.metro}
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
           <Text style={textTitle}> О мастере</Text>
           <View style={[groupBlock, blockInGroup, {marginBottom: 30}]}>
-            <Text style={{fontSize: 13, marginRight: 16}}>
-              Всех приветствую в своём профиле. Я Светлана - сертифицированный
-              мастер ногтевого сервиса. Закончила курс по специальности “Мастер
-              по маникюру” и “Мастер по педикюру”. Слежу за новыми тенденциями и
-              новинками.
+            <Text
+              style={{
+                fontSize: 13,
+                width: '100%',
+                marginRight: 16,
+                backgrounColor: 'green',
+              }}>
+              {navigation.state.params.about_me}
             </Text>
           </View>
           <ButtonDefault
             style={{flexDirection: 'row', justifyContent: 'space-between'}}
             title="Подтвердить запись"
-            rightTitle="1 800 руб"
+            rightTitle={endPrice3 + ' руб'}
+            onPress={() => {
+              alert('Подтвердить');
+            }}
             active={true}
-            onPress={() => {}}
           />
         </View>
       </ScrollView>
@@ -390,7 +477,7 @@ const PublickMasterProfile = ({navigation}) => {
             onPress={() => {
               setActiveImg(null);
             }}>
-            <Image source={require('../img/CrossWhite.png')} />
+            <SvgUri source={require('../img/CrossWhite.svg')} />
           </TouchableOpacity>
           <View style={imgIndicator}>
             {imgArr.map((el, i) => {
@@ -433,17 +520,30 @@ const PublickMasterProfile = ({navigation}) => {
               Все услуги
             </Text>
             <ScrollView style={{paddingHorizontal: 8}}>
-              <DropdownBlock
-                active={false}
-                slideBlock={slideBlock}
-                setSlideBlock={setSlideBlock}
-              />
+              {services.map((el, i) => {
+                return (
+                  <View key={i}>
+                    <DropdownBlock
+                      index={i}
+                      el={el}
+                      slideBlock={slideBlock}
+                      setSlideBlock={setSlideBlock}
+                      checkboxes={checkboxes}
+                      setCheckboxes={setCheckboxes}
+                    />
+                  </View>
+                );
+              })}
             </ScrollView>
             <ButtonDefault
               onPress={() => {
                 setShowAllServices(false);
               }}
-              title="Выбрать эти услуги (4)"
+              title={
+                'Выбрать эти услуги (' +
+                checkboxes.filter(el => el).length +
+                ')'
+              }
               active={true}
               style={{margin: 8}}
             />
@@ -550,8 +650,8 @@ const PublickMasterProfile = ({navigation}) => {
         <ModalWindow>
           <Text>Вы записаны</Text>
           <Text>
-            на <Text style={{fontWeight: 'bold'}}>25 июн 2019</Text> в 10:00 к
-            мастеру
+            на <Text style={{fontWeight: 'bold'}}>25 июн 2019 !!!!</Text> в
+            10:00 к мастеру
           </Text>
           <Image style={{marginTop: 16}} source={require('../img/girl1.png')} />
           <Text style={{fontWeight: 'bold', marginVertical: 16}}>
@@ -629,7 +729,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 2,
     shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 2,
+    elevation: 1,
     flexDirection: 'column',
     paddingLeft: 18,
     backgroundColor: '#fff',
@@ -684,6 +784,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 4,
+  },
+  checkbox: {
+    width: 14,
+    height: 14,
+    borderRadius: 2,
+    backgroundColor: '#fff',
+    borderWidth: 3,
+    borderColor: '#DFDFE4',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

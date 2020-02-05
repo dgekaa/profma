@@ -5,7 +5,7 @@ const SaveSuccess = ({title, style}) => {
   const {alert} = styles;
   return (
     <View style={[alert, style]}>
-      <Text style={{color: '#fff', textAlign: 'center'}}>{title}</Text>
+      <Text style={text}>{title}</Text>
     </View>
   );
 };
@@ -17,6 +17,10 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  text: {
+    color: '#fff',
+    textAlign: 'center',
   },
 });
 
