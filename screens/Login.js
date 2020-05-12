@@ -67,6 +67,7 @@ const Login = ({navigation}) => {
         </View>
         <View style={inputGroup}>
           <InputWithText
+            autoFocus={true}
             onChangeText={text => {
               setValidationErr('');
               setMail(text);
@@ -111,7 +112,9 @@ const Login = ({navigation}) => {
               title={regBtnText}
               active={true}
               onPress={() => {
-                const person = people.filter(el => el.e_mail == mail);
+                const person = people.filter(
+                  el => el.e_mail.toLowerCase() == mail.toLowerCase(),
+                );
                 if (!password || !mail) {
                   setFillErr('Поля не заполнены');
                 } else if (!person.length || person[0].password != password) {

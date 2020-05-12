@@ -57,7 +57,7 @@ const NoteInformationMaster = ({navigation}) => {
     <View style={{flex: 1}}>
       <BackgroundHeader
         navigation={navigation}
-        title={isCompleted ? 'Сеанс завершён' : 'Запись оформлена'}
+        title={isCompleted ? 'Сеанс завершён' : 'Вы записаны к мастеру'}
       />
       <ScrollView style={{}}>
         <View style={{flex: 1, paddingHorizontal: 8, paddingTop: 15}}>

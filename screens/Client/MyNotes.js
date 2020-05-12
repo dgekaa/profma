@@ -30,6 +30,12 @@ const shortMonthName = [
 ];
 
 const Block = ({el, navigation, key, archive}) => {
+  console.log(el, 'ELLLLLLLLLLLLLLLLLll');
+  let costCount = 0;
+  el.services &&
+    el.services.forEach((elem, i) => {
+      costCount += +elem.how_mach;
+    });
   const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
   return (
     <TouchableOpacity
@@ -59,7 +65,7 @@ const Block = ({el, navigation, key, archive}) => {
         </View>
         <View style={{flex: 4}}>
           <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-            {el.how_mach} руб.
+            {costCount} руб.
           </Text>
         </View>
       </View>
@@ -194,7 +200,6 @@ const styles = StyleSheet.create({
     elevation: 1,
     shadowColor: '#000',
     shadowOpacity: 0.5,
-    // backgroundColor: '#fff',
     marginBottom: 8,
     paddingLeft: 8,
   },
@@ -215,6 +220,7 @@ const styles = StyleSheet.create({
   textBold: {
     fontWeight: 'bold',
     fontSize: 10,
+    lineHeight: 16,
   },
   blockTitle: {
     color: '#011627',

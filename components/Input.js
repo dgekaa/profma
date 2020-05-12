@@ -23,6 +23,7 @@ export const InputWithText = ({
   err,
   errStyle,
   withoutShadow,
+  autoFocus,
 }) => {
   const {
     inputWrap,
@@ -31,6 +32,7 @@ export const InputWithText = ({
     maxLength,
     topInputTextWrap,
     smallText,
+    errStyleLocal,
   } = styles;
 
   return (
@@ -48,6 +50,7 @@ export const InputWithText = ({
       </View>
       <View style={inputWrap}>
         <TextInput
+          autoFocus
           selectTextOnFocus={selectTextOnFocus}
           value={value}
           placeholderTextColor="rgba(0,0,0,0.2)"

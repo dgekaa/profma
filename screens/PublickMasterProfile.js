@@ -47,7 +47,8 @@ const BottomImgIndicator = ({index, showActiveImg}) => {
           height: showActiveImg == index ? 10 : 7,
           width: showActiveImg == index ? 10 : 7,
         },
-      ]}></View>
+      ]}
+    />
   );
 };
 
@@ -406,10 +407,11 @@ const PublickMasterProfile = ({navigation}) => {
                     style={{
                       height: 4,
                       width: 4,
-                      backgrounColor: '#9155F',
+                      backgroundColor: '#9155FF',
                       borderRadius: 4,
                       marginRight: 5,
-                    }}></View>
+                    }}
+                  />
                   <Text style={{fontSize: 13}}>
                     {navigation.state.params.metro}
                   </Text>

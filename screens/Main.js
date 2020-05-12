@@ -77,7 +77,8 @@ const Block = ({navigation, el}) => {
                     borderRadius: 4,
                     backgroundColor: '#9155FF',
                     marginRight: 5,
-                  }}></View>
+                  }}
+                />
               )}
               <Text style={{fontSize: 10}}>{el.metro}</Text>
             </View>
@@ -89,6 +90,7 @@ const Block = ({navigation, el}) => {
             if (new Date().getDay() <= index + 1) {
               if (!item.is_holiday) {
                 return item.all_time.map((time, ind) => {
+                  console.log(item, 'TIME');
                   return (
                     <View key={ind} style={timeBlock}>
                       <Text
@@ -97,10 +99,10 @@ const Block = ({navigation, el}) => {
                           fontSize: 10,
                           fontWeight: 'bold',
                         }}>
-                        {item.name}
+                        {/* {item.name} */}5 дек.
                       </Text>
                       <Text style={{color: '#B986DA', fontSize: 10}}>
-                        {time} - {ind}
+                        {time}
                       </Text>
                     </View>
                   );
@@ -119,7 +121,7 @@ const NearestSeansBlock = ({el, index, masters, clients, navigation}) => {
 
   return (
     <TouchableOpacity
-      style={nearestSeansBlock}
+      style={[nearestSeansBlock, {backgroundColor: 'gold'}]}
       onPress={() => {
         navigation.state.params.person[0].is_client
           ? navigation.navigate('NoteInformation', {
@@ -128,25 +130,26 @@ const NearestSeansBlock = ({el, index, masters, clients, navigation}) => {
             })
           : navigation.navigate('NoteInformationMaster', el);
       }}>
-      <View>
+      <View style={{backgroundColor: 'pink'}}>
         {masters
           .filter(index => index.id == el.master_id)
           .map(index => {
             return (
               <Image
                 source={{uri: index.img}}
-                style={{width: 50, height: 50, marginRight: 8}}
+                style={{width: 47, height: 47, marginRight: 8}}
               />
             );
           })}
         {!masters.filter(index => index.id == el.master_id).length && (
           <Image
             source={{uri: 'https://hornews.com/upload/images/blank-avatar.jpg'}}
-            style={{width: 50, height: 50, marginRight: 8}}
+            style={{width: 47, height: 47, marginRight: 8}}
           />
         )}
       </View>
-      <View style={{flexDirection: 'column', flex: 1}}>
+      <View
+        style={{flexDirection: 'column', flex: 1, backgroundColor: 'green'}}>
         <View>
           <Text style={{color: '#B986DA', fontSize: 10, fontWeight: 'bold'}}>
             💅Ближайший сеанс запланирован на
@@ -158,7 +161,7 @@ const NearestSeansBlock = ({el, index, masters, clients, navigation}) => {
             flex: 1,
             marginTop: 5,
           }}>
-          <View style={{flex: 1}}>
+          <View style={{marginRight: 24}}>
             <View style={{flexDirection: 'row'}}>
               <SvgUri source={require('../img/CalendarColor.svg')} />
               <Text

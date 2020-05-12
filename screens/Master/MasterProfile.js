@@ -33,7 +33,7 @@ const MasterProfile = ({navigation}) => {
 
   return (
     <View style={{flex: 1}}>
-      <BackgroundHeader navigation={navigation} />
+      <BackgroundHeader navigation={navigation} title={`Мой профиль`} />
       <ScrollView>
         <View style={{paddingHorizontal: 10, flex: 1}}>
           <View>
@@ -75,7 +75,7 @@ const MasterProfile = ({navigation}) => {
                   <Text style={text}>Мой календарь мастера</Text>
                 </View>
                 <View style={outsideCircle}>
-                  <View style={insideCircle}></View>
+                  <View style={insideCircle} />
                 </View>
               </TouchableOpacity>
               {/* МОИ УСЛУГИ*/}
@@ -172,7 +172,7 @@ const MasterProfile = ({navigation}) => {
                     },
                   ]}>
                   <Text style={{fontSize: 13}}>Ваш город</Text>
-                  <Text style={{fontWeight: 'bold', paddingRight: 18}}>
+                  <Text style={{fontWeight: 'bold', paddingRight: 6}}>
                     {navigation.state.params.city}
                   </Text>
                 </View>
@@ -191,7 +191,7 @@ const MasterProfile = ({navigation}) => {
           </View>
         </View>
       </ScrollView>
-      <View style={{margin: 8}}>
+      <View style={{margin: 8, marginBottom: 30}}>
         {isChangePassword && (
           <SaveSuccess title="👍 Новый пароль успешно сохранён." />
         )}

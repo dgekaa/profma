@@ -1,6 +1,13 @@
 import React, {useState, useEffect} from 'react';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-import {Text, StyleSheet, View} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  Dimensions,
+  KeyboardAvoidingView,
+} from 'react-native';
 import {ButtonDefault, ButtonDisabled} from '../components/Button';
 import {InputWithText, InputWithPassword} from '../components/Input';
 import {Header} from '../components/BackgroundHeader';
@@ -11,8 +18,6 @@ const Registration = ({navigation}) => {
     topText,
     ProfMa,
     topTextWrap,
-    inputGroup,
-    registration,
     specialText,
     politicText,
     politic,
@@ -27,6 +32,7 @@ const Registration = ({navigation}) => {
   const [regBtnText, setRegBtnText] = useState('');
   const [iconName, setIconName] = useState('closedEye');
   const [hidePassword, setHidePassword] = useState(true);
+  const [password, setPassword] = useState('');
 
   useEffect(() => {
     fillErr
@@ -55,46 +61,66 @@ const Registration = ({navigation}) => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: '#FAFAFA',
+        position: 'absolute',
+        width: '100%',
+        height: Dimensions.get('window').height,
+        bottom: 0,
+      }}>
       <Header navigation={navigation} />
+
       <View style={[container, {flex: 1}]}>
-        <View style={[topTextWrap, {flex: 2.5}]}>
+        <View style={[topTextWrap]}>
           <Text style={ProfMa}>Prof.Ma</Text>
           <Text style={topText}>{textAd}</Text>
         </View>
-        <View style={[btnGroup]}>
-          <ButtonDefault
-            flex={true}
-            title="Я - КЛИЕНТ"
-            active={personType === 'client'}
-            onPress={() => {
-              selectPersonType('client');
-            }}
-            style={{marginRight: 5}}
-          />
-          <ButtonDefault
-            flex={true}
-            title="Я - МАСТЕР"
-            active={personType === 'master'}
-            onPress={() => {
-              selectPersonType('master');
-            }}
-          />
+
+        <View>
+          <View style={[btnGroup]}>
+            <ButtonDefault
+              flex={true}
+              title="Я - КЛИЕНТ"
+              active={personType === 'client'}
+              onPress={() => {
+                selectPersonType('client');
+              }}
+              style={{marginRight: 5, opacity: 0.8}}
+            />
+            <ButtonDefault
+              flex={true}
+              title="Я - МАСТЕР"
+              active={personType === 'master'}
+              onPress={() => {
+                selectPersonType('master');
+              }}
+              style={{opacity: 0.8}}
+            />
+          </View>
+          <View style={{backgroundColor: '#fff'}}>
+            <InputWithText
+              autoFocus={true}
+              text="Введите адрес электронной почты"
+              placeholder="example@site.com"
+              keyboardType="email-address"
+            />
+
+            <InputWithPassword
+              onChangeText={text => {
+                setPassword(text);
+              }}
+              value={password}
+              text="Придумайте пароль"
+              secureTextEntry={hidePassword}
+              icon={iconName}
+              onPress={openCloseEye}
+            />
+          </View>
         </View>
-        <View style={[inputGroup, {flex: 3}]}>
-          <InputWithText
-            text="Введите адрес электронной почты"
-            placeholder="example@site.com"
-            keyboardType="email-address"
-          />
-          <InputWithPassword
-            text="Придумайте пароль"
-            secureTextEntry={hidePassword}
-            icon={iconName}
-            onPress={openCloseEye}
-          />
-        </View>
-        <View style={[registration]}>
+
+        <View style={{flex: 1, justifyContent: 'flex-end'}}>
           <View style={politic}>
             <Text style={politicText}>
               Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей
@@ -102,6 +128,7 @@ const Registration = ({navigation}) => {
               <Text style={specialText}> Условиями использования</Text>
             </Text>
           </View>
+
           {!!fillErr && (
             <ButtonDisabled title={regBtnText} style={{marginBottom: 8}} />
           )}
@@ -118,6 +145,7 @@ const stylesClientRegistration = StyleSheet.create({
   },
   topTextWrap: {
     paddingHorizontal: 12,
+    marginBottom: 40,
   },
   ProfMa: {
     fontSize: 23,
@@ -131,7 +159,9 @@ const stylesClientRegistration = StyleSheet.create({
     fontSize: 23,
     marginTop: 16,
     width: '81%',
+    fontFamily: 'Futura PT',
   },
+
   btnGroup: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -140,7 +170,7 @@ const stylesClientRegistration = StyleSheet.create({
   politic: {
     textAlign: 'center',
     paddingHorizontal: 30,
-    paddingBottom: 15,
+    paddingBottom: 32,
   },
   politicText: {
     textAlign: 'center',

@@ -212,6 +212,7 @@ const styles = StyleSheet.create({
     opacity: 0.35,
     marginLeft: 18,
     marginTop: 15,
+    marginBottom: 8,
   },
   dateText: {
     color: '#B986DA',

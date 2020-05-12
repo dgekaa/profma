@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: '#fff',
     fontFamily: 'Futura PT',
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: 'bold',
     width: '95%',
     textAlign: 'center',
