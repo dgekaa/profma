@@ -160,8 +160,7 @@ const stylesClientRegistration = StyleSheet.create({
   },
   topText: {
     color: '#011627',
-    fontWeight: 'bold',
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Bold',
     fontSize: 23,
     marginTop: 16,
     width: '85%',
@@ -177,10 +176,10 @@ const stylesClientRegistration = StyleSheet.create({
   politicText: {
     fontSize: 13,
     textAlign: 'center',
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Medium',
   },
   specialText: {
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Medium',
     fontSize: 13,
     color: '#B986DA',
   },

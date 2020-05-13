@@ -6,7 +6,6 @@ import {
   TextInput,
   View,
   StyleSheet,
-  Image,
   TouchableOpacity,
 } from 'react-native';
 
@@ -194,6 +193,7 @@ const styles = StyleSheet.create({
   },
   smallText: {
     fontSize: 10,
+    fontFamily: 'FuturaPT-Medium',
   },
   inputWrap: {
     flexDirection: 'row',
@@ -224,9 +224,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   forgetText: {
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Bold',
     fontSize: 13,
-    fontWeight: 'bold',
     textTransform: 'uppercase',
   },
 });

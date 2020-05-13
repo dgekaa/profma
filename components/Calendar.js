@@ -210,18 +210,18 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 24,
     textTransform: 'uppercase',
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Medium',
   },
   dayText: {
     color: '#FFF',
     fontSize: 75,
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Medium',
   },
   yearText: {
     opacity: 0.5,
     color: '#FFF',
     fontSize: 24,
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Medium',
   },
   mb: {
     marginBottom: 8,

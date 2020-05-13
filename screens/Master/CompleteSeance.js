@@ -1,9 +1,7 @@
 import React, {useState, useEffect} from 'react';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
-import {InputWithText, InputWithPassword} from '../../components/Input';
-import {ButtonDisabled, ButtonDefault} from '../../components/Button';
-import SaveSuccess from '../../components/SaveSuccess';
+import {ButtonDefault} from '../../components/Button';
 import SvgUri from 'react-native-svg-uri';
 
 import {
@@ -11,7 +9,6 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  Image,
   ScrollView,
 } from 'react-native';
 
@@ -32,7 +29,7 @@ const CompleteSeance = ({navigation}) => {
               </Text>
             </View>
             <View>
-              <Text></Text>
+              <Text />
               <Text style={{fontWeight: 'bold', fontSize: 13}}>руб</Text>
             </View>
           </View>
@@ -52,7 +49,7 @@ const CompleteSeance = ({navigation}) => {
               <View
                 key={i}
                 style={[blockInGroup, borderBottom, {paddingRight: 8}]}>
-                <SvgUri source={require('../../img/Gallery.svg')} />
+                {/* <SvgUri source={require('../../img/Gallery.svg')} /> */}
                 <Text style={{fontSize: 13, flex: 1, marginLeft: 16}}>
                   {el}
                 </Text>

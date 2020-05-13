@@ -2,10 +2,10 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
 const SaveSuccess = ({title, style}) => {
-  const {alert} = styles;
+  const {alert, textStyle} = styles;
   return (
     <View style={[alert, style]}>
-      <Text style={text}>{title}</Text>
+      <Text style={textStyle}>{title}</Text>
     </View>
   );
 };
@@ -17,8 +17,13 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'absolute',
+    bottom: 32,
+    width: '100%',
+    alignSelf: 'center',
+    zIndex: 999,
   },
-  text: {
+  textStyle: {
     color: '#fff',
     textAlign: 'center',
   },

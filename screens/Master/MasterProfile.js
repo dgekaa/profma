@@ -172,7 +172,7 @@ const MasterProfile = ({navigation}) => {
                     },
                   ]}>
                   <Text style={{fontSize: 13}}>Ваш город</Text>
-                  <Text style={{fontWeight: 'bold', paddingRight: 6}}>
+                  <Text style={{fontWeight: 'bold'}}>
                     {navigation.state.params.city}
                   </Text>
                 </View>
@@ -212,27 +212,31 @@ const styles = StyleSheet.create({
   first: {
     marginTop: 10,
     height: 50,
-    borderRadius: 2,
-    shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 1,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 18,
+    borderRadius: 0.2,
+
+    shadowColor: '#000',
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+    elevation: 0.4,
   },
   text: {
     fontSize: 13,
-    fontWeight: 'bold',
     marginLeft: 13,
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Bold',
   },
   groupBlock: {
     marginTop: 20,
-    borderRadius: 2,
-    shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 1,
     flexDirection: 'column',
     paddingLeft: 18,
-    paddingRight: 8,
+    paddingRight: 0,
+    borderRadius: 0.2,
+    shadowColor: '#000',
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+    elevation: 0.4,
   },
   blockInGroup: {
     height: 50,

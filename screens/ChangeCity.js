@@ -7,7 +7,6 @@ import {
   Text,
   View,
   StyleSheet,
-  Image,
   TouchableOpacity,
   TextInput,
   ScrollView,
@@ -16,7 +15,13 @@ import {
 } from 'react-native';
 
 const Border = () => (
-  <View style={{height: 0.5, backgroundColor: '#aaa', marginLeft: 16}} />
+  <View
+    style={{
+      height: 0.5,
+      backgroundColor: '#aaa',
+      marginLeft: 16,
+    }}
+  />
 );
 
 const ChangeCity = ({navigation}) => {
@@ -43,7 +48,7 @@ const ChangeCity = ({navigation}) => {
 
   return (
     <TouchableWithoutFeedback onPress={() => cityInputRef.current.blur()}>
-      <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
+      <View style={{flex: 1}}>
         <BackgroundHeader
           navigation={navigation}
           title={`Выбрать другой город`}
@@ -82,6 +87,7 @@ const ChangeCity = ({navigation}) => {
               style={{width: '100%', paddingRight: 16}}
             />
           </View>
+
           <View style={[groupBlock]}>
             <ScrollView>
               {data.map((el, i) => {
@@ -116,11 +122,9 @@ const ChangeCity = ({navigation}) => {
 const styles = StyleSheet.create({
   groupBlock: {
     flex: 1,
-    borderRadius: 2,
-    shadowColor: 'red',
+    borderRadius: 0.2,
     shadowOpacity: 4,
-    backgroundColor: '#fff',
-    elevation: 2,
+    elevation: 0.4,
     marginTop: 20,
     paddingLeft: 16,
     marginBottom: 8,

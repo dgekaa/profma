@@ -5,7 +5,6 @@ import {
   Text,
   StyleSheet,
   View,
-  Image,
   TouchableOpacity,
 } from 'react-native';
 import {LeftArrowWhite, LeftArrowBlack} from './LeftArrow';
@@ -73,15 +72,14 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#fff',
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Bold',
     fontSize: 18,
-    fontWeight: 'bold',
     width: '95%',
     textAlign: 'center',
   },
   headerdescription: {
     color: '#fff',
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Medium',
     fontSize: 13,
     width: '95%',
     textAlign: 'center',

@@ -36,7 +36,6 @@ const screen = Dimensions.get('window');
 
 const Block = ({navigation, el}) => {
   const {block, blockImg, timeBlock, timeBlockWrapp} = styles;
-  console.log(el, 'EL');
   return (
     <TouchableOpacity
       style={block}
@@ -121,7 +120,7 @@ const NearestSeansBlock = ({el, index, masters, clients, navigation}) => {
 
   return (
     <TouchableOpacity
-      style={[nearestSeansBlock, {backgroundColor: 'gold'}]}
+      style={[nearestSeansBlock]}
       onPress={() => {
         navigation.state.params.person[0].is_client
           ? navigation.navigate('NoteInformation', {
@@ -130,7 +129,7 @@ const NearestSeansBlock = ({el, index, masters, clients, navigation}) => {
             })
           : navigation.navigate('NoteInformationMaster', el);
       }}>
-      <View style={{backgroundColor: 'pink'}}>
+      <View>
         {masters
           .filter(index => index.id == el.master_id)
           .map(index => {
@@ -148,8 +147,7 @@ const NearestSeansBlock = ({el, index, masters, clients, navigation}) => {
           />
         )}
       </View>
-      <View
-        style={{flexDirection: 'column', flex: 1, backgroundColor: 'green'}}>
+      <View style={{flexDirection: 'column', flex: 1}}>
         <View>
           <Text style={{color: '#B986DA', fontSize: 10, fontWeight: 'bold'}}>
             💅Ближайший сеанс запланирован на
@@ -266,6 +264,7 @@ const Main = ({navigation}) => {
             <Text style={{color: '#fff', marginLeft: 5}}>Мой профиль</Text>
           </TouchableOpacity>
         </ImageBackground>
+
         <View style={{paddingHorizontal: 8}}>
           {!!person.my_notes.length && (
             <ScrollView
@@ -446,13 +445,14 @@ const styles = StyleSheet.create({
   },
   block: {
     height: 145,
-    elevation: 1,
-    shadowColor: '#000',
-    shadowOpacity: 0.5,
     padding: 8,
     backgroundColor: '#fff',
     flexDirection: 'row',
     marginTop: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+    elevation: 0.4,
   },
   blockImg: {
     width: 130,

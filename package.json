@@ -9,6 +9,11 @@
     "test": "jest",
     "lint": "eslint ."
   },
+  "rnpm": {
+    "assets": [
+      "./assets/fonts/"
+    ]
+  },
   "dependencies": {
     "@react-native-community/checkbox": "^0.2.2",
     "@react-native-community/geolocation": "^2.0.2",

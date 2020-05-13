@@ -12,6 +12,7 @@ import {
   ScrollView,
   Dimensions,
   Text,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 import BackgroundHeader from '../components/BackgroundHeader';
@@ -323,7 +324,6 @@ const PublickMasterProfile = ({navigation}) => {
                 );
               }
             })}
-
             <AnotherBlock
               title="Посмотреть все услуги"
               onPress={() => {
@@ -495,62 +495,67 @@ const PublickMasterProfile = ({navigation}) => {
         </View>
       )}
       {showAllServices && (
-        <View
-          style={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0,0,0,0.2)',
-            justifyContent: 'flex-end',
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setShowAllServices(false);
           }}>
-          <View style={{height: '70%', backgroundColor: '#fff'}}>
-            <Text
-              style={{
-                backgroundColor: '#fafafa',
-                height: 40,
-                fontSize: 10,
-                textTransform: 'uppercase',
-                color: '#011627',
-                opacity: 0.35,
-                lineHeight: 40,
-                paddingLeft: 8,
-              }}>
-              Все услуги
-            </Text>
-            <ScrollView style={{paddingHorizontal: 8}}>
-              {services.map((el, i) => {
-                return (
-                  <View key={i}>
-                    <DropdownBlock
-                      index={i}
-                      el={el}
-                      slideBlock={slideBlock}
-                      setSlideBlock={setSlideBlock}
-                      checkboxes={checkboxes}
-                      setCheckboxes={setCheckboxes}
-                    />
-                  </View>
-                );
-              })}
-            </ScrollView>
-            <ButtonDefault
-              onPress={() => {
-                setShowAllServices(false);
-              }}
-              title={
-                'Выбрать эти услуги (' +
-                checkboxes.filter(el => el).length +
-                ')'
-              }
-              active={true}
-              style={{margin: 8}}
-            />
+          <View
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.2)',
+              justifyContent: 'flex-end',
+            }}>
+            <View style={{height: '70%', backgroundColor: '#fff'}}>
+              <Text
+                style={{
+                  backgroundColor: '#fafafa',
+                  height: 40,
+                  fontSize: 10,
+                  textTransform: 'uppercase',
+                  color: '#011627',
+                  opacity: 0.35,
+                  lineHeight: 40,
+                  paddingLeft: 8,
+                }}>
+                Все услуги
+              </Text>
+              <ScrollView style={{paddingHorizontal: 8}}>
+                {services.map((el, i) => {
+                  return (
+                    <View key={i}>
+                      <DropdownBlock
+                        index={i}
+                        el={el}
+                        slideBlock={slideBlock}
+                        setSlideBlock={setSlideBlock}
+                        checkboxes={checkboxes}
+                        setCheckboxes={setCheckboxes}
+                      />
+                    </View>
+                  );
+                })}
+              </ScrollView>
+              <ButtonDefault
+                onPress={() => {
+                  setShowAllServices(false);
+                }}
+                title={
+                  'Выбрать эти услуги (' +
+                  checkboxes.filter(el => el).length +
+                  ')'
+                }
+                active={true}
+                style={{margin: 8}}
+              />
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       )}
       {isCalendarVisible && (
         <CalendarCustom
@@ -744,8 +749,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   borderBottom: {
-    borderBottomColor: '#aaa',
-    borderBottomWidth: 0.4,
+    borderBottomColor: '#eee',
+    borderBottomWidth: 1,
   },
   galereaImgContainer: {
     borderRadius: 3,

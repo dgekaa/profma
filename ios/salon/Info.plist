@@ -71,6 +71,9 @@
 		<string>Octicons.ttf</string>
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
+		<string>FuturaPT-Bold.ttf</string>
+		<string>FuturaPT-Light.ttf</string>
+		<string>FuturaPT-Medium.ttf</string>
 	</array>
 </dict>
 </plist>

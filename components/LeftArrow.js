@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, TouchableOpacity} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import SvgUri from 'react-native-svg-uri';
 
 export const LeftArrowBlack = ({onPress}) => (

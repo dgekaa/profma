@@ -1,21 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import SvgUri from 'react-native-svg-uri';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
-import {InputWithText, InputWithPassword} from '../../components/Input';
-import {ButtonDisabled, ButtonDefault} from '../../components/Button';
-import SaveSuccess from '../../components/SaveSuccess';
+import {InputWithText} from '../../components/Input';
+import {ButtonDefault} from '../../components/Button';
 import ModalWindow from '../../components/ModalWindow';
 
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  TextInput,
-} from 'react-native';
+import {Text, View, StyleSheet, Image, ScrollView} from 'react-native';
 
 const SelectedServiceDescription = ({navigation}) => {
   const {groupBlock, blockTitle, blockInGroup, borderBottom} = styles;
@@ -183,11 +174,14 @@ const SelectedServiceDescription = ({navigation}) => {
 const styles = StyleSheet.create({
   groupBlock: {
     marginTop: 8,
-    borderRadius: 2,
-    shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 1,
     flexDirection: 'column',
     paddingLeft: 18,
+
+    borderRadius: 0.2,
+    shadowOpacity: 0.18,
+    shadowRadius: 0.2,
+    elevation: 0.2,
+    shadowColor: 'red',
   },
   blockInGroup: {
     height: 50,
@@ -203,9 +197,8 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 13,
-    fontWeight: 'bold',
     marginLeft: 13,
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Bold',
   },
   blockTitle: {
     color: '#011627',

@@ -1,18 +1,10 @@
 import React, {useState, useEffect} from 'react';
 
 import BackgroundHeader, {Header} from '../../components/BackgroundHeader';
-import {InputWithText, InputWithPassword} from '../../components/Input';
-import {ButtonDisabled, ButtonDefault} from '../../components/Button';
+import {ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
 
-import {
-  Text,
-  View,
-  StyleSheet,
-  Image,
-  ImageBackground,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 
 const Block = ({navigation, deleteService, el}) => {
   const {block, headerText, text, textBold} = styles;
@@ -88,13 +80,13 @@ const MyServices = ({navigation}) => {
           </View>
           {successDeleted && (
             <SaveSuccess
-              style={{margin: 8}}
+              style={{width: '95%'}}
               title="🗑 Услуга “Европейский маникюр” успешно удалена."
             />
           )}
           {successSaved && (
             <SaveSuccess
-              style={{margin: 8}}
+              style={{width: '95%'}}
               title="👍 Услуга “Европейский маникюр” успешно добавлена."
             />
           )}

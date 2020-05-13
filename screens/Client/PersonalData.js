@@ -32,7 +32,7 @@ const PersonalData = ({navigation}) => {
   const {client_name, e_mail, phone_number, address} = navigation.state.params;
   return (
     <View style={{flex: 1}}>
-      <BackgroundHeader navigation={navigation} />
+      <BackgroundHeader navigation={navigation} title="Персональные данные" />
       <View style={{flex: 1, paddingHorizontal: 8}}>
         <View style={{flex: 1}}>
           <Text style={blockTitle}>персональные данные</Text>
@@ -95,10 +95,7 @@ const PersonalData = ({navigation}) => {
           </View>
         </View>
         {savedSuccess && (
-          <SaveSuccess
-            title="👍 Изменения успешно сохранены."
-            style={{marginBottom: 8}}
-          />
+          <SaveSuccess title="👍 Изменения успешно сохранены." />
         )}
       </View>
     </View>

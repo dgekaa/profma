@@ -104,7 +104,7 @@ const ClientProfile = ({navigation}) => {
                   },
                 ]}>
                 <Text style={{fontSize: 13}}>Ваш город</Text>
-                <Text style={{fontWeight: 'bold', paddingRight: 18}}>
+                <Text style={{fontWeight: 'bold'}}>
                   {navigation.state.params.city}
                 </Text>
               </View>
@@ -141,24 +141,24 @@ const styles = StyleSheet.create({
   first: {
     marginTop: 10,
     height: 50,
-    borderRadius: 2,
+    borderRadius: 0.2,
     shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 1,
+    elevation: 0.4,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 18,
   },
   text: {
     fontSize: 13,
-    fontWeight: 'bold',
     marginLeft: 13,
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Bold',
   },
   groupBlock: {
     marginTop: 20,
-    borderRadius: 2,
+    borderRadius: 0.2,
+
     shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 1,
+    elevation: 0.4,
     flexDirection: 'column',
     paddingLeft: 18,
   },

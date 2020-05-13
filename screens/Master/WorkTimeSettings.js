@@ -161,9 +161,8 @@ const styles = StyleSheet.create({
   },
   textBold: {
     fontSize: 13,
-    fontWeight: 'bold',
     marginLeft: 16,
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Bold',
   },
   blockTitle: {
     textTransform: 'uppercase',

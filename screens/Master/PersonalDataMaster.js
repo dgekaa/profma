@@ -70,7 +70,7 @@ const PersonalDataMaster = ({navigation}) => {
 
   return (
     <View style={{flex: 1}}>
-      <BackgroundHeader navigation={navigation} />
+      <BackgroundHeader navigation={navigation} title="Персональные данные" />
       <ScrollView>
         <View style={{flex: 1, paddingHorizontal: 8}}>
           <View style={{flex: 1}}>
@@ -203,10 +203,7 @@ const PersonalDataMaster = ({navigation}) => {
             </View>
           )}
           {savedSuccess && (
-            <SaveSuccess
-              title="👍 Изменения успешно сохранены."
-              style={{marginBottom: 8}}
-            />
+            <SaveSuccess title="👍 Изменения успешно сохранены." />
           )}
           <ButtonDefault title="выйти из профиля" style={{marginBottom: 8}} />
         </View>

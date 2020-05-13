@@ -1,13 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-import {
-  Text,
-  StyleSheet,
-  View,
-  Dimensions,
-  KeyboardAvoidingView,
-} from 'react-native';
+import {Text, StyleSheet, View, Dimensions} from 'react-native';
+import SvgUri from 'react-native-svg-uri';
+
 import {ButtonDefault, ButtonDisabled} from '../components/Button';
 import {InputWithText, InputWithPassword} from '../components/Input';
 import {Header} from '../components/BackgroundHeader';
@@ -150,16 +145,15 @@ const stylesClientRegistration = StyleSheet.create({
   ProfMa: {
     fontSize: 23,
     color: '#B986DA',
-    fontWeight: 'bold',
     width: '75%',
+    fontFamily: 'FuturaPT-Bold',
   },
   topText: {
     color: '#011627',
-    fontWeight: 'bold',
     fontSize: 23,
     marginTop: 16,
     width: '81%',
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Bold',
   },
 
   btnGroup: {
@@ -175,6 +169,7 @@ const stylesClientRegistration = StyleSheet.create({
   politicText: {
     textAlign: 'center',
     fontSize: 13,
+    fontFamily: 'FuturaPT-Medium',
   },
   specialText: {
     fontSize: 13,

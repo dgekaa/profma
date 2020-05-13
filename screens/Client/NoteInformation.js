@@ -67,12 +67,18 @@ const NoteInformation = ({navigation}) => {
                 {navigation.state.params.person.services.map((el, i) => (
                   <View
                     key={i}
-                    style={{
-                      height: 60,
-                      flexDirection: 'row',
-                      borderBottomColor: '#aaa',
-                      borderBottomWidth: 0.3,
-                    }}>
+                    style={[
+                      {
+                        height: 60,
+                        flexDirection: 'row',
+                      },
+                      navigation.state.params.person.services.length - 1 === i
+                        ? {}
+                        : {
+                            borderBottomColor: 'rgba(0,0,0,0.2)',
+                            borderBottomWidth: 0.3,
+                          },
+                    ]}>
                     <View
                       style={{
                         flex: 4,
@@ -107,7 +113,7 @@ const NoteInformation = ({navigation}) => {
                     </View>
                   </View>
                 ))}
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={() => {
                     alert('Добавит новую услугу');
                   }}
@@ -121,7 +127,7 @@ const NoteInformation = ({navigation}) => {
                     style={{fontSize: 13, fontWeight: 'bold', paddingLeft: 5}}>
                     Добавить услугу
                   </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
           </View>
@@ -259,17 +265,16 @@ const NoteInformation = ({navigation}) => {
 const styles = StyleSheet.create({
   first: {
     height: 50,
-    borderRadius: 2,
+    borderRadius: 0.2,
     shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 2,
+    elevation: 0.4,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 18,
   },
   text: {
     fontSize: 15,
-    fontWeight: 'bold',
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Bold',
   },
   blockTitle: {
     fontSize: 10,
@@ -281,9 +286,9 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   groupBlock: {
-    borderRadius: 2,
+    borderRadius: 0.2,
     shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 2,
+    elevation: 0.4,
     flexDirection: 'column',
     paddingLeft: 18,
   },

@@ -59,8 +59,8 @@ const NoteInformationMaster = ({navigation}) => {
         navigation={navigation}
         title={isCompleted ? 'Сеанс завершён' : 'Вы записаны к мастеру'}
       />
-      <ScrollView style={{}}>
-        <View style={{flex: 1, paddingHorizontal: 8, paddingTop: 15}}>
+      <ScrollView>
+        <View style={{flex: 1, paddingHorizontal: 8, paddingTop: 0}}>
           <Text style={blockTitle}>персональные данные</Text>
           <View style={groupBlock}>
             <View style={[blockInGroup, borderBottom]}>
@@ -197,9 +197,9 @@ const NoteInformationMaster = ({navigation}) => {
                   navigation.navigate('CompleteSeance', {
                     complete: bool => {
                       setIsCompleted(bool);
-                      // setTimeout(() => {
-                      //   setIsCompleted(false);
-                      // }, 1000);
+                      setTimeout(() => {
+                        setIsCompleted(false);
+                      }, 1000);
                     },
                     price,
                     data: navigation.state.params,
@@ -228,9 +228,10 @@ const NoteInformationMaster = ({navigation}) => {
 const styles = StyleSheet.create({
   first: {
     height: 50,
-    borderRadius: 2,
     shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 1,
+    borderRadius: 0.2,
+
+    elevation: 0.4,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 18,
@@ -249,9 +250,10 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   groupBlock: {
-    borderRadius: 2,
     shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 1,
+    borderRadius: 0.2,
+
+    elevation: 0.4,
     flexDirection: 'column',
     paddingLeft: 18,
   },
@@ -263,8 +265,8 @@ const styles = StyleSheet.create({
     paddingRight: 8,
   },
   borderBottom: {
-    borderBottomColor: '#aaa',
-    borderBottomWidth: 0.3,
+    borderBottomColor: 'rgba(0,0,0,0.2)',
+    borderBottomWidth: 0.4,
   },
 });
 

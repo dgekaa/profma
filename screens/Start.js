@@ -68,14 +68,13 @@ const Start = ({navigation}) => {
 const styles = StyleSheet.create({
   topText: {
     color: '#fff',
-    fontWeight: 'bold',
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Bold',
     fontSize: 23,
     marginTop: 16,
     width: '85%',
   },
   bottomText: {
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Medium',
     fontSize: 13,
     color: '#fff',
     width: '60%',

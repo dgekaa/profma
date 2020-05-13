@@ -36,7 +36,8 @@ const Block = ({title, active, onPress, key, border}) => {
             width: active ? 6 : 8,
             height: active ? 6 : 8,
             borderRadius: active ? 6 : 8,
-          }}></View>
+          }}
+        />
       </View>
     </TouchableOpacity>
   );
@@ -167,9 +168,8 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 13,
-    fontWeight: 'bold',
     marginLeft: 13,
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Bold',
   },
   blockTitle: {
     color: '#011627',

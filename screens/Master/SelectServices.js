@@ -2,18 +2,9 @@ import React, {useState, useEffect} from 'react';
 import SvgUri from 'react-native-svg-uri';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
-import {InputWithText, InputWithPassword} from '../../components/Input';
-import {ButtonDisabled, ButtonDefault} from '../../components/Button';
-import SaveSuccess from '../../components/SaveSuccess';
+import {ButtonDefault} from '../../components/Button';
 
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 
 // CheckBox
 const Block = ({title, active, onPress, key, border}) => {
@@ -127,9 +118,8 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 13,
-    fontWeight: 'bold',
     marginLeft: 13,
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Bold',
   },
   blockTitle: {
     color: '#011627',

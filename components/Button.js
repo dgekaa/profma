@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   btnText: {
     textAlign: 'center',
     fontSize: 13,
-    fontWeight: 'bold',
+    fontFamily: 'FuturaPT-Bold',
     textTransform: 'uppercase',
   },
 });

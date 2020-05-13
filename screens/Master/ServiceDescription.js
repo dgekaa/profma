@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
-import {InputWithText, InputWithPassword} from '../../components/Input';
-import {ButtonDisabled, ButtonDefault} from '../../components/Button';
+import {InputWithText} from '../../components/Input';
+import {ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
 import ModalWindow from '../../components/ModalWindow';
 import SvgUri from 'react-native-svg-uri';
@@ -27,9 +27,6 @@ const ServiceDescription = ({navigation}) => {
 
   const [howLong, setHowLong] = useState('');
   const [nailCount, setNailCount] = useState('');
-
-  console.log(navigation.state.params.active, 'active');
-  console.log(navigation.state.params.title, 'title');
 
   return (
     <View style={{flex: 1}}>
@@ -58,6 +55,7 @@ const ServiceDescription = ({navigation}) => {
             ]}>
             <View
               style={{
+                marginTop: 6,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
               }}>
@@ -86,6 +84,7 @@ const ServiceDescription = ({navigation}) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   paddingLeft: 8,
+                  width: '99%',
                 }}>
                 {true ? (
                   <SvgUri source={require('../../img/Default.svg')} />
@@ -174,10 +173,7 @@ const ServiceDescription = ({navigation}) => {
           />
         )}
         {deleteService && (
-          <SaveSuccess
-            title="🗑 Услуга “Европейский маникюр” успешно удалена."
-            style={{marginBottom: 8}}
-          />
+          <SaveSuccess title="🗑 Услуга “Европейский маникюр” успешно удалена." />
         )}
         <ButtonDefault
           onPress={() => {
@@ -235,15 +231,18 @@ const ServiceDescription = ({navigation}) => {
 const styles = StyleSheet.create({
   groupBlock: {
     marginTop: 8,
-    borderRadius: 2,
-    shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 1,
     flexDirection: 'column',
     paddingLeft: 18,
+
+    borderRadius: 0.2,
+    shadowOpacity: 0.18,
+    shadowRadius: 0.2,
+    elevation: 0.8,
+    shadowColor: '#000',
   },
   blockInGroup: {
     height: 50,
-    borderRadius: 2,
+    borderRadius: 0.2,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -255,9 +254,8 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 13,
-    fontWeight: 'bold',
     marginLeft: 13,
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Bold',
   },
   blockTitle: {
     color: '#011627',

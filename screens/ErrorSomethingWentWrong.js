@@ -51,9 +51,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   topText: {
-    fontFamily: 'Futura PT',
+    fontFamily: 'FuturaPT-Bold',
     fontSize: 24,
-    fontWeight: 'bold',
   },
   bottomText: {
     flex: 2,
