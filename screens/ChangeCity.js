@@ -1,6 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
 import SvgUri from 'react-native-svg-uri';
-
 import BackgroundHeader from '../components/BackgroundHeader';
 
 import {

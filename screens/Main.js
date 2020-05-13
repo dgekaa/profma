@@ -1,5 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import SvgUri from 'react-native-svg-uri';
+import {SvgCssUri} from 'react-native-svg';
 
 import CalendarCustom from '../components/Calendar';
 import ModalWindow from '../components/ModalWindow';
