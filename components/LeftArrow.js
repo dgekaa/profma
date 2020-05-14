@@ -1,6 +1,8 @@
 import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import SvgUri from 'react-native-svg-uri';
+import LeftArrowBlackIcon from '../img/leftArrowBlack.svg';
+import LeftArrowIcon from '../img/leftArrow.svg';
 
 export const LeftArrowBlack = ({onPress}) => (
   <TouchableOpacity
@@ -10,16 +12,12 @@ export const LeftArrowBlack = ({onPress}) => (
       width: 24,
       justifyContent: 'center',
     }}>
-    <SvgUri
-      width="13"
-      height="13"
-      source={require('../img/leftArrowBlack.svg')}
-    />
+    <SvgUri width="13" height="13" svgXmlData={LeftArrowBlackIcon} />
   </TouchableOpacity>
 );
 
 export const LeftArrowWhite = ({onPress}) => (
   <TouchableOpacity onPress={onPress}>
-    <SvgUri width="13" height="13" source={require('../img/leftArrow.svg')} />
+    <SvgUri width="13" height="13" svgXmlData={LeftArrowIcon} />
   </TouchableOpacity>
 );

@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import SvgUri from 'react-native-svg-uri';
+import VectorIcon from '../../img/Vector.svg';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
@@ -34,7 +35,7 @@ const Block = ({title, active, onPress, key, border}) => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <SvgUri source={require('../../img/Vector.svg')} />
+        <SvgUri svgXmlData={VectorIcon} />
       </View>
     </TouchableOpacity>
   );

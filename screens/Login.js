@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 
-import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
+import {Text, StyleSheet, View, Dimensions} from 'react-native';
 import {ButtonDefault, ButtonDisabled, ButtonError} from '../components/Button';
 import {InputWithText, InputWithPassword} from '../components/Input';
 import {Header} from '../components/BackgroundHeader';
@@ -56,7 +56,15 @@ const Login = ({navigation}) => {
   }, [mail, password]);
 
   return (
-    <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: '#FAFAFA',
+        position: 'absolute',
+        width: '100%',
+        height: Dimensions.get('window').height,
+        bottom: 0,
+      }}>
       <Header navigation={navigation} />
       <View style={[container, {flex: 1}]}>
         <View style={topTextWrap}>

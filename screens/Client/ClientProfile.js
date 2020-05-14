@@ -1,10 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 
-import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
 import SvgUri from 'react-native-svg-uri';
+import CalendarSvgIcon from '../../img/CalendarSVG.svg';
+import UserIcon from '../../img/User.svg';
+import PasswordIcon from '../../img/Password.svg';
 
 const ClientProfile = ({navigation}) => {
   const {first, text, groupBlock, blockInGroup, borderBottom} = styles;
@@ -33,11 +36,7 @@ const ClientProfile = ({navigation}) => {
             onPress={() => {
               navigation.navigate('MyNotes', navigation.state.params.my_notes);
             }}>
-            <SvgUri
-              width="13"
-              height="13"
-              source={require('../../img/CalendarSVG.svg')}
-            />
+            <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
             <Text style={text}>Мои записи</Text>
           </TouchableOpacity>
         </View>
@@ -53,7 +52,7 @@ const ClientProfile = ({navigation}) => {
                 style={{marginRight: 10}}
                 width="13"
                 height="13"
-                source={require('../../img/User.svg')}
+                svgXmlData={UserIcon}
               />
               <Text style={text}>Персональные данные</Text>
             </TouchableOpacity>
@@ -66,11 +65,7 @@ const ClientProfile = ({navigation}) => {
                   person: navigation.state.params,
                 });
               }}>
-              <SvgUri
-                width="13"
-                height="13"
-                source={require('../../img/Password.svg')}
-              />
+              <SvgUri width="13" height="13" svgXmlData={PasswordIcon} />
               <Text style={text}>Изменить пароль</Text>
             </TouchableOpacity>
           </View>

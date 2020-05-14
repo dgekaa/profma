@@ -1,6 +1,7 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useRef} from 'react';
 import SvgUri from 'react-native-svg-uri';
 import BackgroundHeader from '../components/BackgroundHeader';
+import SearchIcon from '../img/Search.svg';
 
 import {
   Text,
@@ -76,7 +77,7 @@ const ChangeCity = ({navigation}) => {
               style={{marginRight: 10}}
               width="13"
               height="13"
-              source={require('../img/Search.svg')}
+              svgXmlData={SearchIcon}
             />
 
             <TextInput

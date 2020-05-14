@@ -3,6 +3,13 @@ import {ButtonDefault} from '../components/Button';
 import CalendarCustom from '../components/Calendar';
 import ModalWindow from '../components/ModalWindow';
 import SvgUri from 'react-native-svg-uri';
+import pressedIcon from '../img/Pressed.svg';
+import DefaultIcon from '../img/Default.svg';
+import VectorIcon from '../img/Vector.svg';
+import ArrowWhiteIcon from '../img/ArrowRight.svg';
+import CalendarSvgIcon from '../img/CalendarSVG.svg';
+import LocationIcon from '../img/Location.svg';
+import CrossWhiteIcon from '../img/CrossWhite.svg';
 
 import {
   StyleSheet,
@@ -85,14 +92,11 @@ const DropdownBlock = ({
         <View style={{flex: 3, flexDirection: 'row', alignItems: 'center'}}>
           <View>
             {slideBlock[index] && (
-              <SvgUri
-                source={require('../img/Pressed.svg')}
-                style={{marginRight: 8}}
-              />
+              <SvgUri svgXmlData={pressedIcon} style={{marginRight: 8}} />
             )}
             {!slideBlock[index] && (
               <SvgUri
-                source={require('../img/Default.svg')}
+                svgXmlData={DefaultIcon}
                 style={{
                   marginRight: 8,
                 }}
@@ -136,7 +140,7 @@ const DropdownBlock = ({
                     borderWidth: checkboxes[index] ? 0 : 3,
                   },
                 ]}>
-                <SvgUri source={require('../img/Vector.svg')} />
+                <SvgUri svgXmlData={VectorIcon} />
               </View>
             </TouchableOpacity>
           </View>
@@ -174,7 +178,7 @@ const AnotherBlock = ({title, onPress}) => {
         onPress();
       }}>
       <Text style={{fontWeight: 'bold'}}>{title}</Text>
-      <SvgUri source={require('../img/ArrowRight.svg')} />
+      <SvgUri svgXmlData={ArrowWhiteIcon} />
     </TouchableOpacity>
   );
 };
@@ -349,11 +353,7 @@ const PublickMasterProfile = ({navigation}) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}>
-                <SvgUri
-                  width="13"
-                  height="13"
-                  source={require('../img/CalendarSVG.svg')}
-                />
+                <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
                 <Text style={{fontWeight: 'bold'}}>25 июн 2019 !!!!!!!!!!</Text>
               </View>
               <View
@@ -393,10 +393,7 @@ const PublickMasterProfile = ({navigation}) => {
           <Text style={textTitle}>адрес мастера</Text>
           <View style={groupBlock}>
             <View style={[blockInGroup, {flexDirection: 'row'}]}>
-              <SvgUri
-                source={require('../img/Location.svg')}
-                style={{marginRight: 8}}
-              />
+              <SvgUri svgXmlData={LocationIcon} style={{marginRight: 8}} />
               <View style={{flexDirection: 'column'}}>
                 <Text style={{fontSize: 13, fontWeight: 'bold'}}>
                   {navigation.state.params.city},{' '}
@@ -479,7 +476,7 @@ const PublickMasterProfile = ({navigation}) => {
             onPress={() => {
               setActiveImg(null);
             }}>
-            <SvgUri source={require('../img/CrossWhite.svg')} />
+            <SvgUri svgXmlData={CrossWhiteIcon} />
           </TouchableOpacity>
           <View style={imgIndicator}>
             {imgArr.map((el, i) => {

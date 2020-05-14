@@ -9,6 +9,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import DotsIcon from '../img/Dots.svg';
+import OpenIcon from '../img/Open.svg';
+import ClosedIcon from '../img/Closed.svg';
+
 export const InputWithText = ({
   text,
   placeholder,
@@ -136,7 +140,7 @@ export const InputWithPassword = ({
         {isShowPlaceholder && (
           <SvgUri
             style={{position: 'absolute', top: 12}}
-            source={require('../img/Dots.svg')}
+            svgXmlData={DotsIcon}
           />
         )}
         {icon && (
@@ -147,7 +151,7 @@ export const InputWithPassword = ({
                   style={eye}
                   width="16"
                   height="16"
-                  source={require(`../img/${'Open'}.svg`)}
+                  svgXmlData={OpenIcon}
                 />
               )}
               {icon === 'closedEye' && (
@@ -155,7 +159,7 @@ export const InputWithPassword = ({
                   style={eye}
                   width="13"
                   height="13"
-                  source={require(`../img/${'Closed'}.svg`)}
+                  svgXmlData={ClosedIcon}
                 />
               )}
             </View>

@@ -2,6 +2,10 @@ import React, {useState, useEffect, useRef} from 'react';
 import CalendarStrip from 'react-native-calendar-strip';
 import SvgUri from 'react-native-svg-uri';
 
+import ArrowLIcon from '../../img/ArrowL.svg';
+import ArrowRIcon from '../../img/ArrowR.svg';
+import CalendarColorIcon from '../../img/CalendarColor.svg';
+
 import moment from 'moment';
 import 'moment/locale/fr';
 
@@ -82,10 +86,7 @@ const Block = ({el, navigation, key}) => {
       }}>
       <View style={topBlock}>
         <View style={{flexDirection: 'row', flex: 6}}>
-          <SvgUri
-            style={{marginRight: 5}}
-            source={require('../../img/CalendarColor.svg')}
-          />
+          <SvgUri svgXmlData={CalendarColorIcon} style={{marginRight: 5}} />
           <Text style={[dateText]}>
             {el.day} {shortMonthName[+el.month - 1]} в {el.time}
           </Text>
@@ -122,7 +123,8 @@ const Block = ({el, navigation, key}) => {
                   width: 4,
                   height: 4,
                   backgroundColor: '#9155FF',
-                }}></View>
+                }}
+              />
               {people
                 .filter(index => index.id == el.client_id)
                 .map(index => (
@@ -255,7 +257,7 @@ const MasterCalendar = ({navigation}) => {
               calendarRef.current.getPreviousWeek();
             }}
             style={arrow}>
-            <SvgUri source={require('../../img/ArrowL.svg')} />
+            <SvgUri svgXmlData={ArrowLIcon} />
           </TouchableOpacity>
           <Text style={headerText}>
             {month} {weekFirst}-{weekLast}
@@ -265,7 +267,7 @@ const MasterCalendar = ({navigation}) => {
               calendarRef.current.getNextWeek();
             }}
             style={arrow}>
-            <SvgUri source={require('../../img/ArrowR.svg')} />
+            <SvgUri svgXmlData={ArrowRIcon} />
           </TouchableOpacity>
         </View>
       </BackgroundHeader>

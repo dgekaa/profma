@@ -1,5 +1,8 @@
 import React, {useState} from 'react';
 import SvgUri from 'react-native-svg-uri';
+import DefaultSvgIcon from '../../img/Default.svg';
+import PressedIcon from '../../img/Pressed.svg';
+import DefaultIcon from '../../img/Default.svg';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {InputWithText} from '../../components/Input';
@@ -68,9 +71,9 @@ const SelectedServiceDescription = ({navigation}) => {
                   paddingLeft: 8,
                 }}>
                 {true ? (
-                  <SvgUri source={require('../../img/Default.svg')} />
+                  <SvgUri svgXmlData={DefaultSvgIcon} />
                 ) : (
-                  <SvgUri source={require('../../img/Pressed.svg')} />
+                  <SvgUri svgXmlData={PressedIcon} />
                 )}
                 <InputWithText
                   editable={false}
@@ -94,7 +97,7 @@ const SelectedServiceDescription = ({navigation}) => {
                   alignItems: 'center',
                   paddingHorizontal: 8,
                 }}>
-                <SvgUri source={require('../../img/Default.svg')} />
+                <SvgUri svgXmlData={DefaultIcon} />
                 <InputWithText
                   editable={false}
                   selectTextOnFocus={false}

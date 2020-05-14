@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {LeftArrowWhite, LeftArrowBlack} from './LeftArrow';
+import SettingsIcon from '../img/Settings.svg';
 
 export const Header = ({navigation, title, description, children}) => {
   const {bg, container, headerTitle, headerdescription} = styles;
@@ -47,11 +48,7 @@ const BackgroundHeader = ({
         </View>
         {settings && (
           <TouchableOpacity style={settingsStyle} onPress={onSettingsPress}>
-            <SvgUri
-              width="13"
-              height="13"
-              source={require('../img/Settings.svg')}
-            />
+            <SvgUri svgXmlData={SettingsIcon} width="13" height="13" />
           </TouchableOpacity>
         )}
       </View>

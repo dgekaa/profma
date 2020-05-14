@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import SvgUri from 'react-native-svg-uri';
+import DefaultIcon from '../../img/Default.svg';
+import PlusIcon from '../../img/Plus.svg';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
@@ -105,7 +107,7 @@ const NoteInformationMaster = ({navigation}) => {
                         flexDirection: 'row',
                         alignItems: 'center',
                       }}>
-                      <SvgUri source={require('../../img/Default.svg')} />
+                      <SvgUri svgXmlData={DefaultIcon} />
                       <View style={{paddingHorizontal: 5}}>
                         <Text style={{fontSize: 13, fontWeight: 'bold'}}>
                           {el.name}
@@ -134,7 +136,7 @@ const NoteInformationMaster = ({navigation}) => {
                     alignItems: 'center',
                     flexDirection: 'row',
                   }}>
-                  <SvgUri source={require('../../img/Plus.svg')} />
+                  <SvgUri svgXmlData={PlusIcon} />
                   <Text
                     style={{fontSize: 13, fontWeight: 'bold', paddingLeft: 5}}>
                     Добавить услугу

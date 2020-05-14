@@ -1,8 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 import SvgUri from 'react-native-svg-uri';
+import GalleryIcon from '../../img/Gallery.svg';
+import TrashIcon from '../../img/Trash.svg';
+import PlusIcon from '../../img/Plus.svg';
 
 import {
   Text,
@@ -49,7 +52,7 @@ const CompleteSeance = ({navigation}) => {
               <View
                 key={i}
                 style={[blockInGroup, borderBottom, {paddingRight: 8}]}>
-                {/* <SvgUri source={require('../../img/Gallery.svg')} /> */}
+                <SvgUri svgXmlData={GalleryIcon} />
                 <Text style={{fontSize: 13, flex: 1, marginLeft: 16}}>
                   {el}
                 </Text>
@@ -62,7 +65,7 @@ const CompleteSeance = ({navigation}) => {
                   onPress={() => {
                     alert('Удалит фото');
                   }}>
-                  <SvgUri source={require('../../img/Trash.svg')} />
+                  <SvgUri svgXmlData={TrashIcon} />
                 </TouchableOpacity>
               </View>
             ))}
@@ -73,7 +76,7 @@ const CompleteSeance = ({navigation}) => {
                   ? alert('Больше добавить нельзя')
                   : alert('Прикрепить фото');
               }}>
-              <SvgUri source={require('../../img/Plus.svg')} />
+              <SvgUri svgXmlData={PlusIcon} />
               <Text
                 style={{
                   fontSize: 13,

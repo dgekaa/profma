@@ -4,15 +4,9 @@ import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 import ModalWindow from '../../components/ModalWindow';
 import SvgUri from 'react-native-svg-uri';
+import DefaultIcon from '../../img/Default.svg';
 
-import {
-  Text,
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import {Text, View, StyleSheet, Image, ScrollView} from 'react-native';
 
 const shortMonthName = [
   'Янв',
@@ -85,7 +79,7 @@ const NoteInformation = ({navigation}) => {
                         flexDirection: 'row',
                         alignItems: 'center',
                       }}>
-                      <SvgUri source={require('../../img/Default.svg')} />
+                      <SvgUri svgXmlData={DefaultIcon} />
                       <View style={{paddingHorizontal: 5}}>
                         <Text style={{fontSize: 13, fontWeight: 'bold'}}>
                           {el.name}

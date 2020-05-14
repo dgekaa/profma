@@ -1,26 +1,22 @@
-import React, {useState, useEffect, useReducer} from 'react';
+import React, {useState, useEffect} from 'react';
 import SvgUri from 'react-native-svg-uri';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {InputWithText} from '../../components/Input';
 import {ButtonDefault} from '../../components/Button';
+import ArrowRightIcon from '../../img/ArrowRight.svg';
 
 import {
   Text,
   View,
   StyleSheet,
   TouchableOpacity,
-  Image,
   ScrollView,
   Switch,
 } from 'react-native';
 
 const Block = ({el, index, workTime, setWorkTime, navigation}) => {
   const {groupBlock, blockTitle, blockInGroup, textBold, borderBottom} = styles;
-
-  useEffect(() => {
-    console.log(workTime, 'workTime');
-  }, []);
 
   return (
     <View>
@@ -96,7 +92,7 @@ const Block = ({el, index, workTime, setWorkTime, navigation}) => {
             },
           ]}>
           <Text style={textBold}>Выбрать время для записи</Text>
-          <SvgUri source={require('../../img/ArrowRight.svg')} />
+          <SvgUri svgXmlData={ArrowRightIcon} />
         </TouchableOpacity>
       </View>
     </View>

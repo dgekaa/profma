@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 
 import {Text, StyleSheet, View, Dimensions} from 'react-native';
-import SvgUri from 'react-native-svg-uri';
 
 import {ButtonDefault, ButtonDisabled} from '../components/Button';
 import {InputWithText, InputWithPassword} from '../components/Input';

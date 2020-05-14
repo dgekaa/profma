@@ -1,9 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import SvgUri from 'react-native-svg-uri';
 
 import BackgroundHeader, {Header} from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 import {people} from '../../data';
+import CalendarGrayIcon from '../../img/calendarGray.svg';
+import CalendarColorIcon from '../../img/CalendarColor.svg';
 
 import {
   Text,
@@ -53,11 +55,7 @@ const Block = ({el, navigation, key, archive}) => {
             style={{marginRight: 5}}
             width="14"
             height="14"
-            source={
-              archive
-                ? require('../../img/calendarGray.svg')
-                : require('../../img/CalendarColor.svg')
-            }
+            svgXmlData={archive ? CalendarGrayIcon : CalendarColorIcon}
           />
           <Text style={[dateText, {color: archive ? '#A6ADB3' : '#B986DA'}]}>
             {el.day} {shortMonthName[+el.month - 1]} В {el.time}

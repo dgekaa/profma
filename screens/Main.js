@@ -1,6 +1,9 @@
 import React, {useState} from 'react';
 import SvgUri from 'react-native-svg-uri';
-import {SvgCssUri} from 'react-native-svg';
+import CalendarColorIcon from '../img/CalendarColor.svg';
+import UserWhiteIcon from '../img/UserWhite.svg';
+import CrossIcon from '../img/cross.svg';
+import CalendarSvgIcon from '../img/CalendarSVG.svg';
 
 import CalendarCustom from '../components/Calendar';
 import ModalWindow from '../components/ModalWindow';
@@ -64,10 +67,12 @@ const Block = ({navigation, el}) => {
           }}>
           <View style={{flex: 1}}>
             <Text style={{fontSize: 10}}>Стоимость сеанса</Text>
-            <Text style={{fontWeight: 'bold', fontSize: 10}}>!!!!!! руб</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 10}}>1250 руб</Text>
           </View>
-          <View style={{alignItems: 'flex-end'}}>
-            <Text style={{fontSize: 10}}>{el.address}</Text>
+          <View style={{alignItems: 'flex-end', flex: 1.2}}>
+            <Text style={{fontSize: 10}} numberOfLines={1}>
+              {el.address}
+            </Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               {el.metro && (
                 <View
@@ -162,7 +167,7 @@ const NearestSeansBlock = ({el, index, masters, clients, navigation}) => {
           }}>
           <View style={{marginRight: 24}}>
             <View style={{flexDirection: 'row'}}>
-              <SvgUri source={require('../img/CalendarColor.svg')} />
+              <SvgUri svgXmlData={CalendarColorIcon} />
               <Text
                 style={{
                   fontSize: 13,
@@ -261,7 +266,7 @@ const Main = ({navigation}) => {
                   : navigation.navigate('MasterProfile', person);
               }
             }}>
-            <SvgUri source={require('../img/UserWhite.svg')} />
+            <SvgUri svgXmlData={UserWhiteIcon} />
             <Text style={{color: '#fff', marginLeft: 5}}>Мой профиль</Text>
           </TouchableOpacity>
         </ImageBackground>
@@ -309,7 +314,7 @@ const Main = ({navigation}) => {
                 onPress={() => {
                   setMarkedDates({});
                 }}>
-                <SvgUri source={require('../img/cross.svg')} />
+                <SvgUri svgXmlData={CrossIcon} />
               </TouchableOpacity>
             </View>
           )}
@@ -349,7 +354,7 @@ const Main = ({navigation}) => {
           onPress={() => {
             setIsCalendarVisible(true);
           }}>
-          <SvgUri source={require('../img/CalendarSVG.svg')} />
+          <SvgUri svgXmlData={CalendarSvgIcon} />
           <Text style={{marginLeft: 5}}>Выбрать дату</Text>
         </TouchableOpacity>
       )}

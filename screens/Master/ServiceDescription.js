@@ -6,6 +6,8 @@ import {ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
 import ModalWindow from '../../components/ModalWindow';
 import SvgUri from 'react-native-svg-uri';
+import DefaultIcon from '../../img/Default.svg';
+import PressedIcon from '../../img/Pressed.svg';
 
 import {
   Text,
@@ -87,9 +89,9 @@ const ServiceDescription = ({navigation}) => {
                   width: '99%',
                 }}>
                 {true ? (
-                  <SvgUri source={require('../../img/Default.svg')} />
+                  <SvgUri svgXmlData={DefaultIcon} />
                 ) : (
-                  <SvgUri source={require('../../img/Pressed.svg')} />
+                  <SvgUri svgXmlData={PressedIcon} />
                 )}
                 <InputWithText
                   text={
@@ -115,7 +117,7 @@ const ServiceDescription = ({navigation}) => {
                   alignItems: 'center',
                   paddingHorizontal: 8,
                 }}>
-                <SvgUri source={require('../../img/Default.svg')} />
+                <SvgUri svgXmlData={DefaultIcon} />
                 <InputWithText
                   text={`Стоимость услуги`}
                   placeholder={`Укажите стоимость сеанса`}

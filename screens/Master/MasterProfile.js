@@ -1,11 +1,15 @@
 import React, {useState} from 'react';
 
-import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
 import {ScrollView} from 'react-native-gesture-handler';
 import SvgUri from 'react-native-svg-uri';
+import CalendarSvgIcon from '../../img/CalendarSVG.svg';
+import ManicureIcon from '../../img/Manicure.svg';
+import UserIcon from '../../img/User.svg';
+import PasswordIcon from '../../img/Password.svg';
 
 const MasterProfile = ({navigation}) => {
   const {
@@ -43,11 +47,7 @@ const MasterProfile = ({navigation}) => {
               onPress={() => {
                 navigation.navigate('MyNotesMaster', navigation.state.params);
               }}>
-              <SvgUri
-                width="13"
-                height="13"
-                source={require('../../img/CalendarSVG.svg')}
-              />
+              <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
               <Text style={text}>Мои записи</Text>
             </TouchableOpacity>
           </View>
@@ -67,11 +67,7 @@ const MasterProfile = ({navigation}) => {
                   );
                 }}>
                 <View style={{alignItems: 'center', flexDirection: 'row'}}>
-                  <SvgUri
-                    width="13"
-                    height="13"
-                    source={require('../../img/CalendarSVG.svg')}
-                  />
+                  <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
                   <Text style={text}>Мой календарь мастера</Text>
                 </View>
                 <View style={outsideCircle}>
@@ -84,11 +80,7 @@ const MasterProfile = ({navigation}) => {
                 onPress={() => {
                   navigation.navigate('MyServices', navigation.state.params);
                 }}>
-                <SvgUri
-                  width="13"
-                  height="13"
-                  source={require('../../img/Manicure.svg')}
-                />
+                <SvgUri width="13" height="13" svgXmlData={ManicureIcon} />
                 <Text style={text}>
                   Мои услуги ({navigation.state.params.my_services.length})
                 </Text>
@@ -102,11 +94,7 @@ const MasterProfile = ({navigation}) => {
                     navigation.state.params,
                   );
                 }}>
-                <SvgUri
-                  width="13"
-                  height="13"
-                  source={require('../../img/CalendarSVG.svg')}
-                />
+                <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
                 <Text style={text}>Настроить рабочее расписание</Text>
               </TouchableOpacity>
             </View>
@@ -120,10 +108,7 @@ const MasterProfile = ({navigation}) => {
                     navigation.state.params,
                   );
                 }}>
-                <SvgUri
-                  style={{height: 13, width: 13}}
-                  source={require('../../img/User.svg')}
-                />
+                <SvgUri style={{height: 13, width: 13}} svgXmlData={UserIcon} />
                 <Text style={text}>Персональные данные</Text>
               </TouchableOpacity>
               {/* ИЗМЕНИТЬ ПАРОЛЬ*/}
@@ -137,7 +122,7 @@ const MasterProfile = ({navigation}) => {
                 }}>
                 <SvgUri
                   style={{height: 13, width: 13}}
-                  source={require('../../img/Password.svg')}
+                  svgXmlData={PasswordIcon}
                 />
                 <Text style={text}>Изменить пароль</Text>
               </TouchableOpacity>
