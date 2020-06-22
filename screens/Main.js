@@ -358,7 +358,7 @@ const Main = ({navigation}) => {
           <Text style={{marginLeft: 5}}>Выбрать дату</Text>
         </TouchableOpacity>
       )}
-      {/* КАЛЕНДАРЬ */}
+      {/* КАЛЕНДАРЬ !*/}
       {isCalendarVisible && (
         <CalendarCustom
           markedDates={markedDates}
