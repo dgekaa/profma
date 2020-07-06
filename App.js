@@ -2,6 +2,10 @@ import React from 'react';
 import {StyleSheet, Text, ImageBackground} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
+import {HttpLink} from 'apollo-link-http';
+import {setContext} from 'apollo-link-context';
+import ApolloClient from 'apollo-client';
+import {InMemoryCache} from 'apollo-cache-inmemory';
 
 import Start from './screens/Start';
 import Registration from './screens/Registration';
@@ -36,14 +40,27 @@ import ErrorSomethingWentWrong from './screens/ErrorSomethingWentWrong';
 import ErrorInternetProblems from './screens/ErrorInternetProblems';
 import ErrorDepartmentConstruction from './screens/ErrorDepartmentConstruction';
 
-import BackgroundHeader from './components/BackgroundHeader';
+import {getToken, signIn, signOut} from './src/util';
 
-const styles = StyleSheet.create({
-  header: {
-    shadowOpacity: 0,
-    elevation: 0,
-    marginHorizontal: 5,
-  },
+const httpLink = new HttpLink({
+  uri: 'http://194.87.145.192/graphql',
+});
+
+const authLink = setContext(async (req, {headers}) => {
+  const token = await getToken();
+  return {
+    ...headers,
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  };
+});
+
+const link = authLink.concat(httpLink);
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: link,
 });
 
 const navigationOptions = {
@@ -176,5 +193,13 @@ const App = createStackNavigator(
   },
   {initialRouteName: 'Start'},
 );
+
+const styles = StyleSheet.create({
+  header: {
+    shadowOpacity: 0,
+    elevation: 0,
+    marginHorizontal: 5,
+  },
+});
 
 export default createAppContainer(App);
