@@ -12,11 +12,46 @@ import {
   ScrollView,
 } from 'react-native';
 
+import {
+  ME,
+  CREATE_SCHEDULE,
+  UPDATE_SCHEDULE,
+  DELETE_SCHEDULE,
+  GET_SCHEDULE,
+  DELETE_START_SESSION,
+} from '../../QUERYES';
+import {Query, useMutation, useQuery} from 'react-apollo';
+
 const SelectWorkTime = ({navigation}) => {
   const {container, topBlock, timeBlock, timeContainer} = styles;
 
-  const startTime = navigation.state.params.start_time || '10:00';
-  const endTime = navigation.state.params.end_time || '20:00';
+  const {data, loading, error} = useQuery(GET_SCHEDULE, {
+    variables: {id: +navigation.state.params.schedules.id},
+  });
+
+  console.log(data, '___DATA____');
+  console.log(navigation.state.params, '___navigation.state.params____');
+  const refreshObject = {
+    refetchQueries: [
+      {
+        query: ME,
+      },
+    ],
+    awaitRefetchQueries: true,
+  };
+
+  const [UPDATE_SCHEDULE_mutation] = useMutation(
+    UPDATE_SCHEDULE,
+    refreshObject,
+  );
+
+  const [DELETE_START_SESSION_mutation] = useMutation(
+    DELETE_START_SESSION,
+    refreshObject,
+  );
+
+  const startTime = navigation.state.params.schedules.start_time.slice(0, 5);
+  const endTime = navigation.state.params.schedules.end_time.slice(0, 5);
 
   const startHour = +startTime.split(':')[0];
   const startMinutes = +startTime.split(':')[1];
@@ -40,8 +75,15 @@ const SelectWorkTime = ({navigation}) => {
   endMinutes < 15 && timeArr.pop();
 
   for (let i = 0; i < timeArr.length; i++) {
-    for (let j = 0; j < navigation.state.params.all_time.length; j++) {
-      if (timeArr[i].time == navigation.state.params.all_time[j]) {
+    for (
+      let j = 0;
+      j < navigation.state.params.schedules.start_sessions.length;
+      j++
+    ) {
+      if (
+        timeArr[i].time ===
+        navigation.state.params.schedules.start_sessions[j].time.slice(0, 5)
+      ) {
         timeArr[i].active = true;
       }
     }
@@ -49,7 +91,6 @@ const SelectWorkTime = ({navigation}) => {
 
   const [activeArr, setActiveArr] = useState(timeArr);
 
-  console.log(navigation.state.params, 'navigation.state.params');
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader
@@ -70,37 +111,39 @@ const SelectWorkTime = ({navigation}) => {
                 Начало и конец рабочего дня ограничено ранее указанным временем:
                 <Text
                   style={{fontSize: 13, color: '#B986DA', fontWeight: 'bold'}}>
-                  {startTime} - {endTime}
+                  {startTime.slice(0, 5)} - {endTime.slice(0, 5)}
                 </Text>
               </Text>
             </View>
           </View>
           <View style={timeContainer}>
-            {activeArr.map((el, i) => (
-              <TouchableOpacity
-                onPress={() => {
-                  activeArr[i].active == true
-                    ? (activeArr[i].active = false)
-                    : (activeArr[i].active = true);
-                  setActiveArr([...activeArr]);
-                }}
-                style={[
-                  timeBlock,
-                  {
-                    backgroundColor: !el.active ? '#fff' : '#B986DA',
-                  },
-                ]}
-                key={i}>
-                <Text
-                  style={{
-                    color: !el.active ? '#B986DA' : '#fff',
-                    fontWeight: 'bold',
-                    fontSize: 13,
-                  }}>
-                  {el.time}
-                </Text>
-              </TouchableOpacity>
-            ))}
+            {activeArr.map((el, i) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    activeArr[i].active == true
+                      ? (activeArr[i].active = false)
+                      : (activeArr[i].active = true);
+                    setActiveArr([...activeArr]);
+                  }}
+                  style={[
+                    timeBlock,
+                    {
+                      backgroundColor: !el.active ? '#fff' : '#B986DA',
+                    },
+                  ]}
+                  key={i}>
+                  <Text
+                    style={{
+                      color: !el.active ? '#B986DA' : '#fff',
+                      fontWeight: 'bold',
+                      fontSize: 13,
+                    }}>
+                    {el.time}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </View>
       </ScrollView>
@@ -113,7 +156,52 @@ const SelectWorkTime = ({navigation}) => {
         }
         active={true}
         onPress={() => {
-          navigation.goBack();
+          const objSimple = {};
+          const objDelete = {};
+          const objCreate = {};
+          activeArr.some(el => {
+            navigation.state.params.schedules.start_sessions.some((inDB, i) => {
+              if (inDB.time.slice(0, 5) === el.time && el.active) {
+                objSimple[inDB.time.slice(0, 5)] = inDB;
+              } else if (inDB.time.slice(0, 5) === el.time && !el.active) {
+                objDelete[inDB.time.slice(0, 5)] = inDB;
+              } else if (el.active) {
+                objCreate[el.time] = el;
+              }
+            });
+          });
+
+          for (let key in objCreate) {
+            if (!objSimple[key]) {
+              console.log(key, 'KEY');
+              UPDATE_SCHEDULE_mutation({
+                variables: {
+                  id: +navigation.state.params.schedules.id,
+                  time: key,
+                },
+                optimisticResponse: null,
+              })
+                .then(res => {
+                  console.log(res, '__RES UPDATE_SCHEDULE_mutation');
+                })
+                .catch(err =>
+                  console.log(err, '__ERR UPDATE_SCHEDULE_mutation'),
+                );
+            }
+          }
+          for (let key in objDelete) {
+            console.log(objDelete[key], '_____KEY');
+            DELETE_START_SESSION_mutation({
+              variables: {
+                id: +objDelete[key].id,
+              },
+              optimisticResponse: null,
+            })
+              .then(res => {
+                console.log(res, '__RES DELETE_START_SESSION');
+              })
+              .catch(err => console.log(err, '__ERR DELETE_START_SESSION'));
+          }
         }}
       />
     </View>

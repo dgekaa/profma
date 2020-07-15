@@ -30,6 +30,7 @@ const shortMonthName = [
   'Нояб',
   'Дек',
 ];
+
 const NoteInformationMaster = ({navigation}) => {
   const {
     first,
@@ -40,7 +41,9 @@ const NoteInformationMaster = ({navigation}) => {
     borderBottom,
   } = styles;
 
-  const {client_id, services, time, day, month, year} = navigation.state.params;
+  console.log(navigation.state.params, '_____NAV NOTE INFO MASTER');
+
+  // const {client_id, services, time, day, month, year} = navigation.state.params;
 
   const isActive = true;
   const [isCompleted, setIsCompleted] = useState(false);
@@ -48,18 +51,19 @@ const NoteInformationMaster = ({navigation}) => {
   const [price, setPrice] = useState();
 
   useEffect(() => {
-    services.length > 1
-      ? services.reduce((el, i) =>
-          setPrice(Number(el.how_mach) + Number(i.how_mach)),
-        )
-      : services.length && setPrice(services[0].how_mach);
+    let count = 0;
+    navigation.state.params.offers.length &&
+      navigation.state.params.offers.forEach((el, i) => {
+        count += el.price_by_pack.price;
+      });
+    setPrice(count);
   }, []);
 
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader
         navigation={navigation}
-        title={isCompleted ? 'Сеанс завершён' : 'Вы записаны к мастеру'}
+        title={isCompleted ? 'Сеанс завершён' : 'Запись оформлена'}
       />
       <ScrollView>
         <View style={{flex: 1, paddingHorizontal: 8, paddingTop: 0}}>
@@ -67,23 +71,17 @@ const NoteInformationMaster = ({navigation}) => {
           <View style={groupBlock}>
             <View style={[blockInGroup, borderBottom]}>
               <Text style={{fontSize: 10}}>Имя клиента</Text>
-              {people
-                .filter(index => index.id == client_id)
-                .map(index => (
-                  <Text key={index.id} style={text}>
-                    {index.client_name}
-                  </Text>
-                ))}
+
+              <Text style={text}>
+                {navigation.state.params.client.profile.name}
+              </Text>
             </View>
             <View style={blockInGroup}>
               <Text style={{fontSize: 10}}>Мобильный телефон клиента</Text>
-              {people
-                .filter(index => index.id == client_id)
-                .map(index => (
-                  <Text key={index.id} style={text}>
-                    {index.phone_number}
-                  </Text>
-                ))}
+
+              <Text style={text}>
+                {navigation.state.params.client.profile.mobile_phone}
+              </Text>
             </View>
           </View>
           {/* УСЛУГИ */}
@@ -91,42 +89,45 @@ const NoteInformationMaster = ({navigation}) => {
             <Text style={blockTitle}>Услуги</Text>
             <View>
               <View style={groupBlock}>
-                {services.map((el, i) => (
-                  <View
-                    key={i}
-                    style={[
-                      borderBottom,
-                      {
-                        height: 60,
-                        flexDirection: 'row',
-                      },
-                    ]}>
+                {navigation.state.params.offers.length &&
+                  navigation.state.params.offers.map((el, i) => (
                     <View
-                      style={{
-                        flex: 4,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                      }}>
-                      <SvgUri svgXmlData={DefaultIcon} />
-                      <View style={{paddingHorizontal: 5}}>
+                      key={i}
+                      style={[
+                        borderBottom,
+                        {
+                          height: 60,
+                          flexDirection: 'row',
+                        },
+                      ]}>
+                      <View
+                        style={{
+                          flex: 4,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                        }}>
+                        <SvgUri svgXmlData={DefaultIcon} />
+                        <View style={{paddingHorizontal: 5}}>
+                          <Text style={{fontSize: 13, fontWeight: 'bold'}}>
+                            {el.service.name}
+                          </Text>
+                          <Text style={{fontSize: 10}}>
+                            {el.price_by_pack.duration} час.
+                          </Text>
+                        </View>
+                      </View>
+                      <View
+                        style={{
+                          flex: 2,
+                          justifyContent: 'center',
+                        }}>
+                        <Text style={{fontSize: 10}}>Стоимость услуги</Text>
                         <Text style={{fontSize: 13, fontWeight: 'bold'}}>
-                          {el.name}
+                          {el.price_by_pack.price} руб.
                         </Text>
-                        <Text style={{fontSize: 10}}>{el.how_long} час.</Text>
                       </View>
                     </View>
-                    <View
-                      style={{
-                        flex: 2,
-                        justifyContent: 'center',
-                      }}>
-                      <Text style={{fontSize: 10}}>Стоимость услуги</Text>
-                      <Text style={{fontSize: 13, fontWeight: 'bold'}}>
-                        {el.how_mach} руб.
-                      </Text>
-                    </View>
-                  </View>
-                ))}
+                  ))}
                 <TouchableOpacity
                   onPress={() => {
                     alert('Добавит новую услугу');
@@ -149,14 +150,16 @@ const NoteInformationMaster = ({navigation}) => {
           <View>
             <Text style={blockTitle}>дата и время сеанса</Text>
             <View style={[first, {flexDirection: 'row'}]}>
-              <Text style={{fontWeight: 'bold'}}>
-                {day} {shortMonthName[+month - 1].toLowerCase()} {year}
+              <Text style={{fontWeight: 'bold', textTransform: 'uppercase'}}>
+                {navigation.state.params.date.split('-')[2]}{' '}
+                {shortMonthName[+navigation.state.params.date.split('-')[1]]}{' '}
+                {navigation.state.params.date.split('-')[0]}
               </Text>
-              <Text> в {time}</Text>
+              <Text> в {navigation.state.params.time.slice(0, 5)}</Text>
             </View>
           </View>
           {/* АДРЕС ПРОВЕДЕНИЯ СЕАНСА */}
-          <View style={{marginBottom: 20}}>
+          {/* <View style={{marginBottom: 20}}>
             <Text style={blockTitle}>Адрес проведения сеанса</Text>
             <View
               style={[
@@ -180,10 +183,11 @@ const NoteInformationMaster = ({navigation}) => {
                 <Text style={{fontSize: 10, flex: 1}}>!!!!!!!!!!!!!!!!!</Text>
               </View>
             </View>
-          </View>
+          </View> */}
         </View>
         {isActive && (
-          <View style={{marginBottom: 20, paddingHorizontal: 16}}>
+          <View
+            style={{marginBottom: 20, marginTop: 10, paddingHorizontal: 16}}>
             <Text>Итоговая стоимость сеанса</Text>
             <Text style={{fontWeight: 'bold'}}>{price} руб</Text>
           </View>

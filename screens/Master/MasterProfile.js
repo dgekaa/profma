@@ -1,6 +1,14 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import {Query, useMutation, useQuery} from 'react-apollo';
+import {signOut, getToken} from '../../util';
 
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  AsyncStorage,
+} from 'react-native';
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
@@ -10,6 +18,8 @@ import CalendarSvgIcon from '../../img/CalendarSVG.svg';
 import ManicureIcon from '../../img/Manicure.svg';
 import UserIcon from '../../img/User.svg';
 import PasswordIcon from '../../img/Password.svg';
+
+import {LOGOUT, ME} from '../../QUERYES';
 
 const MasterProfile = ({navigation}) => {
   const {
@@ -21,6 +31,8 @@ const MasterProfile = ({navigation}) => {
     outsideCircle,
     insideCircle,
   } = styles;
+
+  console.log(navigation, 'NAVIGATION MASTER');
 
   const [isChangePassword, setIsChangePassword] = useState();
 
@@ -35,6 +47,12 @@ const MasterProfile = ({navigation}) => {
     }, 1000);
   };
 
+  const [LOGOUT_mutation] = useMutation(LOGOUT);
+
+  const USER = useQuery(ME);
+
+  console.log(USER.data, '______________USER MASTER PROFILE');
+
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} title={`Мой профиль`} />
@@ -45,7 +63,7 @@ const MasterProfile = ({navigation}) => {
             <TouchableOpacity
               style={first}
               onPress={() => {
-                navigation.navigate('MyNotesMaster', navigation.state.params);
+                navigation.navigate('MyNotesMaster', USER.data.me.profile);
               }}>
               <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
               <Text style={text}>Мои записи</Text>
@@ -60,12 +78,7 @@ const MasterProfile = ({navigation}) => {
                   borderBottom,
                   {justifyContent: 'space-between', alignItems: 'center'},
                 ]}
-                onPress={() => {
-                  navigation.navigate(
-                    'MasterCalendar',
-                    navigation.state.params,
-                  );
-                }}>
+                onPress={() => navigation.navigate('MasterCalendar')}>
                 <View style={{alignItems: 'center', flexDirection: 'row'}}>
                   <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
                   <Text style={text}>Мой календарь мастера</Text>
@@ -77,12 +90,12 @@ const MasterProfile = ({navigation}) => {
               {/* МОИ УСЛУГИ*/}
               <TouchableOpacity
                 style={[blockInGroup, borderBottom]}
-                onPress={() => {
-                  navigation.navigate('MyServices', navigation.state.params);
-                }}>
+                onPress={() =>
+                  navigation.navigate('MyServices', {ID: USER.data.me.id})
+                }>
                 <SvgUri width="13" height="13" svgXmlData={ManicureIcon} />
                 <Text style={text}>
-                  Мои услуги ({navigation.state.params.my_services.length})
+                  Мои услуги {USER && USER.data.me.offers.length}
                 </Text>
               </TouchableOpacity>
               {/* НАСТРОИТЬ РАСПИСАНИЕ*/}
@@ -102,12 +115,7 @@ const MasterProfile = ({navigation}) => {
               {/* ПЕРСОНАЛЬНЫЕ ДАННЫЕ*/}
               <TouchableOpacity
                 style={[blockInGroup, borderBottom]}
-                onPress={() => {
-                  navigation.navigate(
-                    'PersonalDataMaster',
-                    navigation.state.params,
-                  );
-                }}>
+                onPress={() => navigation.navigate('PersonalDataMaster')}>
                 <SvgUri style={{height: 13, width: 13}} svgXmlData={UserIcon} />
                 <Text style={text}>Персональные данные</Text>
               </TouchableOpacity>
@@ -144,7 +152,9 @@ const MasterProfile = ({navigation}) => {
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('ChangeCity', {
-                    city: navigation.state.params.city,
+                    city: USER.data.me.profile.city
+                      ? USER.data.me.profile.city
+                      : '',
                   });
                 }}>
                 <View
@@ -158,7 +168,9 @@ const MasterProfile = ({navigation}) => {
                   ]}>
                   <Text style={{fontSize: 13}}>Ваш город</Text>
                   <Text style={{fontWeight: 'bold'}}>
-                    {navigation.state.params.city}
+                    {USER && USER.data.me.profile.city
+                      ? USER.data.me.profile.city.name
+                      : ''}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -184,7 +196,13 @@ const MasterProfile = ({navigation}) => {
           <ButtonDefault
             title="выйти из профиля"
             onPress={() => {
-              alert('Выход из профиля');
+              LOGOUT_mutation()
+                .then(res => {
+                  console.log(res);
+                  signOut();
+                  navigation.navigate('Start');
+                })
+                .catch(err => console.log(err));
             }}
           />
         )}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {InputWithPassword} from '../../components/Input';
@@ -18,6 +18,9 @@ const ChangePassword = ({navigation}) => {
     textBold,
   } = styles;
 
+  const [pass, setPass] = useState('');
+  const [repass, setRepass] = useState('');
+
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} title={`Изменить пароль`} />
@@ -26,21 +29,19 @@ const ChangePassword = ({navigation}) => {
           <Text style={blockTitle}>изменить пароль</Text>
           <View style={groupBlock}>
             <InputWithPassword
+              value={pass}
               text="Введите новый пароль"
               withoutShadow={true}
               secureTextEntry={true}
-              onChangeText={text => {
-                console.log(text);
-              }}
+              onChangeText={text => setPass(text)}
             />
             <View style={border} />
             <InputWithPassword
+              value={repass}
               text="Повторите новый пароль"
               withoutShadow={true}
               secureTextEntry={true}
-              onChangeText={text => {
-                console.log(text);
-              }}
+              onChangeText={text => setRepass(text)}
             />
           </View>
         </View>

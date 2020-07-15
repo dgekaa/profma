@@ -9,6 +9,9 @@ import CalendarColorIcon from '../../img/CalendarColor.svg';
 import moment from 'moment';
 import 'moment/locale/fr';
 
+import {Query, useMutation, useQuery} from 'react-apollo';
+import {LOGOUT, ME} from '../../QUERYES';
+
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {people} from '../../data';
 
@@ -67,28 +70,46 @@ const monthsNamesHeader = {
 const Block = ({el, navigation, key}) => {
   const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
 
-  const [price, setPrice] = useState();
+  // useEffect(() => {
+  //   el.services.length > 1
+  //     ? el.services.reduce((el, i) =>
+  //         setPrice(Number(el.how_mach) + Number(i.how_mach)),
+  //       )
+  //     : el.services.length && setPrice(el.services[0].how_mach);
+  // }, []);
+
+  console.log(el, '+el');
+
+  const [price, setPrice] = useState(0);
+  const [offersAll, setOffersAll] = useState([]);
 
   useEffect(() => {
-    el.services.length > 1
-      ? el.services.reduce((el, i) =>
-          setPrice(Number(el.how_mach) + Number(i.how_mach)),
-        )
-      : el.services.length && setPrice(el.services[0].how_mach);
+    let count = 0;
+    el.offers.length &&
+      el.offers.forEach((elem, i) => {
+        count += elem.price_by_pack.price;
+      });
+    setPrice(count);
+
+    let offersAllLocal = [];
+    el.offers.length &&
+      el.offers.forEach((elem, i) => {
+        offersAllLocal.push(elem.service.name);
+      });
+    setOffersAll(offersAllLocal);
   }, []);
 
   return (
     <TouchableOpacity
       style={block}
       key={key}
-      onPress={() => {
-        navigation.navigate('NoteInformationMaster', el);
-      }}>
+      onPress={() => navigation.navigate('NoteInformationMaster', el)}>
       <View style={topBlock}>
         <View style={{flexDirection: 'row', flex: 6}}>
           <SvgUri svgXmlData={CalendarColorIcon} style={{marginRight: 5}} />
           <Text style={[dateText]}>
-            {el.day} {shortMonthName[+el.month - 1]} в {el.time}
+            {el.date.split('-')[2]} {shortMonthName[el.date.split('-')[1]]} в{' '}
+            {el.time.slice(0, 5)}
           </Text>
         </View>
         <View style={{flex: 4}}>
@@ -105,18 +126,12 @@ const Block = ({el, navigation, key}) => {
         <View style={{flex: 1}}>
           <View style={{flex: 1}}>
             <Text style={{fontSize: 10}}>Клиент</Text>
-            {people
-              .filter(index => index.id == el.client_id)
-              .map(index => (
-                <Text style={[textBold]}> {index.client_name} </Text>
-              ))}
+
+            <Text style={[textBold]}> {el.client.profile.name} </Text>
           </View>
           <View style={{flex: 1}}>
-            {people
-              .filter(index => index.id == el.client_id)
-              .map(index => (
-                <Text style={[textBold]}> {index.address} </Text>
-              ))}
+            <Text style={[textBold]}>{el.client.profile.home_address} </Text>
+
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <View
                 style={{
@@ -125,22 +140,20 @@ const Block = ({el, navigation, key}) => {
                   backgroundColor: '#9155FF',
                 }}
               />
-              {people
-                .filter(index => index.id == el.client_id)
-                .map(index => (
-                  <Text style={{fontSize: 10}}> {index.metro} </Text>
-                ))}
+
+              <Text style={{fontSize: 10}}> метро </Text>
             </View>
           </View>
         </View>
         <View style={{flex: 1}}>
           <View style={{flex: 1}}>
             <Text style={{fontSize: 10}}>Услуга</Text>
-            {el.services.map((el, i) => (
-              <Text key={i} style={[textBold]}>
-                {el.name}
-              </Text>
-            ))}
+            {!!offersAll.length &&
+              offersAll.map((el, i) => (
+                <Text key={key} style={[textBold]}>
+                  {el}
+                </Text>
+              ))}
           </View>
         </View>
       </View>
@@ -150,6 +163,29 @@ const Block = ({el, navigation, key}) => {
 
 const MasterCalendar = ({navigation}) => {
   const {calendarContainer, arrow, headerText, hederArrowContainer} = styles;
+
+  const [currentDate, setCurrentDate] = useState(
+    new Date()
+      .toLocaleDateString()
+      .split('.')
+      .reverse()
+      .join('-'),
+  );
+
+  const [filteredData, setFilteredData] = useState([]);
+  const USER = useQuery(ME);
+
+  console.log(USER.data, 'USER MASTER CALENDAR');
+
+  useEffect(() => {
+    if (USER.data && USER.data.me.master_appointments.length) {
+      const filtered = USER.data.me.master_appointments.filter((el, i) => {
+        return el.date === currentDate;
+      });
+      console.log(filtered, ' FILTERED');
+      setFilteredData(filtered);
+    }
+  }, [USER.data, currentDate]);
 
   moment.locale('ru', {
     config: {
@@ -207,103 +243,108 @@ const MasterCalendar = ({navigation}) => {
   const stringMonth = monthNames[monthNumber];
   const dayNumber = new Date().getDate();
 
-  const [notes, setNotes] = useState(navigation.state.params.my_notes);
+  const [notes, setNotes] = useState();
   let dateNowSorted = [];
 
-  useEffect(() => {
-    dateNowSorted = notes.filter((el, i) => {
-      if (
-        Number(el.day) == Number(new Date().toString().split(' ')[2]) &&
-        Number(el.month) ==
-          Number(
-            monthsNamesHeader[new Date().toString().split(' ')[1]].number,
-          ) &&
-        Number(el.year) == Number(new Date().toString().split(' ')[3])
-      ) {
-        return el;
-      }
-    });
-    setSortNotes([...dateNowSorted]);
-  }, [notes]);
+  // useEffect(() => {
+  //   dateNowSorted = notes.filter((el, i) => {
+  //     if (
+  //       Number(el.day) == Number(new Date().toString().split(' ')[2]) &&
+  //       Number(el.month) ==
+  //         Number(
+  //           monthsNamesHeader[new Date().toString().split(' ')[1]].number,
+  //         ) &&
+  //       Number(el.year) == Number(new Date().toString().split(' ')[3])
+  //     ) {
+  //       return el;
+  //     }
+  //   });
+  //   setSortNotes([...dateNowSorted]);
+  // }, [notes]);
 
   const [sortNotes, setSortNotes] = useState([]);
 
   const onDateSelected = date => {
-    const sorted = notes.filter((el, i) => {
-      if (
-        Number(el.day) == Number(date._d.toString().split(' ')[2]) &&
-        Number(el.month) ==
-          Number(monthsNamesHeader[date._d.toString().split(' ')[1]].number) &&
-        Number(el.year) == Number(date._d.toString().split(' ')[3])
-      ) {
-        return el;
-      }
-    });
-    setSortNotes([...sorted]);
+    setCurrentDate(
+      date._d
+        .toLocaleDateString()
+        .split('.')
+        .reverse()
+        .join('-'),
+    );
+    // const sorted = notes.filter((el, i) => {
+    //   if (
+    //     Number(el.day) == Number(date._d.toString().split(' ')[2]) &&
+    //     Number(el.month) ==
+    //       Number(monthsNamesHeader[date._d.toString().split(' ')[1]].number) &&
+    //     Number(el.year) == Number(date._d.toString().split(' ')[3])
+    //   ) {
+    //     return el;
+    //   }
+    // });
+    // setSortNotes([...sorted]);
   };
 
-  return (
-    <View style={{flex: 1}}>
-      <BackgroundHeader
-        navigation={navigation}
-        title={`Сегодня ${dayNumber} ${stringMonth}`}
-        settings={true}
-        onSettingsPress={() => {
-          alert('Что здесь?');
-        }}>
-        <View style={hederArrowContainer}>
-          <TouchableOpacity
-            onPress={() => {
-              calendarRef.current.getPreviousWeek();
-            }}
-            style={arrow}>
-            <SvgUri svgXmlData={ArrowLIcon} />
-          </TouchableOpacity>
-          <Text style={headerText}>
-            {month} {weekFirst}-{weekLast}
-          </Text>
-          <TouchableOpacity
-            onPress={() => {
-              calendarRef.current.getNextWeek();
-            }}
-            style={arrow}>
-            <SvgUri svgXmlData={ArrowRIcon} />
-          </TouchableOpacity>
+  if (USER.loading) {
+    return <Text>Loading...</Text>;
+  } else if (USER.error) {
+    return <Text>ERR</Text>;
+  } else {
+    return (
+      <View style={{flex: 1}}>
+        <BackgroundHeader
+          navigation={navigation}
+          title={`Сегодня ${dayNumber} ${stringMonth}`}
+          settings={true}
+          onSettingsPress={() => alert('Что здесь?')}>
+          <View style={hederArrowContainer}>
+            <TouchableOpacity
+              onPress={() => calendarRef.current.getPreviousWeek()}
+              style={arrow}>
+              <SvgUri svgXmlData={ArrowLIcon} />
+            </TouchableOpacity>
+            <Text style={headerText}>
+              {month} {weekFirst}-{weekLast}
+            </Text>
+            <TouchableOpacity
+              onPress={() => calendarRef.current.getNextWeek()}
+              style={arrow}>
+              <SvgUri svgXmlData={ArrowRIcon} />
+            </TouchableOpacity>
+          </View>
+        </BackgroundHeader>
+        <View style={calendarContainer}>
+          <CalendarStrip
+            locale={locale}
+            onDateSelected={onDateSelected}
+            onWeekChanged={onWeekChanged}
+            ref={calendarRef}
+            style={{height: 60}}
+            calendarHeaderStyle={{color: '#fff', height: 0}}
+            iconStyle={{height: 15, width: 5}}
+            calendarColor={'#fff'}
+            dateNumberStyle={{color: '#A6ADB3'}}
+            dateNameStyle={{color: '#A6ADB3'}}
+            // iconContainer={{flex: 0.07}}
+            iconStyle={{height: 0, width: 0}}
+          />
         </View>
-      </BackgroundHeader>
-      <View style={calendarContainer}>
-        <CalendarStrip
-          locale={locale}
-          onDateSelected={date => {
-            onDateSelected(date);
-          }}
-          onWeekChanged={onWeekChanged}
-          ref={calendarRef}
-          style={{height: 60}}
-          calendarHeaderStyle={{color: '#fff', height: 0}}
-          iconStyle={{height: 15, width: 5}}
-          calendarColor={'#fff'}
-          dateNumberStyle={{color: '#A6ADB3'}}
-          dateNameStyle={{color: '#A6ADB3'}}
-          // iconContainer={{flex: 0.07}}
-          iconStyle={{height: 0, width: 0}}
-        />
+        <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
+          {filteredData.length
+            ? filteredData.map((el, i) => (
+                <View key={i}>
+                  <Block navigation={navigation} el={el} />
+                </View>
+              ))
+            : filteredData.map((el, i) => (
+                <View key={i}>
+                  <Block navigation={navigation} el={el} />
+                </View>
+              ))}
+        </ScrollView>
       </View>
-      <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
-        {sortNotes.length
-          ? sortNotes.map((el, i) => (
-              <View key={i}>
-                <Block navigation={navigation} el={el} />
-              </View>
-            ))
-          : sortNotes.map((el, i) => (
-              <View key={i}>
-                <Block navigation={navigation} el={el} />
-              </View>
-            ))}
-      </ScrollView>
-    </View>
-  );
+    );
+  }
 };
 
 const styles = StyleSheet.create({

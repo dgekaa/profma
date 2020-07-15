@@ -4,6 +4,9 @@ import DefaultSvgIcon from '../../img/Default.svg';
 import PressedIcon from '../../img/Pressed.svg';
 import DefaultIcon from '../../img/Default.svg';
 
+import {Query, useMutation, useQuery} from 'react-apollo';
+import {DELETE_OFFER, GET_USER, ME} from '../../QUERYES';
+
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {InputWithText} from '../../components/Input';
 import {ButtonDefault} from '../../components/Button';
@@ -14,8 +17,42 @@ import {Text, View, StyleSheet, Image, ScrollView} from 'react-native';
 const SelectedServiceDescription = ({navigation}) => {
   const {groupBlock, blockTitle, blockInGroup, borderBottom} = styles;
 
-  const [howPay, setHowPay] = useState('time');
   const [deleteModal, setDeleteModal] = useState(false);
+
+  console.log(navigation.state.params.service, 'NAV___');
+  const {
+    description,
+    price_by_pack,
+    service,
+    id,
+  } = navigation.state.params.service;
+
+  const refreshObject = {
+    refetchQueries: [
+      {
+        query: ME,
+      },
+    ],
+    awaitRefetchQueries: true,
+  };
+
+  const [DELETE_OFFER_mutation] = useMutation(DELETE_OFFER, refreshObject);
+
+  const DELETE = () => {
+    DELETE_OFFER_mutation({
+      variables: {
+        id: id,
+      },
+      optimisticResponse: null,
+    })
+      .then(res => {
+        console.log(res, '__RES');
+        navigation.state.params.deleteService(true);
+        setDeleteModal(true);
+        navigation.goBack();
+      })
+      .catch(err => console.log(err, '__ERR'));
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -25,13 +62,13 @@ const SelectedServiceDescription = ({navigation}) => {
           <Text style={blockTitle}>ваша специализация</Text>
           <View style={[groupBlock, blockInGroup]}>
             <Text style={{fontWeight: 'bold', fontSize: 13}}>
-              Мастер маникюра
+              {service.specialization.name}
             </Text>
           </View>
           <Text style={blockTitle}>ваша услуга</Text>
           <View style={[groupBlock, blockInGroup]}>
             <Text style={{fontWeight: 'bold', fontSize: 13}}>
-              Европейский маникюр
+              {service.name}
             </Text>
           </View>
           <View
@@ -44,24 +81,12 @@ const SelectedServiceDescription = ({navigation}) => {
                 flexDirection: 'row',
                 justifyContent: 'space-between',
               }}>
-              <ButtonDefault
-                onPress={() => {
-                  setHowPay('time');
-                }}
+              {/* <ButtonDefault
                 style={{marginRight: 5}}
                 flex={true}
                 title="оплата по времени"
-                active={howPay === 'time' ? true : false}
-              />
-              <ButtonDefault
-                onPress={() => {
-                  setHowPay('nail');
-                }}
-                flex={true}
-                style={{marginRight: 8}}
-                active={howPay === 'nail' ? true : false}
-                title="оплата за ноготь"
-              />
+                active={true}
+              /> */}
             </View>
             <View>
               <View
@@ -78,12 +103,8 @@ const SelectedServiceDescription = ({navigation}) => {
                 <InputWithText
                   editable={false}
                   selectTextOnFocus={false}
-                  value="asdasdasdvvvv"
-                  text={
-                    howPay == 'time'
-                      ? `Продолжительность услуги (в часах)`
-                      : 'Количество ногтей'
-                  }
+                  value={'' + price_by_pack.duration}
+                  text={`Продолжительность услуги (в часах)`}
                   placeholder={`Укажите продолжительность сеанса`}
                   withoutShadow={true}
                   onChangeText={text => {}}
@@ -101,7 +122,7 @@ const SelectedServiceDescription = ({navigation}) => {
                 <InputWithText
                   editable={false}
                   selectTextOnFocus={false}
-                  value="asdad!!!!!!"
+                  value={'' + price_by_pack.price}
                   text={`Стоимость услуги`}
                   placeholder={`Укажите стоимость сеанса`}
                   withoutShadow={true}
@@ -123,20 +144,14 @@ const SelectedServiceDescription = ({navigation}) => {
           </View>
           <Text style={blockTitle}>Описание услуги</Text>
           <View style={[groupBlock, {padding: 8}]}>
-            <Text style={{fontSize: 13, color: '#011627'}}>
-              Во время европейского маникюра, кожа кутикулы не обрезается, а
-              деликатно отодвигается апельсиновой палочкой со специальным
-              средством.
-            </Text>
+            <Text style={{fontSize: 13, color: '#011627'}}>{description}</Text>
           </View>
         </View>
       </ScrollView>
       <View style={{margin: 8}}>
         <ButtonDefault
           title="удалить услугу"
-          onPress={() => {
-            setDeleteModal(true);
-          }}
+          onPress={() => setDeleteModal(true)}
         />
       </View>
       {deleteModal && (
@@ -159,14 +174,7 @@ const SelectedServiceDescription = ({navigation}) => {
               title="нет, не удалять услугу"
               active={true}
             />
-            <ButtonDefault
-              onPress={() => {
-                navigation.state.params.deleteService(true);
-                setDeleteModal(true);
-                navigation.goBack();
-              }}
-              title="удалить услугу"
-            />
+            <ButtonDefault onPress={() => DELETE()} title="удалить услугу" />
           </View>
         </ModalWindow>
       )}

@@ -21,6 +21,8 @@
     "apollo-client": "^2.6.10",
     "apollo-link-context": "^1.0.20",
     "apollo-link-http": "^1.5.17",
+    "graphql": "^15.3.0",
+    "graphql-tag": "^2.10.3",
     "moment": "^2.24.0",
     "native-base": "^2.13.12",
     "react": "16.9.0",

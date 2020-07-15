@@ -43,22 +43,14 @@ const NoteInformation = ({navigation}) => {
       <ScrollView style={{}}>
         <View style={{flex: 1, paddingHorizontal: 8, paddingTop: 15}}>
           <View style={first}>
-            {navigation.state.params.people
-              .filter(
-                index => navigation.state.params.person.master_id == index.id,
-              )
-              .map((el, i) => (
-                <Text key={i} style={text}>
-                  {el.master_name}
-                </Text>
-              ))}
+            <Text style={text}>el.master_name</Text>
           </View>
           {/* УСЛУГИ */}
           <View style={{}}>
             <Text style={blockTitle}>Услуги</Text>
             <View>
               <View style={groupBlock}>
-                {navigation.state.params.person.services.map((el, i) => (
+                {/* {navigation.state.params.person.services.map((el, i) => (
                   <View
                     key={i}
                     style={[
@@ -102,26 +94,11 @@ const NoteInformation = ({navigation}) => {
                           fontWeight: 'bold',
                           textAlign: 'right',
                         }}>
-                        {el.how_mach} руб
+                        el.how_mach руб
                       </Text>
                     </View>
                   </View>
-                ))}
-                {/* <TouchableOpacity
-                  onPress={() => {
-                    alert('Добавит новую услугу');
-                  }}
-                  style={{
-                    height: 60,
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                  }}>
-                  <SvgUri source={require('../../img/Plus.svg')} />
-                  <Text
-                    style={{fontSize: 13, fontWeight: 'bold', paddingLeft: 5}}>
-                    Добавить услугу
-                  </Text>
-                </TouchableOpacity> */}
+                ))} */}
               </View>
             </View>
           </View>
@@ -129,14 +106,8 @@ const NoteInformation = ({navigation}) => {
           <View>
             <Text style={blockTitle}>дата и время сеанса</Text>
             <View style={[first, {flexDirection: 'row'}]}>
-              <Text style={{fontWeight: 'bold'}}>
-                {navigation.state.params.person.day}{' '}
-                {shortMonthName[
-                  navigation.state.params.person.month - 1
-                ].toLowerCase()}{' '}
-                {navigation.state.params.person.year}
-              </Text>
-              <Text> в {navigation.state.params.person.time}</Text>
+              <Text style={{fontWeight: 'bold'}}>день </Text>
+              <Text> в время</Text>
             </View>
           </View>
           {/* АДРЕС ПРОВЕДЕНИЯ СЕАНСА */}
@@ -193,26 +164,10 @@ const NoteInformation = ({navigation}) => {
         <ModalWindow>
           <Text style={{width: '70%', textAlign: 'center', fontSize: 13}}>
             Вы собираетесь отменить запись на
-            <Text style={{fontWeight: 'bold'}}>
-              {' '}
-              {navigation.state.params.person.day}{' '}
-              {shortMonthName[
-                navigation.state.params.person.month - 1
-              ].toLowerCase()}{' '}
-              {navigation.state.params.person.year}{' '}
-            </Text>
-            в {navigation.state.params.person.time} к мастеру
+            <Text style={{fontWeight: 'bold'}}> дата</Text>в время к мастеру
           </Text>
           <Text style={{paddingVertical: 8, fontWeight: 'bold', fontSize: 13}}>
-            {navigation.state.params.people
-              .filter(
-                index => navigation.state.params.person.master_id == index.id,
-              )
-              .map((el, i) => (
-                <Text key={i} style={text}>
-                  {el.master_name}
-                </Text>
-              ))}
+            <Text style={text}>el.master_name</Text>
           </Text>
           <Image source={require('../../img/girl5.png')} />
           <Text style={{paddingVertical: 8, fontSize: 13}}>

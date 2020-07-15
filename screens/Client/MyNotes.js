@@ -16,6 +16,10 @@ import {
   ScrollView,
 } from 'react-native';
 
+import {Query, useMutation, useQuery} from 'react-apollo';
+
+import {LOGOUT, ME} from '../../QUERYES';
+
 const shortMonthName = [
   'Янв',
   'Фев',
@@ -33,11 +37,7 @@ const shortMonthName = [
 
 const Block = ({el, navigation, key, archive}) => {
   console.log(el, 'ELLLLLLLLLLLLLLLLLll');
-  let costCount = 0;
-  el.services &&
-    el.services.forEach((elem, i) => {
-      costCount += +elem.how_mach;
-    });
+
   const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
   return (
     <TouchableOpacity
@@ -46,7 +46,6 @@ const Block = ({el, navigation, key, archive}) => {
       onPress={() => {
         navigation.navigate('NoteInformation', {
           person: el,
-          people,
         });
       }}>
       <View style={topBlock}>
@@ -58,51 +57,36 @@ const Block = ({el, navigation, key, archive}) => {
             svgXmlData={archive ? CalendarGrayIcon : CalendarColorIcon}
           />
           <Text style={[dateText, {color: archive ? '#A6ADB3' : '#B986DA'}]}>
-            {el.day} {shortMonthName[+el.month - 1]} В {el.time}
+            {el.date.split('-')[2]} {shortMonthName[+el.date.split('-')[1]]} в{' '}
+            {el.time.slice(0, 5)}
           </Text>
         </View>
         <View style={{flex: 4}}>
           <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-            {costCount} руб.
+            ???????????? руб.
           </Text>
         </View>
       </View>
       <View style={bottomBlock}>
-        {people
-          .filter(index => el.master_id == index.id)
-          .map((el, i) => (
-            <Image
-              style={img}
-              source={{
-                uri: el.img,
-              }}
-            />
-          ))}
+        <Image
+          style={img}
+          source={{
+            uri: el.img,
+          }}
+        />
         <View style={{flex: 1}}>
           <View style={{flex: 1}}>
             <Text style={{fontSize: 10, color: archive ? '#A6ADB3' : 'black'}}>
               Мастер
             </Text>
-            {people
-              .filter(index => el.master_id == index.id)
-              .map((el, i) => (
-                <Text
-                  key={i}
-                  style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-                  {el.master_name}
-                </Text>
-              ))}
+            <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
+              {el.master.profile.name}
+            </Text>
           </View>
           <View style={{flex: 1}}>
-            {people
-              .filter(index => el.master_id == index.id)
-              .map((el, i) => (
-                <Text
-                  key={i}
-                  style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-                  {el.address}
-                </Text>
-              ))}
+            <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
+              {el.master.profile.work_address}
+            </Text>
             <Text style={{fontSize: 10}}>Садовая</Text>
           </View>
         </View>
@@ -111,13 +95,9 @@ const Block = ({el, navigation, key, archive}) => {
             <Text style={{fontSize: 10, color: archive ? '#A6ADB3' : 'black'}}>
               Услуга
             </Text>
-            {el.services.map((el, i) => (
-              <Text
-                key={i}
-                style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-                {el.name}
-              </Text>
-            ))}
+            <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
+              {el.offers[0].service.name}
+            </Text>
           </View>
         </View>
       </View>
@@ -128,59 +108,71 @@ const Block = ({el, navigation, key, archive}) => {
 const MyNotes = ({navigation}) => {
   const {bigText, smallText, textBold, blockTitle, block} = styles;
 
-  return (
-    <View style={{flex: 1}}>
-      {!navigation.state.params.length && (
-        <View style={{flex: 1}}>
-          <Header navigation={navigation} />
-          <View style={{flex: 1, paddingHorizontal: 18}}>
-            <View style={{flex: 8}}>
-              <Text style={bigText}>
-                У вас пока нет ни одной активной записи😞
-              </Text>
-              <Text style={smallText}>
-                Сделайте вашу первую запись уже сегодня.
-              </Text>
-            </View>
-            <View style={{}}>
-              <ButtonDefault
-                title="Записаться на сеанс"
-                active={true}
-                style={{marginBottom: 8}}
-              />
-              <ButtonDefault title="Найти мастера" style={{marginBottom: 8}} />
+  const USER = useQuery(ME);
+
+  if (USER.error) {
+    return <Text>Error</Text>;
+  } else if (USER.loading) {
+    return <Text>Loading...</Text>;
+  } else if (USER.data) {
+    console.log(USER.data.me.client_appointments, '______________--USER');
+    return (
+      <View style={{flex: 1}}>
+        {!USER.data.me.client_appointments.length && (
+          <View style={{flex: 1}}>
+            <Header navigation={navigation} />
+            <View style={{flex: 1, paddingHorizontal: 18}}>
+              <View style={{flex: 8}}>
+                <Text style={bigText}>
+                  У вас пока нет ни одной активной записи😞
+                </Text>
+                <Text style={smallText}>
+                  Сделайте вашу первую запись уже сегодня.
+                </Text>
+              </View>
+              <View style={{}}>
+                <ButtonDefault
+                  title="Записаться на сеанс"
+                  active={true}
+                  style={{marginBottom: 8}}
+                />
+                <ButtonDefault
+                  title="Найти мастера"
+                  style={{marginBottom: 8}}
+                />
+              </View>
             </View>
           </View>
-        </View>
-      )}
-      {!!navigation.state.params.length && (
-        <View style={{flex: 1}}>
-          <BackgroundHeader navigation={navigation} title="Мои записи" />
-          <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
-            <Text style={blockTitle}>Активные записи</Text>
-            {navigation.state.params.map((el, i) => {
-              if (el.is_active) {
-                return <Block el={el} navigation={navigation} key={i} />;
-              }
-            })}
-            <Text style={blockTitle}>Архив записей</Text>
-            {navigation.state.params.map((el, i) => {
-              if (el.is_archive) {
-                return (
-                  <Block
-                    el={el}
-                    navigation={navigation}
-                    archive={true}
-                    key={i}
-                  />
-                );
-              }
-            })}
-          </ScrollView>
-        </View>
-      )}
-    </View>
-  );
+        )}
+        {!!USER.data.me.client_appointments.length && (
+          <View style={{flex: 1}}>
+            <BackgroundHeader navigation={navigation} title="Мои записи" />
+            <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
+              <Text style={blockTitle}>Активные записи</Text>
+              {USER.data.me.client_appointments.map((el, i) => {
+                if (el.status) {
+                  return <Block el={el} navigation={navigation} key={i} />;
+                }
+              })}
+              <Text style={blockTitle}>Архив записей</Text>
+              {USER.data.me.client_appointments.map((el, i) => {
+                if (el.status) {
+                  return (
+                    <Block
+                      el={el}
+                      navigation={navigation}
+                      archive={true}
+                      key={i}
+                    />
+                  );
+                }
+              })}
+            </ScrollView>
+          </View>
+        )}
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({

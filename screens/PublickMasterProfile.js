@@ -104,9 +104,10 @@ const DropdownBlock = ({
             )}
           </View>
           <View>
-            <Text style={{fontWeight: 'bold', fontSize: 13}}>{el.name}</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 13}}>Имя</Text>
             <Text style={{fontSize: 10}}>
-              {el.how_long} {plural(el.how_long, ['час', 'часа', 'часов'])}
+              !!!!!!!!!!!!!!!!!!!
+              {/* {el.how_long} {plural(el.how_long, ['час', 'часа', 'часов'])} */}
             </Text>
           </View>
         </View>
@@ -114,7 +115,7 @@ const DropdownBlock = ({
           <View style={{flex: 7}}>
             <Text style={{fontSize: 10}}>Стоимость услуги</Text>
             <Text style={{fontWeight: 'bold', fontSize: 13}}>
-              {el.how_mach} руб
+              Стоимость руб
             </Text>
           </View>
           <View>
@@ -153,7 +154,7 @@ const DropdownBlock = ({
             paddingRight: 8,
             width: '100%',
           }}>
-          <Text style={{fontSize: 13}}>{el.description}</Text>
+          <Text style={{fontSize: 13}}>описание</Text>
         </View>
       )}
     </TouchableOpacity>
@@ -225,17 +226,17 @@ const PublickMasterProfile = ({navigation}) => {
 
   // const [allPhoto, setAllPhoto] = useState([]);
 
-  useEffect(() => {
-    const arr = [];
-    navigation.state.params.my_notes.forEach((el, i) => {
-      if (el.photo && el.photo.length) {
-        el.photo.forEach(el => {
-          arr.push(el);
-        });
-      }
-    });
-    setImgArr([...arr]);
-  }, []);
+  // useEffect(() => {
+  //   const arr = [];
+  //   navigation.state.params.my_notes.forEach((el, i) => {
+  //     if (el.photo && el.photo.length) {
+  //       el.photo.forEach(el => {
+  //         arr.push(el);
+  //       });
+  //     }
+  //   });
+  //   setImgArr([...arr]);
+  // }, []);
 
   const [activeImg, setActiveImg] = useState(null);
   const [imgArr, setImgArr] = useState([]);
@@ -261,7 +262,8 @@ const PublickMasterProfile = ({navigation}) => {
     }
   };
 
-  const [services, setServices] = useState(navigation.state.params.my_services);
+  const [services, setServices] = useState([]);
+  // const [services, setServices] = useState(navigation.state.params.my_services);
   const [slideBlock, setSlideBlock] = useState(
     new Array(services.length).fill(false),
   );
@@ -315,7 +317,7 @@ const PublickMasterProfile = ({navigation}) => {
               if (i < 3) {
                 return (
                   <View key={i}>
-                    <DropdownBlock
+                    {/* <DropdownBlock
                       index={i}
                       el={el}
                       active={false}
@@ -323,7 +325,7 @@ const PublickMasterProfile = ({navigation}) => {
                       setSlideBlock={setSlideBlock}
                       checkboxes={checkboxes}
                       setCheckboxes={setCheckboxes}
-                    />
+                    /> */}
                   </View>
                 );
               }

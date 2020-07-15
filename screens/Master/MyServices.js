@@ -1,21 +1,32 @@
 import React, {useState, useEffect} from 'react';
+import {Query, useMutation, useQuery} from 'react-apollo';
 
 import BackgroundHeader, {Header} from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
 
-import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {ME} from '../../QUERYES';
+
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 
 const Block = ({navigation, deleteService, el}) => {
   const {block, headerText, text, textBold} = styles;
+
+  console.log(el, 'SERVICE');
   return (
     <TouchableOpacity
       style={block}
       onPress={() => {
         navigation.navigate('SelectedServiceDescription', {
-          deleteService: bool => {
-            deleteService(bool);
-          },
+          deleteService: bool => deleteService(bool),
+          service: el,
         });
       }}>
       <View>
@@ -28,8 +39,10 @@ const Block = ({navigation, deleteService, el}) => {
       </View>
       <View style={{flex: 1, justifyContent: 'space-between'}}>
         <View>
-          <Text style={headerText}>{el.name}</Text>
-          <Text style={{color: '#B986DA', fontSize: 10}}>!!!!!!!!!</Text>
+          <Text style={headerText}>{el.service.name}</Text>
+          <Text style={{color: '#B986DA', fontSize: 10}}>
+            {el.service.specialization.name}
+          </Text>
         </View>
         <View
           style={{
@@ -38,11 +51,11 @@ const Block = ({navigation, deleteService, el}) => {
           }}>
           <View style={{flex: 1}}>
             <Text style={text}>Стоимость сеанса</Text>
-            <Text style={textBold}>{el.how_mach} руб</Text>
+            <Text style={textBold}>{el.price_by_pack.price} руб</Text>
           </View>
           <View style={{flex: 1}}>
             <Text style={text}>Стоимость указана за</Text>
-            <Text style={textBold}>!!!!!!</Text>
+            <Text style={textBold}>{el.price_by_pack.duration} час(-а)</Text>
           </View>
         </View>
       </View>
@@ -63,21 +76,27 @@ const MyServices = ({navigation}) => {
     }, 1000);
   };
 
+  const USER = useQuery(ME);
+
+  console.log(USER.data.me, '+++++++++++++USER');
+
   return (
     <View style={{flex: 1}}>
       {true && (
         <View style={{flex: 1}}>
           <BackgroundHeader title="Мои услуги" navigation={navigation} />
-          <View style={{paddingHorizontal: 8, flex: 1}}>
+          <ScrollView style={{paddingHorizontal: 8, flex: 1}}>
             <Text style={blockTitle}>мои активные услуги</Text>
-            {navigation.state.params.my_services.map(el => (
-              <Block
-                el={el}
-                navigation={navigation}
-                deleteService={bool => deleteOneService(bool)}
-              />
-            ))}
-          </View>
+            {USER &&
+              USER.data.me.offers.length &&
+              USER.data.me.offers.map(el => (
+                <Block
+                  el={el}
+                  navigation={navigation}
+                  deleteService={bool => deleteOneService(bool)}
+                />
+              ))}
+          </ScrollView>
           {successDeleted && (
             <SaveSuccess
               style={{width: '95%'}}

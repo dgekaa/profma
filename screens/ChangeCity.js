@@ -1,7 +1,8 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import SvgUri from 'react-native-svg-uri';
 import BackgroundHeader from '../components/BackgroundHeader';
 import SearchIcon from '../img/Search.svg';
+import {Query, useMutation, useQuery} from 'react-apollo';
 
 import {
   Text,
@@ -13,6 +14,8 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
+
+import {ALL_CITIES} from '../QUERYES';
 
 const Border = () => (
   <View
@@ -26,25 +29,33 @@ const Border = () => (
 
 const ChangeCity = ({navigation}) => {
   const {groupBlock} = styles;
-  const data = [
-    'qwe',
-    'asd',
-    'zxc',
-    'qwe',
-    'asd',
-    'zxc',
-    'qwe',
-    'asd',
-    'zxc',
-    'qwe',
-    'asd',
-    'zxc',
-  ];
+
   const [city, setCity] = useState(
-    navigation.state.params.city || 'Укажите город',
+    navigation.state.params.city.name || 'Укажите город',
   );
+  const [manualCity, setManualCity] = useState('');
 
   const cityInputRef = useRef(null);
+
+  const {data} = useQuery(ALL_CITIES, {
+    variables: {},
+  });
+
+  const [filteredData, setFilteredData] = useState([]);
+
+  useEffect(() => {
+    setFilteredData(data);
+  }, [data]);
+
+  useEffect(() => {
+    const filteredCities =
+      data &&
+      data.cities.data.filter(el => {
+        return !el.name.toLowerCase().indexOf(manualCity.toLowerCase());
+      });
+
+    setFilteredData(filteredCities);
+  }, [manualCity]);
 
   return (
     <TouchableWithoutFeedback onPress={() => cityInputRef.current.blur()}>
@@ -81,6 +92,8 @@ const ChangeCity = ({navigation}) => {
             />
 
             <TextInput
+              onChangeText={text => setManualCity(text)}
+              value={manualCity}
               ref={cityInputRef}
               onSubmitEditing={Keyboard.dismiss}
               placeholder="Найти город.."
@@ -90,27 +103,29 @@ const ChangeCity = ({navigation}) => {
 
           <View style={[groupBlock]}>
             <ScrollView>
-              {data.map((el, i) => {
-                if (el) {
-                  return (
-                    <View key={i}>
-                      <TouchableOpacity
-                        onPress={e => {
-                          setCity(data[i]);
-                        }}
-                        style={{
-                          height: 50,
-                          justifyContent: 'center',
-                        }}>
-                        <Text style={{fontSize: 13, fontWeight: 'bold'}}>
-                          {el}
-                        </Text>
-                      </TouchableOpacity>
-                      <Border />
-                    </View>
-                  );
-                }
-              })}
+              {data &&
+                !!filteredData.length &&
+                filteredData.map((el, i) => {
+                  if (el) {
+                    return (
+                      <View key={i}>
+                        <TouchableOpacity
+                          onPress={e => {
+                            setCity(el.name);
+                          }}
+                          style={{
+                            height: 50,
+                            justifyContent: 'center',
+                          }}>
+                          <Text style={{fontSize: 13, fontWeight: 'bold'}}>
+                            {el.name}
+                          </Text>
+                        </TouchableOpacity>
+                        <Border />
+                      </View>
+                    );
+                  }
+                })}
             </ScrollView>
           </View>
         </View>

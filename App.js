@@ -1,11 +1,12 @@
-import React from 'react';
-import {StyleSheet, Text, ImageBackground} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, Text, ImageBackground, AsyncStorage} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import {HttpLink} from 'apollo-link-http';
 import {setContext} from 'apollo-link-context';
 import ApolloClient from 'apollo-client';
 import {InMemoryCache} from 'apollo-cache-inmemory';
+import {ApolloProvider} from 'react-apollo';
 
 import Start from './screens/Start';
 import Registration from './screens/Registration';
@@ -40,166 +41,183 @@ import ErrorSomethingWentWrong from './screens/ErrorSomethingWentWrong';
 import ErrorInternetProblems from './screens/ErrorInternetProblems';
 import ErrorDepartmentConstruction from './screens/ErrorDepartmentConstruction';
 
-import {getToken, signIn, signOut} from './src/util';
+import {getToken, signIn, signOut} from './util';
 
-const httpLink = new HttpLink({
-  uri: 'http://194.87.145.192/graphql',
-});
+const App = () => {
+  const httpLink = new HttpLink({
+    uri: 'http://194.87.145.192/graphql',
+  });
 
-const authLink = setContext(async (req, {headers}) => {
-  const token = await getToken();
-  return {
-    ...headers,
-    headers: {
-      authorization: `Bearer ${token}`,
-    },
+  const authLink = setContext(async (req, {headers}) => {
+    const token = await getToken();
+    console.log(token, ' _____@@@@@@@@@@@@@@@@@@_____');
+
+    return {
+      ...headers,
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    };
+  });
+
+  // const authLink =
+
+  const link = authLink.concat(httpLink);
+
+  const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: link,
+  });
+
+  console.log(client, 'client');
+
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  const getAsyncToken = async () => {
+    const token = await getToken();
+    console.log(token, '_______________getAsyncToken');
+    if (token) {
+      setLoggedIn(true);
+    }
   };
-});
 
-const link = authLink.concat(httpLink);
+  useEffect(() => {
+    getAsyncToken();
+  }, []);
 
-const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  link: link,
-});
+  const navOptionHandler = navigation => ({
+    header: null,
+  });
 
-const navigationOptions = {
-  header: null,
-  headerStyle: styles.header,
+  const MainStack = createStackNavigator(
+    {
+      Start: {
+        screen: Start,
+        navigationOptions: navOptionHandler,
+      },
+      Registration: {
+        screen: props => <Registration {...props} />,
+        navigationOptions: navOptionHandler,
+      },
+      Login: {
+        screen: props => <Login {...props} />,
+        navigationOptions: navOptionHandler,
+      },
+      PasswordRecovery: {
+        screen: PasswordRecovery,
+        navigationOptions: navOptionHandler,
+      },
+      Main: {
+        screen: Main,
+        navigationOptions: navOptionHandler,
+      },
+      ErrorSomethingWentWrong: {
+        screen: ErrorSomethingWentWrong,
+        navigationOptions: navOptionHandler,
+      },
+      ErrorInternetProblems: {
+        screen: ErrorInternetProblems,
+        navigationOptions: navOptionHandler,
+      },
+      ErrorDepartmentConstruction: {
+        screen: ErrorDepartmentConstruction,
+        navigationOptions: navOptionHandler,
+      },
+      ClientProfile: {
+        screen: props => <ClientProfile {...props} />,
+        navigationOptions: navOptionHandler,
+      },
+      MasterProfile: {
+        screen: props => <MasterProfile {...props} />,
+        navigationOptions: navOptionHandler,
+      },
+      PersonalData: {
+        screen: PersonalData,
+        navigationOptions: navOptionHandler,
+      },
+      ChangePassword: {
+        screen: ChangePassword,
+        navigationOptions: navOptionHandler,
+      },
+      MyNotes: {
+        screen: MyNotes,
+        navigationOptions: navOptionHandler,
+      },
+      ChangeCity: {
+        screen: ChangeCity,
+        navigationOptions: navOptionHandler,
+      },
+      NoteInformation: {
+        screen: NoteInformation,
+        navigationOptions: navOptionHandler,
+      },
+      PublickMasterProfile: {
+        screen: PublickMasterProfile,
+        navigationOptions: navOptionHandler,
+      },
+      MyServices: {
+        screen: MyServices,
+        navigationOptions: navOptionHandler,
+      },
+      SelectSpecialization: {
+        screen: SelectSpecialization,
+        navigationOptions: navOptionHandler,
+      },
+      SelectServices: {
+        screen: SelectServices,
+        navigationOptions: navOptionHandler,
+      },
+      ServiceDescription: {
+        screen: ServiceDescription,
+        navigationOptions: navOptionHandler,
+      },
+      SelectedServiceDescription: {
+        screen: SelectedServiceDescription,
+        navigationOptions: navOptionHandler,
+      },
+      MyNotesMaster: {
+        screen: MyNotesMaster,
+        navigationOptions: navOptionHandler,
+      },
+      NoteInformationMaster: {
+        screen: NoteInformationMaster,
+        navigationOptions: navOptionHandler,
+      },
+      CompleteSeance: {
+        screen: CompleteSeance,
+        navigationOptions: navOptionHandler,
+      },
+      MasterCalendar: {
+        screen: MasterCalendar,
+        navigationOptions: navOptionHandler,
+      },
+      WorkTimeSettings: {
+        screen: WorkTimeSettings,
+        navigationOptions: navOptionHandler,
+      },
+      SelectWorkTime: {
+        screen: SelectWorkTime,
+        navigationOptions: navOptionHandler,
+      },
+      PersonalDataMaster: {
+        screen: PersonalDataMaster,
+        navigationOptions: navOptionHandler,
+      },
+    },
+    {initialRouteName: loggedIn ? 'Main' : 'Start'},
+  );
+
+  const AppContainer = createAppContainer(MainStack);
+
+  if (client) {
+    return (
+      <ApolloProvider client={client}>
+        <AppContainer />
+      </ApolloProvider>
+    );
+  } else {
+    return <Text>NO CLIENT</Text>;
+  }
 };
 
-const App = createStackNavigator(
-  {
-    Start: {
-      screen: Start,
-      navigationOptions: {
-        header: null,
-      },
-    },
-    Registration: {
-      screen: Registration,
-      navigationOptions,
-    },
-    Login: {
-      screen: Login,
-      navigationOptions,
-    },
-    PasswordRecovery: {
-      screen: PasswordRecovery,
-      navigationOptions,
-    },
-    Main: {
-      screen: Main,
-      navigationOptions,
-    },
-    ErrorSomethingWentWrong: {
-      screen: ErrorSomethingWentWrong,
-      navigationOptions: {
-        headerStyle: {...styles.header},
-      },
-    },
-    ErrorInternetProblems: {
-      screen: ErrorInternetProblems,
-      navigationOptions: {
-        headerStyle: {...styles.header},
-      },
-    },
-    ErrorDepartmentConstruction: {
-      screen: ErrorDepartmentConstruction,
-      navigationOptions: {
-        headerStyle: {...styles.header},
-      },
-    },
-    ClientProfile: {
-      screen: ClientProfile,
-      navigationOptions,
-    },
-    MasterProfile: {
-      screen: MasterProfile,
-      navigationOptions,
-    },
-    PersonalData: {
-      screen: PersonalData,
-      navigationOptions,
-    },
-    ChangePassword: {
-      screen: ChangePassword,
-      navigationOptions,
-    },
-    MyNotes: {
-      screen: MyNotes,
-      navigationOptions,
-    },
-    ChangeCity: {
-      screen: ChangeCity,
-      navigationOptions,
-    },
-    NoteInformation: {
-      screen: NoteInformation,
-      navigationOptions,
-    },
-    PublickMasterProfile: {
-      screen: PublickMasterProfile,
-      navigationOptions,
-    },
-    MyServices: {
-      screen: MyServices,
-      navigationOptions,
-    },
-    SelectSpecialization: {
-      screen: SelectSpecialization,
-      navigationOptions,
-    },
-    SelectServices: {
-      screen: SelectServices,
-      navigationOptions,
-    },
-    ServiceDescription: {
-      screen: ServiceDescription,
-      navigationOptions,
-    },
-    SelectedServiceDescription: {
-      screen: SelectedServiceDescription,
-      navigationOptions,
-    },
-    MyNotesMaster: {
-      screen: MyNotesMaster,
-      navigationOptions,
-    },
-    NoteInformationMaster: {
-      screen: NoteInformationMaster,
-      navigationOptions,
-    },
-    CompleteSeance: {
-      screen: CompleteSeance,
-      navigationOptions,
-    },
-    MasterCalendar: {
-      screen: MasterCalendar,
-      navigationOptions,
-    },
-    WorkTimeSettings: {
-      screen: WorkTimeSettings,
-      navigationOptions,
-    },
-    SelectWorkTime: {
-      screen: SelectWorkTime,
-      navigationOptions,
-    },
-    PersonalDataMaster: {
-      screen: PersonalDataMaster,
-      navigationOptions,
-    },
-  },
-  {initialRouteName: 'Start'},
-);
-
-const styles = StyleSheet.create({
-  header: {
-    shadowOpacity: 0,
-    elevation: 0,
-    marginHorizontal: 5,
-  },
-});
-
-export default createAppContainer(App);
+export default App;

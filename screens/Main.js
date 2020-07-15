@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import SvgUri from 'react-native-svg-uri';
 import CalendarColorIcon from '../img/CalendarColor.svg';
 import UserWhiteIcon from '../img/UserWhite.svg';
@@ -19,7 +19,11 @@ import {
   ImageBackground,
   Dimensions,
   TextInput,
+  AsyncStorage,
 } from 'react-native';
+import {Query, useMutation, useQuery} from 'react-apollo';
+
+import {GET_USERS, ME} from '../QUERYES';
 
 const shortMonthName = [
   'Янв',
@@ -38,16 +42,17 @@ const shortMonthName = [
 
 const screen = Dimensions.get('window');
 
-const Block = ({navigation, el}) => {
+const Block = ({el, navigation}) => {
   const {block, blockImg, timeBlock, timeBlockWrapp} = styles;
+
   return (
     <TouchableOpacity
       style={block}
       onPress={() => {
-        navigation.navigate('PublickMasterProfile', el);
+        navigation.navigate('PublickMasterProfile', el.profile);
       }}>
       <View style={{width: 140}}>
-        <Image style={blockImg} source={{uri: el.img}} />
+        {/* <Image style={blockImg} source={{uri: el.img}} /> */}
       </View>
       <View style={{flex: 1}}>
         <View
@@ -56,7 +61,7 @@ const Block = ({navigation, el}) => {
             justifyContent: 'space-between',
           }}>
           <Text style={{fontWeight: 'bold', fontSize: 13}}>
-            {el.master_name}
+            {el.profile && el.profile.name && el.profile.name}
           </Text>
         </View>
         <View
@@ -71,27 +76,26 @@ const Block = ({navigation, el}) => {
           </View>
           <View style={{alignItems: 'flex-end', flex: 1.2}}>
             <Text style={{fontSize: 10}} numberOfLines={1}>
-              {el.address}
+              {el.profile && el.profile.work_address && el.profile.work_address}
             </Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              {el.metro && (
-                <View
-                  style={{
-                    height: 4,
-                    width: 4,
-                    borderRadius: 4,
-                    backgroundColor: '#9155FF',
-                    marginRight: 5,
-                  }}
-                />
-              )}
-              <Text style={{fontSize: 10}}>{el.metro}</Text>
+              {/* {el.metro && ( */}
+              <View
+                style={{
+                  height: 4,
+                  width: 4,
+                  borderRadius: 4,
+                  backgroundColor: '#9155FF',
+                  marginRight: 5,
+                }}
+              />
+              {/* )} */}
+              <Text style={{fontSize: 10}}>?МЕТРО?</Text>
             </View>
           </View>
         </View>
-        <View style={timeBlockWrapp}>
+        {/* <View style={timeBlockWrapp}>
           {el.work_time.map((item, index) => {
-            // console.log(item, 'item', index, el.master_name);
             if (new Date().getDay() <= index + 1) {
               if (!item.is_holiday) {
                 return item.all_time.map((time, ind) => {
@@ -104,7 +108,6 @@ const Block = ({navigation, el}) => {
                           fontSize: 10,
                           fontWeight: 'bold',
                         }}>
-                        {/* {item.name} */}5 дек.
                       </Text>
                       <Text style={{color: '#B986DA', fontSize: 10}}>
                         {time}
@@ -115,104 +118,114 @@ const Block = ({navigation, el}) => {
               }
             }
           })}
-        </View>
+        </View> */}
       </View>
     </TouchableOpacity>
   );
 };
 
-const NearestSeansBlock = ({el, index, masters, clients, navigation}) => {
-  const {nearestSeansBlock} = styles;
+// const NearestSeansBlock = ({el, index, masters, clients, navigation}) => {
+//   const {nearestSeansBlock} = styles;
 
-  return (
-    <TouchableOpacity
-      style={[nearestSeansBlock]}
-      onPress={() => {
-        navigation.state.params.person[0].is_client
-          ? navigation.navigate('NoteInformation', {
-              person: el,
-              people: masters,
-            })
-          : navigation.navigate('NoteInformationMaster', el);
-      }}>
-      <View>
-        {masters
-          .filter(index => index.id == el.master_id)
-          .map(index => {
-            return (
-              <Image
-                source={{uri: index.img}}
-                style={{width: 47, height: 47, marginRight: 8}}
-              />
-            );
-          })}
-        {!masters.filter(index => index.id == el.master_id).length && (
-          <Image
-            source={{uri: 'https://hornews.com/upload/images/blank-avatar.jpg'}}
-            style={{width: 47, height: 47, marginRight: 8}}
-          />
-        )}
-      </View>
-      <View style={{flexDirection: 'column', flex: 1}}>
-        <View>
-          <Text style={{color: '#B986DA', fontSize: 10, fontWeight: 'bold'}}>
-            💅Ближайший сеанс запланирован на
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            flex: 1,
-            marginTop: 5,
-          }}>
-          <View style={{marginRight: 24}}>
-            <View style={{flexDirection: 'row'}}>
-              <SvgUri svgXmlData={CalendarColorIcon} />
-              <Text
-                style={{
-                  fontSize: 13,
-                  color: '#B986DA',
-                  fontWeight: 'bold',
-                  marginLeft: 5,
-                }}>
-                {el.day} {shortMonthName[+el.month - 1].toLowerCase()} в{' '}
-                {el.time}
-              </Text>
-            </View>
-            <Text style={{fontSize: 10}}>
-              {clients
-                .filter(index => index.id == el.client_id)
-                .map(index => {
-                  return <Text>{index.client_name}</Text>;
-                })}
+//   return (
+//     <TouchableOpacity
+//       style={[nearestSeansBlock]}
+//       onPress={() => {
+//         navigation.state.params.person[0].is_client
+//           ? navigation.navigate('NoteInformation', {
+//               person: el,
+//               people: masters,
+//             })
+//           : navigation.navigate('NoteInformationMaster', el);
+//       }}>
+//       <View>
+//         {masters
+//           .filter(index => index.id == el.master_id)
+//           .map(index => {
+//             return (
+//               <Image
+//                 source={{uri: index.img}}
+//                 style={{width: 47, height: 47, marginRight: 8}}
+//               />
+//             );
+//           })}
+//         {!masters.filter(index => index.id == el.master_id).length && (
+//           <Image
+//             source={{uri: 'https://hornews.com/upload/images/blank-avatar.jpg'}}
+//             style={{width: 47, height: 47, marginRight: 8}}
+//           />
+//         )}
+//       </View>
+//       <View style={{flexDirection: 'column', flex: 1}}>
+//         <View>
+//           <Text style={{color: '#B986DA', fontSize: 10, fontWeight: 'bold'}}>
+//             💅Ближайший сеанс запланирован на
+//           </Text>
+//         </View>
+//         <View
+//           style={{
+//             flexDirection: 'row',
+//             flex: 1,
+//             marginTop: 5,
+//           }}>
+//           <View style={{marginRight: 24}}>
+//             <View style={{flexDirection: 'row'}}>
+//               <SvgUri svgXmlData={CalendarColorIcon} />
+//               <Text
+//                 style={{
+//                   fontSize: 13,
+//                   color: '#B986DA',
+//                   fontWeight: 'bold',
+//                   marginLeft: 5,
+//                 }}>
+//                 {el.day} {shortMonthName[+el.month - 1].toLowerCase()} в{' '}
+//                 {el.time}
+//               </Text>
+//             </View>
+//             <Text style={{fontSize: 10}}>
+//               {clients
+//                 .filter(index => index.id == el.client_id)
+//                 .map(index => {
+//                   return <Text>{index.client_name}</Text>;
+//                 })}
 
-              {masters
-                .filter(index => index.id == el.master_id)
-                .map(index => {
-                  return <Text>{index.master_name}</Text>;
-                })}
-            </Text>
-          </View>
-          <View tyle={{flex: 1}}>
-            <Text style={{fontSize: 10}}>Услуга</Text>
-            {el.services.map((item, i) => {
-              return (
-                <Text key={i} style={{fontSize: 10, fontWeight: 'bold'}}>
-                  {item.name}
-                </Text>
-              );
-            })}
-          </View>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
+//               {masters
+//                 .filter(index => index.id == el.master_id)
+//                 .map(index => {
+//                   return <Text>{index.master_name}</Text>;
+//                 })}
+//             </Text>
+//           </View>
+//           <View tyle={{flex: 1}}>
+//             <Text style={{fontSize: 10}}>Услуга</Text>
+//             {el.services.map((item, i) => {
+//               return (
+//                 <Text key={i} style={{fontSize: 10, fontWeight: 'bold'}}>
+//                   {item.name}
+//                 </Text>
+//               );
+//             })}
+//           </View>
+//         </View>
+//       </View>
+//     </TouchableOpacity>
+//   );
+// };
 
 const Main = ({navigation}) => {
-  const person = navigation.state.params.person[0];
-  const masters = navigation.state.params.masters;
-  const clients = navigation.state.params.clients;
+  const whoObj = {
+    Master: 'Master',
+    Client: 'Client',
+  };
+
+  console.log(navigation, 'NAV');
+
+  const users = useQuery(GET_USERS, {
+    variables: {first: 3, type: whoObj.Master},
+  });
+
+  const USER = useQuery(ME);
+  console.log(USER, '___USER');
 
   const {
     prifileBtn,
@@ -250,29 +263,34 @@ const Main = ({navigation}) => {
         : cases[number % 10 < 5 ? number % 10 : 5]
     ];
   }
+  if (USER.loading) {
+    return <Text>Loading ...</Text>;
+  } else if (USER.error) {
+    return <Text>Error</Text>;
+  } else if (USER.data) {
+    return (
+      <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
+        <ScrollView>
+          <ImageBackground
+            style={header}
+            source={require('../img/headerBGBig.png')}>
+            <TouchableOpacity
+              style={prifileBtn}
+              onPress={() => {
+                const ME = USER.data.me;
+                {
+                  ME.type === 'Client'
+                    ? navigation.navigate('ClientProfile', {ID: ME.id})
+                    : navigation.navigate('MasterProfile', {ID: ME.id});
+                }
+              }}>
+              <SvgUri svgXmlData={UserWhiteIcon} />
+              <Text style={{color: '#fff', marginLeft: 5}}>Мой профиль</Text>
+            </TouchableOpacity>
+          </ImageBackground>
 
-  return (
-    <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
-      <ScrollView>
-        <ImageBackground
-          style={header}
-          source={require('../img/headerBGBig.png')}>
-          <TouchableOpacity
-            style={prifileBtn}
-            onPress={() => {
-              {
-                person.is_client
-                  ? navigation.navigate('ClientProfile', person)
-                  : navigation.navigate('MasterProfile', person);
-              }
-            }}>
-            <SvgUri svgXmlData={UserWhiteIcon} />
-            <Text style={{color: '#fff', marginLeft: 5}}>Мой профиль</Text>
-          </TouchableOpacity>
-        </ImageBackground>
-
-        <View style={{paddingHorizontal: 8}}>
-          {!!person.my_notes.length && (
+          <View style={{paddingHorizontal: 8}}>
+            {/* {!!person.my_notes.length && (
             <ScrollView
               style={nearestSeans}
               horizontal={true}
@@ -290,44 +308,50 @@ const Main = ({navigation}) => {
                 </View>
               ))}
             </ScrollView>
-          )}
-          {!!Object.keys(markedDates).length && (
-            <View style={foundMasters}>
-              <View style={{flex: 1}}>
-                <Text>{`Найдено ${1} !!! ${plural(1, [
-                  'мастер',
-                  'мастера',
-                  'мастеров',
-                ])} на указанные даты:`}</Text>
-                <Text
-                  style={{color: '#B986DA', fontSize: 13, fontWeight: 'bold'}}>
-                  {Object.keys(markedDates).map(el => (
-                    <Text>
-                      {el.split('-')[2]}{' '}
-                      {shortMonthName[+el.split('-')[1] - 1].toLowerCase()},{' '}
-                    </Text>
-                  ))}
-                </Text>
+          )} */}
+            {!!Object.keys(markedDates).length && (
+              <View style={foundMasters}>
+                <View style={{flex: 1}}>
+                  <Text>{`Найдено ${1} !!! ${plural(1, [
+                    'мастер',
+                    'мастера',
+                    'мастеров',
+                  ])} на указанные даты:`}</Text>
+                  <Text
+                    style={{
+                      color: '#B986DA',
+                      fontSize: 13,
+                      fontWeight: 'bold',
+                    }}>
+                    {Object.keys(markedDates).map(el => (
+                      <Text>
+                        {el.split('-')[2]}{' '}
+                        {shortMonthName[+el.split('-')[1] - 1].toLowerCase()},{' '}
+                      </Text>
+                    ))}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  style={closeBtn}
+                  onPress={() => {
+                    setMarkedDates({});
+                  }}>
+                  <SvgUri svgXmlData={CrossIcon} />
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={closeBtn}
-                onPress={() => {
-                  setMarkedDates({});
-                }}>
-                <SvgUri svgXmlData={CrossIcon} />
-              </TouchableOpacity>
+            )}
+            <View style={{paddingBottom: 80}}>
+              {users && users.data && (
+                <FlatList
+                  data={users.data.users.data}
+                  renderItem={({item}) => {
+                    return <Block navigation={navigation} el={item} />;
+                  }}
+                  keyExtractor={item => item.id.toString()}
+                />
+              )}
             </View>
-          )}
-          <View style={{paddingBottom: 80}}>
-            <FlatList
-              data={masters}
-              renderItem={({item}) => {
-                return <Block navigation={navigation} el={item} />;
-              }}
-              keyExtractor={item => item.id.toString()}
-            />
-          </View>
-          {!person.my_notes.length && (
+            {/* {!person.my_notes.length && (
             <View style={{flex: 1}}>
               <View style={{marginTop: 20, flex: 1}}>
                 <Text style={{fontSize: 13}}>
@@ -338,96 +362,98 @@ const Main = ({navigation}) => {
                 </Text>
               </View>
             </View>
-          )}
-        </View>
-      </ScrollView>
-      {!person.my_notes.length && (
+          )} */}
+          </View>
+        </ScrollView>
+        {/* {!person.my_notes.length && (
         <ButtonDefault
           title="заполнить профиль мастера"
           active={true}
           style={{margin: 8}}
         />
-      )}
-      {!isCalendarVisible && (
-        <TouchableOpacity
-          style={[openCalendar, {top: screen.height - 80}]}
-          onPress={() => {
-            setIsCalendarVisible(true);
-          }}>
-          <SvgUri svgXmlData={CalendarSvgIcon} />
-          <Text style={{marginLeft: 5}}>Выбрать дату</Text>
-        </TouchableOpacity>
-      )}
-      {/* КАЛЕНДАРЬ !*/}
-      {isCalendarVisible && (
-        <CalendarCustom
-          markedDates={markedDates}
-          onDayPress={onDayPress}
-          onClose={setIsCalendarVisible}
-          clearCalendar={setMarkedDates}
-        />
-      )}
-      {false && (
-        <ModalWindow>
-          <Text style={{fontSize: 13}}>Мы хотим показать вам</Text>
-          <Text style={{fontSize: 13}}>Мастеров рядом с вами.</Text>
-          <Image
-            source={require('../img/girl5.png')}
-            style={{marginVertical: 16}}
+      )} */}
+        {!isCalendarVisible && (
+          <TouchableOpacity
+            style={[openCalendar, {top: screen.height - 80}]}
+            onPress={() => {
+              setIsCalendarVisible(true);
+            }}>
+            <SvgUri svgXmlData={CalendarSvgIcon} />
+            <Text style={{marginLeft: 5}}>Выбрать дату</Text>
+          </TouchableOpacity>
+        )}
+        {/* КАЛЕНДАРЬ !*/}
+        {isCalendarVisible && (
+          <CalendarCustom
+            markedDates={markedDates}
+            onDayPress={onDayPress}
+            onClose={setIsCalendarVisible}
+            clearCalendar={setMarkedDates}
           />
-          <Text style={{fontSize: 13}}>
-            Для этого разрешите нам возпользоваться
-          </Text>
-          <Text style={{fontSize: 13}}> геолокацией на этом устройстве.</Text>
-          <View style={{width: '100%', marginTop: 16}}>
-            <ButtonDefault
-              title="разрешить"
-              active={true}
-              style={{marginBottom: 8}}
+        )}
+        {false && (
+          <ModalWindow>
+            <Text style={{fontSize: 13}}>Мы хотим показать вам</Text>
+            <Text style={{fontSize: 13}}>Мастеров рядом с вами.</Text>
+            <Image
+              source={require('../img/girl5.png')}
+              style={{marginVertical: 16}}
             />
-            <ButtonDefault title="В другой раз" />
-          </View>
-        </ModalWindow>
-      )}
-      {false && (
-        <ModalWindow>
-          <Text style={{fontSize: 13}}>Вы находитесь сейчас в..</Text>
-          <Text style={{fontSize: 13, fontWeight: 'bold', marginVertical: 16}}>
-            Москве
-          </Text>
-          <Text style={{fontSize: 13}}>Это так?🤔</Text>
-          <View style={{width: '100%', marginTop: 16}}>
-            <ButtonDefault
-              title="да, всё верно"
-              active={true}
-              style={{marginBottom: 8}}
+            <Text style={{fontSize: 13}}>
+              Для этого разрешите нам возпользоваться
+            </Text>
+            <Text style={{fontSize: 13}}> геолокацией на этом устройстве.</Text>
+            <View style={{width: '100%', marginTop: 16}}>
+              <ButtonDefault
+                title="разрешить"
+                active={true}
+                style={{marginBottom: 8}}
+              />
+              <ButtonDefault title="В другой раз" />
+            </View>
+          </ModalWindow>
+        )}
+        {false && (
+          <ModalWindow>
+            <Text style={{fontSize: 13}}>Вы находитесь сейчас в..</Text>
+            <Text
+              style={{fontSize: 13, fontWeight: 'bold', marginVertical: 16}}>
+              Москве
+            </Text>
+            <Text style={{fontSize: 13}}>Это так?🤔</Text>
+            <View style={{width: '100%', marginTop: 16}}>
+              <ButtonDefault
+                title="да, всё верно"
+                active={true}
+                style={{marginBottom: 8}}
+              />
+              <ButtonDefault title="нет, выбрать другой город" />
+            </View>
+          </ModalWindow>
+        )}
+        {false && (
+          <ModalWindow>
+            <Text style={{fontSize: 13, textAlign: 'center'}}>
+              Укажите город, в котором находитесь для персонализированного
+              подбора мастеров
+            </Text>
+            <TextInput
+              placeholder="Введите ваш город.."
+              style={{textAlign: 'center'}}
             />
-            <ButtonDefault title="нет, выбрать другой город" />
-          </View>
-        </ModalWindow>
-      )}
-      {false && (
-        <ModalWindow>
-          <Text style={{fontSize: 13, textAlign: 'center'}}>
-            Укажите город, в котором находитесь для персонализированного подбора
-            мастеров
-          </Text>
-          <TextInput
-            placeholder="Введите ваш город.."
-            style={{textAlign: 'center'}}
-          />
-          <View style={{width: '100%', marginTop: 16}}>
-            <ButtonDefault
-              title={true ? 'Введите город' : '  выбрать этот город'}
-              active={true}
-              style={{marginBottom: 8}}
-            />
-            <ButtonDefault title="в другой раз" />
-          </View>
-        </ModalWindow>
-      )}
-    </View>
-  );
+            <View style={{width: '100%', marginTop: 16}}>
+              <ButtonDefault
+                title={true ? 'Введите город' : '  выбрать этот город'}
+                active={true}
+                style={{marginBottom: 8}}
+              />
+              <ButtonDefault title="в другой раз" />
+            </View>
+          </ModalWindow>
+        )}
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({

@@ -9,6 +9,10 @@ import SvgUri from 'react-native-svg-uri';
 import DefaultIcon from '../../img/Default.svg';
 import PressedIcon from '../../img/Pressed.svg';
 
+// import {Query, useMutation, useQuery} from 'react-apollo';
+
+// import {GET_SPECIALIZATION} from '../../QUERYES';
+
 import {
   Text,
   View,
@@ -30,11 +34,20 @@ const ServiceDescription = ({navigation}) => {
   const [howLong, setHowLong] = useState('');
   const [nailCount, setNailCount] = useState('');
 
+  console.log(navigation.state.params.checkedServices);
+  console.log(navigation.state.params.checkedServices.length, 'length');
+
+  // const {data, loading, error} = useQuery(GET_SPECIALIZATION, {
+  //   variables: {id: +navigation.state.params.ID},
+  // });
+
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader
         navigation={navigation}
-        title={`Описание услуги (1\\${navigation.state.params.active.length})`}
+        title={`Описание услуги (1\\${
+          navigation.state.params.checkedServices.length
+        })`}
       />
       <ScrollView>
         <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
@@ -183,12 +196,14 @@ const ServiceDescription = ({navigation}) => {
               ? setErr('Поле обязательно для заполнения')
               : setErr('');
 
-            howLong && nailCount && navigation.state.params.save(true);
+            // howLong && nailCount && navigation.state.params.save(true);
           }}
           title={
             false
               ? 'ВЫ не указали детали услуги'
-              : `сохранить услугу (1/${navigation.state.params.active.length})`
+              : `сохранить услугу (1/${
+                  navigation.state.params.checkedServices.length
+                })`
           }
           active={true}
         />

@@ -1,9 +1,12 @@
 import React, {useState, useEffect} from 'react';
+import {Query, useMutation, useQuery} from 'react-apollo';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+
+import {GET_SPECIALIZATIONS} from '../../QUERYES';
 
 const Block = ({title, active, onPress, key, border}) => {
   const {blockInGroup, borderBottom, text} = styles;
@@ -46,56 +49,16 @@ const Block = ({title, active, onPress, key, border}) => {
 const SelectSpecialization = ({navigation}) => {
   const {groupBlock, blockTitle} = styles;
 
-  const [specialization, setSpecialization] = useState([
-    {
-      title: 'Мастер маникюра',
-      active: true,
-      services: [
-        {title: 'Аппаратный маникюр', active: true},
-        {title: 'Градиентное покрытие', active: false},
-        {title: 'Европейский маникюр', active: false},
-        {title: 'Классический маникюр', active: false},
-        {title: 'Покрытие гель-лаком', active: false},
-        {title: 'Покрытие “Лунки”', active: false},
-      ],
-    },
-    {
-      title: 'Мастер педикюра',
-      active: false,
-      services: [
-        {title: 'Аппаратный маникюр', active: true},
-        {title: 'Градиентное покрытие', active: false},
-        {title: 'Европейский маникюр', active: false},
-        {title: 'Классический маникюр', active: false},
-        {title: 'Покрытие гель-лаком', active: false},
-        {title: 'Покрытие “Лунки”', active: false},
-      ],
-    },
-    {
-      title: 'Мастер медицинского маникюра',
-      active: false,
-      services: [
-        {title: 'Аппаратный маникюр', active: true},
-        {title: 'Градиентное покрытие', active: false},
-        {title: 'Европейский маникюр', active: false},
-        {title: 'Классический маникюр', active: false},
-        {title: 'Покрытие гель-лаком', active: false},
-        {title: 'Покрытие “Лунки”', active: false},
-      ],
-    },
-    {
-      title: 'Мастер медицинского педикюра',
-      active: false,
-      services: [
-        {title: 'Аппаратный маникюр', active: true},
-        {title: 'Градиентное покрытие', active: false},
-        {title: 'Европейский маникюр', active: false},
-        {title: 'Классический маникюр', active: false},
-        {title: 'Покрытие гель-лаком', active: false},
-        {title: 'Покрытие “Лунки”', active: false},
-      ],
-    },
-  ]);
+  const {data, loading, error} = useQuery(GET_SPECIALIZATIONS, {
+    variables: {first: 10},
+  });
+
+  const [activeSpecialization, setActiveSpecialization] = useState('');
+  const [activeSpecializationID, setActiveSpecializationID] = useState('');
+
+  console.log(data.specializations.data, 'DATA!!!');
+  console.log(activeSpecialization, 'activeSpecialization!!!');
+  console.log(activeSpecializationID, 'activeSpecializationID!!!');
 
   return (
     <View style={{flex: 1}}>
@@ -106,25 +69,21 @@ const SelectSpecialization = ({navigation}) => {
       <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
         <Text style={blockTitle}>ваша специализация</Text>
         <View style={groupBlock}>
-          {specialization.map((el, i) => (
-            <Block
-              border={i + 1 == specialization.length ? false : true}
-              key={i}
-              title={el.title}
-              active={el.active}
-              onPress={() => {
-                specialization.map(el => {
-                  el.active = false;
-                });
-                specialization[i] = {
-                  title: el.title,
-                  active: el.active ? false : true,
-                  services: el.services,
-                };
-                setSpecialization([...specialization]);
-              }}
-            />
-          ))}
+          {data &&
+            data.specializations.data.map((el, i) => (
+              <Block
+                border={
+                  i + 1 == data.specializations.data.length ? false : true
+                }
+                key={i}
+                title={el.name}
+                active={i === activeSpecialization}
+                onPress={() => {
+                  setActiveSpecialization(i);
+                  setActiveSpecializationID(el.id);
+                }}
+              />
+            ))}
         </View>
       </View>
       <ButtonDefault
@@ -132,12 +91,11 @@ const SelectSpecialization = ({navigation}) => {
         active={true}
         style={{margin: 8}}
         onPress={() => {
-          const activeRadioBtn = specialization.filter(el => el.active);
           navigation.navigate('SelectServices', {
-            activeRadioBtn,
             save: bool => {
               navigation.state.params.save(bool);
             },
+            ID: activeSpecializationID,
           });
         }}
       />

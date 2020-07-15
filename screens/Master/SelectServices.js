@@ -1,6 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import SvgUri from 'react-native-svg-uri';
 import VectorIcon from '../../img/Vector.svg';
+import {Query, useMutation, useQuery} from 'react-apollo';
+
+import {GET_SPECIALIZATION} from '../../QUERYES';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
@@ -8,7 +11,7 @@ import {ButtonDefault} from '../../components/Button';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 
 // CheckBox
-const Block = ({title, active, onPress, key, border}) => {
+const Block = ({title, active, onPress, key, idBack, idFront, border}) => {
   const {blockInGroup, borderBottom, text} = styles;
 
   return (
@@ -19,9 +22,7 @@ const Block = ({title, active, onPress, key, border}) => {
         {justifyContent: 'space-between', alignItems: 'center'},
       ]}
       key={key}
-      onPress={() => {
-        onPress();
-      }}>
+      onPress={() => onPress(idFront, idBack)}>
       <Text style={text}>{title}</Text>
       <View
         style={{
@@ -44,16 +45,37 @@ const Block = ({title, active, onPress, key, border}) => {
 const SelectServices = ({navigation}) => {
   const {groupBlock, blockTitle} = styles;
 
-  const [services, setServices] = useState(
-    navigation.state.params.activeRadioBtn[0].services,
-  );
+  const {data, loading, error} = useQuery(GET_SPECIALIZATION, {
+    variables: {id: +navigation.state.params.ID},
+  });
 
-  const active = services.filter(el => el.active);
-  const [count, setCount] = useState(active.length);
+  console.log(data && data.specialization.services, 'FFFF');
 
-  useEffect(() => {
-    setCount(active.length);
-  }, [services]);
+  const [checkedServicesFront, setCheckedServicesFront] = useState([]);
+  const [checkedServicesBack, setCheckedServicesBack] = useState([]);
+
+  const clickOnCheckbox = (front, back) => {
+    if (checkedServicesFront.indexOf(front) == -1) {
+      setCheckedServicesFront(prev => [...prev, front]);
+    } else {
+      checkedServicesFront.forEach((el, i) => {
+        if (el === front) {
+          checkedServicesFront.splice(i, 1);
+          setCheckedServicesFront(prev => [...checkedServicesFront]);
+        }
+      });
+    }
+    if (checkedServicesBack.indexOf(back) == -1) {
+      setCheckedServicesBack(prev => [...prev, back]);
+    } else {
+      checkedServicesBack.forEach((el, i) => {
+        if (el === back) {
+          checkedServicesBack.splice(i, 1);
+          setCheckedServicesBack(prev => [...checkedServicesBack]);
+        }
+      });
+    }
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -61,21 +83,20 @@ const SelectServices = ({navigation}) => {
       <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
         <Text style={blockTitle}>ваши Услуги</Text>
         <View style={groupBlock}>
-          {services.map((el, i) => (
-            <Block
-              border={i + 1 == services.length ? false : true}
-              key={i}
-              title={el.title}
-              active={el.active}
-              onPress={() => {
-                services[i] = {
-                  title: el.title,
-                  active: el.active ? false : true,
-                };
-                setServices([...services]);
-              }}
-            />
-          ))}
+          {data &&
+            data.specialization.services.map((el, i) => (
+              <Block
+                border={
+                  i + 1 == data.specialization.services.length ? false : true
+                }
+                key={i}
+                idFront={i}
+                idBack={el.id}
+                title={el.name}
+                active={checkedServicesFront.indexOf(i) !== -1}
+                onPress={(front, back) => clickOnCheckbox(front, back)}
+              />
+            ))}
         </View>
       </View>
       <ButtonDefault
@@ -84,11 +105,11 @@ const SelectServices = ({navigation}) => {
             save: bool => {
               navigation.state.params.save(bool);
             },
-            active,
-            title: navigation.state.params.activeRadioBtn[0].title,
+
+            checkedServices: checkedServicesBack,
           });
         }}
-        title={`выбрать эти услуги (${count})`}
+        title={`выбрать эти услуги ${checkedServicesFront.length}`}
         active={true}
         style={{margin: 8}}
       />

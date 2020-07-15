@@ -1,11 +1,13 @@
 import React, {useState, useEffect} from 'react';
+import {Query, useMutation, useQuery} from 'react-apollo';
+import {signOut, signIn, getToken} from '../util';
 
 import {Text, StyleSheet, View, Dimensions} from 'react-native';
 import {ButtonDefault, ButtonDisabled, ButtonError} from '../components/Button';
 import {InputWithText, InputWithPassword} from '../components/Input';
 import {Header} from '../components/BackgroundHeader';
 
-import {people} from '../data';
+import {LOGIN} from '../QUERYES';
 
 const Login = ({navigation}) => {
   const {
@@ -18,6 +20,7 @@ const Login = ({navigation}) => {
     politic,
     politicText,
     specialText,
+    loginWrap,
   } = stylesClientRegistration;
 
   const [iconName, setIconName] = useState('closedEye');
@@ -25,6 +28,25 @@ const Login = ({navigation}) => {
   const [fillErr, setFillErr] = useState('Поля не заполнены');
   const [validationErr, setValidationErr] = useState('');
   const [regBtnText, setRegBtnText] = useState('');
+
+  const [LOGIN_mutation] = useMutation(LOGIN);
+
+  const toLogin = () => {
+    LOGIN_mutation({
+      variables: {
+        username: email,
+        password: password,
+      },
+      optimisticResponse: null,
+    })
+      .then(res => {
+        console.log(res, '______________LOGIN___________RES');
+        signIn(res.data.login.access_token);
+
+        navigation.navigate('Main', {ID: res.data.login.user.id});
+      })
+      .catch(err => console.log(err, '__ERR'));
+  };
 
   const openCloseEye = () => {
     if (iconName === 'openedEye') {
@@ -36,7 +58,7 @@ const Login = ({navigation}) => {
     }
   };
 
-  const [mail, setMail] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   useEffect(() => {
@@ -48,23 +70,21 @@ const Login = ({navigation}) => {
   }, [fillErr, validationErr]);
 
   useEffect(() => {
-    if (mail && password) {
+    if (email && password) {
       setFillErr('');
     } else {
       setFillErr('Поля не заполнены');
     }
-  }, [mail, password]);
+  }, [email, password]);
+
+  useEffect(() => {
+    getToken()
+      .then(res => console.log(res, 'getToken TOKEN RES'))
+      .catch(err => console.log(res, 'getToken TOKEN ERR'));
+  }, []);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: '#FAFAFA',
-        position: 'absolute',
-        width: '100%',
-        height: Dimensions.get('window').height,
-        bottom: 0,
-      }}>
+    <View style={loginWrap}>
       <Header navigation={navigation} />
       <View style={[container, {flex: 1}]}>
         <View style={topTextWrap}>
@@ -78,9 +98,9 @@ const Login = ({navigation}) => {
             autoFocus={true}
             onChangeText={text => {
               setValidationErr('');
-              setMail(text);
+              setEmail(text);
             }}
-            value={mail}
+            value={email}
             text="Введите адрес электронной почты"
             placeholder="example@site.com"
             keyboardType="email-address"
@@ -98,9 +118,7 @@ const Login = ({navigation}) => {
             onPress={openCloseEye}
             forgetPassword={true}
             validationErr={validationErr}
-            onPressPassRecovery={() => {
-              navigation.navigate('PasswordRecovery');
-            }}
+            onPressPassRecovery={() => navigation.navigate('PasswordRecovery')}
           />
         </View>
         <View style={login}>
@@ -120,22 +138,19 @@ const Login = ({navigation}) => {
               title={regBtnText}
               active={true}
               onPress={() => {
-                const person = people.filter(
-                  el => el.e_mail.toLowerCase() == mail.toLowerCase(),
-                );
-                if (!password || !mail) {
-                  setFillErr('Поля не заполнены');
-                } else if (!person.length || person[0].password != password) {
-                  setValidationErr('Неверно введенные данные');
-                } else {
-                  const masters = people.filter(el => el.is_master);
-                  const clients = people.filter(el => el.is_client);
-                  navigation.navigate('Main', {
-                    person,
-                    masters,
-                    clients,
-                  });
-                }
+                toLogin();
+                // const person = people.filter(
+                //   el => el.e_mail.toLowerCase() == email.toLowerCase(),
+                // );
+                // if (!password || !email) {
+                //   setFillErr('Поля не заполнены');
+                // } else if (!person.length || person[0].password != password) {
+                //   setValidationErr('Неверно введенные данные');
+                // } else {
+                //   const masters = people.filter(el => el.is_master);
+                //   const clients = people.filter(el => el.is_client);
+
+                // }
               }}
             />
           )}
@@ -153,6 +168,14 @@ const Login = ({navigation}) => {
 };
 
 const stylesClientRegistration = StyleSheet.create({
+  loginWrap: {
+    flex: 1,
+    backgroundColor: '#FAFAFA',
+    position: 'absolute',
+    width: '100%',
+    height: Dimensions.get('window').height,
+    bottom: 0,
+  },
   container: {
     paddingHorizontal: 8,
   },

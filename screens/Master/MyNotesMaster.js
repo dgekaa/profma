@@ -1,11 +1,13 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import SvgUri from 'react-native-svg-uri';
 import CalendarGrayIcon from '../../img/calendarGray.svg';
 import CalendarColorIcon from '../../img/CalendarColor.svg';
 
+import {Query, useMutation, useQuery} from 'react-apollo';
+import {LOGOUT, ME} from '../../QUERYES';
+
 import BackgroundHeader, {Header} from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
-import {people} from '../../data';
 
 import {
   Text,
@@ -34,25 +36,45 @@ const shortMonthName = [
 const Block = ({el, navigation, archive}) => {
   const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
 
+  const [price, setPrice] = useState(0);
+  const [offersAll, setOffersAll] = useState([]);
+
+  useEffect(() => {
+    let count = 0;
+    el.offers.length &&
+      el.offers.forEach((elem, i) => {
+        count += elem.price_by_pack.price;
+      });
+    setPrice(count);
+
+    let offersAllLocal = [];
+    el.offers.length &&
+      el.offers.forEach((elem, i) => {
+        offersAllLocal.push(elem.service.name);
+      });
+    setOffersAll(offersAllLocal);
+    console.log(offersAll, 'offersAll');
+  }, []);
+
+  // console.log(el, '+++EL');
   return (
     <TouchableOpacity
       style={block}
-      onPress={() => {
-        navigation.navigate('NoteInformationMaster', el);
-      }}>
+      onPress={() => navigation.navigate('NoteInformationMaster', el)}>
       <View style={topBlock}>
-        <View style={{flexDirection: 'row', flex: 6}}>
+        <View style={{flexDirection: 'row', flex: 6, alignItems: 'center'}}>
           <SvgUri
-            style={{height: 13, width: 13}}
+            style={{marginRight: 8}}
             svgXmlData={archive ? CalendarGrayIcon : CalendarColorIcon}
           />
           <Text style={[dateText, {color: archive ? '#A6ADB3' : 'black'}]}>
-            {el.day} {shortMonthName[+el.month - 1]} В {el.time}
+            {el.date.split('-')[2]} {shortMonthName[+el.date.split('-')[1]]} в{' '}
+            {el.time.slice(0, 5)}
           </Text>
         </View>
         <View style={{flex: 4}}>
           <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-            {el.how_mach}
+            {price}
           </Text>
         </View>
       </View>
@@ -68,25 +90,17 @@ const Block = ({el, navigation, archive}) => {
             <Text style={{fontSize: 10, color: archive ? '#A6ADB3' : 'black'}}>
               Клиент
             </Text>
-            {people
-              .filter(index => index.id == el.client_id)
-              .map(index => (
-                <Text
-                  style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-                  {index.client_name}
-                </Text>
-              ))}
+
+            <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
+              {el.client.profile.name}
+            </Text>
           </View>
           <View style={{flex: 1}}>
-            {people
-              .filter(index => index.id == el.client_id)
-              .map(index => (
-                <Text
-                  style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-                  {index.address}
-                </Text>
-              ))}
-            <Text style={{fontSize: 10}}>!!!!!!</Text>
+            <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
+              {el.client.profile.home_address}
+            </Text>
+
+            <Text style={{fontSize: 10}}>?метро?</Text>
           </View>
         </View>
         <View style={{flex: 1}}>
@@ -94,13 +108,13 @@ const Block = ({el, navigation, archive}) => {
             <Text style={{fontSize: 10, color: archive ? '#A6ADB3' : 'black'}}>
               Услуга
             </Text>
-            {el.services.map((el, i) => (
-              <Text
-                key={i}
-                style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-                {el.name}
-              </Text>
-            ))}
+            {!!offersAll.length &&
+              offersAll.map((el, i) => (
+                <Text
+                  style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
+                  {el}
+                </Text>
+              ))}
           </View>
         </View>
       </View>
@@ -111,60 +125,73 @@ const Block = ({el, navigation, archive}) => {
 const MyNotesMaster = ({navigation}) => {
   const {bigText, smallText, textBold, blockTitle, block} = styles;
 
-  return (
-    <View style={{flex: 1, backgroundColor: '#fafafa'}}>
-      {!navigation.state.params.my_notes.length && (
-        <View style={{flex: 1}}>
-          <Header navigation={navigation} />
-          <View style={{flex: 1, paddingHorizontal: 18}}>
-            <View style={{flex: 8}}>
-              <Text style={bigText}>
-                У вас пока нет ни одной активной записи😞
-              </Text>
-              <Text style={smallText}>
-                Сделайте вашу первую запись уже сегодня.
-              </Text>
-            </View>
-            <View style={{}}>
-              <ButtonDefault
-                title="Записаться на сеанс"
-                active={true}
-                style={{marginBottom: 8}}
-              />
-              <ButtonDefault title="Найти мастера" style={{marginBottom: 8}} />
+  const USER = useQuery(ME);
+
+  console.log(USER.data.me.master_appointments, ' USER MY NOTES MASTER');
+
+  if (USER.loading) {
+    return <Text>Loading...</Text>;
+  } else if (USER.error) {
+    return <Text>ERR</Text>;
+  } else {
+    return (
+      <View style={{flex: 1, backgroundColor: '#fafafa'}}>
+        {!USER.data.me.master_appointments.length && (
+          <View style={{flex: 1}}>
+            <Header navigation={navigation} />
+            <View style={{flex: 1, paddingHorizontal: 18}}>
+              <View style={{flex: 8}}>
+                <Text style={bigText}>
+                  У вас пока нет ни одной активной записи😞
+                </Text>
+                <Text style={smallText}>
+                  Сделайте вашу первую запись уже сегодня.
+                </Text>
+              </View>
+              <View style={{}}>
+                <ButtonDefault
+                  title="Записаться на сеанс"
+                  active={true}
+                  style={{marginBottom: 8}}
+                />
+                <ButtonDefault
+                  title="Найти мастера"
+                  style={{marginBottom: 8}}
+                />
+              </View>
             </View>
           </View>
-        </View>
-      )}
-      {!!navigation.state.params.my_notes.length && (
-        <View style={{flex: 1}}>
-          <BackgroundHeader navigation={navigation} title="Мои записи" />
-          <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
-            <Text style={blockTitle}>Активные записи</Text>
-            {navigation.state.params.my_notes.map((el, i) => {
-              if (el.is_active) {
-                return (
-                  <View key={i}>
-                    <Block el={el} navigation={navigation} index={i} />
-                  </View>
-                );
-              }
-            })}
-            <Text style={blockTitle}>Архив записей</Text>
-            {navigation.state.params.my_notes.map((el, i) => {
-              if (el.is_archive) {
-                return (
-                  <View key={i}>
-                    <Block el={el} navigation={navigation} archive={true} />
-                  </View>
-                );
-              }
-            })}
-          </ScrollView>
-        </View>
-      )}
-    </View>
-  );
+        )}
+        {!!USER.data.me.master_appointments.length && (
+          <View style={{flex: 1}}>
+            <BackgroundHeader navigation={navigation} title="Мои записи" />
+            <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
+              <Text style={blockTitle}>Активные записи</Text>
+              {USER.data.me.master_appointments.map((el, i) => {
+                if (el.status) {
+                  return (
+                    <View key={i}>
+                      <Block el={el} navigation={navigation} index={i} />
+                    </View>
+                  );
+                }
+              })}
+              {/* <Text style={blockTitle}>Архив записей</Text>
+              {USER.data.me.master_appointments.map((el, i) => {
+                if (el.status) {
+                  return (
+                    <View key={i}>
+                      <Block el={el} navigation={navigation} archive={true} />
+                    </View>
+                  );
+                }
+              })} */}
+            </ScrollView>
+          </View>
+        )}
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({

@@ -1,6 +1,12 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  AsyncStorage,
+} from 'react-native';
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
@@ -8,6 +14,11 @@ import SvgUri from 'react-native-svg-uri';
 import CalendarSvgIcon from '../../img/CalendarSVG.svg';
 import UserIcon from '../../img/User.svg';
 import PasswordIcon from '../../img/Password.svg';
+
+import {signOut, getToken, signIn} from '../../util';
+
+import {Query, useMutation, useQuery} from 'react-apollo';
+import {LOGOUT, ME} from '../../QUERYES';
 
 const ClientProfile = ({navigation}) => {
   const {first, text, groupBlock, blockInGroup, borderBottom} = styles;
@@ -25,111 +36,128 @@ const ClientProfile = ({navigation}) => {
     }, 1000);
   };
 
-  return (
-    <View style={{flex: 1}}>
-      <BackgroundHeader navigation={navigation} />
-      <View style={{paddingHorizontal: 10, flex: 1}}>
-        <View style={{}}>
-          {/* МОИ ЗАПИСИ */}
-          <TouchableOpacity
-            style={first}
-            onPress={() => {
-              navigation.navigate('MyNotes', navigation.state.params.my_notes);
-            }}>
-            <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
-            <Text style={text}>Мои записи</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{}}>
-          <View style={groupBlock}>
-            {/* ПЕРСОНАЛЬНЫЕ ДАННЫЕ*/}
+  const USER = useQuery(ME);
+  const [LOGOUT_mutation] = useMutation(LOGOUT);
+
+  console.log(USER.data, '______________--USER');
+  if (USER.error) {
+    return <Text>Error</Text>;
+  } else if (USER.data) {
+    return (
+      <View style={{flex: 1}}>
+        <BackgroundHeader navigation={navigation} title="Мой профиль" />
+        <View style={{paddingHorizontal: 10, flex: 1}}>
+          <View style={{}}>
+            {/* МОИ ЗАПИСИ */}
             <TouchableOpacity
-              style={[blockInGroup, borderBottom]}
+              style={first}
               onPress={() => {
-                navigation.navigate('PersonalData', navigation.state.params);
+                navigation.navigate('MyNotes', {ID: USER.data.me.id});
               }}>
-              <SvgUri
-                style={{marginRight: 10}}
-                width="13"
-                height="13"
-                svgXmlData={UserIcon}
-              />
-              <Text style={text}>Персональные данные</Text>
-            </TouchableOpacity>
-            {/* ИЗМЕНИТЬ ПАРОЛЬ*/}
-            <TouchableOpacity
-              style={blockInGroup}
-              onPress={() => {
-                navigation.navigate('ChangePassword', {
-                  onGoBack: isSuccess => onGoBackFromPasword(isSuccess),
-                  person: navigation.state.params,
-                });
-              }}>
-              <SvgUri width="13" height="13" svgXmlData={PasswordIcon} />
-              <Text style={text}>Изменить пароль</Text>
+              <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
+              <Text style={text}>Мои записи</Text>
             </TouchableOpacity>
           </View>
-        </View>
-        <View style={{}}>
-          <View style={groupBlock}>
-            {/* ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ*/}
-            <TouchableOpacity
-              style={[blockInGroup, borderBottom]}
-              onPress={() => {
-                alert('Политика конфиденциальности');
-              }}>
-              <Text style={{fontSize: 13}}>
-                Политика конфиденциальности и Условия использования
-              </Text>
-            </TouchableOpacity>
-            {/* ВАШ ГОРОД*/}
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('ChangeCity', {
-                  city: navigation.state.params.city,
-                });
-              }}>
-              <View
-                style={[
-                  blockInGroup,
-                  borderBottom,
-                  {
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  },
-                ]}>
-                <Text style={{fontSize: 13}}>Ваш город</Text>
-                <Text style={{fontWeight: 'bold'}}>
-                  {navigation.state.params.city}
+          <View style={{}}>
+            <View style={groupBlock}>
+              {/* ПЕРСОНАЛЬНЫЕ ДАННЫЕ*/}
+              <TouchableOpacity
+                style={[blockInGroup, borderBottom]}
+                onPress={() => {
+                  navigation.navigate('PersonalData', USER.data.me);
+                }}>
+                <SvgUri
+                  style={{marginRight: 10}}
+                  width="13"
+                  height="13"
+                  svgXmlData={UserIcon}
+                />
+                <Text style={text}>Персональные данные</Text>
+              </TouchableOpacity>
+              {/* ИЗМЕНИТЬ ПАРОЛЬ*/}
+              <TouchableOpacity
+                style={blockInGroup}
+                onPress={() => {
+                  navigation.navigate('ChangePassword', {
+                    onGoBack: isSuccess => onGoBackFromPasword(isSuccess),
+                    // person: navigation.state.params,
+                  });
+                }}>
+                <SvgUri width="13" height="13" svgXmlData={PasswordIcon} />
+                <Text style={text}>Изменить пароль</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={{}}>
+            <View style={groupBlock}>
+              {/* ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ*/}
+              <TouchableOpacity
+                style={[blockInGroup, borderBottom]}
+                onPress={() => {
+                  alert('Политика конфиденциальности');
+                }}>
+                <Text style={{fontSize: 13}}>
+                  Политика конфиденциальности и Условия использования
                 </Text>
-              </View>
-            </TouchableOpacity>
-            {/* СВЯЗЬ С ПООДЕРЖКОЙ*/}
-            <TouchableOpacity
-              style={blockInGroup}
-              onPress={() => {
-                alert('Связь с поддержкой');
-              }}>
-              <Text style={{fontSize: 13}}>Связаться с поддержкой Prof.Ma</Text>
-            </TouchableOpacity>
+              </TouchableOpacity>
+              {/* ВАШ ГОРОД*/}
+              <TouchableOpacity
+                onPress={() => {
+                  // navigation.navigate('ChangeCity', {
+                  //   city: navigation.state.params.city,
+                  // });
+                }}>
+                <View
+                  style={[
+                    blockInGroup,
+                    borderBottom,
+                    {
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    },
+                  ]}>
+                  <Text style={{fontSize: 13}}>Ваш город</Text>
+                  <Text style={{fontWeight: 'bold'}}>
+                    {USER.data.me.profile.city || <Text>не задан</Text>}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              {/* СВЯЗЬ С ПООДЕРЖКОЙ*/}
+              <TouchableOpacity
+                style={blockInGroup}
+                onPress={() => {
+                  alert('Связь с поддержкой');
+                }}>
+                <Text style={{fontSize: 13}}>
+                  Связаться с поддержкой Prof.Ma
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
+        <View style={{margin: 8}}>
+          {isChangePassword && (
+            <SaveSuccess title="👍 Новый пароль успешно сохранён." />
+          )}
+          {!isChangePassword && (
+            <ButtonDefault
+              title="выйти из профиля"
+              onPress={() => {
+                LOGOUT_mutation()
+                  .then(res => {
+                    console.log(res);
+                    signOut();
+
+                    navigation.navigate('Start');
+                  })
+                  .catch(err => console.log(err));
+              }}
+            />
+          )}
+        </View>
       </View>
-      <View style={{margin: 8}}>
-        {isChangePassword && (
-          <SaveSuccess title="👍 Новый пароль успешно сохранён." />
-        )}
-        {!isChangePassword && (
-          <ButtonDefault
-            title="выйти из профиля"
-            onPress={() => {
-              alert('Выход из профиля');
-            }}
-          />
-        )}
-      </View>
-    </View>
-  );
+    );
+  }
 };
 
 const styles = StyleSheet.create({
