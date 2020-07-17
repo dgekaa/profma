@@ -43,62 +43,67 @@ const NoteInformation = ({navigation}) => {
       <ScrollView style={{}}>
         <View style={{flex: 1, paddingHorizontal: 8, paddingTop: 15}}>
           <View style={first}>
-            <Text style={text}>el.master_name</Text>
+            <Text style={text}>
+              {navigation.state.params.person.master.profile.name}
+            </Text>
           </View>
           {/* УСЛУГИ */}
           <View style={{}}>
             <Text style={blockTitle}>Услуги</Text>
             <View>
               <View style={groupBlock}>
-                {/* {navigation.state.params.person.services.map((el, i) => (
-                  <View
-                    key={i}
-                    style={[
-                      {
-                        height: 60,
-                        flexDirection: 'row',
-                      },
-                      navigation.state.params.person.services.length - 1 === i
-                        ? {}
-                        : {
-                            borderBottomColor: 'rgba(0,0,0,0.2)',
-                            borderBottomWidth: 0.3,
-                          },
-                    ]}>
+                {navigation.state.params.person.offers.length &&
+                  navigation.state.params.person.offers.map((el, i) => (
                     <View
-                      style={{
-                        flex: 4,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                      }}>
-                      <SvgUri svgXmlData={DefaultIcon} />
-                      <View style={{paddingHorizontal: 5}}>
-                        <Text style={{fontSize: 13, fontWeight: 'bold'}}>
-                          {el.name}
+                      key={i}
+                      style={[
+                        {
+                          height: 60,
+                          flexDirection: 'row',
+                        },
+                        navigation.state.params.person.offers.length - 1 === i
+                          ? {}
+                          : {
+                              borderBottomColor: 'rgba(0,0,0,0.2)',
+                              borderBottomWidth: 0.3,
+                            },
+                      ]}>
+                      <View
+                        style={{
+                          flex: 4,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                        }}>
+                        <SvgUri svgXmlData={DefaultIcon} />
+                        <View style={{paddingHorizontal: 5}}>
+                          <Text style={{fontSize: 13, fontWeight: 'bold'}}>
+                            {el.service.name}
+                          </Text>
+                          <Text style={{fontSize: 10}}>
+                            {el.price_by_pack.duration} час.
+                          </Text>
+                        </View>
+                      </View>
+                      <View
+                        style={{
+                          flex: 2,
+                          justifyContent: 'center',
+                          paddingRight: 16,
+                        }}>
+                        <Text style={{fontSize: 10, textAlign: 'right'}}>
+                          Стоимость услуги
                         </Text>
-                        <Text style={{fontSize: 10}}>!!!!! мин.</Text>
+                        <Text
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 'bold',
+                            textAlign: 'right',
+                          }}>
+                          {el.price_by_pack.price} руб
+                        </Text>
                       </View>
                     </View>
-                    <View
-                      style={{
-                        flex: 2,
-                        justifyContent: 'center',
-                        paddingRight: 16,
-                      }}>
-                      <Text style={{fontSize: 10, textAlign: 'right'}}>
-                        Стоимость услуги
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 13,
-                          fontWeight: 'bold',
-                          textAlign: 'right',
-                        }}>
-                        el.how_mach руб
-                      </Text>
-                    </View>
-                  </View>
-                ))} */}
+                  ))}
               </View>
             </View>
           </View>
@@ -106,12 +111,20 @@ const NoteInformation = ({navigation}) => {
           <View>
             <Text style={blockTitle}>дата и время сеанса</Text>
             <View style={[first, {flexDirection: 'row'}]}>
-              <Text style={{fontWeight: 'bold'}}>день </Text>
-              <Text> в время</Text>
+              <Text style={{fontWeight: 'bold'}}>
+                {navigation.state.params.person.date.split('-')[2]}{' '}
+                {
+                  shortMonthName[
+                    +navigation.state.params.person.date.split('-')[1]
+                  ]
+                }{' '}
+                {navigation.state.params.person.date.split('-')[0]}
+              </Text>
+              <Text> в {navigation.state.params.person.time.slice(0, 5)}</Text>
             </View>
           </View>
           {/* АДРЕС ПРОВЕДЕНИЯ СЕАНСА */}
-          <View style={{marginBottom: 20}}>
+          {/* <View style={{marginBottom: 20}}>
             <Text style={blockTitle}>Адрес проведения сеанса</Text>
             <View
               style={[
@@ -132,7 +145,7 @@ const NoteInformation = ({navigation}) => {
                 <Text style={{fontSize: 10, flex: 1}}>!!!!!!!!!</Text>
               </View>
             </View>
-          </View>
+          </View> */}
         </View>
         {isActive ||
           (isAbort && (

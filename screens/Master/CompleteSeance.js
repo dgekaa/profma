@@ -1,4 +1,5 @@
 import React from 'react';
+import {Query, useMutation, useQuery} from 'react-apollo';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
@@ -15,8 +16,28 @@ import {
   ScrollView,
 } from 'react-native';
 
+import {GET_USER, UPDATE_PROFILE, GET_APPOINTMENT} from '../../QUERYES';
+import {G} from 'react-native-svg';
+import {getToken} from '../../util';
+
 const CompleteSeance = ({navigation}) => {
   const {groupBlock, blockTitle, blockInGroup, textBold, borderBottom} = styles;
+
+  const refreshObject = {
+    refetchQueries: [
+      {
+        query: GET_APPOINTMENT,
+        variables: {
+          id: +navigation.state.params.data.id,
+        },
+      },
+    ],
+    awaitRefetchQueries: true,
+  };
+
+  const [UPDATE_PROFILE_mutation] = useMutation(UPDATE_PROFILE, refreshObject);
+
+  console.log(navigation.state.params);
 
   return (
     <View style={{flex: 1}}>
@@ -44,11 +65,11 @@ const CompleteSeance = ({navigation}) => {
             }}>
             <Text style={blockTitle}>фотографии законченной работы</Text>
             <Text style={[blockTitle, {marginRight: 8}]}>
-              {navigation.state.params.data.photo.length}\5
+              {/* {navigation.state.params.data.photo.length}\5 */}
             </Text>
           </View>
           <View style={[groupBlock]}>
-            {navigation.state.params.data.photo.map((el, i) => (
+            {/* {navigation.state.params.data.photo.map((el, i) => (
               <View
                 key={i}
                 style={[blockInGroup, borderBottom, {paddingRight: 8}]}>
@@ -68,13 +89,13 @@ const CompleteSeance = ({navigation}) => {
                   <SvgUri svgXmlData={TrashIcon} />
                 </TouchableOpacity>
               </View>
-            ))}
+            ))} */}
             <TouchableOpacity
               style={[blockInGroup]}
               onPress={() => {
-                navigation.state.params.data.photo.length == 5
-                  ? alert('Больше добавить нельзя')
-                  : alert('Прикрепить фото');
+                // navigation.state.params.data.photo.length == 5
+                //   ? alert('Больше добавить нельзя')
+                //   : alert('Прикрепить фото');
               }}>
               <SvgUri svgXmlData={PlusIcon} />
               <Text
@@ -96,8 +117,24 @@ const CompleteSeance = ({navigation}) => {
       </ScrollView>
       <ButtonDefault
         onPress={() => {
-          navigation.state.params.complete(true);
-          navigation.goBack();
+          const Completed = 'Completed';
+          UPDATE_PROFILE_mutation({
+            variables: {
+              variables: {
+                id: +navigation.state.params.data.id,
+                time: navigation.state.params.data.time.slice(0, 5),
+                date: navigation.state.params.data.date,
+                status: Completed,
+              },
+            },
+            optimisticResponse: null,
+          })
+            .then(res => {
+              console.log(res, '__RES UPDATE_SCHEDULE_mutation');
+              navigation.state.params.complete(true);
+              navigation.goBack();
+            })
+            .catch(err => console.log(err, '__ERR UPDATE_SCHEDULE_mutation'));
         }}
         style={{margin: 8}}
         title="подтвердить завершение сеанса"

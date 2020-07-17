@@ -3,6 +3,7 @@ import SvgUri from 'react-native-svg-uri';
 import BackgroundHeader from '../components/BackgroundHeader';
 import SearchIcon from '../img/Search.svg';
 import {Query, useMutation, useQuery} from 'react-apollo';
+import {ButtonDefault} from '../components/Button';
 
 import {
   Text,
@@ -15,7 +16,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-import {ALL_CITIES} from '../QUERYES';
+import {ALL_CITIES, UPDATE_PROFILE, ME} from '../QUERYES';
 
 const Border = () => (
   <View
@@ -33,6 +34,7 @@ const ChangeCity = ({navigation}) => {
   const [city, setCity] = useState(
     navigation.state.params.city.name || 'Укажите город',
   );
+  const [cityId, setCityID] = useState(null);
   const [manualCity, setManualCity] = useState('');
 
   const cityInputRef = useRef(null);
@@ -44,8 +46,14 @@ const ChangeCity = ({navigation}) => {
   const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
-    setFilteredData(data);
+    console.log(data, '___DATA+++');
+    console.log(navigation.state.params, '___DATA+++');
+    data && data.cities && setFilteredData(data.cities.data);
   }, [data]);
+
+  useEffect(() => {
+    console.log(filteredData, '____filteredData');
+  }, [filteredData]);
 
   useEffect(() => {
     const filteredCities =
@@ -56,6 +64,30 @@ const ChangeCity = ({navigation}) => {
 
     setFilteredData(filteredCities);
   }, [manualCity]);
+
+  const refreshObject = {
+    refetchQueries: [
+      {
+        query: ME,
+      },
+    ],
+    awaitRefetchQueries: true,
+  };
+  const [UPDATE_PROFILE_mutation] = useMutation(UPDATE_PROFILE, refreshObject);
+
+  const SAVE = () => {
+    UPDATE_PROFILE_mutation({
+      variables: {
+        id: navigation.state.params.id,
+        city_id: cityId,
+      },
+      optimisticResponse: null,
+    })
+      .then(res => {
+        console.log(res, '__RES');
+      })
+      .catch(err => console.log(err, '__ERR'));
+  };
 
   return (
     <TouchableWithoutFeedback onPress={() => cityInputRef.current.blur()}>
@@ -104,6 +136,7 @@ const ChangeCity = ({navigation}) => {
           <View style={[groupBlock]}>
             <ScrollView>
               {data &&
+                !!filteredData &&
                 !!filteredData.length &&
                 filteredData.map((el, i) => {
                   if (el) {
@@ -112,6 +145,7 @@ const ChangeCity = ({navigation}) => {
                         <TouchableOpacity
                           onPress={e => {
                             setCity(el.name);
+                            setCityID(el.id);
                           }}
                           style={{
                             height: 50,
@@ -126,6 +160,14 @@ const ChangeCity = ({navigation}) => {
                     );
                   }
                 })}
+              {true && (
+                <View style={{padding: 16}}>
+                  <ButtonDefault
+                    title="Сохранить изменения"
+                    onPress={() => SAVE()}
+                  />
+                </View>
+              )}
             </ScrollView>
           </View>
         </View>

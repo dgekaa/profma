@@ -44,23 +44,22 @@ import ErrorDepartmentConstruction from './screens/ErrorDepartmentConstruction';
 import {getToken, signIn, signOut} from './util';
 
 const App = () => {
+  const [loggedIn, setLoggedIn] = useState(false);
+
   const httpLink = new HttpLink({
     uri: 'http://194.87.145.192/graphql',
   });
 
   const authLink = setContext(async (req, {headers}) => {
     const token = await getToken();
-    console.log(token, ' _____@@@@@@@@@@@@@@@@@@_____');
 
     return {
       ...headers,
       headers: {
-        authorization: `Bearer ${token}`,
+        authorization: token ? `Bearer ${token}` : null,
       },
     };
   });
-
-  // const authLink =
 
   const link = authLink.concat(httpLink);
 
@@ -69,13 +68,8 @@ const App = () => {
     link: link,
   });
 
-  console.log(client, 'client');
-
-  const [loggedIn, setLoggedIn] = useState(false);
-
   const getAsyncToken = async () => {
     const token = await getToken();
-    console.log(token, '_______________getAsyncToken');
     if (token) {
       setLoggedIn(true);
     }
@@ -85,9 +79,14 @@ const App = () => {
     getAsyncToken();
   }, []);
 
-  const navOptionHandler = navigation => ({
+  const navOptionHandler = () => ({
     header: null,
   });
+
+  const handleChangeLoginState = (loggedIn = false, token) => {
+    setLoggedIn(loggedIn);
+    loggedIn ? signIn(token) : signOut();
+  };
 
   const MainStack = createStackNavigator(
     {
@@ -96,11 +95,18 @@ const App = () => {
         navigationOptions: navOptionHandler,
       },
       Registration: {
-        screen: props => <Registration {...props} />,
+        screen: props => (
+          <Registration
+            {...props}
+            handleChangeLoginState={handleChangeLoginState}
+          />
+        ),
         navigationOptions: navOptionHandler,
       },
       Login: {
-        screen: props => <Login {...props} />,
+        screen: props => (
+          <Login {...props} handleChangeLoginState={handleChangeLoginState} />
+        ),
         navigationOptions: navOptionHandler,
       },
       PasswordRecovery: {
@@ -124,11 +130,21 @@ const App = () => {
         navigationOptions: navOptionHandler,
       },
       ClientProfile: {
-        screen: props => <ClientProfile {...props} />,
+        screen: props => (
+          <ClientProfile
+            {...props}
+            handleChangeLoginState={handleChangeLoginState}
+          />
+        ),
         navigationOptions: navOptionHandler,
       },
       MasterProfile: {
-        screen: props => <MasterProfile {...props} />,
+        screen: props => (
+          <MasterProfile
+            {...props}
+            handleChangeLoginState={handleChangeLoginState}
+          />
+        ),
         navigationOptions: navOptionHandler,
       },
       PersonalData: {
@@ -200,7 +216,12 @@ const App = () => {
         navigationOptions: navOptionHandler,
       },
       PersonalDataMaster: {
-        screen: PersonalDataMaster,
+        screen: props => (
+          <PersonalDataMaster
+            {...props}
+            handleChangeLoginState={handleChangeLoginState}
+          />
+        ),
         navigationOptions: navOptionHandler,
       },
     },
@@ -209,15 +230,11 @@ const App = () => {
 
   const AppContainer = createAppContainer(MainStack);
 
-  if (client) {
-    return (
-      <ApolloProvider client={client}>
-        <AppContainer />
-      </ApolloProvider>
-    );
-  } else {
-    return <Text>NO CLIENT</Text>;
-  }
+  return (
+    <ApolloProvider client={client}>
+      <AppContainer />
+    </ApolloProvider>
+  );
 };
 
 export default App;

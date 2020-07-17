@@ -102,6 +102,16 @@ export const GET_USERS = gql`
           about_me
           site
         }
+        schedules {
+          id
+          day
+          start_time
+          end_time
+          start_sessions {
+            id
+            time
+          }
+        }
       }
       paginatorInfo {
         count
@@ -129,6 +139,44 @@ export const GET_USER = gql`
   }
 `;
 
+export const GET_APPOINTMENT = gql`
+  query GETAPPOINTMENT($id: ID!) {
+    appointment(id: $id) {
+      id
+      client {
+        profile {
+          id
+          email
+          name
+        }
+      }
+      master {
+        email
+      }
+      offers {
+        id
+        service {
+          id
+          name
+          specialization {
+            id
+            name
+          }
+        }
+        description
+        price_by_pack {
+          price
+          duration
+        }
+      }
+      date
+      time
+      comment
+      status
+    }
+  }
+`;
+
 export const UPDATE_PROFILE = gql`
   mutation UPDATEPROFILE(
     $id: ID!
@@ -140,6 +188,7 @@ export const UPDATE_PROFILE = gql`
     $work_address: String
     $site: String
     $about_me: String
+    $city_id: ID!
   ) {
     updateProfile(
       input: {
@@ -152,6 +201,7 @@ export const UPDATE_PROFILE = gql`
         work_address: $work_address
         site: $site
         about_me: $about_me
+        city: {connect: $city_id}
       }
     ) {
       id
@@ -163,6 +213,10 @@ export const UPDATE_PROFILE = gql`
       work_address
       site
       about_me
+      city {
+        id
+        name
+      }
     }
   }
 `;
@@ -199,6 +253,24 @@ export const CREATE_PROFILE = gql`
       work_address
       site
       about_me
+    }
+  }
+`;
+
+export const UPDATE_APPOINTMENT = gql`
+  mutation UPDATEAPPOINTMENT(
+    $id: ID!
+    $status: AppointmentStatus
+    $date: String
+    $time: String
+  ) {
+    updateAppointment(
+      input: {id: $id, status: $status, date: $date, time: $time}
+    ) {
+      id
+      status
+      date
+      time
     }
   }
 `;

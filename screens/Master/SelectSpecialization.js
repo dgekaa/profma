@@ -56,9 +56,9 @@ const SelectSpecialization = ({navigation}) => {
   const [activeSpecialization, setActiveSpecialization] = useState('');
   const [activeSpecializationID, setActiveSpecializationID] = useState('');
 
-  console.log(data.specializations.data, 'DATA!!!');
-  console.log(activeSpecialization, 'activeSpecialization!!!');
-  console.log(activeSpecializationID, 'activeSpecializationID!!!');
+  // console.log(data.specializations.data, 'DATA!!!');
+  // console.log(activeSpecialization, 'activeSpecialization!!!');
+  // console.log(activeSpecializationID, 'activeSpecializationID!!!');
 
   return (
     <View style={{flex: 1}}>

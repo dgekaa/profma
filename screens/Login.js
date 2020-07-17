@@ -9,7 +9,7 @@ import {Header} from '../components/BackgroundHeader';
 
 import {LOGIN} from '../QUERYES';
 
-const Login = ({navigation}) => {
+const Login = ({navigation, handleChangeLoginState}) => {
   const {
     container,
     topTextWrap,
@@ -25,7 +25,7 @@ const Login = ({navigation}) => {
 
   const [iconName, setIconName] = useState('closedEye');
   const [hidePassword, setHidePassword] = useState(true);
-  const [fillErr, setFillErr] = useState('Поля не заполнены');
+  const [fillErr, setFillErr] = useState('');
   const [validationErr, setValidationErr] = useState('');
   const [regBtnText, setRegBtnText] = useState('');
 
@@ -41,11 +41,14 @@ const Login = ({navigation}) => {
     })
       .then(res => {
         console.log(res, '______________LOGIN___________RES');
-        signIn(res.data.login.access_token);
+        handleChangeLoginState(true, res.data.login.access_token);
 
         navigation.navigate('Main', {ID: res.data.login.user.id});
       })
-      .catch(err => console.log(err, '__ERR'));
+      .catch(err => {
+        setValidationErr(true);
+        console.log(err, '___Err');
+      });
   };
 
   const openCloseEye = () => {
@@ -63,7 +66,7 @@ const Login = ({navigation}) => {
 
   useEffect(() => {
     fillErr
-      ? setRegBtnText('Не достаточно данных для регистрации')
+      ? setRegBtnText('Недостаточно данных для входа')
       : validationErr
       ? setRegBtnText('проверьте введённые данные')
       : setRegBtnText('Войти');
@@ -137,21 +140,7 @@ const Login = ({navigation}) => {
               style={{marginBottom: 8}}
               title={regBtnText}
               active={true}
-              onPress={() => {
-                toLogin();
-                // const person = people.filter(
-                //   el => el.e_mail.toLowerCase() == email.toLowerCase(),
-                // );
-                // if (!password || !email) {
-                //   setFillErr('Поля не заполнены');
-                // } else if (!person.length || person[0].password != password) {
-                //   setValidationErr('Неверно введенные данные');
-                // } else {
-                //   const masters = people.filter(el => el.is_master);
-                //   const clients = people.filter(el => el.is_client);
-
-                // }
-              }}
+              onPress={() => toLogin()}
             />
           )}
           {!!validationErr && (

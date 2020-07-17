@@ -9,8 +9,9 @@ import {Header} from '../components/BackgroundHeader';
 
 import {REGISTER, CREATE_PROFILE} from '../QUERYES';
 import {signIn} from '../util';
+import {set} from 'react-native-reanimated';
 
-const Registration = ({navigation}) => {
+const Registration = ({navigation, handleChangeLoginState}) => {
   const {
     container,
     topText,
@@ -28,6 +29,7 @@ const Registration = ({navigation}) => {
   );
   const [personType, setPersonType] = useState('Client');
   const [fillErr, setFillErr] = useState(null);
+  const [validationErr, setValidationErr] = useState('');
   const [regBtnText, setRegBtnText] = useState('');
   const [iconName, setIconName] = useState('closedEye');
   const [hidePassword, setHidePassword] = useState(true);
@@ -39,9 +41,23 @@ const Registration = ({navigation}) => {
 
   useEffect(() => {
     fillErr
-      ? setRegBtnText('Не достаточно данных для регистрации')
+      ? setRegBtnText('Недостаточно данных для регистрации')
+      : validationErr
+      ? setRegBtnText('проверьте введённые данные')
       : setRegBtnText('Зарегистрироваться');
   }, [fillErr]);
+
+  useEffect(() => {
+    fillErr
+      ? setRegBtnText('Недостаточно данных для регистрации')
+      : validationErr
+      ? setRegBtnText('проверьте введённые данные')
+      : setRegBtnText('Зарегистрироваться');
+  }, [fillErr, validationErr]);
+
+  useEffect(() => {
+    !password || !email ? setFillErr(true) : setFillErr(false);
+  }, [password, email]);
 
   useEffect(() => {
     personType === 'Client'
@@ -93,11 +109,13 @@ const Registration = ({navigation}) => {
     })
       .then(res => {
         console.log(res, '__RES REGISTER');
-        signIn(res.data.register.tokens.access_token);
-
+        handleChangeLoginState(true, res.data.register.tokens.access_token);
         createProfile(res);
       })
-      .catch(err => console.log(err, '__ERR'));
+      .catch(err => {
+        console.log(err, '__ERR');
+        setValidationErr(true);
+      });
   };
 
   return (
@@ -129,21 +147,29 @@ const Registration = ({navigation}) => {
           </View>
           <View style={{backgroundColor: '#fff'}}>
             <InputWithText
-              onChangeText={text => setEmail(text)}
+              onChangeText={text => {
+                setValidationErr('');
+                setEmail(text);
+              }}
               value={email}
               autoFocus={true}
               text="Введите адрес электронной почты"
               placeholder="example@site.com"
               keyboardType="email-address"
+              validationErr={validationErr}
             />
 
             <InputWithPassword
-              onChangeText={text => setPassword(text)}
+              onChangeText={text => {
+                setValidationErr('');
+                setPassword(text);
+              }}
               value={password}
               text="Придумайте пароль"
               secureTextEntry={hidePassword}
               icon={iconName}
               onPress={openCloseEye}
+              validationErr={validationErr}
             />
           </View>
         </View>
@@ -157,16 +183,15 @@ const Registration = ({navigation}) => {
             </Text>
           </View>
 
-          {!!fillErr && (
-            <ButtonDisabled
-              onPress={() => {
-                console.log('REGISTER BTN');
-              }}
-              title={regBtnText}
-              style={{marginBottom: 8}}
-            />
-          )}
-          {!fillErr && (
+          {!!fillErr ||
+            (!!validationErr && (
+              <ButtonDisabled
+                onPress={() => {}}
+                title={regBtnText}
+                style={{marginBottom: 8}}
+              />
+            ))}
+          {!fillErr && !validationErr && (
             <ButtonDefault
               onPress={() => register()}
               title={regBtnText}

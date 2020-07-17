@@ -218,14 +218,13 @@ const Main = ({navigation}) => {
     Client: 'Client',
   };
 
-  console.log(navigation, 'NAV');
-
   const users = useQuery(GET_USERS, {
     variables: {first: 3, type: whoObj.Master},
   });
 
   const USER = useQuery(ME);
-  console.log(USER, '___USER');
+  console.log(USER.data, '___USER');
+  console.log(users.data && users.data.users.data[0].schedules, '___USERS___');
 
   const {
     prifileBtn,

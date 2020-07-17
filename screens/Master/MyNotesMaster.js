@@ -74,7 +74,7 @@ const Block = ({el, navigation, archive}) => {
         </View>
         <View style={{flex: 4}}>
           <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-            {price}
+            {!!price && price + ' руб.'}
           </Text>
         </View>
       </View>

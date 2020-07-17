@@ -17,7 +17,7 @@ const Border = () => (
   />
 );
 
-const PersonalDataMaster = ({navigation}) => {
+const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
   const {blockTitle, groupBlock} = styles;
 
   // const {data, loading} = useQuery(GET_USER, {
@@ -241,7 +241,7 @@ const PersonalDataMaster = ({navigation}) => {
                 LOGOUT_mutation()
                   .then(res => {
                     console.log(res);
-                    signOut();
+                    handleChangeLoginState();
 
                     navigation.navigate('Start');
                   })

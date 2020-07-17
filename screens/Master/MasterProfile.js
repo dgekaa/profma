@@ -21,7 +21,7 @@ import PasswordIcon from '../../img/Password.svg';
 
 import {LOGOUT, ME} from '../../QUERYES';
 
-const MasterProfile = ({navigation}) => {
+const MasterProfile = ({navigation, handleChangeLoginState}) => {
   const {
     first,
     text,
@@ -155,6 +155,7 @@ const MasterProfile = ({navigation}) => {
                     city: USER.data.me.profile.city
                       ? USER.data.me.profile.city
                       : '',
+                    id: USER.data.me.profile.id,
                   });
                 }}>
                 <View
@@ -198,8 +199,7 @@ const MasterProfile = ({navigation}) => {
             onPress={() => {
               LOGOUT_mutation()
                 .then(res => {
-                  console.log(res);
-                  signOut();
+                  handleChangeLoginState();
                   navigation.navigate('Start');
                 })
                 .catch(err => console.log(err));

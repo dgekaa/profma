@@ -192,9 +192,7 @@ const ServiceDescription = ({navigation}) => {
         )}
         <ButtonDefault
           onPress={() => {
-            !howLong || !nailCount
-              ? setErr('Поле обязательно для заполнения')
-              : setErr('');
+            !howLong ? setErr('Поле обязательно для заполнения') : setErr('');
 
             // howLong && nailCount && navigation.state.params.save(true);
           }}

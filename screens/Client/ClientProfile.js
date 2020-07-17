@@ -20,7 +20,7 @@ import {signOut, getToken, signIn} from '../../util';
 import {Query, useMutation, useQuery} from 'react-apollo';
 import {LOGOUT, ME} from '../../QUERYES';
 
-const ClientProfile = ({navigation}) => {
+const ClientProfile = ({navigation, handleChangeLoginState}) => {
   const {first, text, groupBlock, blockInGroup, borderBottom} = styles;
 
   const [isChangePassword, setIsChangePassword] = useState();
@@ -39,9 +39,10 @@ const ClientProfile = ({navigation}) => {
   const USER = useQuery(ME);
   const [LOGOUT_mutation] = useMutation(LOGOUT);
 
-  console.log(USER.data, '______________--USER');
   if (USER.error) {
     return <Text>Error</Text>;
+  } else if (USER.loading) {
+    return <Text>Loading</Text>;
   } else if (USER.data) {
     return (
       <View style={{flex: 1}}>
@@ -103,9 +104,12 @@ const ClientProfile = ({navigation}) => {
               {/* ВАШ ГОРОД*/}
               <TouchableOpacity
                 onPress={() => {
-                  // navigation.navigate('ChangeCity', {
-                  //   city: navigation.state.params.city,
-                  // });
+                  navigation.navigate('ChangeCity', {
+                    city: USER.data.me.profile.city
+                      ? USER.data.me.profile.city
+                      : '',
+                    id: USER.data.me.profile.id,
+                  });
                 }}>
                 <View
                   style={[
@@ -118,7 +122,9 @@ const ClientProfile = ({navigation}) => {
                   ]}>
                   <Text style={{fontSize: 13}}>Ваш город</Text>
                   <Text style={{fontWeight: 'bold'}}>
-                    {USER.data.me.profile.city || <Text>не задан</Text>}
+                    {USER && USER.data.me.profile.city
+                      ? USER.data.me.profile.city.name
+                      : ''}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -146,8 +152,7 @@ const ClientProfile = ({navigation}) => {
                 LOGOUT_mutation()
                   .then(res => {
                     console.log(res);
-                    signOut();
-
+                    handleChangeLoginState(false);
                     navigation.navigate('Start');
                   })
                   .catch(err => console.log(err));

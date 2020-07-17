@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import SvgUri from 'react-native-svg-uri';
 
 import BackgroundHeader, {Header} from '../../components/BackgroundHeader';
@@ -38,6 +38,25 @@ const shortMonthName = [
 const Block = ({el, navigation, key, archive}) => {
   console.log(el, 'ELLLLLLLLLLLLLLLLLll');
 
+  const [price, setPrice] = useState(0);
+  const [offersAll, setOffersAll] = useState([]);
+
+  useEffect(() => {
+    let count = 0;
+    el.offers.length &&
+      el.offers.forEach((elem, i) => {
+        count += elem.price_by_pack.price;
+      });
+    setPrice(count);
+
+    let offersAllLocal = [];
+    el.offers.length &&
+      el.offers.forEach((elem, i) => {
+        offersAllLocal.push(elem.service.name);
+      });
+    setOffersAll(offersAllLocal);
+  }, []);
+
   const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
   return (
     <TouchableOpacity
@@ -63,7 +82,7 @@ const Block = ({el, navigation, key, archive}) => {
         </View>
         <View style={{flex: 4}}>
           <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-            ???????????? руб.
+            {!!price && price + ' руб.'}
           </Text>
         </View>
       </View>
@@ -95,9 +114,13 @@ const Block = ({el, navigation, key, archive}) => {
             <Text style={{fontSize: 10, color: archive ? '#A6ADB3' : 'black'}}>
               Услуга
             </Text>
-            <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-              {el.offers[0].service.name}
-            </Text>
+            {!!offersAll.length &&
+              offersAll.map((el, i) => (
+                <Text
+                  style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
+                  {el}
+                </Text>
+              ))}
           </View>
         </View>
       </View>
@@ -154,7 +177,7 @@ const MyNotes = ({navigation}) => {
                   return <Block el={el} navigation={navigation} key={i} />;
                 }
               })}
-              <Text style={blockTitle}>Архив записей</Text>
+              {/* <Text style={blockTitle}>Архив записей</Text>
               {USER.data.me.client_appointments.map((el, i) => {
                 if (el.status) {
                   return (
@@ -166,7 +189,7 @@ const MyNotes = ({navigation}) => {
                     />
                   );
                 }
-              })}
+              })} */}
             </ScrollView>
           </View>
         )}

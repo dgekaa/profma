@@ -2,11 +2,13 @@ import React, {useState, useEffect} from 'react';
 import SvgUri from 'react-native-svg-uri';
 import DefaultIcon from '../../img/Default.svg';
 import PlusIcon from '../../img/Plus.svg';
+import {Query, useMutation, useQuery} from 'react-apollo';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
 import {people} from '../../data';
+import {GET_USER, GET_APPOINTMENT, UPDATE_PROFILE} from '../../QUERYES';
 
 import {
   Text,
@@ -41,125 +43,160 @@ const NoteInformationMaster = ({navigation}) => {
     borderBottom,
   } = styles;
 
-  console.log(navigation.state.params, '_____NAV NOTE INFO MASTER');
-
-  // const {client_id, services, time, day, month, year} = navigation.state.params;
-
-  const isActive = true;
+  const [price, setPrice] = useState();
   const [isCompleted, setIsCompleted] = useState(false);
 
-  const [price, setPrice] = useState();
+  const appointment = useQuery(GET_APPOINTMENT, {
+    variables: {id: +navigation.state.params.id},
+  });
+
+  const refreshObject = {
+    refetchQueries: [
+      {
+        query: GET_APPOINTMENT,
+        variables: {
+          id: +navigation.state.params.id,
+        },
+      },
+    ],
+    awaitRefetchQueries: true,
+  };
+
+  const [UPDATE_PROFILE_mutation] = useMutation(UPDATE_PROFILE, refreshObject);
 
   useEffect(() => {
-    let count = 0;
-    navigation.state.params.offers.length &&
-      navigation.state.params.offers.forEach((el, i) => {
-        count += el.price_by_pack.price;
-      });
-    setPrice(count);
-  }, []);
+    console.log(appointment.data, '__appointment');
+  }, [appointment]);
 
-  return (
-    <View style={{flex: 1}}>
-      <BackgroundHeader
-        navigation={navigation}
-        title={isCompleted ? 'Сеанс завершён' : 'Запись оформлена'}
-      />
-      <ScrollView>
-        <View style={{flex: 1, paddingHorizontal: 8, paddingTop: 0}}>
-          <Text style={blockTitle}>персональные данные</Text>
-          <View style={groupBlock}>
-            <View style={[blockInGroup, borderBottom]}>
-              <Text style={{fontSize: 10}}>Имя клиента</Text>
+  useEffect(() => {
+    if (appointment.data) {
+      let count = 0;
+      appointment.data.appointment.offers.length &&
+        appointment.data.appointment.offers.forEach((el, i) => {
+          count += el.price_by_pack.price;
+        });
+      setPrice(count);
+    }
+  }, [appointment]);
 
-              <Text style={text}>
-                {navigation.state.params.client.profile.name}
-              </Text>
+  if (appointment.error) {
+    return <Text>ERR</Text>;
+  } else if (appointment.loading) {
+    return <Text>Load</Text>;
+  } else {
+    return (
+      <View style={{flex: 1}}>
+        <BackgroundHeader
+          navigation={navigation}
+          title={
+            appointment.data.appointment.status === 'Completed'
+              ? 'Сеанс завершён'
+              : 'Запись оформлена'
+          }
+        />
+        <ScrollView>
+          <View style={{flex: 1, paddingHorizontal: 8, paddingTop: 0}}>
+            <Text style={blockTitle}>персональные данные</Text>
+            <View style={groupBlock}>
+              <View style={[blockInGroup, borderBottom]}>
+                <Text style={{fontSize: 10}}>Имя клиента</Text>
+
+                <Text style={text}>
+                  {appointment.data.appointment.client.profile.name}
+                </Text>
+              </View>
+              <View style={blockInGroup}>
+                <Text style={{fontSize: 10}}>Мобильный телефон клиента</Text>
+
+                <Text style={text}>
+                  {appointment.data.appointment.client.profile.mobile_phone}
+                </Text>
+              </View>
             </View>
-            <View style={blockInGroup}>
-              <Text style={{fontSize: 10}}>Мобильный телефон клиента</Text>
-
-              <Text style={text}>
-                {navigation.state.params.client.profile.mobile_phone}
-              </Text>
-            </View>
-          </View>
-          {/* УСЛУГИ */}
-          <View>
-            <Text style={blockTitle}>Услуги</Text>
+            {/* УСЛУГИ */}
             <View>
-              <View style={groupBlock}>
-                {navigation.state.params.offers.length &&
-                  navigation.state.params.offers.map((el, i) => (
-                    <View
-                      key={i}
-                      style={[
-                        borderBottom,
-                        {
-                          height: 60,
-                          flexDirection: 'row',
-                        },
-                      ]}>
+              <Text style={blockTitle}>Услуги</Text>
+              <View>
+                <View style={groupBlock}>
+                  {appointment.data.appointment.offers.length &&
+                    appointment.data.appointment.offers.map((el, i) => (
                       <View
-                        style={{
-                          flex: 4,
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                        }}>
-                        <SvgUri svgXmlData={DefaultIcon} />
-                        <View style={{paddingHorizontal: 5}}>
+                        key={i}
+                        style={[
+                          borderBottom,
+                          {
+                            height: 60,
+                            flexDirection: 'row',
+                          },
+                        ]}>
+                        <View
+                          style={{
+                            flex: 4,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                          }}>
+                          <SvgUri svgXmlData={DefaultIcon} />
+                          <View style={{paddingHorizontal: 5}}>
+                            <Text style={{fontSize: 13, fontWeight: 'bold'}}>
+                              {el.service.name}
+                            </Text>
+                            <Text style={{fontSize: 10}}>
+                              {el.price_by_pack.duration} час.
+                            </Text>
+                          </View>
+                        </View>
+                        <View
+                          style={{
+                            flex: 2,
+                            justifyContent: 'center',
+                          }}>
+                          <Text style={{fontSize: 10}}>Стоимость услуги</Text>
                           <Text style={{fontSize: 13, fontWeight: 'bold'}}>
-                            {el.service.name}
-                          </Text>
-                          <Text style={{fontSize: 10}}>
-                            {el.price_by_pack.duration} час.
+                            {el.price_by_pack.price} руб.
                           </Text>
                         </View>
                       </View>
-                      <View
-                        style={{
-                          flex: 2,
-                          justifyContent: 'center',
-                        }}>
-                        <Text style={{fontSize: 10}}>Стоимость услуги</Text>
-                        <Text style={{fontSize: 13, fontWeight: 'bold'}}>
-                          {el.price_by_pack.price} руб.
-                        </Text>
-                      </View>
-                    </View>
-                  ))}
-                <TouchableOpacity
-                  onPress={() => {
-                    alert('Добавит новую услугу');
-                  }}
-                  style={{
-                    height: 60,
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                  }}>
-                  <SvgUri svgXmlData={PlusIcon} />
-                  <Text
-                    style={{fontSize: 13, fontWeight: 'bold', paddingLeft: 5}}>
-                    Добавить услугу
-                  </Text>
-                </TouchableOpacity>
+                    ))}
+                  <TouchableOpacity
+                    onPress={() => {
+                      alert('Добавит новую услугу');
+                    }}
+                    style={{
+                      height: 60,
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                    }}>
+                    <SvgUri svgXmlData={PlusIcon} />
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 'bold',
+                        paddingLeft: 5,
+                      }}>
+                      Добавить услугу
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-          {/* ДАТА И ВРЕМЯ */}
-          <View>
-            <Text style={blockTitle}>дата и время сеанса</Text>
-            <View style={[first, {flexDirection: 'row'}]}>
-              <Text style={{fontWeight: 'bold', textTransform: 'uppercase'}}>
-                {navigation.state.params.date.split('-')[2]}{' '}
-                {shortMonthName[+navigation.state.params.date.split('-')[1]]}{' '}
-                {navigation.state.params.date.split('-')[0]}
-              </Text>
-              <Text> в {navigation.state.params.time.slice(0, 5)}</Text>
+            {/* ДАТА И ВРЕМЯ */}
+            <View>
+              <Text style={blockTitle}>дата и время сеанса</Text>
+              <View style={[first, {flexDirection: 'row'}]}>
+                <Text style={{fontWeight: 'bold', textTransform: 'uppercase'}}>
+                  {appointment.data.appointment.date.split('-')[2]}{' '}
+                  {
+                    shortMonthName[
+                      +appointment.data.appointment.date.split('-')[1]
+                    ]
+                  }{' '}
+                  {appointment.data.appointment.date.split('-')[0]}
+                </Text>
+                <Text> в {appointment.data.appointment.time.slice(0, 5)}</Text>
+              </View>
             </View>
-          </View>
-          {/* АДРЕС ПРОВЕДЕНИЯ СЕАНСА */}
-          {/* <View style={{marginBottom: 20}}>
+            {/* АДРЕС ПРОВЕДЕНИЯ СЕАНСА */}
+            {/* <View style={{marginBottom: 20}}>
             <Text style={blockTitle}>Адрес проведения сеанса</Text>
             <View
               style={[
@@ -184,51 +221,71 @@ const NoteInformationMaster = ({navigation}) => {
               </View>
             </View>
           </View> */}
-        </View>
-        {isActive && (
-          <View
-            style={{marginBottom: 20, marginTop: 10, paddingHorizontal: 16}}>
-            <Text>Итоговая стоимость сеанса</Text>
-            <Text style={{fontWeight: 'bold'}}>{price} руб</Text>
           </View>
-        )}
-        <View style={{paddingHorizontal: 8, paddingBottom: 8}}>
-          {isActive && (
-            <View>
-              <ButtonDefault
-                style={{marginBottom: 8}}
-                active={true}
-                title="завершить сеанс"
-                onPress={() => {
-                  navigation.navigate('CompleteSeance', {
-                    complete: bool => {
-                      setIsCompleted(bool);
-                      setTimeout(() => {
-                        setIsCompleted(false);
-                      }, 1000);
-                    },
-                    price,
-                    data: navigation.state.params,
-                  });
-                }}
-              />
-              {isCompleted && (
-                <SaveSuccess title="👍 Сеанс был успешно завершён." />
-              )}
-              {!isCompleted && (
-                <ButtonDefault
-                  title="отменить запись"
-                  onPress={() => {
-                    alert('Отмена записи');
-                  }}
-                />
-              )}
+          {appointment.data.appointment.status === 'Pending' && (
+            <View
+              style={{marginBottom: 20, marginTop: 10, paddingHorizontal: 16}}>
+              <Text>Итоговая стоимость сеанса</Text>
+              <Text style={{fontWeight: 'bold'}}>{price} руб</Text>
             </View>
           )}
-        </View>
-      </ScrollView>
-    </View>
-  );
+          <View style={{paddingHorizontal: 8, paddingBottom: 8}}>
+            {appointment.data.appointment.status === 'Pending' && (
+              <View>
+                <ButtonDefault
+                  style={{marginBottom: 8}}
+                  active={true}
+                  title="завершить сеанс"
+                  onPress={() => {
+                    navigation.navigate('CompleteSeance', {
+                      complete: bool => {
+                        setIsCompleted(bool);
+                        setTimeout(() => {
+                          setIsCompleted(false);
+                        }, 1000);
+                      },
+                      price,
+                      data: navigation.state.params,
+                    });
+                  }}
+                />
+                {isCompleted && (
+                  <SaveSuccess title="👍 Сеанс был успешно завершён." />
+                )}
+                {appointment.data.appointment.status !== 'Completed' && (
+                  <ButtonDefault
+                    title="отменить запись"
+                    onPress={() => {
+                      const Canceled = 'Canceled';
+                      UPDATE_PROFILE_mutation({
+                        variables: {
+                          variables: {
+                            id: +navigation.state.params.id,
+                            time: navigation.state.params.time.slice(0, 5),
+                            date: navigation.state.params.date,
+                            status: Canceled,
+                          },
+                        },
+                        optimisticResponse: null,
+                      })
+                        .then(res => {
+                          console.log(res, '__RES UPDATE_SCHEDULE_mutation');
+                          navigation.state.params.complete(true);
+                          navigation.goBack();
+                        })
+                        .catch(err =>
+                          console.log(err, '__ERR UPDATE_SCHEDULE_mutation'),
+                        );
+                    }}
+                  />
+                )}
+              </View>
+            )}
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
