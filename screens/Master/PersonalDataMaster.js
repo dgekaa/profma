@@ -6,10 +6,15 @@ import {ButtonDisabled, ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
 import {UPDATE_PROFILE, LOGOUT, ME} from '../../QUERYES';
 
-import {Text, View, StyleSheet, ScrollView} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
-import {Query, useMutation, useQuery} from 'react-apollo';
-import {signOut, getToken} from '../../util';
+import {useMutation, useQuery} from 'react-apollo';
 
 const Border = () => (
   <View
@@ -19,10 +24,6 @@ const Border = () => (
 
 const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
   const {blockTitle, groupBlock} = styles;
-
-  // const {data, loading} = useQuery(GET_USER, {
-  //   variables: {id: 1},
-  // });
 
   const USER = useQuery(ME);
 
@@ -68,28 +69,28 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
   };
 
   const [showBtn, setShowBtn] = useState(false);
-  const [nameLocal, setNameLocal] = useState(USER.data.me);
-  const [emailLocal, setEmailLocal] = useState(USER.data.me);
-  const [mobilePhoneLocal, setMobilePhoneLocal] = useState(USER.data.me);
-  const [additionPhoneLocal, setAdditionPhoneLocal] = useState(USER.data.me);
-  const [homeAddressLocal, setHomeAddressLocal] = useState(USER.data.me);
-  const [workAddressLocal, setWorkAddressLocal] = useState(USER.data.me);
-  const [siteLocal, setSitelocal] = useState(
-    USER.data && USER.data.me.profile.site,
-  );
-  const [aboutMeLocal, setAboutMeLocal] = useState(USER.data.me);
+  const [nameLocal, setNameLocal] = useState(null);
+  const [emailLocal, setEmailLocal] = useState(null);
+  const [mobilePhoneLocal, setMobilePhoneLocal] = useState(null);
+  const [additionPhoneLocal, setAdditionPhoneLocal] = useState(null);
+  const [homeAddressLocal, setHomeAddressLocal] = useState(null);
+  const [workAddressLocal, setWorkAddressLocal] = useState(null);
+  const [siteLocal, setSitelocal] = useState(null);
+  const [aboutMeLocal, setAboutMeLocal] = useState(null);
 
   const [inputLength, setInputLength] = useState(0);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   useEffect(() => {
-    setNameLocal(USER.data.me.profile.name);
-    setEmailLocal(USER.data.me.profile.email);
-    setMobilePhoneLocal(USER.data.me.profile.mobile_phone);
-    setAdditionPhoneLocal(USER.data.me.profile.addition_phone);
-    setHomeAddressLocal(USER.data.me.profile.home_address);
-    setWorkAddressLocal(USER.data.me.profile.work_address);
-    setAboutMeLocal(USER.data.me.profile.about_me);
+    if (USER.data) {
+      setNameLocal(USER.data.me.profile.name);
+      setEmailLocal(USER.data.me.profile.email);
+      setMobilePhoneLocal(USER.data.me.profile.mobile_phone);
+      setAdditionPhoneLocal(USER.data.me.profile.addition_phone);
+      setHomeAddressLocal(USER.data.me.profile.home_address);
+      setWorkAddressLocal(USER.data.me.profile.work_address);
+      setAboutMeLocal(USER.data.me.profile.about_me);
+    }
   }, [USER]);
 
   useEffect(() => {
@@ -114,10 +115,11 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
     aboutMeLocal,
   ]);
 
-  if (USER.data) {
-    return (
-      <View style={{flex: 1}}>
-        <BackgroundHeader navigation={navigation} title="Персональные данные" />
+  return (
+    <View style={{flex: 1}}>
+      <BackgroundHeader navigation={navigation} title="Персональные данные" />
+      {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
+      {USER.data && (
         <ScrollView>
           <View style={{flex: 1, paddingHorizontal: 8}}>
             <View style={{flex: 1}}>
@@ -252,13 +254,9 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
             />
           </View>
         </ScrollView>
-      </View>
-    );
-  } else if (USER.loading) {
-    return <Text>Loading...</Text>;
-  } else {
-    return <Text>Err</Text>;
-  }
+      )}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({

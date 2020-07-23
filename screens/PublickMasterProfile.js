@@ -10,7 +10,8 @@ import ArrowWhiteIcon from '../img/ArrowRight.svg';
 import CalendarSvgIcon from '../img/CalendarSVG.svg';
 import LocationIcon from '../img/Location.svg';
 import CrossWhiteIcon from '../img/CrossWhite.svg';
-
+import {Query, useMutation, useQuery} from 'react-apollo';
+import {GET_USER} from '../QUERYES';
 import {
   StyleSheet,
   View,
@@ -104,10 +105,12 @@ const DropdownBlock = ({
             )}
           </View>
           <View>
-            <Text style={{fontWeight: 'bold', fontSize: 13}}>Имя</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 13}}>
+              {el.service.name}
+            </Text>
             <Text style={{fontSize: 10}}>
-              !!!!!!!!!!!!!!!!!!!
-              {/* {el.how_long} {plural(el.how_long, ['час', 'часа', 'часов'])} */}
+              {el.price_by_pack.duration}{' '}
+              {plural(el.price_by_pack.duration, ['час', 'часа', 'часов'])}
             </Text>
           </View>
         </View>
@@ -115,7 +118,7 @@ const DropdownBlock = ({
           <View style={{flex: 7}}>
             <Text style={{fontSize: 10}}>Стоимость услуги</Text>
             <Text style={{fontWeight: 'bold', fontSize: 13}}>
-              Стоимость руб
+              {el.price_by_pack.price} руб
             </Text>
           </View>
           <View>
@@ -127,10 +130,10 @@ const DropdownBlock = ({
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
-              onPress={() => {
+              onPress={e => {
                 checkboxes[index]
                   ? (checkboxes[index] = false)
-                  : (checkboxes[index] = true);
+                  : (checkboxes[index] = el.id);
                 setCheckboxes([...checkboxes]);
               }}>
               <View
@@ -154,7 +157,7 @@ const DropdownBlock = ({
             paddingRight: 8,
             width: '100%',
           }}>
-          <Text style={{fontSize: 13}}>описание</Text>
+          <Text style={{fontSize: 13}}>{el.description}</Text>
         </View>
       )}
     </TouchableOpacity>
@@ -262,8 +265,18 @@ const PublickMasterProfile = ({navigation}) => {
     }
   };
 
+  const MASTER = useQuery(GET_USER, {
+    variables: {id: +navigation.state.params.id},
+  });
+
+  console.log(MASTER, '_MASETER');
+
   const [services, setServices] = useState([]);
-  // const [services, setServices] = useState(navigation.state.params.my_services);
+
+  useEffect(() => {
+    MASTER.data && setServices(MASTER.data.user.offers);
+  }, [MASTER]);
+
   const [slideBlock, setSlideBlock] = useState(
     new Array(services.length).fill(false),
   );
@@ -271,418 +284,415 @@ const PublickMasterProfile = ({navigation}) => {
     new Array(services.length).fill(false),
   );
 
-  console.log(navigation.state.params, 'navigation.state.params');
+  useEffect(() => {
+    console.log(checkboxes, '____checkboxes');
+  }, [checkboxes, slideBlock]);
 
-  const endPrice = checkboxes.map((el, i) => {
-    if (el) {
-      return navigation.state.params.my_services[i].how_mach;
-    }
-  });
-  const endPrice2 = endPrice.filter((el, i) => {
-    return el;
-  });
-
-  const endPrice3 =
-    endPrice2.length && endPrice2.reduce((a, b) => Number(a) + Number(b));
-
-  return (
-    <View style={{flex: 1}}>
-      <BackgroundHeader
-        navigation={navigation}
-        title="Людмила Заглубоцкая"
-        description={navigation.state.params.skills}
-      />
-      <ScrollView>
-        <View style={container}>
-          {!!imgArr.length && (
-            <ScrollView
-              style={galerea}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}>
-              {imgArr.map((el, i) => (
-                <GalereaBlock
-                  index={i}
-                  key={i}
-                  onPress={() => {
-                    setActiveImg(i);
-                  }}
-                  img={el}
-                />
-              ))}
-            </ScrollView>
-          )}
-          <Text style={textTitle}>Услуги</Text>
-          <View style={groupBlock}>
-            {services.map((el, i) => {
-              if (i < 3) {
-                return (
-                  <View key={i}>
-                    {/* <DropdownBlock
-                      index={i}
-                      el={el}
-                      active={false}
-                      slideBlock={slideBlock}
-                      setSlideBlock={setSlideBlock}
-                      checkboxes={checkboxes}
-                      setCheckboxes={setCheckboxes}
-                    /> */}
-                  </View>
-                );
-              }
-            })}
-            <AnotherBlock
-              title="Посмотреть все услуги"
-              onPress={() => {
-                setShowAllServices(true);
-              }}
-            />
-          </View>
-          <Text style={textTitle}>ближайшее свободное время</Text>
-          <View style={groupBlock}>
-            <View
-              style={[
-                blockInGroup,
-                borderBottom,
-                {
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingRight: 8,
-                },
-              ]}>
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
-                <Text style={{fontWeight: 'bold'}}>25 июн 2019 !!!!!!!!!!</Text>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                  justifyContent: 'space-between',
-                }}>
-                <TimeBlock
-                  style={{width: '30%'}}
-                  time="12:00"
-                  active={true}
-                  onPress={() => {}}
-                />
-                <TimeBlock
-                  style={{width: '30%'}}
-                  time="!!!!!!!"
-                  active={false}
-                  onPress={() => {}}
-                />
-                <TimeBlock
-                  style={{width: '30%'}}
-                  time="14:00"
-                  active={false}
-                  onPress={() => {}}
-                />
-              </View>
-            </View>
-            <AnotherBlock
-              title="Выбрать другое время"
-              onPress={() => {
-                setIsCalendarVisible(true);
-              }}
-            />
-          </View>
-          <Text style={textTitle}>адрес мастера</Text>
-          <View style={groupBlock}>
-            <View style={[blockInGroup, {flexDirection: 'row'}]}>
-              <SvgUri svgXmlData={LocationIcon} style={{marginRight: 8}} />
-              <View style={{flexDirection: 'column'}}>
-                <Text style={{fontSize: 13, fontWeight: 'bold'}}>
-                  {navigation.state.params.city},{' '}
-                  {navigation.state.params.address}
-                </Text>
-                <View style={{alignItems: 'center', flexDirection: 'row'}}>
-                  <View
-                    style={{
-                      height: 4,
-                      width: 4,
-                      backgroundColor: '#9155FF',
-                      borderRadius: 4,
-                      marginRight: 5,
+  if (MASTER.error) {
+    return <Text>Err</Text>;
+  } else if (MASTER.loading) {
+    return <Text>loading</Text>;
+  } else if (MASTER.data) {
+    return (
+      <View style={{flex: 1}}>
+        <BackgroundHeader
+          navigation={navigation}
+          title={MASTER.data.user.profile.name}
+          description={navigation.state.params.skills}
+        />
+        <ScrollView>
+          <View style={container}>
+            {!!imgArr.length && (
+              <ScrollView
+                style={galerea}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}>
+                {imgArr.map((el, i) => (
+                  <GalereaBlock
+                    index={i}
+                    key={i}
+                    onPress={() => {
+                      setActiveImg(i);
                     }}
+                    img={el}
                   />
-                  <Text style={{fontSize: 13}}>
-                    {navigation.state.params.metro}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
-          <Text style={textTitle}> О мастере</Text>
-          <View style={[groupBlock, blockInGroup, {marginBottom: 30}]}>
-            <Text
-              style={{
-                fontSize: 13,
-                width: '100%',
-                marginRight: 16,
-                backgrounColor: 'green',
-              }}>
-              {navigation.state.params.about_me}
-            </Text>
-          </View>
-          <ButtonDefault
-            style={{flexDirection: 'row', justifyContent: 'space-between'}}
-            title="Подтвердить запись"
-            rightTitle={endPrice3 + ' руб'}
-            onPress={() => {
-              alert('Подтвердить');
-            }}
-            active={true}
-          />
-        </View>
-      </ScrollView>
-      {(activeImg || activeImg === 0 || activeImg === '0') && (
-        <View style={bigImg}>
-          <ScrollView
-            onScroll={event => {
-              // setY(
-              //   Math.round(event.nativeEvent.contentOffset.x / screen.width),
-              // );
-            }}
-            ref={scrollImage}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            pagingEnabled={true}>
-            {imgArr.map((el, i) => {
-              setTimeout(() => {
-                scrollImage.current.scrollTo({
-                  x: screen.width * activeImg,
-                });
-              }, 0);
-              return (
-                <View key={i}>
-                  <Image
-                    style={{
-                      height: screen.height,
-                      width: screen.width,
-                      resizeMode: 'cover',
-                    }}
-                    source={{uri: el}}
-                  />
-                </View>
-              );
-            })}
-          </ScrollView>
-          <TouchableOpacity
-            style={closeBtn}
-            onPress={() => {
-              setActiveImg(null);
-            }}>
-            <SvgUri svgXmlData={CrossWhiteIcon} />
-          </TouchableOpacity>
-          <View style={imgIndicator}>
-            {imgArr.map((el, i) => {
-              return (
-                <BottomImgIndicator
-                  key={i}
-                  showActiveImg={y || activeImg}
-                  index={i}
-                />
-              );
-            })}
-          </View>
-        </View>
-      )}
-      {showAllServices && (
-        <TouchableWithoutFeedback
-          onPress={() => {
-            setShowAllServices(false);
-          }}>
-          <View
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: 'rgba(0,0,0,0.2)',
-              justifyContent: 'flex-end',
-            }}>
-            <View style={{height: '70%', backgroundColor: '#fff'}}>
-              <Text
-                style={{
-                  backgroundColor: '#fafafa',
-                  height: 40,
-                  fontSize: 10,
-                  textTransform: 'uppercase',
-                  color: '#011627',
-                  opacity: 0.35,
-                  lineHeight: 40,
-                  paddingLeft: 8,
-                }}>
-                Все услуги
-              </Text>
-              <ScrollView style={{paddingHorizontal: 8}}>
-                {services.map((el, i) => {
-                  return (
-                    <View key={i}>
-                      <DropdownBlock
-                        index={i}
-                        el={el}
-                        slideBlock={slideBlock}
-                        setSlideBlock={setSlideBlock}
-                        checkboxes={checkboxes}
-                        setCheckboxes={setCheckboxes}
-                      />
-                    </View>
-                  );
-                })}
+                ))}
               </ScrollView>
-              <ButtonDefault
-                onPress={() => {
-                  setShowAllServices(false);
-                }}
-                title={
-                  'Выбрать эти услуги (' +
-                  checkboxes.filter(el => el).length +
-                  ')'
-                }
-                active={true}
-                style={{margin: 8}}
+            )}
+            <Text style={textTitle}>Услуги</Text>
+            <View style={groupBlock}>
+              {!!MASTER.data.user.offers.length &&
+                MASTER.data.user.offers.map((el, i) => {
+                  if (i < 3) {
+                    return (
+                      <View key={i}>
+                        <DropdownBlock
+                          index={i}
+                          el={el}
+                          active={false}
+                          slideBlock={slideBlock}
+                          setSlideBlock={setSlideBlock}
+                          checkboxes={checkboxes}
+                          setCheckboxes={setCheckboxes}
+                        />
+                      </View>
+                    );
+                  }
+                })}
+              <AnotherBlock
+                title="Посмотреть все услуги"
+                onPress={() => setShowAllServices(true)}
               />
             </View>
+            <Text style={textTitle}>ближайшее свободное время</Text>
+            <View style={groupBlock}>
+              <View
+                style={[
+                  blockInGroup,
+                  borderBottom,
+                  {
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingRight: 8,
+                  },
+                ]}>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
+                  <Text style={{fontWeight: 'bold'}}>
+                    25 июн 2019 !!!!!!!!!!
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between',
+                  }}>
+                  <TimeBlock
+                    style={{width: '30%'}}
+                    time="12:00"
+                    active={true}
+                    onPress={() => {}}
+                  />
+                  <TimeBlock
+                    style={{width: '30%'}}
+                    time="!!!!!!!"
+                    active={false}
+                    onPress={() => {}}
+                  />
+                  <TimeBlock
+                    style={{width: '30%'}}
+                    time="14:00"
+                    active={false}
+                    onPress={() => {}}
+                  />
+                </View>
+              </View>
+              <AnotherBlock
+                title="Выбрать другое время"
+                onPress={() => {
+                  setIsCalendarVisible(true);
+                }}
+              />
+            </View>
+            <Text style={textTitle}>адрес мастера</Text>
+            <View style={groupBlock}>
+              <View style={[blockInGroup, {flexDirection: 'row'}]}>
+                <SvgUri svgXmlData={LocationIcon} style={{marginRight: 8}} />
+                <View style={{flexDirection: 'column'}}>
+                  <Text style={{fontSize: 13, fontWeight: 'bold'}}>
+                    {MASTER.data.user.profile.work_address},{' '}
+                    {MASTER.data.user.profile.city &&
+                      MASTER.data.user.profile.city.name}
+                  </Text>
+                  <View style={{alignItems: 'center', flexDirection: 'row'}}>
+                    <View
+                      style={{
+                        height: 4,
+                        width: 4,
+                        backgroundColor: '#9155FF',
+                        borderRadius: 4,
+                        marginRight: 5,
+                      }}
+                    />
+                    <Text style={{fontSize: 13}}>?metro?</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <Text style={textTitle}> О мастере</Text>
+            <View style={[groupBlock, blockInGroup, {marginBottom: 30}]}>
+              <Text
+                style={{
+                  fontSize: 13,
+                  width: '100%',
+                  marginRight: 16,
+                  backgrounColor: 'green',
+                }}>
+                {MASTER.data.user.profile.about_me}
+              </Text>
+            </View>
+            <ButtonDefault
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}
+              title="Подтвердить запись"
+              rightTitle={'цена ' + ' руб'}
+              onPress={() => {
+                alert('Подтвердить');
+              }}
+              active={true}
+            />
           </View>
-        </TouchableWithoutFeedback>
-      )}
-      {isCalendarVisible && (
-        <CalendarCustom
-          todayInfo={info => {
-            setTodayInfo(info);
-          }}
-          singleDate={true}
-          markedDates={markedDates}
-          onDayPress={onDayPress}
-          onClose={setIsCalendarVisible}
-          clearCalendar={setMarkedDates}
-          chooseThisDate={setIsShowTime}
-        />
-      )}
-      {isShowTime && (
-        <ModalWindow style={{padding: 0, paddingBottom: 24}}>
-          <View
-            style={{
-              backgroundColor: '#C092DE',
-              height: 38,
-              width: '100%',
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginBottom: 16,
-            }}>
-            <Text style={{color: '#fff'}}>
-              {todayInfo.dayOfWeek}, {todayInfo.date}{' '}
-              {todayInfo.monthName.toLowerCase()}
+        </ScrollView>
+        {(activeImg || activeImg === 0 || activeImg === '0') && (
+          <View style={bigImg}>
+            <ScrollView
+              onScroll={event => {
+                // setY(
+                //   Math.round(event.nativeEvent.contentOffset.x / screen.width),
+                // );
+              }}
+              ref={scrollImage}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              pagingEnabled={true}>
+              {imgArr.map((el, i) => {
+                setTimeout(() => {
+                  scrollImage.current.scrollTo({
+                    x: screen.width * activeImg,
+                  });
+                }, 0);
+                return (
+                  <View key={i}>
+                    <Image
+                      style={{
+                        height: screen.height,
+                        width: screen.width,
+                        resizeMode: 'cover',
+                      }}
+                      source={{uri: el}}
+                    />
+                  </View>
+                );
+              })}
+            </ScrollView>
+            <TouchableOpacity
+              style={closeBtn}
+              onPress={() => {
+                setActiveImg(null);
+              }}>
+              <SvgUri svgXmlData={CrossWhiteIcon} />
+            </TouchableOpacity>
+            <View style={imgIndicator}>
+              {imgArr.map((el, i) => {
+                return (
+                  <BottomImgIndicator
+                    key={i}
+                    showActiveImg={y || activeImg}
+                    index={i}
+                  />
+                );
+              })}
+            </View>
+          </View>
+        )}
+        {showAllServices && (
+          <TouchableWithoutFeedback onPress={() => setShowAllServices(false)}>
+            <View
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0,0,0,0.2)',
+                justifyContent: 'flex-end',
+              }}>
+              <View style={{height: '70%', backgroundColor: '#fff'}}>
+                <Text
+                  style={{
+                    backgroundColor: '#fafafa',
+                    height: 40,
+                    fontSize: 10,
+                    textTransform: 'uppercase',
+                    color: '#011627',
+                    opacity: 0.35,
+                    lineHeight: 40,
+                    paddingLeft: 8,
+                  }}>
+                  Все услуги
+                </Text>
+                <ScrollView style={{paddingHorizontal: 8}}>
+                  {!!MASTER.data.user.offers.length &&
+                    MASTER.data.user.offers.map((el, i) => {
+                      return (
+                        <View key={i}>
+                          <DropdownBlock
+                            index={i}
+                            el={el}
+                            slideBlock={slideBlock}
+                            setSlideBlock={setSlideBlock}
+                            checkboxes={checkboxes}
+                            setCheckboxes={setCheckboxes}
+                          />
+                        </View>
+                      );
+                    })}
+                </ScrollView>
+                <ButtonDefault
+                  onPress={() => {
+                    setShowAllServices(false);
+                  }}
+                  title={
+                    'Выбрать эти услуги (' +
+                    checkboxes.filter(el => el).length +
+                    ')'
+                  }
+                  active={true}
+                  style={{margin: 8}}
+                />
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        )}
+        {isCalendarVisible && (
+          <CalendarCustom
+            todayInfo={info => {
+              setTodayInfo(info);
+            }}
+            singleDate={true}
+            markedDates={markedDates}
+            onDayPress={onDayPress}
+            onClose={setIsCalendarVisible}
+            clearCalendar={setMarkedDates}
+            chooseThisDate={setIsShowTime}
+          />
+        )}
+        {isShowTime && (
+          <ModalWindow style={{padding: 0, paddingBottom: 24}}>
+            <View
+              style={{
+                backgroundColor: '#C092DE',
+                height: 38,
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: 16,
+              }}>
+              <Text style={{color: '#fff'}}>
+                {todayInfo.dayOfWeek}, {todayInfo.date}{' '}
+                {todayInfo.monthName.toLowerCase()}
+              </Text>
+            </View>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                marginBottom: 16,
+                marginHorizontal: 24,
+              }}>
+              Доступное время для записи
             </Text>
-          </View>
-          <Text
-            style={{
-              fontWeight: 'bold',
-              marginBottom: 16,
-              marginHorizontal: 24,
-            }}>
-            Доступное время для записи
-          </Text>
-          <View
-            style={{
-              marginBottom: 16,
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              justifyContent: 'space-between',
-              marginHorizontal: 24,
-            }}>
-            <TimeBlock
-              style={{marginBottom: 8}}
-              time="13:00"
-              active={false}
-              onPress={() => {}}
+            <View
+              style={{
+                marginBottom: 16,
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'space-between',
+                marginHorizontal: 24,
+              }}>
+              <TimeBlock
+                style={{marginBottom: 8}}
+                time="13:00"
+                active={false}
+                onPress={() => {}}
+              />
+              <TimeBlock
+                style={{marginBottom: 8}}
+                time="13:00"
+                active={true}
+                onPress={() => {}}
+              />
+              <TimeBlock
+                style={{marginBottom: 8}}
+                time="13:00"
+                active={false}
+                onPress={() => {}}
+              />
+              <TimeBlock
+                style={{marginBottom: 8}}
+                time="13:00"
+                active={false}
+                onPress={() => {}}
+              />
+              <TimeBlock
+                style={{marginBottom: 8}}
+                time="13:00"
+                active={false}
+                onPress={() => {}}
+              />
+            </View>
+            <View style={{width: '100%'}}>
+              <ButtonDefault
+                style={{marginBottom: 8, marginHorizontal: 24}}
+                onPress={() => {
+                  setIsShowTime(false);
+                  setTimeWasSelected(true);
+                }}
+                title="Выбрать это время"
+                active={true}
+              />
+              <ButtonDefault
+                style={{marginHorizontal: 24}}
+                onPress={() => {
+                  setIsShowTime(false);
+                }}
+                title="закрыть"
+              />
+            </View>
+          </ModalWindow>
+        )}
+        {timeWasSelected && (
+          <ModalWindow>
+            <Text>Вы записаны</Text>
+            <Text>
+              на <Text style={{fontWeight: 'bold'}}>25 июн 2019 !!!!</Text> в
+              10:00 к мастеру
+            </Text>
+            <Image
+              style={{marginTop: 16}}
+              source={require('../img/girl1.png')}
             />
-            <TimeBlock
-              style={{marginBottom: 8}}
-              time="13:00"
-              active={true}
-              onPress={() => {}}
-            />
-            <TimeBlock
-              style={{marginBottom: 8}}
-              time="13:00"
-              active={false}
-              onPress={() => {}}
-            />
-            <TimeBlock
-              style={{marginBottom: 8}}
-              time="13:00"
-              active={false}
-              onPress={() => {}}
-            />
-            <TimeBlock
-              style={{marginBottom: 8}}
-              time="13:00"
-              active={false}
-              onPress={() => {}}
-            />
-          </View>
-          <View style={{width: '100%'}}>
-            <ButtonDefault
-              style={{marginBottom: 8, marginHorizontal: 24}}
-              onPress={() => {
-                setIsShowTime(false);
-                setTimeWasSelected(true);
-              }}
-              title="Выбрать это время"
-              active={true}
-            />
-            <ButtonDefault
-              style={{marginHorizontal: 24}}
-              onPress={() => {
-                setIsShowTime(false);
-              }}
-              title="закрыть"
-            />
-          </View>
-        </ModalWindow>
-      )}
-      {timeWasSelected && (
-        <ModalWindow>
-          <Text>Вы записаны</Text>
-          <Text>
-            на <Text style={{fontWeight: 'bold'}}>25 июн 2019 !!!!</Text> в
-            10:00 к мастеру
-          </Text>
-          <Image style={{marginTop: 16}} source={require('../img/girl1.png')} />
-          <Text style={{fontWeight: 'bold', marginVertical: 16}}>
-            Людмила Заглубоцкая
-          </Text>
-          <View style={{width: '100%'}}>
-            <ButtonDefault
-              style={{marginBottom: 8}}
-              title="спасибо, закрыть окно"
-              active={true}
-              onPress={() => {
-                setTimeWasSelected(false);
-              }}
-            />
-            <ButtonDefault
-              title="перейти к настройкам аккаунта"
-              onPress={() => {
-                setTimeWasSelected(false);
-              }}
-            />
-          </View>
-        </ModalWindow>
-      )}
-    </View>
-  );
+            <Text style={{fontWeight: 'bold', marginVertical: 16}}>
+              Людмила Заглубоцкая
+            </Text>
+            <View style={{width: '100%'}}>
+              <ButtonDefault
+                style={{marginBottom: 8}}
+                title="спасибо, закрыть окно"
+                active={true}
+                onPress={() => {
+                  setTimeWasSelected(false);
+                }}
+              />
+              <ButtonDefault
+                title="перейти к настройкам аккаунта"
+                onPress={() => {
+                  setTimeWasSelected(false);
+                }}
+              />
+            </View>
+          </ModalWindow>
+        )}
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({

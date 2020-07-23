@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Query, useMutation, useQuery} from 'react-apollo';
+import {useMutation} from 'react-apollo';
 import {signOut, signIn, getToken} from '../util';
 
 import {Text, StyleSheet, View, Dimensions} from 'react-native';
@@ -46,6 +46,7 @@ const Login = ({navigation, handleChangeLoginState}) => {
         navigation.navigate('Main', {ID: res.data.login.user.id});
       })
       .catch(err => {
+        alert(JSON.stringify(err));
         setValidationErr(true);
         console.log(err, '___Err');
       });

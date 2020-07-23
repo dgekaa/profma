@@ -1,5 +1,5 @@
 import React from 'react';
-import {Query, useMutation, useQuery} from 'react-apollo';
+import {useMutation} from 'react-apollo';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
@@ -16,7 +16,12 @@ import {
   ScrollView,
 } from 'react-native';
 
-import {GET_USER, UPDATE_PROFILE, GET_APPOINTMENT} from '../../QUERYES';
+import {
+  GET_USER,
+  UPDATE_PROFILE,
+  GET_APPOINTMENT,
+  UPDATE_APPOINTMENT,
+} from '../../QUERYES';
 import {G} from 'react-native-svg';
 import {getToken} from '../../util';
 
@@ -35,7 +40,10 @@ const CompleteSeance = ({navigation}) => {
     awaitRefetchQueries: true,
   };
 
-  const [UPDATE_PROFILE_mutation] = useMutation(UPDATE_PROFILE, refreshObject);
+  const [UPDATE_APPOINTMENT_mutation] = useMutation(
+    UPDATE_APPOINTMENT,
+    refreshObject,
+  );
 
   console.log(navigation.state.params);
 
@@ -118,14 +126,13 @@ const CompleteSeance = ({navigation}) => {
       <ButtonDefault
         onPress={() => {
           const Completed = 'Completed';
-          UPDATE_PROFILE_mutation({
+          console.log(navigation.state.params, 'navigation.state.params');
+          UPDATE_APPOINTMENT_mutation({
             variables: {
-              variables: {
-                id: +navigation.state.params.data.id,
-                time: navigation.state.params.data.time.slice(0, 5),
-                date: navigation.state.params.data.date,
-                status: Completed,
-              },
+              id: +navigation.state.params.data.id,
+              time: navigation.state.params.data.time.slice(0, 5),
+              date: navigation.state.params.data.date,
+              status: Completed,
             },
             optimisticResponse: null,
           })

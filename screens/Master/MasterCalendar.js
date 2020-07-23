@@ -22,6 +22,7 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 
 const shortMonthName = [
@@ -285,52 +286,49 @@ const MasterCalendar = ({navigation}) => {
     // setSortNotes([...sorted]);
   };
 
-  if (USER.loading) {
-    return <Text>Loading...</Text>;
-  } else if (USER.error) {
-    return <Text>ERR</Text>;
-  } else {
-    return (
-      <View style={{flex: 1}}>
-        <BackgroundHeader
-          navigation={navigation}
-          title={`Сегодня ${dayNumber} ${stringMonth}`}
-          settings={true}
-          onSettingsPress={() => alert('Что здесь?')}>
-          <View style={hederArrowContainer}>
-            <TouchableOpacity
-              onPress={() => calendarRef.current.getPreviousWeek()}
-              style={arrow}>
-              <SvgUri svgXmlData={ArrowLIcon} />
-            </TouchableOpacity>
-            <Text style={headerText}>
-              {month} {weekFirst}-{weekLast}
-            </Text>
-            <TouchableOpacity
-              onPress={() => calendarRef.current.getNextWeek()}
-              style={arrow}>
-              <SvgUri svgXmlData={ArrowRIcon} />
-            </TouchableOpacity>
-          </View>
-        </BackgroundHeader>
-        <View style={calendarContainer}>
-          <CalendarStrip
-            locale={locale}
-            onDateSelected={onDateSelected}
-            onWeekChanged={onWeekChanged}
-            ref={calendarRef}
-            style={{height: 60}}
-            calendarHeaderStyle={{color: '#fff', height: 0}}
-            iconStyle={{height: 15, width: 5}}
-            calendarColor={'#fff'}
-            dateNumberStyle={{color: '#A6ADB3'}}
-            dateNameStyle={{color: '#A6ADB3'}}
-            // iconContainer={{flex: 0.07}}
-            iconStyle={{height: 0, width: 0}}
-          />
+  return (
+    <View style={{flex: 1}}>
+      <BackgroundHeader
+        navigation={navigation}
+        title={`Сегодня ${dayNumber} ${stringMonth}`}
+        settings={true}
+        onSettingsPress={() => alert('Что здесь?')}>
+        <View style={hederArrowContainer}>
+          <TouchableOpacity
+            onPress={() => calendarRef.current.getPreviousWeek()}
+            style={arrow}>
+            <SvgUri svgXmlData={ArrowLIcon} />
+          </TouchableOpacity>
+          <Text style={headerText}>
+            {month} {weekFirst}-{weekLast}
+          </Text>
+          <TouchableOpacity
+            onPress={() => calendarRef.current.getNextWeek()}
+            style={arrow}>
+            <SvgUri svgXmlData={ArrowRIcon} />
+          </TouchableOpacity>
         </View>
-        <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
-          {filteredData.length
+      </BackgroundHeader>
+      <View style={calendarContainer}>
+        <CalendarStrip
+          locale={locale}
+          onDateSelected={onDateSelected}
+          onWeekChanged={onWeekChanged}
+          ref={calendarRef}
+          style={{height: 60}}
+          calendarHeaderStyle={{color: '#fff', height: 0}}
+          iconStyle={{height: 15, width: 5}}
+          calendarColor={'#fff'}
+          dateNumberStyle={{color: '#A6ADB3'}}
+          dateNameStyle={{color: '#A6ADB3'}}
+          // iconContainer={{flex: 0.07}}
+          iconStyle={{height: 0, width: 0}}
+        />
+      </View>
+      <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
+        {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
+        {USER.data &&
+          (filteredData.length
             ? filteredData.map((el, i) => (
                 <View key={i}>
                   <Block navigation={navigation} el={el} />
@@ -340,11 +338,10 @@ const MasterCalendar = ({navigation}) => {
                 <View key={i}>
                   <Block navigation={navigation} el={el} />
                 </View>
-              ))}
-        </ScrollView>
-      </View>
-    );
-  }
+              )))}
+      </ScrollView>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({

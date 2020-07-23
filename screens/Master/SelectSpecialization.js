@@ -1,12 +1,19 @@
 import React, {useState, useEffect} from 'react';
-import {Query, useMutation, useQuery} from 'react-apollo';
+import {useQuery} from 'react-apollo';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 
 import {GET_SPECIALIZATIONS} from '../../QUERYES';
+import {ScrollView} from 'react-native-gesture-handler';
 
 const Block = ({title, active, onPress, key, border}) => {
   const {blockInGroup, borderBottom, text} = styles;
@@ -56,19 +63,16 @@ const SelectSpecialization = ({navigation}) => {
   const [activeSpecialization, setActiveSpecialization] = useState('');
   const [activeSpecializationID, setActiveSpecializationID] = useState('');
 
-  // console.log(data.specializations.data, 'DATA!!!');
-  // console.log(activeSpecialization, 'activeSpecialization!!!');
-  // console.log(activeSpecializationID, 'activeSpecializationID!!!');
-
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader
         navigation={navigation}
         title="Выберите специализацию"
       />
-      <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
+      <ScrollView style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
         <Text style={blockTitle}>ваша специализация</Text>
         <View style={groupBlock}>
+          {loading && <ActivityIndicator size="large" color="#00ff00" />}
           {data &&
             data.specializations.data.map((el, i) => (
               <Block
@@ -85,7 +89,7 @@ const SelectSpecialization = ({navigation}) => {
               />
             ))}
         </View>
-      </View>
+      </ScrollView>
       <ButtonDefault
         title="Выбрать эту специализацию"
         active={true}

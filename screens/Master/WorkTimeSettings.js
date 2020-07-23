@@ -4,7 +4,7 @@ import SvgUri from 'react-native-svg-uri';
 import {
   ME,
   CREATE_SCHEDULE,
-  UPDATE_SCHEDULE,
+  UPDATE_SCHEDULE_WORK_TIME,
   DELETE_SCHEDULE,
 } from '../../QUERYES';
 import {Query, useMutation, useQuery} from 'react-apollo';
@@ -21,6 +21,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Switch,
+  ActivityIndicator,
 } from 'react-native';
 
 const weekDaysEnShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -44,8 +45,6 @@ const Block = ({
   setSecondInputText,
 }) => {
   const {groupBlock, blockTitle, blockInGroup, textBold, borderBottom} = styles;
-
-  console.log(schedules, '+++SCHEDULES+++', index);
 
   return (
     <View>
@@ -136,6 +135,7 @@ const WorkTimeSettings = ({navigation}) => {
   const {} = styles;
 
   const USER = useQuery(ME);
+
   const refreshObject = {
     refetchQueries: [
       {
@@ -149,8 +149,8 @@ const WorkTimeSettings = ({navigation}) => {
     CREATE_SCHEDULE,
     refreshObject,
   );
-  const [UPDATE_SCHEDULE_mutation] = useMutation(
-    UPDATE_SCHEDULE,
+  const [UPDATE_SCHEDULE_WORK_TIME_mutation] = useMutation(
+    UPDATE_SCHEDULE_WORK_TIME,
     refreshObject,
   );
   const [DELETE_SCHEDULE_mutation] = useMutation(
@@ -161,17 +161,19 @@ const WorkTimeSettings = ({navigation}) => {
   const [changedData, setChangedData] = useState({});
 
   useEffect(() => {
-    const obj = {};
-    weekDaysEnShort.forEach((day, ind) => {
-      USER.data.me.schedules.forEach((el, i) => {
-        if (day === el.day) {
-          obj[day] = el;
-        } else if (!obj[day] && day !== el.day) {
-          obj[day] = null;
-        }
+    if (USER.data) {
+      const obj = {};
+      weekDaysEnShort.forEach((day, ind) => {
+        USER.data.me.schedules.forEach((el, i) => {
+          if (day === el.day) {
+            obj[day] = el;
+          } else if (!obj[day] && day !== el.day) {
+            obj[day] = null;
+          }
+        });
       });
-    });
-    setChangedData(obj);
+      setChangedData(obj);
+    }
   }, [USER]);
 
   const switchCheck = (bool, schedules, day) => {
@@ -213,6 +215,7 @@ const WorkTimeSettings = ({navigation}) => {
   };
 
   const SAVE = () => {
+    console.log(changedData, '________________-________________!');
     for (let key in changedData) {
       if (changedData[key]) {
         if (changedData[key].id) {
@@ -220,7 +223,7 @@ const WorkTimeSettings = ({navigation}) => {
             console.log(changedData[key], 'РАБ----ВЫХ');
             DELETE_SCHEDULE_mutation({
               variables: {
-                id: changedData[key].id,
+                id: +changedData[key].id,
               },
               optimisticResponse: null,
             })
@@ -230,9 +233,9 @@ const WorkTimeSettings = ({navigation}) => {
               .catch(err => console.log(err, '__ERR DELETE_SCHEDULE_mutation'));
           } else {
             console.log(changedData[key], 'РАБ----РАБ');
-            UPDATE_SCHEDULE_mutation({
+            UPDATE_SCHEDULE_WORK_TIME_mutation({
               variables: {
-                id: changedData[key].id,
+                id: +changedData[key].id,
                 day: key,
                 start_time: changedData[key].start_time.slice(0, 5),
                 end_time: changedData[key].end_time.slice(0, 5),
@@ -275,24 +278,26 @@ const WorkTimeSettings = ({navigation}) => {
         title="Настройка рабочего времени"
       />
       <ScrollView style={{paddingHorizontal: 8}}>
-        {weekDaysEnShort.map((el, i) => {
-          return (
-            <View key={i}>
-              <Block
-                setFirstInputText={setFirstInputText}
-                setSecondInputText={setSecondInputText}
-                switchCheck={switchCheck}
-                schedules={changedData[el]}
-                el={el}
-                index={i}
-                navigation={navigation}
-              />
-            </View>
-          );
-        })}
-        {true && (
+        {!changedData.Mon && <ActivityIndicator size="large" color="#00ff00" />}
+        {changedData.Mon &&
+          weekDaysEnShort.map((el, i) => {
+            return (
+              <View key={i}>
+                <Block
+                  setFirstInputText={setFirstInputText}
+                  setSecondInputText={setSecondInputText}
+                  switchCheck={switchCheck}
+                  schedules={changedData[el]}
+                  el={el}
+                  index={i}
+                  navigation={navigation}
+                />
+              </View>
+            );
+          })}
+        {changedData.Mon && (
           <ButtonDefault
-            onPress={SAVE}
+            onPress={() => USER.data && SAVE()}
             title="сохранить расписание"
             active={true}
             style={{marginBottom: 8}}

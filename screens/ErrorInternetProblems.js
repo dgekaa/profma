@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react';
 import {Text, StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 import {ButtonDefault} from '../components/Button';
 
-const ErrorInternetProblems = ({navigation}) => {
+const ErrorInternetProblems = ({navigation, reload}) => {
   const {
     container,
     img,
@@ -31,6 +31,13 @@ const ErrorInternetProblems = ({navigation}) => {
           style={{marginBottom: 8}}
           title="обновить страницу"
           active={true}
+          onPress={() => {
+            // navigation.navigate('Main');
+            // navigation.navigate(navigation.state.params.ROUTE);
+            // navigation.goBack();
+            reload();
+            // console.log(navigation, 'ERR NAVIGATION');
+          }}
         />
         <ButtonDefault title="обратиться в поддержку Prof.ma" />
       </View>

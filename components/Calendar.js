@@ -51,13 +51,14 @@ LocaleConfig.locales['fr'] = {
 LocaleConfig.defaultLocale = 'fr';
 
 const CalendarCustom = ({
-  markedDates,
-  onDayPress,
+  // markedDates,
+  // onDayPress,
   onClose,
   clearCalendar,
   singleDate,
   todayInfo,
   chooseThisDate,
+  showMasters,
 }) => {
   const {
     monthText,
@@ -91,6 +92,26 @@ const CalendarCustom = ({
     }
   }, [date]);
 
+  const [markedDates, setMarkedDates] = useState({});
+
+  // useEffect(() => {
+  //   console.log(markedDates, '___markedDates');
+  // }, [markedDates]);
+
+  const onSelectDays = day => {
+    if (markedDates[day.dateString]) {
+      delete markedDates[day.dateString];
+      setMarkedDates({
+        ...markedDates,
+      });
+    } else {
+      setMarkedDates({
+        ...markedDates,
+        [day.dateString]: {selected: true, selectedColor: '#B986DA'},
+      });
+    }
+  };
+
   return (
     <View style={bg}>
       <View style={container}>
@@ -114,7 +135,8 @@ const CalendarCustom = ({
             hideExtraDays={true}
             hideArrows={true}
             onDayPress={day => {
-              onDayPress(day);
+              // onDayPress(day);
+              onSelectDays(day);
             }}
             theme={{
               backgroundColor: '#ffffff',
@@ -132,18 +154,19 @@ const CalendarCustom = ({
             }}
           />
           <View style={btnDisabledWrap}>
-            {!singleDate && false && (
+            {/* {!singleDate && false && (
               <ButtonDisabled
                 title="нет найти мастеров на эту дату😞"
                 style={mb}
               />
-            )}
+            )} */}
             {!singleDate && true && (
               <ButtonDefault
                 onPress={() => {
+                  showMasters(markedDates);
                   onClose(false);
                 }}
-                title="Показать мастеров (!!!!!)"
+                title="Показать мастеров"
                 active={true}
                 style={mb}
               />

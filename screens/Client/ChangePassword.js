@@ -1,10 +1,13 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {InputWithPassword} from '../../components/Input';
 import {ButtonDisabled, ButtonDefault} from '../../components/Button';
 
 import {Text, View, StyleSheet, Image} from 'react-native';
+import {Query, useMutation, useQuery} from 'react-apollo';
+
+import {UPDATE_PASSWORD} from '../../QUERYES';
 
 const ChangePassword = ({navigation}) => {
   const {
@@ -21,6 +24,29 @@ const ChangePassword = ({navigation}) => {
   const [pass, setPass] = useState('');
   const [repass, setRepass] = useState('');
 
+  const [validationErr, setValidationErr] = useState('');
+
+  const [UPDATE_PASSWORD_mutation] = useMutation(UPDATE_PASSWORD);
+
+  const UPDATE = () => {
+    UPDATE_PASSWORD_mutation({
+      variables: {
+        password: pass,
+        password_confirmation: repass,
+      },
+      optimisticResponse: null,
+    })
+      .then(res => {
+        console.log(res, '__RES PASSWORD');
+        navigation.state.params.onGoBack(true);
+        navigation.goBack();
+      })
+      .catch(err => {
+        setValidationErr(true);
+        console.log(err, '__ERR PASSWORD');
+      });
+  };
+
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} title={`Изменить пароль`} />
@@ -29,19 +55,27 @@ const ChangePassword = ({navigation}) => {
           <Text style={blockTitle}>изменить пароль</Text>
           <View style={groupBlock}>
             <InputWithPassword
+              validationErr={validationErr}
               value={pass}
               text="Введите новый пароль"
               withoutShadow={true}
               secureTextEntry={true}
-              onChangeText={text => setPass(text)}
+              onChangeText={text => {
+                setPass(text);
+                setValidationErr('');
+              }}
             />
             <View style={border} />
             <InputWithPassword
+              validationErr={validationErr}
               value={repass}
               text="Повторите новый пароль"
               withoutShadow={true}
               secureTextEntry={true}
-              onChangeText={text => setRepass(text)}
+              onChangeText={text => {
+                setRepass(text);
+                setValidationErr('');
+              }}
             />
           </View>
         </View>
@@ -66,10 +100,7 @@ const ChangePassword = ({navigation}) => {
           <ButtonDefault
             title="Сохранить новый пароль"
             active={true}
-            onPress={() => {
-              navigation.state.params.onGoBack(true);
-              navigation.goBack();
-            }}
+            onPress={() => UPDATE()}
           />
         )}
       </View>

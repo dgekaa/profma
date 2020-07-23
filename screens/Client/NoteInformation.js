@@ -5,7 +5,14 @@ import {ButtonDefault} from '../../components/Button';
 import ModalWindow from '../../components/ModalWindow';
 import SvgUri from 'react-native-svg-uri';
 import DefaultIcon from '../../img/Default.svg';
-
+import {Query, useMutation, useQuery} from 'react-apollo';
+import {
+  GET_USER,
+  GET_APPOINTMENT,
+  UPDATE_PROFILE,
+  DELETE_APPOINTMENT,
+  ME,
+} from '../../QUERYES';
 import {Text, View, StyleSheet, Image, ScrollView} from 'react-native';
 
 const shortMonthName = [
@@ -25,10 +32,30 @@ const shortMonthName = [
 
 const NoteInformation = ({navigation}) => {
   const {first, text, blockTitle, groupBlock} = styles;
-  console.log(navigation.state.params, 'PARAMS');
 
   const [cancelNote, setCancelNote] = useState(false);
   const [canceledNote, setCanceledNote] = useState(false);
+
+  const appointment = useQuery(GET_APPOINTMENT, {
+    variables: {id: +navigation.state.params.person.id},
+  });
+
+  const refreshObject = {
+    refetchQueries: [
+      {
+        query: GET_APPOINTMENT,
+        variables: {id: +navigation.state.params.person.id},
+      },
+    ],
+    awaitRefetchQueries: true,
+  };
+
+  const [DELETE_APPOINTMENT_mutation] = useMutation(
+    DELETE_APPOINTMENT,
+    refreshObject,
+  );
+
+  console.log(appointment, '_____APPOINTMENT');
 
   const isActive = true;
   const isCompleted = false;
@@ -198,8 +225,21 @@ const NoteInformation = ({navigation}) => {
             <ButtonDefault
               title="отменить запись к мастеру"
               onPress={() => {
-                setCancelNote(false);
-                setCanceledNote(true);
+                DELETE_APPOINTMENT_mutation({
+                  variables: {
+                    id: +navigation.state.params.person.id,
+                  },
+                  optimisticResponse: null,
+                })
+                  .then(res => {
+                    // setCancelNote(false);
+                    // setCanceledNote(true);
+                    navigation.goBack();
+                    console.log(res, '__res DELETE_APPOINTMENT_mutation');
+                  })
+                  .catch(err =>
+                    console.log(err, '__ERR DELETE_APPOINTMENT_mutation'),
+                  );
               }}
             />
           </View>

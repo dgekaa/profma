@@ -4,6 +4,7 @@ import CalendarColorIcon from '../img/CalendarColor.svg';
 import UserWhiteIcon from '../img/UserWhite.svg';
 import CrossIcon from '../img/cross.svg';
 import CalendarSvgIcon from '../img/CalendarSVG.svg';
+import ErrorInternetProblems from './ErrorInternetProblems';
 
 import CalendarCustom from '../components/Calendar';
 import ModalWindow from '../components/ModalWindow';
@@ -20,24 +21,26 @@ import {
   Dimensions,
   TextInput,
   AsyncStorage,
+  ActivityIndicator,
 } from 'react-native';
 import {Query, useMutation, useQuery} from 'react-apollo';
 
-import {GET_USERS, ME} from '../QUERYES';
+import {GET_USERS, ME, FIND_MASTER} from '../QUERYES';
+import {useScreens} from 'react-native-screens';
 
 const shortMonthName = [
-  'Янв',
-  'Фев',
-  'Март',
-  'Апр',
-  'Май',
-  'Июнь',
-  'Июль',
-  'Авг',
-  'Сент',
-  'Окт',
-  'Нояб',
-  'Дек',
+  'янв',
+  'фев',
+  'март',
+  'апр',
+  'май',
+  'июнь',
+  'июль',
+  'авг',
+  'сент',
+  'окт',
+  'нояб',
+  'дек',
 ];
 
 const screen = Dimensions.get('window');
@@ -124,108 +127,129 @@ const Block = ({el, navigation}) => {
   );
 };
 
-// const NearestSeansBlock = ({el, index, masters, clients, navigation}) => {
-//   const {nearestSeansBlock} = styles;
+const nearestSeansBlocksWrap = (el, i, navigation) => {
+  const serviceDATE = el.date.split('-');
+  const realDATE = new Date()
+    .toLocaleDateString()
+    .split('.')
+    .reverse()
+    .join('-')
+    .split('-');
 
-//   return (
-//     <TouchableOpacity
-//       style={[nearestSeansBlock]}
-//       onPress={() => {
-//         navigation.state.params.person[0].is_client
-//           ? navigation.navigate('NoteInformation', {
-//               person: el,
-//               people: masters,
-//             })
-//           : navigation.navigate('NoteInformationMaster', el);
-//       }}>
-//       <View>
-//         {masters
-//           .filter(index => index.id == el.master_id)
-//           .map(index => {
-//             return (
-//               <Image
-//                 source={{uri: index.img}}
-//                 style={{width: 47, height: 47, marginRight: 8}}
-//               />
-//             );
-//           })}
-//         {!masters.filter(index => index.id == el.master_id).length && (
-//           <Image
-//             source={{uri: 'https://hornews.com/upload/images/blank-avatar.jpg'}}
-//             style={{width: 47, height: 47, marginRight: 8}}
-//           />
-//         )}
-//       </View>
-//       <View style={{flexDirection: 'column', flex: 1}}>
-//         <View>
-//           <Text style={{color: '#B986DA', fontSize: 10, fontWeight: 'bold'}}>
-//             💅Ближайший сеанс запланирован на
-//           </Text>
-//         </View>
-//         <View
-//           style={{
-//             flexDirection: 'row',
-//             flex: 1,
-//             marginTop: 5,
-//           }}>
-//           <View style={{marginRight: 24}}>
-//             <View style={{flexDirection: 'row'}}>
-//               <SvgUri svgXmlData={CalendarColorIcon} />
-//               <Text
-//                 style={{
-//                   fontSize: 13,
-//                   color: '#B986DA',
-//                   fontWeight: 'bold',
-//                   marginLeft: 5,
-//                 }}>
-//                 {el.day} {shortMonthName[+el.month - 1].toLowerCase()} в{' '}
-//                 {el.time}
-//               </Text>
-//             </View>
-//             <Text style={{fontSize: 10}}>
-//               {clients
-//                 .filter(index => index.id == el.client_id)
-//                 .map(index => {
-//                   return <Text>{index.client_name}</Text>;
-//                 })}
+  const serviceYEAR = serviceDATE[0];
+  const serviceMONTH = serviceDATE[1];
+  const serviceDAY = serviceDATE[2];
+  const serviceTIME = el.time.slice(0, 5).split(':');
+  const realYEAR = realDATE[0];
+  const realMONTH = realDATE[1];
+  const realDAY = realDATE[2];
+  const realTIME = new Date()
+    .toLocaleString()
+    .split(',')[1]
+    .slice(0, 5)
+    .split(':');
 
-//               {masters
-//                 .filter(index => index.id == el.master_id)
-//                 .map(index => {
-//                   return <Text>{index.master_name}</Text>;
-//                 })}
-//             </Text>
-//           </View>
-//           <View tyle={{flex: 1}}>
-//             <Text style={{fontSize: 10}}>Услуга</Text>
-//             {el.services.map((item, i) => {
-//               return (
-//                 <Text key={i} style={{fontSize: 10, fontWeight: 'bold'}}>
-//                   {item.name}
-//                 </Text>
-//               );
-//             })}
-//           </View>
-//         </View>
-//       </View>
-//     </TouchableOpacity>
-//   );
-// };
+  if (
+    realYEAR <= serviceYEAR &&
+    realMONTH <= serviceMONTH &&
+    serviceDAY - realDAY >= 0 &&
+    serviceDAY - realDAY < 3
+  ) {
+    if (serviceDAY === realDAY) {
+      const serviceTIMEms = serviceTIME[0] * 3600000 + serviceTIME[1] * 60;
+      const realTIMEms = realTIME[0] * 3600000 + realTIME[1] * 60;
+      if (realTIMEms < serviceTIMEms) {
+        return (
+          <View key={i}>
+            <NearestSeansBlock el={el} index={i} navigation={navigation} />
+          </View>
+        );
+      }
+    } else {
+      return (
+        <View key={i}>
+          <NearestSeansBlock el={el} index={i} navigation={navigation} />
+        </View>
+      );
+    }
+  }
+};
+
+const NearestSeansBlock = ({el, index, navigation}) => {
+  const {nearestSeansBlock} = styles;
+
+  const [offersAll, setOffersAll] = useState([]);
+
+  useEffect(() => {
+    let offersAllLocal = [];
+    el.offers.length &&
+      el.offers.forEach((elem, i) => {
+        offersAllLocal.push(elem.service.name);
+      });
+    setOffersAll(offersAllLocal);
+  }, []);
+
+  return (
+    <TouchableOpacity
+      style={[nearestSeansBlock]}
+      onPress={() => {
+        el.type === 'Client'
+          ? navigation.navigate('NoteInformation', el)
+          : navigation.navigate('NoteInformationMaster', {el: el});
+      }}>
+      <View>
+        <Image
+          source={{uri: ''}}
+          style={{width: 47, height: 47, marginRight: 8}}
+        />
+      </View>
+      <View style={{flexDirection: 'column', flex: 1}}>
+        <View>
+          <Text style={{color: '#B986DA', fontSize: 10, fontWeight: 'bold'}}>
+            💅Ближайший сеанс запланирован на
+          </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            flex: 1,
+            marginTop: 5,
+          }}>
+          <View style={{marginRight: 24}}>
+            <View style={{flexDirection: 'row'}}>
+              <SvgUri svgXmlData={CalendarColorIcon} />
+              <Text
+                style={{
+                  fontSize: 13,
+                  color: '#B986DA',
+                  fontWeight: 'bold',
+                  marginLeft: 5,
+                }}>
+                {el.date.split('-')[2]} {shortMonthName[+el.date.split('-')[1]]}{' '}
+                в {el.time.slice(0, 5)}
+              </Text>
+            </View>
+            <Text style={{fontSize: 10}}>
+              <Text>{el.master && el.master.profile.name}</Text>
+              <Text>{el.client && el.client.profile.name}</Text>
+            </Text>
+          </View>
+          <View tyle={{flex: 1}}>
+            <Text style={{fontSize: 10}}>Услуга</Text>
+            {!!offersAll.length &&
+              offersAll.map((el, i) => (
+                <Text key={i} style={{fontSize: 10, fontWeight: 'bold'}}>
+                  {el}
+                </Text>
+              ))}
+          </View>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const Main = ({navigation}) => {
-  const whoObj = {
-    Master: 'Master',
-    Client: 'Client',
-  };
-
-  const users = useQuery(GET_USERS, {
-    variables: {first: 3, type: whoObj.Master},
-  });
-
-  const USER = useQuery(ME);
-  console.log(USER.data, '___USER');
-  console.log(users.data && users.data.users.data[0].schedules, '___USERS___');
-
   const {
     prifileBtn,
     openCalendar,
@@ -235,23 +259,50 @@ const Main = ({navigation}) => {
     nearestSeans,
   } = styles;
 
+  const whoObj = {
+    Master: 'Master',
+    Client: 'Client',
+  };
+
+  const USER = useQuery(ME);
+  const users = useQuery(GET_USERS, {
+    variables: {first: 10, type: whoObj.Master},
+  });
+
+  const [dates, setDates] = useState([]);
+  const [cityid, setCityid] = useState(null);
+
+  useEffect(() => {
+    console.log(dates, '____dates____');
+    console.log(cityid, '____cityid____');
+  }, [dates, cityid]);
+
+  if (dates.length && cityid) {
+    const findMaster = useQuery(FIND_MASTER, {
+      variables: {
+        city_id: +cityid,
+        dates: dates,
+      },
+    });
+
+    console.log(findMaster, '____====================findMaster___');
+  }
+
+  useEffect(() => {
+    setCityid(USER.data && USER.data.me ? USER.data.me.profile.city.id : null);
+    // console.log(USER, '____USER____');
+    // console.log(users, '____users____');
+  }, [USER, users]);
+
   const [markedDates, setMarkedDates] = useState({});
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
-  const onDayPress = day => {
-    console.log(day, 'DAY');
-
-    if (markedDates[day.dateString]) {
-      delete markedDates[day.dateString];
-      setMarkedDates({
-        ...markedDates,
-      });
-    } else {
-      setMarkedDates({
-        ...markedDates,
-        [day.dateString]: {selected: true, selectedColor: '#B986DA'},
-      });
+  const showMasters = masters => {
+    let arr = [];
+    for (let key in masters) {
+      arr.push(key);
     }
+    setDates(arr);
   };
 
   function plural(number, titles) {
@@ -262,11 +313,19 @@ const Main = ({navigation}) => {
         : cases[number % 10 < 5 ? number % 10 : 5]
     ];
   }
-  if (USER.loading) {
-    return <Text>Loading ...</Text>;
-  } else if (USER.error) {
-    return <Text>Error</Text>;
-  } else if (USER.data) {
+
+  const reload = () => {
+    USER.refetch();
+  };
+
+  if (USER.error) {
+    console.log(USER.error, 'USERS ERROR++++++++++++++');
+    // if (users.error.networkError) {}
+    // return navigation.navigate('ErrorInternetProblems', {
+    //   ROUTE: navigation.state.routeName,
+    // });
+    return <ErrorInternetProblems reload={() => reload()} />;
+  } else {
     return (
       <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
         <ScrollView>
@@ -276,8 +335,8 @@ const Main = ({navigation}) => {
             <TouchableOpacity
               style={prifileBtn}
               onPress={() => {
-                const ME = USER.data.me;
-                {
+                if (USER.data) {
+                  const ME = USER.data.me;
                   ME.type === 'Client'
                     ? navigation.navigate('ClientProfile', {ID: ME.id})
                     : navigation.navigate('MasterProfile', {ID: ME.id});
@@ -289,25 +348,27 @@ const Main = ({navigation}) => {
           </ImageBackground>
 
           <View style={{paddingHorizontal: 8}}>
-            {/* {!!person.my_notes.length && (
-            <ScrollView
-              style={nearestSeans}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}>
-              {person.my_notes.map((el, i) => (
-                // НУЖНО ОПРЕДЕЛИТЬ ИЗ НИХ БЛИЖАЙШИЕ
-                <View key={i}>
-                  <NearestSeansBlock
-                    el={el}
-                    index={i}
-                    masters={masters}
-                    navigation={navigation}
-                    clients={clients}
-                  />
-                </View>
-              ))}
-            </ScrollView>
-          )} */}
+            {USER.data && !!USER.data.me.master_appointments.length && (
+              <ScrollView
+                style={nearestSeans}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}>
+                {USER.data.me.master_appointments.map((el, i) => {
+                  return nearestSeansBlocksWrap(el, i, navigation);
+                })}
+              </ScrollView>
+            )}
+            {USER.data && !!USER.data.me.client_appointments.length && (
+              <ScrollView
+                style={nearestSeans}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}>
+                {USER.data.me.client_appointments.map((el, i) => {
+                  return nearestSeansBlocksWrap(el, i, navigation);
+                })}
+              </ScrollView>
+            )}
+            {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
             {!!Object.keys(markedDates).length && (
               <View style={foundMasters}>
                 <View style={{flex: 1}}>
@@ -325,7 +386,7 @@ const Main = ({navigation}) => {
                     {Object.keys(markedDates).map(el => (
                       <Text>
                         {el.split('-')[2]}{' '}
-                        {shortMonthName[+el.split('-')[1] - 1].toLowerCase()},{' '}
+                        {/* {shortMonthName[+el.split('-')[1] - 1].toLowerCase()},{' '} */}
                       </Text>
                     ))}
                   </Text>
@@ -349,28 +410,33 @@ const Main = ({navigation}) => {
                   keyExtractor={item => item.id.toString()}
                 />
               )}
+              {users && users.loading && (
+                <View>
+                  <ActivityIndicator size="large" color="#00ff00" />
+                </View>
+              )}
             </View>
             {/* {!person.my_notes.length && (
-            <View style={{flex: 1}}>
-              <View style={{marginTop: 20, flex: 1}}>
-                <Text style={{fontSize: 13}}>
-                  Пока на сервисе нет ни одного мастера.
-                </Text>
-                <Text style={{fontSize: 13}}>
-                  Станьте первым и попадите на пьедестал лучших.
-                </Text>
+              <View style={{flex: 1}}>
+                <View style={{marginTop: 20, flex: 1}}>
+                  <Text style={{fontSize: 13}}>
+                    Пока на сервисе нет ни одного мастера.
+                  </Text>
+                  <Text style={{fontSize: 13}}>
+                    Станьте первым и попадите на пьедестал лучших.
+                  </Text>
+                </View>
               </View>
-            </View>
-          )} */}
+            )} */}
           </View>
         </ScrollView>
         {/* {!person.my_notes.length && (
-        <ButtonDefault
-          title="заполнить профиль мастера"
-          active={true}
-          style={{margin: 8}}
-        />
-      )} */}
+          <ButtonDefault
+            title="заполнить профиль мастера"
+            active={true}
+            style={{margin: 8}}
+          />
+        )} */}
         {!isCalendarVisible && (
           <TouchableOpacity
             style={[openCalendar, {top: screen.height - 80}]}
@@ -385,9 +451,10 @@ const Main = ({navigation}) => {
         {isCalendarVisible && (
           <CalendarCustom
             markedDates={markedDates}
-            onDayPress={onDayPress}
+            // onDayPress={onDayPress}
             onClose={setIsCalendarVisible}
             clearCalendar={setMarkedDates}
+            showMasters={showMasters}
           />
         )}
         {false && (
@@ -552,7 +619,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     flexDirection: 'row',
     width: screen.width - 50,
-    height: '85%',
+    height: '100%',
     alignItems: 'center',
   },
 });

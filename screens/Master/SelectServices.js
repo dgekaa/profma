@@ -8,7 +8,14 @@ import {GET_SPECIALIZATION} from '../../QUERYES';
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+  ScrollView,
+} from 'react-native';
 
 // CheckBox
 const Block = ({title, active, onPress, key, idBack, idFront, border}) => {
@@ -49,8 +56,6 @@ const SelectServices = ({navigation}) => {
     variables: {id: +navigation.state.params.ID},
   });
 
-  console.log(data && data.specialization.services, 'FFFF');
-
   const [checkedServicesFront, setCheckedServicesFront] = useState([]);
   const [checkedServicesBack, setCheckedServicesBack] = useState([]);
 
@@ -80,9 +85,10 @@ const SelectServices = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} title="Выберите услуги" />
-      <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
+      <ScrollView style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
         <Text style={blockTitle}>ваши Услуги</Text>
         <View style={groupBlock}>
+          {loading && <ActivityIndicator size="large" color="#00ff00" />}
           {data &&
             data.specialization.services.map((el, i) => (
               <Block
@@ -98,14 +104,13 @@ const SelectServices = ({navigation}) => {
               />
             ))}
         </View>
-      </View>
+      </ScrollView>
       <ButtonDefault
         onPress={() => {
           navigation.navigate('ServiceDescription', {
             save: bool => {
               navigation.state.params.save(bool);
             },
-
             checkedServices: checkedServicesBack,
           });
         }}

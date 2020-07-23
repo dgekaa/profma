@@ -4,8 +4,8 @@ import DefaultSvgIcon from '../../img/Default.svg';
 import PressedIcon from '../../img/Pressed.svg';
 import DefaultIcon from '../../img/Default.svg';
 
-import {Query, useMutation, useQuery} from 'react-apollo';
-import {DELETE_OFFER, GET_USER, ME} from '../../QUERYES';
+import {useMutation} from 'react-apollo';
+import {DELETE_OFFER, ME} from '../../QUERYES';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {InputWithText} from '../../components/Input';

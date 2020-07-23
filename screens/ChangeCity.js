@@ -14,6 +14,7 @@ import {
   ScrollView,
   Keyboard,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from 'react-native';
 
 import {ALL_CITIES, UPDATE_PROFILE, ME} from '../QUERYES';
@@ -39,15 +40,11 @@ const ChangeCity = ({navigation}) => {
 
   const cityInputRef = useRef(null);
 
-  const {data} = useQuery(ALL_CITIES, {
-    variables: {},
-  });
+  const {data, loading} = useQuery(ALL_CITIES);
 
   const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
-    console.log(data, '___DATA+++');
-    console.log(navigation.state.params, '___DATA+++');
     data && data.cities && setFilteredData(data.cities.data);
   }, [data]);
 
@@ -160,6 +157,7 @@ const ChangeCity = ({navigation}) => {
                     );
                   }
                 })}
+              {loading && <ActivityIndicator size="large" color="#00ff00" />}
               {true && (
                 <View style={{padding: 16}}>
                   <ButtonDefault

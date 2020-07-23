@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Query, useMutation, useQuery} from 'react-apollo';
 import {signOut, getToken} from '../../util';
-
+import ErrorInternetProblems from '../ErrorInternetProblems';
 import {
   Text,
   View,
@@ -51,164 +51,187 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
 
   const USER = useQuery(ME);
 
-  console.log(USER.data, '______________USER MASTER PROFILE');
+  const reload = () => {
+    USER.refetch();
+  };
 
-  return (
-    <View style={{flex: 1}}>
-      <BackgroundHeader navigation={navigation} title={`Мой профиль`} />
-      <ScrollView>
-        <View style={{paddingHorizontal: 10, flex: 1}}>
-          <View>
-            {/* МОИ ЗАПИСИ */}
-            <TouchableOpacity
-              style={first}
-              onPress={() => {
-                navigation.navigate('MyNotesMaster', USER.data.me.profile);
-              }}>
-              <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
-              <Text style={text}>Мои записи</Text>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <View style={groupBlock}>
-              {/* КАЛЕНДАРЬ*/}
+  if (USER.error) {
+    console.log(USER.error, '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+
+    // if (users.error.networkError) {}
+    // return navigation.navigate('ErrorInternetProblems', {
+    //   ROUTE: navigation.state.routeName,
+    // });
+
+    return <ErrorInternetProblems reload={() => reload()} />;
+  } else {
+    return (
+      <View style={{flex: 1}}>
+        <BackgroundHeader navigation={navigation} title={`Мой профиль`} />
+        <ScrollView>
+          <View style={{paddingHorizontal: 10, flex: 1}}>
+            <View>
+              {/* МОИ ЗАПИСИ */}
               <TouchableOpacity
-                style={[
-                  blockInGroup,
-                  borderBottom,
-                  {justifyContent: 'space-between', alignItems: 'center'},
-                ]}
-                onPress={() => navigation.navigate('MasterCalendar')}>
-                <View style={{alignItems: 'center', flexDirection: 'row'}}>
-                  <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
-                  <Text style={text}>Мой календарь мастера</Text>
-                </View>
-                <View style={outsideCircle}>
-                  <View style={insideCircle} />
-                </View>
-              </TouchableOpacity>
-              {/* МОИ УСЛУГИ*/}
-              <TouchableOpacity
-                style={[blockInGroup, borderBottom]}
+                style={first}
                 onPress={() =>
-                  navigation.navigate('MyServices', {ID: USER.data.me.id})
+                  USER.data &&
+                  navigation.navigate('MyNotesMaster', USER.data.me.profile)
                 }>
-                <SvgUri width="13" height="13" svgXmlData={ManicureIcon} />
-                <Text style={text}>
-                  Мои услуги {USER && USER.data.me.offers.length}
-                </Text>
-              </TouchableOpacity>
-              {/* НАСТРОИТЬ РАСПИСАНИЕ*/}
-              <TouchableOpacity
-                style={blockInGroup}
-                onPress={() => {
-                  navigation.navigate(
-                    'WorkTimeSettings',
-                    navigation.state.params,
-                  );
-                }}>
                 <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
-                <Text style={text}>Настроить рабочее расписание</Text>
+                <Text style={text}>Мои записи</Text>
               </TouchableOpacity>
             </View>
-            <View style={groupBlock}>
-              {/* ПЕРСОНАЛЬНЫЕ ДАННЫЕ*/}
-              <TouchableOpacity
-                style={[blockInGroup, borderBottom]}
-                onPress={() => navigation.navigate('PersonalDataMaster')}>
-                <SvgUri style={{height: 13, width: 13}} svgXmlData={UserIcon} />
-                <Text style={text}>Персональные данные</Text>
-              </TouchableOpacity>
-              {/* ИЗМЕНИТЬ ПАРОЛЬ*/}
-              <TouchableOpacity
-                style={[blockInGroup, borderBottom]}
-                onPress={() => {
-                  navigation.navigate('ChangePassword', {
-                    onGoBack: isSuccess => onGoBackFromPasword(isSuccess),
-                    person: navigation.state.params,
-                  });
-                }}>
-                <SvgUri
-                  style={{height: 13, width: 13}}
-                  svgXmlData={PasswordIcon}
-                />
-                <Text style={text}>Изменить пароль</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={{marginBottom: 8}}>
-            <View style={groupBlock}>
-              {/* ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ*/}
-              <TouchableOpacity
-                style={[blockInGroup, borderBottom]}
-                onPress={() => {
-                  alert('Политика конфиденциальности');
-                }}>
-                <Text style={{fontSize: 13}}>
-                  Политика конфиденциальности и Условия использования
-                </Text>
-              </TouchableOpacity>
-              {/* ВАШ ГОРОД*/}
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('ChangeCity', {
-                    city: USER.data.me.profile.city
-                      ? USER.data.me.profile.city
-                      : '',
-                    id: USER.data.me.profile.id,
-                  });
-                }}>
-                <View
+            <View>
+              <View style={groupBlock}>
+                {/* КАЛЕНДАРЬ*/}
+                <TouchableOpacity
                   style={[
                     blockInGroup,
                     borderBottom,
-                    {
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    },
-                  ]}>
-                  <Text style={{fontSize: 13}}>Ваш город</Text>
-                  <Text style={{fontWeight: 'bold'}}>
-                    {USER && USER.data.me.profile.city
-                      ? USER.data.me.profile.city.name
-                      : ''}
+                    {justifyContent: 'space-between', alignItems: 'center'},
+                  ]}
+                  onPress={() => navigation.navigate('MasterCalendar')}>
+                  <View style={{alignItems: 'center', flexDirection: 'row'}}>
+                    <SvgUri
+                      width="13"
+                      height="13"
+                      svgXmlData={CalendarSvgIcon}
+                    />
+                    <Text style={text}>Мой календарь мастера</Text>
+                  </View>
+                  <View style={outsideCircle}>
+                    <View style={insideCircle} />
+                  </View>
+                </TouchableOpacity>
+                {/* МОИ УСЛУГИ*/}
+                <TouchableOpacity
+                  style={[blockInGroup, borderBottom]}
+                  onPress={() =>
+                    USER.data &&
+                    navigation.navigate('MyServices', {ID: USER.data.me.id})
+                  }>
+                  <SvgUri width="13" height="13" svgXmlData={ManicureIcon} />
+                  <Text style={text}>
+                    Мои услуги {!!USER.data && USER.data.me.offers.length}
                   </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={blockInGroup}
-                onPress={() => {
-                  alert('Связь с поддержкой');
-                }}>
-                <Text style={{fontSize: 13}}>
-                  Связаться с поддержкой{' '}
-                  <Text style={{color: '#B986DA'}}> Prof.Ma</Text>
-                </Text>
-              </TouchableOpacity>
+                </TouchableOpacity>
+                {/* НАСТРОИТЬ РАСПИСАНИЕ*/}
+                <TouchableOpacity
+                  style={blockInGroup}
+                  onPress={() => {
+                    navigation.navigate(
+                      'WorkTimeSettings',
+                      navigation.state.params,
+                    );
+                  }}>
+                  <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
+                  <Text style={text}>Настроить рабочее расписание</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={groupBlock}>
+                {/* ПЕРСОНАЛЬНЫЕ ДАННЫЕ*/}
+                <TouchableOpacity
+                  style={[blockInGroup, borderBottom]}
+                  onPress={() => navigation.navigate('PersonalDataMaster')}>
+                  <SvgUri
+                    style={{height: 13, width: 13}}
+                    svgXmlData={UserIcon}
+                  />
+                  <Text style={text}>Персональные данные</Text>
+                </TouchableOpacity>
+                {/* ИЗМЕНИТЬ ПАРОЛЬ*/}
+                <TouchableOpacity
+                  style={[blockInGroup, borderBottom]}
+                  onPress={() => {
+                    navigation.navigate('ChangePassword', {
+                      onGoBack: isSuccess => onGoBackFromPasword(isSuccess),
+                      person: navigation.state.params,
+                    });
+                  }}>
+                  <SvgUri
+                    style={{height: 13, width: 13}}
+                    svgXmlData={PasswordIcon}
+                  />
+                  <Text style={text}>Изменить пароль</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={{marginBottom: 8}}>
+              <View style={groupBlock}>
+                {/* ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ*/}
+                <TouchableOpacity
+                  style={[blockInGroup, borderBottom]}
+                  onPress={() => {
+                    alert('Политика конфиденциальности');
+                  }}>
+                  <Text style={{fontSize: 13}}>
+                    Политика конфиденциальности и Условия использования
+                  </Text>
+                </TouchableOpacity>
+                {/* ВАШ ГОРОД*/}
+                <TouchableOpacity
+                  onPress={() => {
+                    USER.data &&
+                      navigation.navigate('ChangeCity', {
+                        city: USER.data.me.profile.city
+                          ? USER.data.me.profile.city
+                          : '',
+                        id: USER.data.me.profile.id,
+                      });
+                  }}>
+                  <View
+                    style={[
+                      blockInGroup,
+                      borderBottom,
+                      {
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      },
+                    ]}>
+                    <Text style={{fontSize: 13}}>Ваш город</Text>
+                    <Text style={{fontWeight: 'bold'}}>
+                      {USER.data && USER.data.me.profile.city
+                        ? USER.data.me.profile.city.name
+                        : ''}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={blockInGroup}
+                  onPress={() => {
+                    alert('Связь с поддержкой');
+                  }}>
+                  <Text style={{fontSize: 13}}>
+                    Связаться с поддержкой{' '}
+                    <Text style={{color: '#B986DA'}}> Prof.Ma</Text>
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
+        </ScrollView>
+        <View style={{margin: 8, marginBottom: 30}}>
+          {isChangePassword && (
+            <SaveSuccess title="👍 Новый пароль успешно сохранён." />
+          )}
+          {!isChangePassword && (
+            <ButtonDefault
+              title="выйти из профиля"
+              onPress={() => {
+                LOGOUT_mutation()
+                  .then(res => {
+                    handleChangeLoginState();
+                    navigation.navigate('Start');
+                  })
+                  .catch(err => console.log(err));
+              }}
+            />
+          )}
         </View>
-      </ScrollView>
-      <View style={{margin: 8, marginBottom: 30}}>
-        {isChangePassword && (
-          <SaveSuccess title="👍 Новый пароль успешно сохранён." />
-        )}
-        {!isChangePassword && (
-          <ButtonDefault
-            title="выйти из профиля"
-            onPress={() => {
-              LOGOUT_mutation()
-                .then(res => {
-                  handleChangeLoginState();
-                  navigation.navigate('Start');
-                })
-                .catch(err => console.log(err));
-            }}
-          />
-        )}
       </View>
-    </View>
-  );
+    );
+  }
 };
 
 const styles = StyleSheet.create({

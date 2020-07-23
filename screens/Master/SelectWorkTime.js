@@ -20,17 +20,12 @@ import {
   GET_SCHEDULE,
   DELETE_START_SESSION,
 } from '../../QUERYES';
-import {Query, useMutation, useQuery} from 'react-apollo';
+import {useMutation} from 'react-apollo';
+import {act} from 'react-test-renderer';
 
 const SelectWorkTime = ({navigation}) => {
   const {container, topBlock, timeBlock, timeContainer} = styles;
 
-  const {data, loading, error} = useQuery(GET_SCHEDULE, {
-    variables: {id: +navigation.state.params.schedules.id},
-  });
-
-  console.log(data, '___DATA____');
-  console.log(navigation.state.params, '___navigation.state.params____');
   const refreshObject = {
     refetchQueries: [
       {
@@ -160,7 +155,13 @@ const SelectWorkTime = ({navigation}) => {
           const objDelete = {};
           const objCreate = {};
           activeArr.some(el => {
+            if (!navigation.state.params.schedules.start_sessions.length) {
+              if (el.active) {
+                objCreate[el.time] = el;
+              }
+            }
             navigation.state.params.schedules.start_sessions.some((inDB, i) => {
+              console.log(inDB, '___INDB');
               if (inDB.time.slice(0, 5) === el.time && el.active) {
                 objSimple[inDB.time.slice(0, 5)] = inDB;
               } else if (inDB.time.slice(0, 5) === el.time && !el.active) {
@@ -170,10 +171,15 @@ const SelectWorkTime = ({navigation}) => {
               }
             });
           });
+          console.log(activeArr, '____________activeArr');
+          console.log(navigation.state.params.schedules, '____schedules');
+          console.log(objDelete, '-------------------objDelete');
+          console.log(objSimple, '-------------------objSimple');
+          console.log(objCreate, '-------------------objCreate');
 
           for (let key in objCreate) {
             if (!objSimple[key]) {
-              console.log(key, 'KEY');
+              console.log(key, 'KEY CREATE');
               UPDATE_SCHEDULE_mutation({
                 variables: {
                   id: +navigation.state.params.schedules.id,
@@ -190,7 +196,7 @@ const SelectWorkTime = ({navigation}) => {
             }
           }
           for (let key in objDelete) {
-            console.log(objDelete[key], '_____KEY');
+            console.log(objDelete[key], '_____KEY DELETE');
             DELETE_START_SESSION_mutation({
               variables: {
                 id: +objDelete[key].id,

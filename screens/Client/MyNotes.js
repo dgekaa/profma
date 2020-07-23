@@ -14,6 +14,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 
 import {Query, useMutation, useQuery} from 'react-apollo';
@@ -133,51 +134,43 @@ const MyNotes = ({navigation}) => {
 
   const USER = useQuery(ME);
 
-  if (USER.error) {
-    return <Text>Error</Text>;
-  } else if (USER.loading) {
-    return <Text>Loading...</Text>;
-  } else if (USER.data) {
-    console.log(USER.data.me.client_appointments, '______________--USER');
-    return (
-      <View style={{flex: 1}}>
-        {!USER.data.me.client_appointments.length && (
-          <View style={{flex: 1}}>
-            <Header navigation={navigation} />
-            <View style={{flex: 1, paddingHorizontal: 18}}>
-              <View style={{flex: 8}}>
-                <Text style={bigText}>
-                  У вас пока нет ни одной активной записи😞
-                </Text>
-                <Text style={smallText}>
-                  Сделайте вашу первую запись уже сегодня.
-                </Text>
-              </View>
-              <View style={{}}>
-                <ButtonDefault
-                  title="Записаться на сеанс"
-                  active={true}
-                  style={{marginBottom: 8}}
-                />
-                <ButtonDefault
-                  title="Найти мастера"
-                  style={{marginBottom: 8}}
-                />
-              </View>
+  return (
+    <View style={{flex: 1}}>
+      {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
+      {USER.data && !USER.data.me.client_appointments.length && (
+        <View style={{flex: 1}}>
+          <Header navigation={navigation} />
+          <View style={{flex: 1, paddingHorizontal: 18}}>
+            <View style={{flex: 8}}>
+              <Text style={bigText}>
+                У вас пока нет ни одной активной записи😞
+              </Text>
+              <Text style={smallText}>
+                Сделайте вашу первую запись уже сегодня.
+              </Text>
+            </View>
+            <View style={{}}>
+              <ButtonDefault
+                title="Записаться на сеанс"
+                active={true}
+                style={{marginBottom: 8}}
+              />
+              <ButtonDefault title="Найти мастера" style={{marginBottom: 8}} />
             </View>
           </View>
-        )}
-        {!!USER.data.me.client_appointments.length && (
-          <View style={{flex: 1}}>
-            <BackgroundHeader navigation={navigation} title="Мои записи" />
-            <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
-              <Text style={blockTitle}>Активные записи</Text>
-              {USER.data.me.client_appointments.map((el, i) => {
-                if (el.status) {
-                  return <Block el={el} navigation={navigation} key={i} />;
-                }
-              })}
-              {/* <Text style={blockTitle}>Архив записей</Text>
+        </View>
+      )}
+      {USER.data && !!USER.data.me.client_appointments.length && (
+        <View style={{flex: 1}}>
+          <BackgroundHeader navigation={navigation} title="Мои записи" />
+          <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
+            <Text style={blockTitle}>Активные записи</Text>
+            {USER.data.me.client_appointments.map((el, i) => {
+              if (el.status) {
+                return <Block el={el} navigation={navigation} key={i} />;
+              }
+            })}
+            {/* <Text style={blockTitle}>Архив записей</Text>
               {USER.data.me.client_appointments.map((el, i) => {
                 if (el.status) {
                   return (
@@ -190,12 +183,11 @@ const MyNotes = ({navigation}) => {
                   );
                 }
               })} */}
-            </ScrollView>
-          </View>
-        )}
-      </View>
-    );
-  }
+          </ScrollView>
+        </View>
+      )}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({

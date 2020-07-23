@@ -14,6 +14,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 
 const Block = ({navigation, deleteService, el}) => {
@@ -78,80 +79,78 @@ const MyServices = ({navigation}) => {
 
   const USER = useQuery(ME);
 
-  if (USER.error) {
-    return <Text>Error</Text>;
-  } else if (USER.data) {
-    return (
-      <View style={{flex: 1}}>
-        {true && (
-          <View style={{flex: 1}}>
-            <BackgroundHeader title="Мои услуги" navigation={navigation} />
-            <ScrollView style={{paddingHorizontal: 8, flex: 1}}>
-              <Text style={blockTitle}>мои активные услуги</Text>
-              {!!USER.data.me.offers.length &&
-                USER.data.me.offers.map(el => (
-                  <Block
-                    el={el}
-                    navigation={navigation}
-                    deleteService={bool => deleteOneService(bool)}
-                  />
-                ))}
-            </ScrollView>
-            {successDeleted && (
-              <SaveSuccess
-                style={{width: '95%'}}
-                title="🗑 Услуга “Европейский маникюр” успешно удалена."
-              />
-            )}
-            {successSaved && (
-              <SaveSuccess
-                style={{width: '95%'}}
-                title="👍 Услуга “Европейский маникюр” успешно добавлена."
-              />
-            )}
-            {!successDeleted && !successSaved && (
-              <ButtonDefault
-                onPress={() => {
-                  navigation.navigate('SelectSpecialization');
-                  // navigation.navigate('SelectSpecialization', {
-                  //   save: bool => {
-                  //     setSuccessSaved(true);
-                  //     setTimeout(() => {
-                  //       setSuccessSaved(false);
-                  //     }, 1000);
-                  //     navigation.navigate(navigation.state.routeName);
-                  //   },
-                  // });
-                }}
-                title="Добавить услугу!!!!"
-                active={true}
-                style={{margin: 8}}
-              />
-            )}
-          </View>
-        )}
-        {false && (
-          <View style={{flex: 1}}>
-            <Header navigation={navigation} />
-            <View style={{paddingHorizontal: 8, flex: 1}}>
-              <Text style={{fontSize: 24, fontWeight: 'bold'}}>
-                Вы пока не предоставляете ни одной услуги😞
-              </Text>
-              <Text style={{fontSize: 13, marginTop: 15}}>
-                Создайте свою первую услугу.
-              </Text>
-            </View>
+  return (
+    <View style={{flex: 1}}>
+      {true && (
+        <View style={{flex: 1}}>
+          <BackgroundHeader title="Мои услуги" navigation={navigation} />
+          <ScrollView style={{paddingHorizontal: 8, flex: 1}}>
+            <Text style={blockTitle}>мои активные услуги</Text>
+            {USER.data &&
+              !!USER.data.me.offers.length &&
+              USER.data.me.offers.map(el => (
+                <Block
+                  el={el}
+                  navigation={navigation}
+                  deleteService={bool => deleteOneService(bool)}
+                />
+              ))}
+            {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
+          </ScrollView>
+          {successDeleted && (
+            <SaveSuccess
+              style={{width: '95%'}}
+              title="🗑 Услуга “Европейский маникюр” успешно удалена."
+            />
+          )}
+          {successSaved && (
+            <SaveSuccess
+              style={{width: '95%'}}
+              title="👍 Услуга “Европейский маникюр” успешно добавлена."
+            />
+          )}
+          {!successDeleted && !successSaved && (
             <ButtonDefault
-              onPress={() => navigation.navigate('SelectSpecialization')}
-              title="Добавить услугу"
+              onPress={() => {
+                navigation.navigate('SelectSpecialization');
+                // navigation.navigate('SelectSpecialization', {
+                //   save: bool => {
+                //     setSuccessSaved(true);
+                //     setTimeout(() => {
+                //       setSuccessSaved(false);
+                //     }, 1000);
+                //     navigation.navigate(navigation.state.routeName);
+                //   },
+                // });
+              }}
+              title="Добавить услугу!!!!"
               active={true}
               style={{margin: 8}}
             />
+          )}
+        </View>
+      )}
+      {false && (
+        <View style={{flex: 1}}>
+          <Header navigation={navigation} />
+          <View style={{paddingHorizontal: 8, flex: 1}}>
+            <Text style={{fontSize: 24, fontWeight: 'bold'}}>
+              Вы пока не предоставляете ни одной услуги😞
+            </Text>
+            <Text style={{fontSize: 13, marginTop: 15}}>
+              Создайте свою первую услугу.
+            </Text>
           </View>
-        )}
-      </View>
-    );
-  }
+          <ButtonDefault
+            onPress={() => navigation.navigate('SelectSpecialization')}
+            title="Добавить услугу"
+            active={true}
+            style={{margin: 8}}
+          />
+        </View>
+      )}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({

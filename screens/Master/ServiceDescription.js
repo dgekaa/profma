@@ -9,9 +9,9 @@ import SvgUri from 'react-native-svg-uri';
 import DefaultIcon from '../../img/Default.svg';
 import PressedIcon from '../../img/Pressed.svg';
 
-// import {Query, useMutation, useQuery} from 'react-apollo';
+import {Query, useMutation, useQuery} from 'react-apollo';
 
-// import {GET_SPECIALIZATION} from '../../QUERYES';
+import {GET_SERVICES, CREATE_OFFER} from '../../QUERYES';
 
 import {
   Text,
@@ -20,227 +20,275 @@ import {
   Image,
   ScrollView,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 
 const ServiceDescription = ({navigation}) => {
   const {groupBlock, blockTitle, blockInGroup, borderBottom} = styles;
 
-  const [howPay, setHowPay] = useState('time');
+  const SERVICES = useQuery(GET_SERVICES, {
+    variables: {ids: navigation.state.params.checkedServices},
+  });
+
+  const [DATA, setDATA] = useState(null);
+
+  useEffect(() => {
+    SERVICES.data && setDATA(SERVICES.data.services.data);
+  }, [SERVICES.data]);
+
+  useEffect(() => {
+    console.log(DATA, '_____DATA_____');
+  }, [DATA]);
+
+  const [serviceCount, setServiceCount] = useState(0);
+
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteService, setDeleteService] = useState(false);
 
   const [err, setErr] = useState('');
 
   const [howLong, setHowLong] = useState('');
-  const [nailCount, setNailCount] = useState('');
+  const [howMach, setHowMach] = useState('');
+  const [desc, setDesc] = useState('');
 
-  console.log(navigation.state.params.checkedServices);
-  console.log(navigation.state.params.checkedServices.length, 'length');
+  const [CREATE_OFFER_mutation] = useMutation(CREATE_OFFER);
 
-  // const {data, loading, error} = useQuery(GET_SPECIALIZATION, {
-  //   variables: {id: +navigation.state.params.ID},
-  // });
-
-  return (
-    <View style={{flex: 1}}>
-      <BackgroundHeader
-        navigation={navigation}
-        title={`Описание услуги (1\\${
-          navigation.state.params.checkedServices.length
-        })`}
-      />
-      <ScrollView>
-        <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
-          <Text style={blockTitle}>ваша специализация</Text>
-          <View style={[groupBlock, blockInGroup]}>
-            <Text style={{fontWeight: 'bold', fontSize: 13}}>
-              !!!!!!!!!!!!!!!!!
-            </Text>
-          </View>
-          <Text style={blockTitle}>ваша услуга</Text>
-          <View style={[groupBlock, blockInGroup]}>
-            <Text style={{fontWeight: 'bold', fontSize: 13}}>
-              !!!!!!!!!!!!!!
-            </Text>
+  if (SERVICES.error) {
+    return <Text />;
+  } else if (SERVICES.loading) {
+    return <ActivityIndicator size="large" color="#00ff00" />;
+  } else if (SERVICES.data) {
+    return (
+      <View style={{flex: 1}}>
+        <BackgroundHeader
+          navigation={navigation}
+          title={`Описание услуги (${serviceCount + 1}\\${!!DATA &&
+            DATA.length})`}
+        />
+        <ScrollView>
+          <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
+            <Text style={blockTitle}>ваша специализация</Text>
+            <View style={[groupBlock, blockInGroup]}>
+              <Text style={{fontWeight: 'bold', fontSize: 13}}>
+                {DATA && DATA[serviceCount].specialization.name}
+              </Text>
+            </View>
+            <Text style={blockTitle}>ваша услуга</Text>
+            <View style={[groupBlock, blockInGroup]}>
+              <Text style={{fontWeight: 'bold', fontSize: 13}}>
+                {DATA && DATA[serviceCount].name}
+              </Text>
+            </View>
+            <View
+              style={[
+                groupBlock,
+                {
+                  paddingLeft: 8,
+                  paddingTop: 8,
+                  marginTop: 20,
+                  marginBottom: 10,
+                },
+              ]}>
+              <View
+                style={{
+                  marginTop: 6,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <ButtonDefault
+                  onPress={() => {}}
+                  style={{marginRight: 5}}
+                  flex={true}
+                  title="оплата по времени"
+                  active={true}
+                />
+              </View>
+              <View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingLeft: 8,
+                    width: '99%',
+                  }}>
+                  {true ? (
+                    <SvgUri svgXmlData={DefaultIcon} />
+                  ) : (
+                    <SvgUri svgXmlData={PressedIcon} />
+                  )}
+                  <InputWithText
+                    text={`Продолжительность услуги (в часах)`}
+                    placeholder={`Укажите продолжительность сеанса`}
+                    withoutShadow={true}
+                    onChangeText={text => {
+                      setErr('');
+                      setHowLong(text);
+                    }}
+                    style={[borderBottom, {flex: 1}]}
+                    err={err}
+                    value={howLong}
+                    errStyle={{paddingBottom: 10}}
+                  />
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingHorizontal: 8,
+                  }}>
+                  <SvgUri svgXmlData={DefaultIcon} />
+                  <InputWithText
+                    text={`Стоимость услуги`}
+                    placeholder={`Укажите стоимость сеанса`}
+                    withoutShadow={true}
+                    onChangeText={text => {
+                      setHowMach(text);
+                    }}
+                    style={{flex: 1}}
+                  />
+                  <Text
+                    style={{
+                      paddingHorizontal: 8,
+                      paddingTop: 20,
+                      fontSize: 13,
+                      color: 'rgba(0,0,0,.2)',
+                      fontWeight: 'bold',
+                    }}>
+                    руб
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <Text style={blockTitle}>Описание услуги</Text>
+            <View style={[groupBlock, blockInGroup]}>
+              <TextInput
+                placeholder="Расскажите об услуге поподробнее"
+                onChangeText={text => setDesc(text)}
+              />
+            </View>
           </View>
           <View
-            style={[
-              groupBlock,
-              {paddingLeft: 8, paddingTop: 8, marginTop: 20, marginBottom: 10},
-            ]}>
-            <View
-              style={{
-                marginTop: 6,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}>
-              <ButtonDefault
-                onPress={() => {
-                  setHowPay('time');
-                }}
-                style={{marginRight: 5}}
-                flex={true}
-                title="оплата по времени"
-                active={howPay === 'time' ? true : false}
-              />
-              <ButtonDefault
-                onPress={() => {
-                  setHowPay('nail');
-                }}
-                flex={true}
-                style={{marginRight: 8}}
-                active={howPay === 'nail' ? true : false}
-                title="оплата за ноготь"
-              />
-            </View>
+            style={{
+              flexDirection: 'row',
+              width: '85%',
+              alignItems: 'center',
+              alignSelf: 'center',
+              marginVertical: 16,
+            }}>
             <View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingLeft: 8,
-                  width: '99%',
-                }}>
-                {true ? (
-                  <SvgUri svgXmlData={DefaultIcon} />
-                ) : (
-                  <SvgUri svgXmlData={PressedIcon} />
-                )}
-                <InputWithText
-                  text={
-                    howPay == 'time'
-                      ? `Продолжительность услуги (в часах)`
-                      : 'Количество ногтей'
-                  }
-                  placeholder={`Укажите продолжительность сеанса`}
-                  withoutShadow={true}
-                  onChangeText={text => {
-                    setErr('');
-                    howPay == 'time' ? setHowLong(text) : setNailCount(text);
-                  }}
-                  style={[borderBottom, {flex: 1}]}
-                  err={err}
-                  value={howPay == 'time' ? howLong : nailCount}
-                  errStyle={{paddingBottom: 10}}
-                />
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingHorizontal: 8,
-                }}>
-                <SvgUri svgXmlData={DefaultIcon} />
-                <InputWithText
-                  text={`Стоимость услуги`}
-                  placeholder={`Укажите стоимость сеанса`}
-                  withoutShadow={true}
-                  onChangeText={text => {}}
-                  style={{flex: 1}}
-                />
-                <Text
-                  style={{
-                    paddingHorizontal: 8,
-                    paddingTop: 20,
-                    fontSize: 13,
-                    color: 'rgba(0,0,0,.2)',
-                    fontWeight: 'bold',
-                  }}>
-                  руб
+              <Image source={require('../../img/girl6.png')} />
+            </View>
+            <View style={{marginLeft: 8}}>
+              <Text style={{fontSize: 13, paddingRight: 25}}>
+                Чтобы клиенты могли начать пользоваться вашей услугой,
+                <Text style={{fontWeight: 'bold'}}>
+                  сначала укажите её детали.
                 </Text>
-              </View>
+              </Text>
             </View>
           </View>
-          <Text style={blockTitle}>Описание услуги</Text>
-          <View style={[groupBlock, blockInGroup]}>
-            <TextInput placeholder="Расскажите об услуге поподробнее" />
-          </View>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            width: '85%',
-            alignItems: 'center',
-            alignSelf: 'center',
-            marginVertical: 16,
-          }}>
-          <View>
-            <Image source={require('../../img/girl6.png')} />
-          </View>
-          <View style={{marginLeft: 8}}>
-            <Text style={{fontSize: 13, paddingRight: 25}}>
-              Чтобы клиенты могли начать пользоваться вашей услугой,
-              <Text style={{fontWeight: 'bold'}}>
-                сначала укажите её детали.
-              </Text>
-            </Text>
-          </View>
-        </View>
-      </ScrollView>
-      <View style={{margin: 8}}>
-        {!deleteService && (
-          <ButtonDefault
-            title={`удалить услугу`}
-            style={{marginBottom: 8}}
-            onPress={() => {
-              setDeleteModal(true);
-            }}
-          />
-        )}
-        {deleteService && (
-          <SaveSuccess title="🗑 Услуга “Европейский маникюр” успешно удалена." />
-        )}
-        <ButtonDefault
-          onPress={() => {
-            !howLong ? setErr('Поле обязательно для заполнения') : setErr('');
-
-            // howLong && nailCount && navigation.state.params.save(true);
-          }}
-          title={
-            false
-              ? 'ВЫ не указали детали услуги'
-              : `сохранить услугу (1/${
-                  navigation.state.params.checkedServices.length
-                })`
-          }
-          active={true}
-        />
-      </View>
-      {deleteModal && (
-        <ModalWindow>
-          <Text style={{fontSize: 13}}>Вы собираетесь удалить услугу</Text>
-          <Text style={{fontSize: 13, fontWeight: 'bold'}}>
-            Европейский маникюр
-          </Text>
-          <Image
-            style={{marginVertical: 12}}
-            source={require('../../img/girl5.png')}
-          />
-          <Text style={{marginBottom: 16}}>Вы уверены в своём решении?</Text>
-          <View style={{width: '100%'}}>
+        </ScrollView>
+        <View style={{margin: 8}}>
+          {!deleteService && (
             <ButtonDefault
-              onPress={() => {
-                setDeleteModal(false);
-              }}
+              title={`удалить услугу`}
               style={{marginBottom: 8}}
-              title="нет, не удалять услугу"
-              active={true}
-            />
-            <ButtonDefault
               onPress={() => {
-                setDeleteService(true);
-                setDeleteModal(false);
-                setTimeout(() => {
-                  setDeleteService(false);
-                }, 1000);
+                setDeleteModal(true);
               }}
-              title="удалить услугу"
             />
-          </View>
-        </ModalWindow>
-      )}
-    </View>
-  );
+          )}
+          {deleteService && (
+            <SaveSuccess title="🗑 Услуга “Европейский маникюр” успешно удалена." />
+          )}
+          <ButtonDefault
+            onPress={() => {
+              !howLong ? setErr('Поле обязательно для заполнения') : setErr('');
+              console.log(serviceCount, '__serviceCount');
+              console.log(DATA.length, '__DATA.length');
+
+              CREATE_OFFER_mutation({
+                variables: {
+                  id: +DATA[serviceCount].id,
+                  description: desc,
+                  duration: howLong,
+                  price: howMach,
+                },
+                optimisticResponse: null,
+              })
+                .then(res => {
+                  console.log(res, '__RES CREATE_OFFER_mutation');
+
+                  if (
+                    serviceCount != DATA.length - 1 &&
+                    howLong &&
+                    howMach &&
+                    desc
+                  ) {
+                    setServiceCount(prev => prev + 1);
+                  } else {
+                    console.log(navigation, 'NAV');
+                    navigation.navigate('MyServices');
+                  }
+                })
+                .catch(err => {
+                  console.log(err, '__ERR CREATE_OFFER_mutation');
+                });
+              // howLong && nailCount && navigation.state.params.save(true);
+            }}
+            title={
+              false
+                ? 'ВЫ не указали детали услуги'
+                : `сохранить услугу (${serviceCount + 1}/${!!DATA &&
+                    DATA.length})`
+            }
+            active={true}
+          />
+        </View>
+        {deleteModal && (
+          <ModalWindow>
+            <Text style={{fontSize: 13}}>Вы собираетесь удалить услугу</Text>
+            <Text style={{fontSize: 13, fontWeight: 'bold'}}>
+              Европейский маникюр
+            </Text>
+            <Image
+              style={{marginVertical: 12}}
+              source={require('../../img/girl5.png')}
+            />
+            <Text style={{marginBottom: 16}}>Вы уверены в своём решении?</Text>
+            <View style={{width: '100%'}}>
+              <ButtonDefault
+                onPress={() => {
+                  setDeleteModal(false);
+                }}
+                style={{marginBottom: 8}}
+                title="нет, не удалять услугу"
+                active={true}
+              />
+              <ButtonDefault
+                onPress={() => {
+                  setDeleteService(true);
+                  setDeleteModal(false);
+                  if (serviceCount != DATA.length - 1) {
+                    setServiceCount(prev => prev + 1);
+                  } else {
+                    setTimeout(() => {
+                      navigation.navigate('MyServices');
+                    }, 1000);
+                  }
+
+                  setTimeout(() => {
+                    setDeleteService(false);
+                  }, 1000);
+                }}
+                title="удалить услугу"
+              />
+            </View>
+          </ModalWindow>
+        )}
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({

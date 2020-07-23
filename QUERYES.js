@@ -84,61 +84,6 @@ export const LOGIN = gql`
   }
 `;
 
-export const GET_USERS = gql`
-  query GETUSERS($first: Int, $type: UserType) {
-    users(first: $first, type: $type) {
-      data {
-        id
-        email
-        type
-        profile {
-          id
-          name
-          email
-          mobile_phone
-          addition_phone
-          home_address
-          work_address
-          about_me
-          site
-        }
-        schedules {
-          id
-          day
-          start_time
-          end_time
-          start_sessions {
-            id
-            time
-          }
-        }
-      }
-      paginatorInfo {
-        count
-        currentPage
-      }
-    }
-  }
-`;
-
-export const GET_USER = gql`
-  query GETUSER($id: ID!) {
-    user(id: $id) {
-      profile {
-        id
-        name
-        email
-        mobile_phone
-        addition_phone
-        home_address
-        work_address
-        about_me
-        site
-      }
-    }
-  }
-`;
-
 export const GET_APPOINTMENT = gql`
   query GETAPPOINTMENT($id: ID!) {
     appointment(id: $id) {
@@ -258,19 +203,21 @@ export const CREATE_PROFILE = gql`
 `;
 
 export const UPDATE_APPOINTMENT = gql`
-  mutation UPDATEAPPOINTMENT(
-    $id: ID!
-    $status: AppointmentStatus
-    $date: String
-    $time: String
-  ) {
-    updateAppointment(
-      input: {id: $id, status: $status, date: $date, time: $time}
-    ) {
+  mutation UPDATEAPPOINTMENT($id: ID!, $status: AppointmentStatus) {
+    updateAppointment(input: {id: $id, status: $status}) {
       id
       status
       date
       time
+    }
+  }
+`;
+
+export const DELETE_APPOINTMENT = gql`
+  mutation DELETEAPPOINTMENT($id: ID!) {
+    deleteAppointment(input: {id: $id}) {
+      id
+      status
     }
   }
 `;
@@ -312,20 +259,62 @@ export const GET_SPECIALIZATION = gql`
   }
 `;
 
+export const GET_SERVICES = gql`
+  query GETSERVICES($ids: [Int!], $first: Int, $page: Int) {
+    services(ids: $ids, first: $first, page: $page) {
+      data {
+        id
+        name
+        specialization {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
+// export const CREATE_OFFER = gql`
+//   mutation CREATEOFFER(
+//     $service: CreateServiceToOne!
+//     $description: String!
+//     $price_by_pack: CreateOfferPriceByPackToOne!
+//   ) {
+//     createOffer(
+//       input: {
+//         service: $service
+//         description: $description
+//         price_by_pack: $price_by_pack
+//       }
+//     ) {
+//       id
+//       service {
+//         id
+//         name
+//       }
+//     }
+//   }
+// `;
 export const CREATE_OFFER = gql`
   mutation CREATEOFFER(
-    $service: CreateServiceToOne!
+    $id: ID
     $description: String!
-    $price_by_pack: CreateOfferPriceByPackToOne!
+    $duration: Float!
+    $price: Float!
   ) {
     createOffer(
       input: {
-        service: $service
+        service: {connect: $id}
         description: $description
-        price_by_pack: $price_by_pack
+        price_by_pack: {create: {duration: $duration, price: $price}}
       }
     ) {
       id
+      description
+      service {
+        id
+        name
+      }
     }
   }
 `;
@@ -440,6 +429,92 @@ export const ME = gql`
   }
 `;
 
+export const GET_USERS = gql`
+  query GETUSERS($first: Int, $type: UserType) {
+    users(first: $first, type: $type) {
+      data {
+        id
+        email
+        type
+        profile {
+          id
+          name
+          email
+          mobile_phone
+          addition_phone
+          home_address
+          work_address
+          about_me
+          site
+        }
+        schedules {
+          id
+          day
+          start_time
+          end_time
+          start_sessions {
+            id
+            time
+          }
+        }
+      }
+      paginatorInfo {
+        count
+        currentPage
+      }
+    }
+  }
+`;
+
+export const GET_USER = gql`
+  query GETUSER($id: ID!) {
+    user(id: $id) {
+      profile {
+        id
+        name
+        email
+        mobile_phone
+        addition_phone
+        home_address
+        work_address
+        about_me
+        site
+        city {
+          name
+          id
+        }
+      }
+      schedules {
+        id
+        day
+        start_time
+        end_time
+        start_sessions {
+          id
+          time
+        }
+      }
+      offers {
+        id
+        description
+        service {
+          id
+          name
+          specialization {
+            id
+            name
+          }
+        }
+        price_by_pack {
+          id
+          duration
+          price
+        }
+      }
+    }
+  }
+`;
+
 export const CREATE_SCHEDULE = gql`
   mutation CREATESCHEDULE(
     $day: WeekDay!
@@ -454,6 +529,24 @@ export const CREATE_SCHEDULE = gql`
         end_time: $end_time
         start_sessions: $start_sessions
       }
+    ) {
+      id
+      day
+      start_time
+      end_time
+    }
+  }
+`;
+
+export const UPDATE_SCHEDULE_WORK_TIME = gql`
+  mutation UPDATESCHEDULE(
+    $id: ID!
+    $day: WeekDay
+    $start_time: String
+    $end_time: String
+  ) {
+    updateSchedule(
+      input: {id: $id, day: $day, start_time: $start_time, end_time: $end_time}
     ) {
       id
       day
@@ -517,6 +610,37 @@ export const DELETE_START_SESSION = gql`
   mutation DELETESTARTSESSION($id: ID!) {
     deleteStartSession(input: {id: $id}) {
       id
+    }
+  }
+`;
+
+export const UPDATE_PASSWORD = gql`
+  mutation UPDATEPASSWORD($password: String!, $password_confirmation: String!) {
+    updatePassword(
+      input: {
+        password: $password
+        password_confirmation: $password_confirmation
+      }
+    ) {
+      status
+      message
+    }
+  }
+`;
+
+export const FIND_MASTER = gql`
+  query FINDMASTER($city_id: Int!, $dates: [String!]!) {
+    findMaster(city_id: $city_id, dates: $dates) {
+      user {
+        id
+        profile {
+          email
+        }
+      }
+      dates {
+        date
+        times
+      }
     }
   }
 `;

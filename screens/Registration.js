@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 
 import {Text, StyleSheet, View, Dimensions} from 'react-native';
-import {Query, useMutation, useQuery} from 'react-apollo';
+import {useMutation} from 'react-apollo';
 
 import {ButtonDefault, ButtonDisabled} from '../components/Button';
 import {InputWithText, InputWithPassword} from '../components/Input';

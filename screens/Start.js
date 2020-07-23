@@ -14,8 +14,6 @@ import {getToken} from '../util';
 const screen = Dimensions.get('window');
 
 const Start = ({navigation}) => {
-  AsyncStorage.getItem('token').then(res => console.log(res, 'RES ssssASYNC'));
-
   const {topText, bottomText} = styles;
   return (
     <View style={{flex: 1}}>
