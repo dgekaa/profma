@@ -63,6 +63,8 @@ const SelectSpecialization = ({navigation}) => {
   const [activeSpecialization, setActiveSpecialization] = useState('');
   const [activeSpecializationID, setActiveSpecializationID] = useState('');
 
+  console.log(navigation, '______NAVIGATION');
+
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader
@@ -100,6 +102,7 @@ const SelectSpecialization = ({navigation}) => {
               navigation.state.params.save(bool);
             },
             ID: activeSpecializationID,
+            refetch: navigation.state.params.refetch,
           });
         }}
       />

@@ -21,6 +21,7 @@ import {
   Dimensions,
   Text,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from 'react-native';
 
 import BackgroundHeader from '../components/BackgroundHeader';
@@ -264,7 +265,7 @@ const PublickMasterProfile = ({navigation}) => {
       });
     }
   };
-
+  console.log(navigation, '+++PARAMS');
   const MASTER = useQuery(GET_USER, {
     variables: {id: +navigation.state.params.id},
   });
@@ -291,14 +292,14 @@ const PublickMasterProfile = ({navigation}) => {
   if (MASTER.error) {
     return <Text>Err</Text>;
   } else if (MASTER.loading) {
-    return <Text>loading</Text>;
+    return <ActivityIndicator size="large" color="#00ff00" />;
   } else if (MASTER.data) {
     return (
       <View style={{flex: 1}}>
         <BackgroundHeader
           navigation={navigation}
-          title={MASTER.data.user.profile.name}
-          description={navigation.state.params.skills}
+          title={MASTER.data.user.profile.name || 'Имя не задано'}
+          // description={navigation.state.params.skills}
         />
         <ScrollView>
           <View style={container}>
@@ -530,6 +531,7 @@ const PublickMasterProfile = ({navigation}) => {
                   Все услуги
                 </Text>
                 <ScrollView style={{paddingHorizontal: 8}}>
+                  {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
                   {!!MASTER.data.user.offers.length &&
                     MASTER.data.user.offers.map((el, i) => {
                       return (
@@ -547,9 +549,7 @@ const PublickMasterProfile = ({navigation}) => {
                     })}
                 </ScrollView>
                 <ButtonDefault
-                  onPress={() => {
-                    setShowAllServices(false);
-                  }}
+                  onPress={() => setShowAllServices(false)}
                   title={
                     'Выбрать эти услуги (' +
                     checkboxes.filter(el => el).length +

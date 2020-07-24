@@ -17,7 +17,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-const Block = ({navigation, deleteService, el}) => {
+const Block = ({navigation, deleteService, el, refetch}) => {
   const {block, headerText, text, textBold} = styles;
 
   console.log(el, 'SERVICE');
@@ -28,6 +28,7 @@ const Block = ({navigation, deleteService, el}) => {
         navigation.navigate('SelectedServiceDescription', {
           deleteService: bool => deleteService(bool),
           service: el,
+          refetch: refetch,
         });
       }}>
       <View>
@@ -92,6 +93,7 @@ const MyServices = ({navigation}) => {
                 <Block
                   el={el}
                   navigation={navigation}
+                  refetch={USER.refetch}
                   deleteService={bool => deleteOneService(bool)}
                 />
               ))}
@@ -112,7 +114,9 @@ const MyServices = ({navigation}) => {
           {!successDeleted && !successSaved && (
             <ButtonDefault
               onPress={() => {
-                navigation.navigate('SelectSpecialization');
+                navigation.navigate('SelectSpecialization', {
+                  refetch: USER.refetch,
+                });
                 // navigation.navigate('SelectSpecialization', {
                 //   save: bool => {
                 //     setSuccessSaved(true);
@@ -123,7 +127,7 @@ const MyServices = ({navigation}) => {
                 //   },
                 // });
               }}
-              title="Добавить услугу!!!!"
+              title="Добавить услугу"
               active={true}
               style={{margin: 8}}
             />
@@ -142,7 +146,11 @@ const MyServices = ({navigation}) => {
             </Text>
           </View>
           <ButtonDefault
-            onPress={() => navigation.navigate('SelectSpecialization')}
+            onPress={() =>
+              navigation.navigate('SelectSpecialization', {
+                refetch: USER.refetch,
+              })
+            }
             title="Добавить услугу"
             active={true}
             style={{margin: 8}}

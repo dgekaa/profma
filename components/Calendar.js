@@ -51,8 +51,6 @@ LocaleConfig.locales['fr'] = {
 LocaleConfig.defaultLocale = 'fr';
 
 const CalendarCustom = ({
-  // markedDates,
-  // onDayPress,
   onClose,
   clearCalendar,
   singleDate,
@@ -93,10 +91,6 @@ const CalendarCustom = ({
   }, [date]);
 
   const [markedDates, setMarkedDates] = useState({});
-
-  // useEffect(() => {
-  //   console.log(markedDates, '___markedDates');
-  // }, [markedDates]);
 
   const onSelectDays = day => {
     if (markedDates[day.dateString]) {

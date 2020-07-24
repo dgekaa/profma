@@ -46,7 +46,25 @@ const CompleteSeance = ({navigation}) => {
   );
 
   console.log(navigation.state.params);
-
+  const COMPLETE = () => {
+    const Completed = 'Completed';
+    UPDATE_APPOINTMENT_mutation({
+      variables: {
+        id: +navigation.state.params.data.id,
+        time: navigation.state.params.data.time.slice(0, 5),
+        date: navigation.state.params.data.date,
+        status: Completed,
+      },
+      optimisticResponse: null,
+    })
+      .then(res => {
+        console.log(res, '__RES UPDATE_SCHEDULE_mutation');
+        navigation.state.params.complete(true);
+        navigation.state.params.refetch();
+        navigation.goBack();
+      })
+      .catch(err => console.log(err, '__ERR UPDATE_SCHEDULE_mutation'));
+  };
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} title="Завершить сеанс" />
@@ -124,25 +142,7 @@ const CompleteSeance = ({navigation}) => {
         </View>
       </ScrollView>
       <ButtonDefault
-        onPress={() => {
-          const Completed = 'Completed';
-          console.log(navigation.state.params, 'navigation.state.params');
-          UPDATE_APPOINTMENT_mutation({
-            variables: {
-              id: +navigation.state.params.data.id,
-              time: navigation.state.params.data.time.slice(0, 5),
-              date: navigation.state.params.data.date,
-              status: Completed,
-            },
-            optimisticResponse: null,
-          })
-            .then(res => {
-              console.log(res, '__RES UPDATE_SCHEDULE_mutation');
-              navigation.state.params.complete(true);
-              navigation.goBack();
-            })
-            .catch(err => console.log(err, '__ERR UPDATE_SCHEDULE_mutation'));
-        }}
+        onPress={() => COMPLETE()}
         style={{margin: 8}}
         title="подтвердить завершение сеанса"
         active={true}

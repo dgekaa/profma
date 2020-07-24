@@ -11,7 +11,7 @@ import PressedIcon from '../../img/Pressed.svg';
 
 import {Query, useMutation, useQuery} from 'react-apollo';
 
-import {GET_SERVICES, CREATE_OFFER} from '../../QUERYES';
+import {GET_SERVICES, CREATE_OFFER, ME} from '../../QUERYES';
 
 import {
   Text,
@@ -51,7 +51,48 @@ const ServiceDescription = ({navigation}) => {
   const [howMach, setHowMach] = useState('');
   const [desc, setDesc] = useState('');
 
-  const [CREATE_OFFER_mutation] = useMutation(CREATE_OFFER);
+  const refreshObject = {
+    refetchQueries: [
+      {
+        query: ME,
+      },
+    ],
+    awaitRefetchQueries: true,
+  };
+
+  const [CREATE_OFFER_mutation] = useMutation(CREATE_OFFER, refreshObject);
+
+  const clearInputs = () => {
+    setHowMach('');
+    setHowLong('');
+    setDesc('');
+  };
+
+  const SAVE = () => {
+    CREATE_OFFER_mutation({
+      variables: {
+        id: +DATA[serviceCount].id,
+        description: desc,
+        duration: howLong,
+        price: howMach,
+      },
+      optimisticResponse: null,
+    })
+      .then(res => {
+        console.log(res, '__RES CREATE_OFFER_mutation');
+        clearInputs();
+        if (serviceCount != DATA.length - 1 && howLong && howMach && desc) {
+          setServiceCount(prev => prev + 1);
+        } else {
+          console.log(navigation, 'NAV');
+          navigation.navigate('MyServices');
+          navigation.state.params.refetch();
+        }
+      })
+      .catch(err => {
+        console.log(err, '__ERR CREATE_OFFER_mutation');
+      });
+  };
 
   if (SERVICES.error) {
     return <Text />;
@@ -62,8 +103,9 @@ const ServiceDescription = ({navigation}) => {
       <View style={{flex: 1}}>
         <BackgroundHeader
           navigation={navigation}
-          title={`Описание услуги (${serviceCount + 1}\\${!!DATA &&
-            DATA.length})`}
+          title={`Описание услуги (${serviceCount + 1}\\${
+            !!DATA ? DATA.length : ''
+          })`}
         />
         <ScrollView>
           <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
@@ -142,9 +184,13 @@ const ServiceDescription = ({navigation}) => {
                     placeholder={`Укажите стоимость сеанса`}
                     withoutShadow={true}
                     onChangeText={text => {
+                      setErr('');
                       setHowMach(text);
                     }}
                     style={{flex: 1}}
+                    err={err}
+                    value={howMach}
+                    errStyle={{paddingBottom: 10}}
                   />
                   <Text
                     style={{
@@ -164,6 +210,7 @@ const ServiceDescription = ({navigation}) => {
               <TextInput
                 placeholder="Расскажите об услуге поподробнее"
                 onChangeText={text => setDesc(text)}
+                value={desc}
               />
             </View>
           </View>
@@ -203,44 +250,18 @@ const ServiceDescription = ({navigation}) => {
           )}
           <ButtonDefault
             onPress={() => {
-              !howLong ? setErr('Поле обязательно для заполнения') : setErr('');
-              console.log(serviceCount, '__serviceCount');
-              console.log(DATA.length, '__DATA.length');
+              !howLong || !howMach || !desc
+                ? setErr('Поле обязательно для заполнения')
+                : setErr('');
 
-              CREATE_OFFER_mutation({
-                variables: {
-                  id: +DATA[serviceCount].id,
-                  description: desc,
-                  duration: howLong,
-                  price: howMach,
-                },
-                optimisticResponse: null,
-              })
-                .then(res => {
-                  console.log(res, '__RES CREATE_OFFER_mutation');
-
-                  if (
-                    serviceCount != DATA.length - 1 &&
-                    howLong &&
-                    howMach &&
-                    desc
-                  ) {
-                    setServiceCount(prev => prev + 1);
-                  } else {
-                    console.log(navigation, 'NAV');
-                    navigation.navigate('MyServices');
-                  }
-                })
-                .catch(err => {
-                  console.log(err, '__ERR CREATE_OFFER_mutation');
-                });
-              // howLong && nailCount && navigation.state.params.save(true);
+              SAVE();
             }}
             title={
               false
                 ? 'ВЫ не указали детали услуги'
-                : `сохранить услугу (${serviceCount + 1}/${!!DATA &&
-                    DATA.length})`
+                : `сохранить услугу (${serviceCount + 1}/${
+                    !!DATA ? DATA.length : ''
+                  })`
             }
             active={true}
           />
@@ -258,9 +279,7 @@ const ServiceDescription = ({navigation}) => {
             <Text style={{marginBottom: 16}}>Вы уверены в своём решении?</Text>
             <View style={{width: '100%'}}>
               <ButtonDefault
-                onPress={() => {
-                  setDeleteModal(false);
-                }}
+                onPress={() => setDeleteModal(false)}
                 style={{marginBottom: 8}}
                 title="нет, не удалять услугу"
                 active={true}
@@ -269,6 +288,7 @@ const ServiceDescription = ({navigation}) => {
                 onPress={() => {
                   setDeleteService(true);
                   setDeleteModal(false);
+                  clearInputs();
                   if (serviceCount != DATA.length - 1) {
                     setServiceCount(prev => prev + 1);
                   } else {
@@ -276,7 +296,6 @@ const ServiceDescription = ({navigation}) => {
                       navigation.navigate('MyServices');
                     }, 1000);
                   }
-
                   setTimeout(() => {
                     setDeleteService(false);
                   }, 1000);

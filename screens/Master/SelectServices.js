@@ -82,6 +82,8 @@ const SelectServices = ({navigation}) => {
     }
   };
 
+  console.log(navigation, 'NAV++++++++++++++++++++++++++++');
+
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} title="Выберите услуги" />
@@ -112,6 +114,7 @@ const SelectServices = ({navigation}) => {
               navigation.state.params.save(bool);
             },
             checkedServices: checkedServicesBack,
+            refetch: navigation.state.params.refetch,
           });
         }}
         title={`выбрать эти услуги ${checkedServicesFront.length}`}

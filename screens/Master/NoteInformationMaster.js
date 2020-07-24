@@ -3,6 +3,8 @@ import SvgUri from 'react-native-svg-uri';
 import DefaultIcon from '../../img/Default.svg';
 import PlusIcon from '../../img/Plus.svg';
 import {Query, useMutation, useQuery} from 'react-apollo';
+import VectorIcon from '../../img/Vector.svg';
+import pressedIcon from '../../img/Pressed.svg';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
@@ -12,6 +14,7 @@ import {
   GET_APPOINTMENT,
   UPDATE_PROFILE,
   DELETE_APPOINTMENT,
+  UPDATE_APPOINTMENT_ADD_OFFERS,
   ME,
 } from '../../QUERYES';
 
@@ -40,6 +43,109 @@ const shortMonthName = [
   'Дек',
 ];
 
+const DropdownBlock = ({
+  el,
+  index,
+  slideBlock,
+  setSlideBlock,
+  checkboxes,
+  setCheckboxes,
+}) => {
+  const {blockInGroup, borderBottom, checkbox} = styles;
+
+  function plural(number, titles) {
+    const cases = [2, 0, 1, 1, 1, 2];
+    return titles[
+      number % 100 > 4 && number % 100 < 20
+        ? 2
+        : cases[number % 10 < 5 ? number % 10 : 5]
+    ];
+  }
+
+  return (
+    <TouchableOpacity
+      style={[blockInGroup, borderBottom]}
+      onPress={() => {
+        slideBlock[index]
+          ? (slideBlock[index] = false)
+          : (slideBlock[index] = true);
+        setSlideBlock([...slideBlock]);
+      }}>
+      <View style={{flexDirection: 'row'}}>
+        <View style={{flex: 3, flexDirection: 'row', alignItems: 'center'}}>
+          <View>
+            {slideBlock[index] && (
+              <SvgUri svgXmlData={pressedIcon} style={{marginRight: 8}} />
+            )}
+            {!slideBlock[index] && (
+              <SvgUri
+                svgXmlData={DefaultIcon}
+                style={{
+                  marginRight: 8,
+                }}
+              />
+            )}
+          </View>
+          <View>
+            <Text style={{fontWeight: 'bold', fontSize: 13}}>
+              {el.service.name}
+            </Text>
+            <Text style={{fontSize: 10}}>
+              {el.price_by_pack.duration}{' '}
+              {plural(el.price_by_pack.duration, ['час', 'часа', 'часов'])}
+            </Text>
+          </View>
+        </View>
+        <View style={{flex: 2, flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{flex: 7}}>
+            <Text style={{fontSize: 10}}>Стоимость услуги</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 13}}>
+              {el.price_by_pack.price} руб
+            </Text>
+          </View>
+          <View>
+            <TouchableOpacity
+              style={{
+                marginRight: 8,
+                width: 30,
+                height: 30,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onPress={e => {
+                checkboxes[index]
+                  ? (checkboxes[index] = false)
+                  : (checkboxes[index] = el.id);
+                setCheckboxes([...checkboxes]);
+              }}>
+              <View
+                style={[
+                  checkbox,
+                  {
+                    backgroundColor: checkboxes[index] ? '#B986DA' : '#fff',
+                    borderWidth: checkboxes[index] ? 0 : 3,
+                  },
+                ]}>
+                <SvgUri svgXmlData={VectorIcon} />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+      {slideBlock[index] && (
+        <View
+          style={{
+            paddingTop: 8,
+            paddingRight: 8,
+            width: '100%',
+          }}>
+          <Text style={{fontSize: 13}}>{el.description}</Text>
+        </View>
+      )}
+    </TouchableOpacity>
+  );
+};
+
 const NoteInformationMaster = ({navigation}) => {
   const {
     first,
@@ -60,6 +166,16 @@ const NoteInformationMaster = ({navigation}) => {
   const refreshObject = {
     refetchQueries: [
       {
+        query: ME,
+        variables: {},
+      },
+    ],
+    awaitRefetchQueries: true,
+  };
+
+  const refreshAppointment = {
+    refetchQueries: [
+      {
         query: GET_APPOINTMENT,
         variables: {id: +navigation.state.params.el.id},
       },
@@ -72,8 +188,34 @@ const NoteInformationMaster = ({navigation}) => {
     refreshObject,
   );
 
+  const MASTER = useQuery(ME, {
+    variables: {},
+  });
+
+  const [UPDATE_APPOINTMENT_ADD_OFFERS_mutation] = useMutation(
+    UPDATE_APPOINTMENT_ADD_OFFERS,
+    refreshAppointment,
+  );
+
+  console.log(MASTER, '____MASTER_____');
+
+  const CANCEL = () => {
+    DELETE_APPOINTMENT_mutation({
+      variables: {
+        id: +navigation.state.params.el.id,
+      },
+      optimisticResponse: null,
+    })
+      .then(res => {
+        console.log(res, 'RES RES DELETE');
+        navigation.state.params.refetch();
+        navigation.goBack();
+      })
+      .catch(err => console.log(err, '__ERR DELETE_APPOINTMENT_mutation'));
+  };
+
   useEffect(() => {
-    console.log(appointment.data, '__appointment');
+    console.log(appointment, '__appointment');
   }, [appointment]);
 
   useEffect(() => {
@@ -90,9 +232,41 @@ const NoteInformationMaster = ({navigation}) => {
   const [services, setServices] = useState([]);
   const [showAllServices, setShowAllServices] = useState(false);
 
+  useEffect(() => {
+    MASTER.data && setServices(MASTER.data.me.offers);
+  }, [MASTER]);
+
+  const [slideBlock, setSlideBlock] = useState(
+    new Array(services.length).fill(false),
+  );
   const [checkboxes, setCheckboxes] = useState(
     new Array(services.length).fill(false),
   );
+
+  const ADD = () => {
+    console.log(appointment.data.appointment, 'lllll');
+    console.log(checkboxes, 'checkboxes');
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    checkboxes.forEach(el => {
+      el &&
+        UPDATE_APPOINTMENT_ADD_OFFERS_mutation({
+          variables: {
+            id: +appointment.data.appointment.id,
+            offersid: +el,
+          },
+          optimisticResponse: null,
+        })
+          .then(res => {
+            console.log(res, 'RES UPDATE_APPOINTMENT_ADD_OFFERS');
+            appointment.refetch();
+            setCheckboxes([]);
+            setShowAllServices(false);
+          })
+          .catch(err =>
+            console.log(err, '__ERR UPDATE_APPOINTMENT_ADD_OFFERS'),
+          );
+    });
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -176,10 +350,7 @@ const NoteInformationMaster = ({navigation}) => {
                       </View>
                     ))}
                   <TouchableOpacity
-                    onPress={() => {
-                      setShowAllServices(true);
-                      console.log(appointment, '_____________');
-                    }}
+                    onPress={() => setShowAllServices(true)}
                     style={{
                       height: 60,
                       alignItems: 'center',
@@ -257,6 +428,7 @@ const NoteInformationMaster = ({navigation}) => {
             {appointment.data.appointment &&
               appointment.data.appointment.status === 'Pending' && (
                 <View>
+                  {console.log(appointment, 'APP')}
                   <ButtonDefault
                     style={{marginBottom: 8}}
                     active={true}
@@ -271,6 +443,7 @@ const NoteInformationMaster = ({navigation}) => {
                         },
                         price,
                         data: navigation.state.params.el,
+                        refetch: appointment.refetch,
                       });
                     }}
                   />
@@ -282,23 +455,7 @@ const NoteInformationMaster = ({navigation}) => {
                     appointment.data.appointment.status !== 'Completed' && (
                       <ButtonDefault
                         title="отменить запись"
-                        onPress={() => {
-                          DELETE_APPOINTMENT_mutation({
-                            variables: {
-                              id: +navigation.state.params.el.id,
-                            },
-                            optimisticResponse: null,
-                          })
-                            .then(res => {
-                              navigation.goBack();
-                            })
-                            .catch(err =>
-                              console.log(
-                                err,
-                                '__ERR DELETE_APPOINTMENT_mutation',
-                              ),
-                            );
-                        }}
+                        onPress={() => CANCEL()}
                       />
                     )}
                 </View>
@@ -335,28 +492,31 @@ const NoteInformationMaster = ({navigation}) => {
                 Все услуги
               </Text>
               <ScrollView style={{paddingHorizontal: 8}}>
-                {services.map((el, i) => {
-                  return (
-                    <View key={i}>
-                      {/* <DropdownBlock
-                        index={i}
-                        el={el}
-                        slideBlock={slideBlock}
-                        setSlideBlock={setSlideBlock}
-                        checkboxes={checkboxes}
-                        setCheckboxes={setCheckboxes}
-                      /> */}
-                    </View>
-                  );
-                })}
+                {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
+                {MASTER.data &&
+                  !!MASTER.data.me.offers.length &&
+                  MASTER.data.me.offers.map((el, i) => {
+                    return (
+                      <View key={i}>
+                        <DropdownBlock
+                          index={i}
+                          el={el}
+                          slideBlock={slideBlock}
+                          setSlideBlock={setSlideBlock}
+                          checkboxes={checkboxes}
+                          setCheckboxes={setCheckboxes}
+                        />
+                      </View>
+                    );
+                  })}
               </ScrollView>
               <ButtonDefault
-                onPress={() => setShowAllServices(false)}
-                // title={
-                //   'Выбрать эти услуги (' +
-                //   checkboxes.filter(el => el).length +
-                //   ')'
-                // }
+                onPress={() => ADD()}
+                title={
+                  'Выбрать эти услуги (' +
+                  checkboxes.filter(el => el).length +
+                  ')'
+                }
                 active={true}
                 style={{margin: 8}}
               />

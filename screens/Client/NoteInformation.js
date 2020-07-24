@@ -42,9 +42,13 @@ const NoteInformation = ({navigation}) => {
 
   const refreshObject = {
     refetchQueries: [
+      // {
+      //   query: GET_APPOINTMENT,
+      //   variables: {id: +navigation.state.params.person.id},
+      // },
       {
-        query: GET_APPOINTMENT,
-        variables: {id: +navigation.state.params.person.id},
+        query: ME,
+        variables: {},
       },
     ],
     awaitRefetchQueries: true,
@@ -60,6 +64,22 @@ const NoteInformation = ({navigation}) => {
   const isActive = true;
   const isCompleted = false;
   const isAbort = false;
+
+  const CANCEL = () => {
+    console.log(navigation, '_NAV++__');
+    DELETE_APPOINTMENT_mutation({
+      variables: {
+        id: +navigation.state.params.person.id,
+      },
+      optimisticResponse: null,
+    })
+      .then(res => {
+        navigation.state.params.refetch();
+        navigation.goBack();
+        console.log(res, '__res DELETE_APPOINTMENT_mutation');
+      })
+      .catch(err => console.log(err, '__ERR DELETE_APPOINTMENT_mutation'));
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -224,23 +244,7 @@ const NoteInformation = ({navigation}) => {
             />
             <ButtonDefault
               title="отменить запись к мастеру"
-              onPress={() => {
-                DELETE_APPOINTMENT_mutation({
-                  variables: {
-                    id: +navigation.state.params.person.id,
-                  },
-                  optimisticResponse: null,
-                })
-                  .then(res => {
-                    // setCancelNote(false);
-                    // setCanceledNote(true);
-                    navigation.goBack();
-                    console.log(res, '__res DELETE_APPOINTMENT_mutation');
-                  })
-                  .catch(err =>
-                    console.log(err, '__ERR DELETE_APPOINTMENT_mutation'),
-                  );
-              }}
+              onPress={() => CANCEL()}
             />
           </View>
         </ModalWindow>

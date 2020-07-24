@@ -122,6 +122,48 @@ export const GET_APPOINTMENT = gql`
   }
 `;
 
+export const UPDATE_PROFILE_WITHOUT_CITY = gql`
+  mutation UPDATEPROFILE(
+    $id: ID!
+    $name: String
+    $email: String
+    $mobile_phone: String
+    $addition_phone: String
+    $home_address: String
+    $work_address: String
+    $site: String
+    $about_me: String
+  ) {
+    updateProfile(
+      input: {
+        id: $id
+        name: $name
+        email: $email
+        mobile_phone: $mobile_phone
+        addition_phone: $addition_phone
+        home_address: $home_address
+        work_address: $work_address
+        site: $site
+        about_me: $about_me
+      }
+    ) {
+      id
+      name
+      email
+      mobile_phone
+      addition_phone
+      home_address
+      work_address
+      site
+      about_me
+      city {
+        id
+        name
+      }
+    }
+  }
+`;
+
 export const UPDATE_PROFILE = gql`
   mutation UPDATEPROFILE(
     $id: ID!
@@ -209,6 +251,20 @@ export const UPDATE_APPOINTMENT = gql`
       status
       date
       time
+    }
+  }
+`;
+
+export const UPDATE_APPOINTMENT_ADD_OFFERS = gql`
+  mutation UPDATEAPPOINTMENTADDOFFERS($id: ID!, $offersid: [ID!]) {
+    updateAppointment(input: {id: $id, offers: {connect: $offersid}}) {
+      id
+      status
+      date
+      time
+      offers {
+        id
+      }
     }
   }
 `;
@@ -634,12 +690,53 @@ export const FIND_MASTER = gql`
       user {
         id
         profile {
+          id
           email
+          name
+          work_address
         }
       }
       dates {
         date
         times
+      }
+    }
+  }
+`;
+
+export const NEXT_APPOINTMENTS = gql`
+  query NEXTAPPOINTMENTS($count: Int) {
+    nextAppointments(count: $count) {
+      id
+      date
+      time
+      comment
+      status
+      client {
+        id
+        type
+        profile {
+          id
+          city {
+            id
+            name
+          }
+          name
+          email
+        }
+      }
+      master {
+        id
+        type
+        profile {
+          id
+          city {
+            id
+            name
+          }
+          name
+          email
+        }
       }
     }
   }

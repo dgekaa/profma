@@ -8,7 +8,7 @@ import SaveSuccess from '../../components/SaveSuccess';
 import {Text, View, StyleSheet} from 'react-native';
 
 import {Query, useMutation, useQuery} from 'react-apollo';
-import {LOGOUT, ME, UPDATE_PROFILE} from '../../QUERYES';
+import {LOGOUT, ME, UPDATE_PROFILE_WITHOUT_CITY} from '../../QUERYES';
 import {ScrollView} from 'react-native-gesture-handler';
 
 const Border = () => (
@@ -38,10 +38,13 @@ const PersonalData = ({navigation}) => {
     awaitRefetchQueries: true,
   };
 
-  const [UPDATE_PROFILE_mutation] = useMutation(UPDATE_PROFILE, refreshObject);
+  const [UPDATE_PROFILE_WITHOUT_CITY_mutation] = useMutation(
+    UPDATE_PROFILE_WITHOUT_CITY,
+    refreshObject,
+  );
 
   const SAVE = () => {
-    UPDATE_PROFILE_mutation({
+    UPDATE_PROFILE_WITHOUT_CITY_mutation({
       variables: {
         id: USER.data.me.profile.id,
         name: nameLocal || USER.data.me.profile.name,

@@ -39,7 +39,7 @@ const shortMonthName = [
   'Дек',
 ];
 
-const Block = ({el, navigation, archive}) => {
+const Block = ({el, navigation, archive, refetch}) => {
   const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
 
   const [price, setPrice] = useState(0);
@@ -61,11 +61,15 @@ const Block = ({el, navigation, archive}) => {
     setOffersAll(offersAllLocal);
   }, []);
 
-  // console.log(el, '+++EL');
   return (
     <TouchableOpacity
       style={block}
-      onPress={() => navigation.navigate('NoteInformationMaster', {el: el})}>
+      onPress={() =>
+        navigation.navigate('NoteInformationMaster', {
+          el: el,
+          refetch: refetch,
+        })
+      }>
       <View style={topBlock}>
         <View style={{flexDirection: 'row', flex: 6, alignItems: 'center'}}>
           <SvgUri
@@ -132,7 +136,7 @@ const MyNotesMaster = ({navigation}) => {
 
   const USER = useQuery(ME);
 
-  console.log(USER.data, ' USER MY NOTES MASTER');
+  console.log(USER, ' USER MY NOTES MASTER');
 
   return (
     <View style={{flex: 1, backgroundColor: '#fafafa'}}>
@@ -159,25 +163,31 @@ const MyNotesMaster = ({navigation}) => {
           </View>
         </View>
       )}
-
-      <View style={{flex: 1}}>
-        <BackgroundHeader navigation={navigation} title="Мои записи" />
-        <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
-          <Text style={blockTitle}>Активные записи</Text>
-          {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
-          {USER.data &&
-            !!USER.data.me.master_appointments.length &&
-            USER.data.me.master_appointments.map((el, i) => {
-              if (el.status) {
+      {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
+      {!!USER.data && !!USER.data.me.master_appointments.length && (
+        <View style={{flex: 1}}>
+          <BackgroundHeader navigation={navigation} title="Мои записи" />
+          <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
+            <Text style={blockTitle}>Активные записи</Text>
+            {USER.data.me.master_appointments.map((el, i) => {
+              console.log(el.status, 'SSSSSSSSSSSSSSSSSss');
+              if (el.status === 'Pending') {
+                console.log(navigation, '___');
                 return (
                   <View key={i}>
-                    <Block el={el} navigation={navigation} index={i} />
+                    <Block
+                      el={el}
+                      navigation={navigation}
+                      index={i}
+                      refetch={USER.refetch}
+                    />
                   </View>
                 );
               }
             })}
-        </ScrollView>
-      </View>
+          </ScrollView>
+        </View>
+      )}
     </View>
   );
 };

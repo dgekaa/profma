@@ -36,7 +36,7 @@ const shortMonthName = [
   'Дек',
 ];
 
-const Block = ({el, navigation, key, archive}) => {
+const Block = ({el, navigation, key, archive, refetch}) => {
   console.log(el, 'ELLLLLLLLLLLLLLLLLll');
 
   const [price, setPrice] = useState(0);
@@ -66,6 +66,7 @@ const Block = ({el, navigation, key, archive}) => {
       onPress={() => {
         navigation.navigate('NoteInformation', {
           person: el,
+          refetch: refetch,
         });
       }}>
       <View style={topBlock}>
@@ -167,7 +168,14 @@ const MyNotes = ({navigation}) => {
             <Text style={blockTitle}>Активные записи</Text>
             {USER.data.me.client_appointments.map((el, i) => {
               if (el.status) {
-                return <Block el={el} navigation={navigation} key={i} />;
+                return (
+                  <Block
+                    el={el}
+                    navigation={navigation}
+                    key={i}
+                    refetch={USER.refetch}
+                  />
+                );
               }
             })}
             {/* <Text style={blockTitle}>Архив записей</Text>

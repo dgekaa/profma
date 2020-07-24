@@ -25,7 +25,7 @@ import {
 } from 'react-native';
 import {Query, useMutation, useQuery} from 'react-apollo';
 
-import {GET_USERS, ME, FIND_MASTER} from '../QUERYES';
+import {GET_USERS, ME, FIND_MASTER, NEXT_APPOINTMENTS} from '../QUERYES';
 import {useScreens} from 'react-native-screens';
 
 const shortMonthName = [
@@ -45,14 +45,18 @@ const shortMonthName = [
 
 const screen = Dimensions.get('window');
 
-const Block = ({el, navigation}) => {
+const Block = ({el, navigation, dates}) => {
   const {block, blockImg, timeBlock, timeBlockWrapp} = styles;
 
   return (
     <TouchableOpacity
       style={block}
       onPress={() => {
-        navigation.navigate('PublickMasterProfile', el.profile);
+        console.log(el, '+++++++++++++EL');
+        navigation.navigate(
+          'PublickMasterProfile',
+          dates ? el.user.profile : el.profile,
+        );
       }}>
       <View style={{width: 140}}>
         {/* <Image style={blockImg} source={{uri: el.img}} /> */}
@@ -64,7 +68,9 @@ const Block = ({el, navigation}) => {
             justifyContent: 'space-between',
           }}>
           <Text style={{fontWeight: 'bold', fontSize: 13}}>
-            {el.profile && el.profile.name && el.profile.name}
+            {dates
+              ? el.user.profile && el.user.profile.name
+              : (el.profile && el.profile.name) || 'Имя не задано'}
           </Text>
         </View>
         <View
@@ -79,7 +85,7 @@ const Block = ({el, navigation}) => {
           </View>
           <View style={{alignItems: 'flex-end', flex: 1.2}}>
             <Text style={{fontSize: 10}} numberOfLines={1}>
-              {el.profile && el.profile.work_address && el.profile.work_address}
+              {(el.profile && el.profile.work_address) || 'Адрес не задан'}
             </Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               {/* {el.metro && ( */}
@@ -143,11 +149,8 @@ const nearestSeansBlocksWrap = (el, i, navigation) => {
   const realYEAR = realDATE[0];
   const realMONTH = realDATE[1];
   const realDAY = realDATE[2];
-  const realTIME = new Date()
-    .toLocaleString()
-    .split(',')[1]
-    .slice(0, 5)
-    .split(':');
+
+  const realTIME = ['12', '30'];
 
   if (
     realYEAR <= serviceYEAR &&
@@ -269,27 +272,32 @@ const Main = ({navigation}) => {
     variables: {first: 10, type: whoObj.Master},
   });
 
-  const [dates, setDates] = useState([]);
+  const [dates, setDates] = useState();
   const [cityid, setCityid] = useState(null);
 
-  useEffect(() => {
-    console.log(dates, '____dates____');
-    console.log(cityid, '____cityid____');
-  }, [dates, cityid]);
+  const findMaster = useQuery(FIND_MASTER, {
+    variables: {
+      city_id: +cityid || null,
+      dates: dates || null,
+    },
+  });
 
-  if (dates.length && cityid) {
-    const findMaster = useQuery(FIND_MASTER, {
-      variables: {
-        city_id: +cityid,
-        dates: dates,
-      },
-    });
-
-    console.log(findMaster, '____====================findMaster___');
-  }
+  const nextAppointments = useQuery(NEXT_APPOINTMENTS, {
+    variables: {
+      count: 3,
+    },
+  });
+  console.log(nextAppointments, '_____NEXT APPOINT');
 
   useEffect(() => {
-    setCityid(USER.data && USER.data.me ? USER.data.me.profile.city.id : null);
+    setCityid(
+      USER.data &&
+        USER.data.me &&
+        USER.data.me.profile &&
+        USER.data.me.profile.city
+        ? USER.data.me.profile.city.id
+        : null,
+    );
     // console.log(USER, '____USER____');
     // console.log(users, '____users____');
   }, [USER, users]);
@@ -321,9 +329,6 @@ const Main = ({navigation}) => {
   if (USER.error) {
     console.log(USER.error, 'USERS ERROR++++++++++++++');
     // if (users.error.networkError) {}
-    // return navigation.navigate('ErrorInternetProblems', {
-    //   ROUTE: navigation.state.routeName,
-    // });
     return <ErrorInternetProblems reload={() => reload()} />;
   } else {
     return (
@@ -369,10 +374,14 @@ const Main = ({navigation}) => {
               </ScrollView>
             )}
             {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-            {!!Object.keys(markedDates).length && (
+            {console.log(users.data, '1111111111111111111111')}
+            {console.log(findMaster.data, '222222222222222222222')}
+            {dates && !!findMaster.data && (
               <View style={foundMasters}>
                 <View style={{flex: 1}}>
-                  <Text>{`Найдено ${1} !!! ${plural(1, [
+                  <Text>{`Найдено ${
+                    findMaster.data.findMaster.length
+                  }  ${plural(findMaster.data.findMaster.length, [
                     'мастер',
                     'мастера',
                     'мастеров',
@@ -383,33 +392,51 @@ const Main = ({navigation}) => {
                       fontSize: 13,
                       fontWeight: 'bold',
                     }}>
-                    {Object.keys(markedDates).map(el => (
+                    {dates.map(el => (
                       <Text>
                         {el.split('-')[2]}{' '}
-                        {/* {shortMonthName[+el.split('-')[1] - 1].toLowerCase()},{' '} */}
+                        {shortMonthName[+el.split('-')[1] - 1].toLowerCase()},{' '}
                       </Text>
                     ))}
                   </Text>
                 </View>
-                <TouchableOpacity
-                  style={closeBtn}
-                  onPress={() => {
-                    setMarkedDates({});
-                  }}>
+                <TouchableOpacity style={closeBtn} onPress={() => setDates()}>
                   <SvgUri svgXmlData={CrossIcon} />
                 </TouchableOpacity>
               </View>
             )}
             <View style={{paddingBottom: 80}}>
-              {users && users.data && (
-                <FlatList
-                  data={users.data.users.data}
-                  renderItem={({item}) => {
-                    return <Block navigation={navigation} el={item} />;
-                  }}
-                  keyExtractor={item => item.id.toString()}
-                />
-              )}
+              {!dates
+                ? !!users &&
+                  !!users.data && (
+                    <FlatList
+                      data={users.data.users.data}
+                      renderItem={({item}) => {
+                        return <Block navigation={navigation} el={item} />;
+                      }}
+                      keyExtractor={item =>
+                        dates ? item.user.id : item.id.toString()
+                      }
+                    />
+                  )
+                : !!findMaster.data &&
+                  !!findMaster.data.findMaster && (
+                    <FlatList
+                      data={findMaster.data.findMaster}
+                      renderItem={({item}) => {
+                        return (
+                          <Block
+                            navigation={navigation}
+                            el={item}
+                            dates={dates}
+                          />
+                        );
+                      }}
+                      keyExtractor={item =>
+                        dates ? item.user.id : item.id.toString()
+                      }
+                    />
+                  )}
               {users && users.loading && (
                 <View>
                   <ActivityIndicator size="large" color="#00ff00" />
@@ -440,9 +467,7 @@ const Main = ({navigation}) => {
         {!isCalendarVisible && (
           <TouchableOpacity
             style={[openCalendar, {top: screen.height - 80}]}
-            onPress={() => {
-              setIsCalendarVisible(true);
-            }}>
+            onPress={() => setIsCalendarVisible(true)}>
             <SvgUri svgXmlData={CalendarSvgIcon} />
             <Text style={{marginLeft: 5}}>Выбрать дату</Text>
           </TouchableOpacity>
@@ -450,10 +475,8 @@ const Main = ({navigation}) => {
         {/* КАЛЕНДАРЬ !*/}
         {isCalendarVisible && (
           <CalendarCustom
-            markedDates={markedDates}
-            // onDayPress={onDayPress}
             onClose={setIsCalendarVisible}
-            clearCalendar={setMarkedDates}
+            // clearCalendar={setMarkedDates}
             showMasters={showMasters}
           />
         )}

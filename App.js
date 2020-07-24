@@ -66,6 +66,11 @@ const App = () => {
   const client = new ApolloClient({
     cache: new InMemoryCache(),
     link: link,
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: 'no-cache',
+      },
+    },
   });
 
   const getAsyncToken = async () => {
