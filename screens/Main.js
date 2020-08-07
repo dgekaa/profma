@@ -26,7 +26,6 @@ import {
 import {Query, useMutation, useQuery} from 'react-apollo';
 
 import {GET_USERS, ME, FIND_MASTER, NEXT_APPOINTMENTS} from '../QUERYES';
-import {useScreens} from 'react-native-screens';
 
 const shortMonthName = [
   'янв',
@@ -133,55 +132,12 @@ const Block = ({el, navigation, dates}) => {
   );
 };
 
-const nearestSeansBlocksWrap = (el, i, navigation) => {
-  const serviceDATE = el.date.split('-');
-  const realDATE = new Date()
-    .toLocaleDateString()
-    .split('.')
-    .reverse()
-    .join('-')
-    .split('-');
-
-  const serviceYEAR = serviceDATE[0];
-  const serviceMONTH = serviceDATE[1];
-  const serviceDAY = serviceDATE[2];
-  const serviceTIME = el.time.slice(0, 5).split(':');
-  const realYEAR = realDATE[0];
-  const realMONTH = realDATE[1];
-  const realDAY = realDATE[2];
-
-  const realTIME = ['12', '30'];
-
-  if (
-    realYEAR <= serviceYEAR &&
-    realMONTH <= serviceMONTH &&
-    serviceDAY - realDAY >= 0 &&
-    serviceDAY - realDAY < 3
-  ) {
-    if (serviceDAY === realDAY) {
-      const serviceTIMEms = serviceTIME[0] * 3600000 + serviceTIME[1] * 60;
-      const realTIMEms = realTIME[0] * 3600000 + realTIME[1] * 60;
-      if (realTIMEms < serviceTIMEms) {
-        return (
-          <View key={i}>
-            <NearestSeansBlock el={el} index={i} navigation={navigation} />
-          </View>
-        );
-      }
-    } else {
-      return (
-        <View key={i}>
-          <NearestSeansBlock el={el} index={i} navigation={navigation} />
-        </View>
-      );
-    }
-  }
-};
-
-const NearestSeansBlock = ({el, index, navigation}) => {
+const NearestSeansBlock = ({el, navigation}) => {
   const {nearestSeansBlock} = styles;
 
   const [offersAll, setOffersAll] = useState([]);
+
+  console.log(el, ':::::::::::::::::::::::');
 
   useEffect(() => {
     let offersAllLocal = [];
@@ -194,6 +150,7 @@ const NearestSeansBlock = ({el, index, navigation}) => {
 
   return (
     <TouchableOpacity
+      key={el.id}
       style={[nearestSeansBlock]}
       onPress={() => {
         el.type === 'Client'
@@ -284,10 +241,11 @@ const Main = ({navigation}) => {
 
   const nextAppointments = useQuery(NEXT_APPOINTMENTS, {
     variables: {
-      count: 3,
+      count: 2,
     },
   });
-  console.log(nextAppointments, '_____NEXT APPOINT');
+
+  console.log(nextAppointments.data, '__nextAppointments___');
 
   useEffect(() => {
     setCityid(
@@ -298,14 +256,12 @@ const Main = ({navigation}) => {
         ? USER.data.me.profile.city.id
         : null,
     );
-    // console.log(USER, '____USER____');
-    // console.log(users, '____users____');
   }, [USER, users]);
 
-  const [markedDates, setMarkedDates] = useState({});
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   const showMasters = masters => {
+    console.log(masters, '++++++');
     let arr = [];
     for (let key in masters) {
       arr.push(key);
@@ -325,6 +281,9 @@ const Main = ({navigation}) => {
   const reload = () => {
     USER.refetch();
   };
+
+  console.log(USER, '___USER');
+  console.log(users, '___users');
 
   if (USER.error) {
     console.log(USER.error, 'USERS ERROR++++++++++++++');
@@ -353,29 +312,18 @@ const Main = ({navigation}) => {
           </ImageBackground>
 
           <View style={{paddingHorizontal: 8}}>
-            {USER.data && !!USER.data.me.master_appointments.length && (
-              <ScrollView
-                style={nearestSeans}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}>
-                {USER.data.me.master_appointments.map((el, i) => {
-                  return nearestSeansBlocksWrap(el, i, navigation);
-                })}
-              </ScrollView>
-            )}
-            {USER.data && !!USER.data.me.client_appointments.length && (
-              <ScrollView
-                style={nearestSeans}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}>
-                {USER.data.me.client_appointments.map((el, i) => {
-                  return nearestSeansBlocksWrap(el, i, navigation);
-                })}
-              </ScrollView>
-            )}
-            {/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-            {console.log(users.data, '1111111111111111111111')}
-            {console.log(findMaster.data, '222222222222222222222')}
+            {nextAppointments.data &&
+              !!nextAppointments.data.nextAppointments.length && (
+                <ScrollView
+                  style={nearestSeans}
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}>
+                  {nextAppointments.data.nextAppointments.map(el => (
+                    <NearestSeansBlock el={el} navigation={navigation} />
+                  ))}
+                </ScrollView>
+              )}
+
             {dates && !!findMaster.data && (
               <View style={foundMasters}>
                 <View style={{flex: 1}}>
@@ -476,7 +424,6 @@ const Main = ({navigation}) => {
         {isCalendarVisible && (
           <CalendarCustom
             onClose={setIsCalendarVisible}
-            // clearCalendar={setMarkedDates}
             showMasters={showMasters}
           />
         )}

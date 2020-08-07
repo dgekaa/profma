@@ -159,7 +159,8 @@ const Login = ({navigation, handleChangeLoginState}) => {
 const stylesClientRegistration = StyleSheet.create({
   loginWrap: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: 'pink',
+    // backgroundColor: '#FAFAFA',
     position: 'absolute',
     width: '100%',
     height: Dimensions.get('window').height,

@@ -244,6 +244,35 @@ export const CREATE_PROFILE = gql`
   }
 `;
 
+export const CREATE_APPOINTMENT = gql`
+  mutation CREATEAPPOINTMENT(
+    $id: ID!
+    $date: String!
+    $time: String!
+    $offers_id: [ID!]
+  ) {
+    createAppointment(
+      input: {
+        master: {connect: $id}
+        date: $date
+        time: $time
+        offers: {connect: $offers_id}
+      }
+    ) {
+      id
+      date
+      time
+      offers {
+        id
+        user {
+          id
+          email
+        }
+      }
+    }
+  }
+`;
+
 export const UPDATE_APPOINTMENT = gql`
   mutation UPDATEAPPOINTMENT($id: ID!, $status: AppointmentStatus) {
     updateAppointment(input: {id: $id, status: $status}) {
@@ -725,6 +754,13 @@ export const NEXT_APPOINTMENTS = gql`
           email
         }
       }
+      offers {
+        id
+        service {
+          id
+          name
+        }
+      }
       master {
         id
         type
@@ -738,6 +774,15 @@ export const NEXT_APPOINTMENTS = gql`
           email
         }
       }
+    }
+  }
+`;
+
+export const FREE_TIME = gql`
+  query FREETIME($master_id: Int!, $dates: [String!]!) {
+    freeTimeByMaster(master_id: $master_id, dates: $dates) {
+      date
+      times
     }
   }
 `;

@@ -16,7 +16,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import SvgUri from 'react-native-svg-uri';
 import CalendarSvgIcon from '../../img/CalendarSVG.svg';
 import ManicureIcon from '../../img/Manicure.svg';
-import UserIcon from '../../img/User.svg';
+import UserIcon from '../../img/UserNew.svg';
 import PasswordIcon from '../../img/Password.svg';
 
 import {LOGOUT, ME} from '../../QUERYES';
@@ -78,7 +78,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                   USER.data &&
                   navigation.navigate('MyNotesMaster', USER.data.me.profile)
                 }>
-                <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
+                <SvgUri width="16" height="16" svgXmlData={CalendarSvgIcon} />
                 <Text style={text}>Мои записи</Text>
               </TouchableOpacity>
             </View>
@@ -94,8 +94,8 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                   onPress={() => navigation.navigate('MasterCalendar')}>
                   <View style={{alignItems: 'center', flexDirection: 'row'}}>
                     <SvgUri
-                      width="13"
-                      height="13"
+                      width="16"
+                      height="16"
                       svgXmlData={CalendarSvgIcon}
                     />
                     <Text style={text}>Мой календарь мастера</Text>
@@ -111,7 +111,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                     USER.data &&
                     navigation.navigate('MyServices', {ID: USER.data.me.id})
                   }>
-                  <SvgUri width="13" height="13" svgXmlData={ManicureIcon} />
+                  <SvgUri width="16" height="16" svgXmlData={ManicureIcon} />
                   <Text style={text}>
                     Мои услуги {!!USER.data && USER.data.me.offers.length}
                   </Text>
@@ -125,7 +125,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                       navigation.state.params,
                     );
                   }}>
-                  <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
+                  <SvgUri width="16" height="16" svgXmlData={CalendarSvgIcon} />
                   <Text style={text}>Настроить рабочее расписание</Text>
                 </TouchableOpacity>
               </View>
@@ -134,10 +134,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                 <TouchableOpacity
                   style={[blockInGroup, borderBottom]}
                   onPress={() => navigation.navigate('PersonalDataMaster')}>
-                  <SvgUri
-                    style={{height: 13, width: 13}}
-                    svgXmlData={UserIcon}
-                  />
+                  <SvgUri width="16" height="16" svgXmlData={UserIcon} />
                   <Text style={text}>Персональные данные</Text>
                 </TouchableOpacity>
                 {/* ИЗМЕНИТЬ ПАРОЛЬ*/}
@@ -149,10 +146,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                       person: navigation.state.params,
                     });
                   }}>
-                  <SvgUri
-                    style={{height: 13, width: 13}}
-                    svgXmlData={PasswordIcon}
-                  />
+                  <SvgUri width="16" height="16" svgXmlData={PasswordIcon} />
                   <Text style={text}>Изменить пароль</Text>
                 </TouchableOpacity>
               </View>
@@ -199,9 +193,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={blockInGroup}
-                  onPress={() => {
-                    alert('Связь с поддержкой');
-                  }}>
+                  onPress={() => alert('Связь с поддержкой')}>
                   <Text style={{fontSize: 13}}>
                     Связаться с поддержкой{' '}
                     <Text style={{color: '#B986DA'}}> Prof.Ma</Text>
@@ -250,7 +242,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 13,
-    marginLeft: 13,
+    marginLeft: 8,
     fontFamily: 'FuturaPT-Bold',
   },
   groupBlock: {

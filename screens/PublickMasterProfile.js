@@ -10,8 +10,8 @@ import ArrowWhiteIcon from '../img/ArrowRight.svg';
 import CalendarSvgIcon from '../img/CalendarSVG.svg';
 import LocationIcon from '../img/Location.svg';
 import CrossWhiteIcon from '../img/CrossWhite.svg';
-import {Query, useMutation, useQuery} from 'react-apollo';
-import {GET_USER} from '../QUERYES';
+import {Query, useMutation, useQuery, useLazyQuery} from 'react-apollo';
+import {GET_USER, FREE_TIME, CREATE_APPOINTMENT} from '../QUERYES';
 import {
   StyleSheet,
   View,
@@ -23,6 +23,21 @@ import {
   TouchableWithoutFeedback,
   ActivityIndicator,
 } from 'react-native';
+
+const shortMonthName = [
+  'дек',
+  'янв',
+  'фев',
+  'март',
+  'апр',
+  'май',
+  'июн',
+  'июл',
+  'авг',
+  'сент',
+  'окт',
+  'нояб',
+];
 
 import BackgroundHeader from '../components/BackgroundHeader';
 const screen = Dimensions.get('window');
@@ -192,7 +207,7 @@ const TimeBlock = ({time, active, onPress, style}) => {
   const {timeBlock} = styles;
   return (
     <TouchableOpacity
-      onPress={() => {}}
+      onPress={onPress}
       style={[
         timeBlock,
         {
@@ -265,12 +280,9 @@ const PublickMasterProfile = ({navigation}) => {
       });
     }
   };
-  console.log(navigation, '+++PARAMS');
   const MASTER = useQuery(GET_USER, {
     variables: {id: +navigation.state.params.id},
   });
-
-  console.log(MASTER, '_MASETER');
 
   const [services, setServices] = useState([]);
 
@@ -284,10 +296,58 @@ const PublickMasterProfile = ({navigation}) => {
   const [checkboxes, setCheckboxes] = useState(
     new Array(services.length).fill(false),
   );
+  const [activeTime, setActiveTime] = useState('');
+  const [dates, setDates] = useState([]);
+  const [freeTimeByMaster, setFreeTimeByMaster] = useState([]);
+
+  const FREETIME = useQuery(FREE_TIME, {
+    variables: {
+      master_id: MASTER.data && MASTER.data.user.profile.id,
+      dates: [dates[0]],
+    },
+  });
+
+  const [CREATE_APPOINTMENT_mutation] = useMutation(CREATE_APPOINTMENT);
 
   useEffect(() => {
-    console.log(checkboxes, '____checkboxes');
+    FREETIME.data &&
+      FREETIME.data.freeTimeByMaster[0] &&
+      setFreeTimeByMaster(FREETIME.data.freeTimeByMaster[0].times);
+  }, [FREETIME]);
+
+  useEffect(() => {
+    console.log(checkboxes, '_____________checkboxes');
   }, [checkboxes, slideBlock]);
+
+  const showMasters = masters => {
+    let arr = [];
+    for (let key in masters) {
+      arr.push(key);
+    }
+    setDates(arr);
+  };
+
+  const CREATE = () => {
+    const CH = checkboxes.filter((el, i) => {
+      return +el;
+    });
+    const finishCH = CH.map(el => +el);
+    CREATE_APPOINTMENT_mutation({
+      variables: {
+        id: +MASTER.data.user.profile.id,
+        date: dates[0],
+        time: activeTime,
+        offers_id: finishCH,
+      },
+      optimisticResponse: null,
+    })
+      .then(res => {
+        setTimeWasSelected(true);
+
+        console.log(res, '__RES CREATE_APPOINTMENT');
+      })
+      .catch(err => console.log(err, '__ERR CREATE_APPOINTMENT'));
+  };
 
   if (MASTER.error) {
     return <Text>Err</Text>;
@@ -364,9 +424,7 @@ const PublickMasterProfile = ({navigation}) => {
                     alignItems: 'center',
                   }}>
                   <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
-                  <Text style={{fontWeight: 'bold'}}>
-                    25 июн 2019 !!!!!!!!!!
-                  </Text>
+                  <Text style={{fontWeight: 'bold'}}>25 июн 2019</Text>
                 </View>
                 <View
                   style={{
@@ -397,9 +455,7 @@ const PublickMasterProfile = ({navigation}) => {
               </View>
               <AnotherBlock
                 title="Выбрать другое время"
-                onPress={() => {
-                  setIsCalendarVisible(true);
-                }}
+                onPress={() => setIsCalendarVisible(true)}
               />
             </View>
             <Text style={textTitle}>адрес мастера</Text>
@@ -444,7 +500,7 @@ const PublickMasterProfile = ({navigation}) => {
               title="Подтвердить запись"
               rightTitle={'цена ' + ' руб'}
               onPress={() => {
-                alert('Подтвердить');
+                CREATE();
               }}
               active={true}
             />
@@ -564,15 +620,14 @@ const PublickMasterProfile = ({navigation}) => {
         )}
         {isCalendarVisible && (
           <CalendarCustom
-            todayInfo={info => {
-              setTodayInfo(info);
-            }}
+            todayInfo={info => setTodayInfo(info)}
             singleDate={true}
             markedDates={markedDates}
             onDayPress={onDayPress}
             onClose={setIsCalendarVisible}
             clearCalendar={setMarkedDates}
             chooseThisDate={setIsShowTime}
+            showMasters={showMasters}
           />
         )}
         {isShowTime && (
@@ -599,51 +654,38 @@ const PublickMasterProfile = ({navigation}) => {
               }}>
               Доступное время для записи
             </Text>
-            <View
-              style={{
-                marginBottom: 16,
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-                marginHorizontal: 24,
-              }}>
-              <TimeBlock
-                style={{marginBottom: 8}}
-                time="13:00"
-                active={false}
-                onPress={() => {}}
-              />
-              <TimeBlock
-                style={{marginBottom: 8}}
-                time="13:00"
-                active={true}
-                onPress={() => {}}
-              />
-              <TimeBlock
-                style={{marginBottom: 8}}
-                time="13:00"
-                active={false}
-                onPress={() => {}}
-              />
-              <TimeBlock
-                style={{marginBottom: 8}}
-                time="13:00"
-                active={false}
-                onPress={() => {}}
-              />
-              <TimeBlock
-                style={{marginBottom: 8}}
-                time="13:00"
-                active={false}
-                onPress={() => {}}
-              />
-            </View>
+            {FREETIME.loading && (
+              <ActivityIndicator size="large" color="#00ff00" />
+            )}
+            {FREETIME.error && <Text>ERROR</Text>}
+            {FREETIME.data && (
+              <View
+                style={{
+                  marginBottom: 16,
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  justifyContent: 'space-between',
+                  marginHorizontal: 24,
+                }}>
+                {!!freeTimeByMaster.length &&
+                  freeTimeByMaster.map((el, i) => {
+                    return (
+                      <TimeBlock
+                        onPress={() => setActiveTime(el)}
+                        style={{marginBottom: 8}}
+                        time={el}
+                        active={activeTime === el ? true : false}
+                      />
+                    );
+                  })}
+              </View>
+            )}
+
             <View style={{width: '100%'}}>
               <ButtonDefault
                 style={{marginBottom: 8, marginHorizontal: 24}}
                 onPress={() => {
                   setIsShowTime(false);
-                  setTimeWasSelected(true);
                 }}
                 title="Выбрать это время"
                 active={true}
@@ -652,6 +694,7 @@ const PublickMasterProfile = ({navigation}) => {
                 style={{marginHorizontal: 24}}
                 onPress={() => {
                   setIsShowTime(false);
+                  setActiveTime([]);
                 }}
                 title="закрыть"
               />
@@ -662,15 +705,20 @@ const PublickMasterProfile = ({navigation}) => {
           <ModalWindow>
             <Text>Вы записаны</Text>
             <Text>
-              на <Text style={{fontWeight: 'bold'}}>25 июн 2019 !!!!</Text> в
-              10:00 к мастеру
+              на{' '}
+              <Text style={{fontWeight: 'bold'}}>
+                {dates[0] && dates[0].split('-')[2]}{' '}
+                {dates[0] && shortMonthName[+dates[0].split('-')[1]]}{' '}
+                {dates[0] && dates[0].split('-')[0]}
+              </Text>{' '}
+              в {activeTime} к мастеру
             </Text>
             <Image
               style={{marginTop: 16}}
               source={require('../img/girl1.png')}
             />
             <Text style={{fontWeight: 'bold', marginVertical: 16}}>
-              Людмила Заглубоцкая
+              {MASTER.data.user.profile.name}
             </Text>
             <View style={{width: '100%'}}>
               <ButtonDefault
@@ -678,14 +726,15 @@ const PublickMasterProfile = ({navigation}) => {
                 title="спасибо, закрыть окно"
                 active={true}
                 onPress={() => {
+                  setDates([]);
+                  setActiveTime('');
+                  setCheckboxes([]);
                   setTimeWasSelected(false);
                 }}
               />
               <ButtonDefault
                 title="перейти к настройкам аккаунта"
-                onPress={() => {
-                  setTimeWasSelected(false);
-                }}
+                onPress={() => setTimeWasSelected(false)}
               />
             </View>
           </ModalWindow>

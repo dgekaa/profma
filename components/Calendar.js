@@ -93,14 +93,20 @@ const CalendarCustom = ({
   const [markedDates, setMarkedDates] = useState({});
 
   const onSelectDays = day => {
-    if (markedDates[day.dateString]) {
-      delete markedDates[day.dateString];
-      setMarkedDates({
-        ...markedDates,
-      });
+    if (!singleDate) {
+      if (markedDates[day.dateString]) {
+        delete markedDates[day.dateString];
+        setMarkedDates({
+          ...markedDates,
+        });
+      } else {
+        setMarkedDates({
+          ...markedDates,
+          [day.dateString]: {selected: true, selectedColor: '#B986DA'},
+        });
+      }
     } else {
       setMarkedDates({
-        ...markedDates,
         [day.dateString]: {selected: true, selectedColor: '#B986DA'},
       });
     }
@@ -119,19 +125,14 @@ const CalendarCustom = ({
             <Text style={yearText}>{year}</Text>
           </View>
           <Calendar
-            current={moment(now, 'DD/MM/YYYY', true)
-              .format()
-              .slice(0, 10)}
             minDate={moment(now, 'DD/MM/YYYY', true)
               .format()
               .slice(0, 10)}
             markedDates={markedDates}
             hideExtraDays={true}
-            hideArrows={true}
-            onDayPress={day => {
-              // onDayPress(day);
-              onSelectDays(day);
-            }}
+            onDayPress={day => onSelectDays(day)}
+            onPressArrowLeft={subtractMonth => subtractMonth()}
+            onPressArrowRight={addMonth => addMonth()}
             theme={{
               backgroundColor: '#ffffff',
               calendarBackground: '#ffffff',
@@ -154,7 +155,7 @@ const CalendarCustom = ({
                 style={mb}
               />
             )} */}
-            {!singleDate && true && (
+            {!singleDate && (
               <ButtonDefault
                 onPress={() => {
                   showMasters(markedDates);
@@ -165,12 +166,13 @@ const CalendarCustom = ({
                 style={mb}
               />
             )}
-            {singleDate && true && (
+            {singleDate && (
               <ButtonDefault
                 title="выбрать эту дату"
                 active={true}
                 style={mb}
                 onPress={() => {
+                  showMasters(markedDates);
                   chooseThisDate(true);
                   onClose(false);
                 }}
@@ -179,7 +181,7 @@ const CalendarCustom = ({
             <ButtonDefault
               title="закрыть"
               onPress={() => {
-                clearCalendar({});
+                clearCalendar && clearCalendar({});
                 onClose(false);
               }}
             />
