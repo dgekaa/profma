@@ -1,6 +1,13 @@
 import React, {useState, useEffect} from 'react';
 
-import {Text, StyleSheet, View, Dimensions} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import {useMutation} from 'react-apollo';
 
 import {ButtonDefault, ButtonDisabled} from '../components/Button';
@@ -119,9 +126,8 @@ const Registration = ({navigation, handleChangeLoginState}) => {
   };
 
   return (
-    <View style={registrtionWrap}>
+    <KeyboardAvoidingView style={registrtionWrap}>
       <Header navigation={navigation} />
-
       <View style={[container, {flex: 1}]}>
         <View style={[topTextWrap]}>
           <Text style={ProfMa}>Prof.Ma</Text>
@@ -200,7 +206,7 @@ const Registration = ({navigation, handleChangeLoginState}) => {
           )}
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

@@ -2,7 +2,13 @@ import React, {useState, useEffect} from 'react';
 import {useMutation} from 'react-apollo';
 import {signOut, signIn, getToken} from '../util';
 
-import {Text, StyleSheet, View, Dimensions} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  Dimensions,
+  KeyboardAvoidingView,
+} from 'react-native';
 import {ButtonDefault, ButtonDisabled, ButtonError} from '../components/Button';
 import {InputWithText, InputWithPassword} from '../components/Input';
 import {Header} from '../components/BackgroundHeader';
@@ -87,7 +93,7 @@ const Login = ({navigation, handleChangeLoginState}) => {
   }, []);
 
   return (
-    <View style={loginWrap}>
+    <KeyboardAvoidingView style={loginWrap}>
       <Header navigation={navigation} />
       <View style={[container, {flex: 1}]}>
         <View style={topTextWrap}>
@@ -152,15 +158,14 @@ const Login = ({navigation, handleChangeLoginState}) => {
           )}
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
 const stylesClientRegistration = StyleSheet.create({
   loginWrap: {
     flex: 1,
-    backgroundColor: 'pink',
-    // backgroundColor: '#FAFAFA',
+    backgroundColor: '#FAFAFA',
     position: 'absolute',
     width: '100%',
     height: Dimensions.get('window').height,

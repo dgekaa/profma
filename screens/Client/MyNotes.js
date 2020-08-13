@@ -137,7 +137,6 @@ const MyNotes = ({navigation}) => {
 
   return (
     <View style={{flex: 1}}>
-      {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
       {USER.data && !USER.data.me.client_appointments.length && (
         <View style={{flex: 1}}>
           <Header navigation={navigation} />
@@ -161,9 +160,11 @@ const MyNotes = ({navigation}) => {
           </View>
         </View>
       )}
-      {USER.data && !!USER.data.me.client_appointments.length && (
-        <View style={{flex: 1}}>
-          <BackgroundHeader navigation={navigation} title="Мои записи" />
+
+      <View style={{flex: 1}}>
+        <BackgroundHeader navigation={navigation} title="Мои записи" />
+        {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
+        {USER.data && !!USER.data.me.client_appointments.length && (
           <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
             <Text style={blockTitle}>Активные записи</Text>
             {USER.data.me.client_appointments.map((el, i) => {
@@ -192,8 +193,8 @@ const MyNotes = ({navigation}) => {
                 }
               })} */}
           </ScrollView>
-        </View>
-      )}
+        )}
+      </View>
     </View>
   );
 };

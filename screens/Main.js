@@ -28,6 +28,7 @@ import {Query, useMutation, useQuery} from 'react-apollo';
 import {GET_USERS, ME, FIND_MASTER, NEXT_APPOINTMENTS} from '../QUERYES';
 
 const shortMonthName = [
+  'дек',
   'янв',
   'фев',
   'март',
@@ -39,13 +40,21 @@ const shortMonthName = [
   'сент',
   'окт',
   'нояб',
-  'дек',
 ];
 
 const screen = Dimensions.get('window');
 
 const Block = ({el, navigation, dates}) => {
   const {block, blockImg, timeBlock, timeBlockWrapp} = styles;
+
+  // console.log(el, '==================');
+
+  // const FREETIME = useQuery(FREE_TIME, {
+  //   variables: {
+  //     master_id: el.id,
+  //     dates: [dates[0]],
+  //   },
+  // });
 
   return (
     <TouchableOpacity
@@ -80,7 +89,7 @@ const Block = ({el, navigation, dates}) => {
           }}>
           <View style={{flex: 1}}>
             <Text style={{fontSize: 10}}>Стоимость сеанса</Text>
-            <Text style={{fontWeight: 'bold', fontSize: 10}}>1250 руб</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 10}}>!!!!! руб</Text>
           </View>
           <View style={{alignItems: 'flex-end', flex: 1.2}}>
             <Text style={{fontSize: 10}} numberOfLines={1}>
@@ -136,8 +145,6 @@ const NearestSeansBlock = ({el, navigation}) => {
   const {nearestSeansBlock} = styles;
 
   const [offersAll, setOffersAll] = useState([]);
-
-  console.log(el, ':::::::::::::::::::::::');
 
   useEffect(() => {
     let offersAllLocal = [];
@@ -197,11 +204,15 @@ const NearestSeansBlock = ({el, navigation}) => {
           <View tyle={{flex: 1}}>
             <Text style={{fontSize: 10}}>Услуга</Text>
             {!!offersAll.length &&
-              offersAll.map((el, i) => (
-                <Text key={i} style={{fontSize: 10, fontWeight: 'bold'}}>
-                  {el}
-                </Text>
-              ))}
+              offersAll.map((el, i) => {
+                if (i <= 2) {
+                  return (
+                    <Text key={i} style={{fontSize: 10, fontWeight: 'bold'}}>
+                      {el}
+                    </Text>
+                  );
+                }
+              })}
           </View>
         </View>
       </View>
@@ -239,6 +250,12 @@ const Main = ({navigation}) => {
     },
   });
 
+  useEffect(() => {
+    console.log(cityid, '______________cityid');
+    console.log(dates, 'dates');
+    console.log(findMaster, '______________findMaster');
+  }, [findMaster]);
+
   const nextAppointments = useQuery(NEXT_APPOINTMENTS, {
     variables: {
       count: 2,
@@ -261,7 +278,7 @@ const Main = ({navigation}) => {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   const showMasters = masters => {
-    console.log(masters, '++++++');
+    console.log(masters, '++++++++++++++++++++++++++');
     let arr = [];
     for (let key in masters) {
       arr.push(key);

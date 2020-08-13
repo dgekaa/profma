@@ -315,10 +315,6 @@ const PublickMasterProfile = ({navigation}) => {
       setFreeTimeByMaster(FREETIME.data.freeTimeByMaster[0].times);
   }, [FREETIME]);
 
-  useEffect(() => {
-    console.log(checkboxes, '_____________checkboxes');
-  }, [checkboxes, slideBlock]);
-
   const showMasters = masters => {
     let arr = [];
     for (let key in masters) {
@@ -332,6 +328,12 @@ const PublickMasterProfile = ({navigation}) => {
       return +el;
     });
     const finishCH = CH.map(el => +el);
+
+    console.log(MASTER.data.user.profile.id, '____id');
+    console.log(dates[0], '___ dates[0]');
+    console.log(activeTime, '___activeTime');
+    console.log(finishCH, '___finishCH');
+
     CREATE_APPOINTMENT_mutation({
       variables: {
         id: +MASTER.data.user.profile.id,
@@ -346,7 +348,9 @@ const PublickMasterProfile = ({navigation}) => {
 
         console.log(res, '__RES CREATE_APPOINTMENT');
       })
-      .catch(err => console.log(err, '__ERR CREATE_APPOINTMENT'));
+      .catch(err =>
+        console.log(JSON.stringify(err), '__ERR CREATE_APPOINTMENT'),
+      );
   };
 
   if (MASTER.error) {
@@ -657,7 +661,7 @@ const PublickMasterProfile = ({navigation}) => {
             {FREETIME.loading && (
               <ActivityIndicator size="large" color="#00ff00" />
             )}
-            {FREETIME.error && <Text>ERROR</Text>}
+            {FREETIME.error && <Text />}
             {FREETIME.data && (
               <View
                 style={{

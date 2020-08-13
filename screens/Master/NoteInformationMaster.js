@@ -310,7 +310,8 @@ const NoteInformationMaster = ({navigation}) => {
               <Text style={blockTitle}>Услуги</Text>
               <View>
                 <View style={groupBlock}>
-                  {appointment.data.appointment.offers.length &&
+                  {!!appointment.data.appointment.offers &&
+                    !!appointment.data.appointment.offers.length &&
                     appointment.data.appointment.offers.map((el, i) => (
                       <View
                         key={i}
