@@ -786,3 +786,12 @@ export const FREE_TIME = gql`
     }
   }
 `;
+
+export const NEXT_FREE_TIME_BY_MASTER = gql`
+  query NEXTFREETIMEBYMASTER($master_id: Int!, $count: Int) {
+    nextFreeTimeByMaster(master_id: $master_id, count: $count) {
+      date
+      times
+    }
+  }
+`;

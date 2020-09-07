@@ -25,7 +25,13 @@ import {
 } from 'react-native';
 import {Query, useMutation, useQuery} from 'react-apollo';
 
-import {GET_USERS, ME, FIND_MASTER, NEXT_APPOINTMENTS} from '../QUERYES';
+import {
+  GET_USERS,
+  ME,
+  FIND_MASTER,
+  NEXT_APPOINTMENTS,
+  NEXT_FREE_TIME_BY_MASTER,
+} from '../QUERYES';
 
 const shortMonthName = [
   'дек',
@@ -47,14 +53,12 @@ const screen = Dimensions.get('window');
 const Block = ({el, navigation, dates}) => {
   const {block, blockImg, timeBlock, timeBlockWrapp} = styles;
 
-  // console.log(el, '==================');
-
-  // const FREETIME = useQuery(FREE_TIME, {
-  //   variables: {
-  //     master_id: el.id,
-  //     dates: [dates[0]],
-  //   },
-  // });
+  const nextFreeTimeByMaster = useQuery(NEXT_APPOINTMENTS, {
+    variables: {
+      master_id: +el.id,
+      count: 6,
+    },
+  });
 
   return (
     <TouchableOpacity
@@ -111,31 +115,28 @@ const Block = ({el, navigation, dates}) => {
             </View>
           </View>
         </View>
-        {/* <View style={timeBlockWrapp}>
-          {el.work_time.map((item, index) => {
-            if (new Date().getDay() <= index + 1) {
-              if (!item.is_holiday) {
-                return item.all_time.map((time, ind) => {
-                  console.log(item, 'TIME');
-                  return (
-                    <View key={ind} style={timeBlock}>
-                      <Text
-                        style={{
-                          color: '#B986DA',
-                          fontSize: 10,
-                          fontWeight: 'bold',
-                        }}>
-                      </Text>
-                      <Text style={{color: '#B986DA', fontSize: 10}}>
-                        {time}
-                      </Text>
-                    </View>
-                  );
-                });
-              }
-            }
-          })}
-        </View> */}
+        <View style={timeBlockWrapp}>
+          {nextFreeTimeByMaster.data &&
+            nextFreeTimeByMaster.data.nextAppointments.length &&
+            nextFreeTimeByMaster.data.nextAppointments.map((el, index) => {
+              return (
+                <View key={el.id} style={timeBlock}>
+                  <Text
+                    style={{
+                      color: '#B986DA',
+                      fontSize: 10,
+                      fontWeight: 'bold',
+                    }}>
+                    {el.date.split('-')[2]}{' '}
+                    {shortMonthName[+el.date.split('-')[1] - 1].toLowerCase()}{' '}
+                  </Text>
+                  <Text style={{color: '#B986DA', fontSize: 10}}>
+                    {el.time.slice(0, 5)}
+                  </Text>
+                </View>
+              );
+            })}
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -557,9 +558,10 @@ const styles = StyleSheet.create({
   timeBlockWrapp: {
     height: 75,
     overflow: 'hidden',
+
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
   },
   openCalendar: {
     width: 160,
