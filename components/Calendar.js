@@ -29,7 +29,8 @@ const dayNames = [
   'Пятница',
   'Суббота',
 ];
-LocaleConfig.locales['fr'] = {
+
+LocaleConfig.locales['ru'] = {
   monthNames: [
     'Январь',
     'Февраль',
@@ -46,9 +47,9 @@ LocaleConfig.locales['fr'] = {
   ],
   monthNamesShort: shortMonthName,
   dayNames,
-  dayNamesShort: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+  dayNamesShort: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
 };
-LocaleConfig.defaultLocale = 'fr';
+LocaleConfig.defaultLocale = 'ru';
 
 const CalendarCustom = ({
   onClose,
@@ -71,7 +72,6 @@ const CalendarCustom = ({
   } = styles;
 
   let date = new Date().getDate();
-
   date.toString().length == 1 ? (date = '0' + date) : null;
   let month = new Date().getMonth() + 1;
   month.toString().length == 1 ? (month = '0' + month) : null;

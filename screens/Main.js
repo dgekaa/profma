@@ -23,7 +23,7 @@ import {
   AsyncStorage,
   ActivityIndicator,
 } from 'react-native';
-import {Query, useMutation, useQuery} from 'react-apollo';
+import {useQuery} from 'react-apollo';
 
 import {
   GET_USERS,
@@ -53,7 +53,7 @@ const screen = Dimensions.get('window');
 const Block = ({el, navigation, dates}) => {
   const {block, blockImg, timeBlock, timeBlockWrapp} = styles;
 
-  const nextFreeTimeByMaster = useQuery(NEXT_APPOINTMENTS, {
+  const nextFreeTimeByMaster = useQuery(NEXT_FREE_TIME_BY_MASTER, {
     variables: {
       master_id: +el.id,
       count: 6,
@@ -64,7 +64,6 @@ const Block = ({el, navigation, dates}) => {
     <TouchableOpacity
       style={block}
       onPress={() => {
-        console.log(el, '+++++++++++++EL');
         navigation.navigate(
           'PublickMasterProfile',
           dates ? el.user.profile : el.profile,
@@ -91,8 +90,10 @@ const Block = ({el, navigation, dates}) => {
             justifyContent: 'space-between',
             marginVertical: 5,
           }}>
-          <View style={{flex: 1}}>
-            <Text style={{fontSize: 10}}>Стоимость сеанса</Text>
+          <View style={{flex: 1.2}}>
+            <Text numberOfLines={1} style={{fontSize: 10}}>
+              Стоимость сеанса
+            </Text>
             <Text style={{fontWeight: 'bold', fontSize: 10}}>!!!!! руб</Text>
           </View>
           <View style={{alignItems: 'flex-end', flex: 1.2}}>
@@ -116,26 +117,34 @@ const Block = ({el, navigation, dates}) => {
           </View>
         </View>
         <View style={timeBlockWrapp}>
-          {nextFreeTimeByMaster.data &&
-            nextFreeTimeByMaster.data.nextAppointments.length &&
-            nextFreeTimeByMaster.data.nextAppointments.map((el, index) => {
-              return (
-                <View key={el.id} style={timeBlock}>
-                  <Text
-                    style={{
-                      color: '#B986DA',
-                      fontSize: 10,
-                      fontWeight: 'bold',
-                    }}>
-                    {el.date.split('-')[2]}{' '}
-                    {shortMonthName[+el.date.split('-')[1] - 1].toLowerCase()}{' '}
-                  </Text>
-                  <Text style={{color: '#B986DA', fontSize: 10}}>
-                    {el.time.slice(0, 5)}
-                  </Text>
-                </View>
-              );
-            })}
+          {!!nextFreeTimeByMaster.data &&
+            !!nextFreeTimeByMaster.data.nextFreeTimeByMaster.length &&
+            nextFreeTimeByMaster.data.nextFreeTimeByMaster[0].times.map(
+              (el, index) => {
+                return (
+                  <View key={index} style={timeBlock}>
+                    <Text
+                      style={{
+                        color: '#B986DA',
+                        fontSize: 10,
+                        fontWeight: 'bold',
+                      }}>
+                      {
+                        nextFreeTimeByMaster.data.nextFreeTimeByMaster[0].date.split(
+                          '-',
+                        )[2]
+                      }{' '}
+                      {shortMonthName[
+                        +nextFreeTimeByMaster.data.nextFreeTimeByMaster[0].date.split(
+                          '-',
+                        )[1] - 1
+                      ].toLowerCase()}{' '}
+                    </Text>
+                    <Text style={{color: '#B986DA', fontSize: 10}}>{el}</Text>
+                  </View>
+                );
+              },
+            )}
         </View>
       </View>
     </TouchableOpacity>
@@ -251,19 +260,11 @@ const Main = ({navigation}) => {
     },
   });
 
-  useEffect(() => {
-    console.log(cityid, '______________cityid');
-    console.log(dates, 'dates');
-    console.log(findMaster, '______________findMaster');
-  }, [findMaster]);
-
   const nextAppointments = useQuery(NEXT_APPOINTMENTS, {
     variables: {
       count: 2,
     },
   });
-
-  console.log(nextAppointments.data, '__nextAppointments___');
 
   useEffect(() => {
     setCityid(
@@ -279,7 +280,6 @@ const Main = ({navigation}) => {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   const showMasters = masters => {
-    console.log(masters, '++++++++++++++++++++++++++');
     let arr = [];
     for (let key in masters) {
       arr.push(key);
@@ -296,16 +296,9 @@ const Main = ({navigation}) => {
     ];
   }
 
-  const reload = () => {
-    USER.refetch();
-  };
-
-  console.log(USER, '___USER');
-  console.log(users, '___users');
+  const reload = () => USER.refetch();
 
   if (USER.error) {
-    console.log(USER.error, 'USERS ERROR++++++++++++++');
-    // if (users.error.networkError) {}
     return <ErrorInternetProblems reload={() => reload()} />;
   } else {
     return (

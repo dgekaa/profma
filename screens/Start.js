@@ -9,12 +9,12 @@ import {
   Image,
   AsyncStorage,
 } from 'react-native';
-import {getToken} from '../util';
 
 const screen = Dimensions.get('window');
 
 const Start = ({navigation}) => {
   const {topText, bottomText} = styles;
+
   return (
     <View style={{flex: 1}}>
       <ImageBackground
