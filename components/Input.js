@@ -27,6 +27,7 @@ export const InputWithText = ({
   errStyle,
   withoutShadow,
   autoFocus,
+  onSubmitEditing,
 }) => {
   const {
     inputWrap,
@@ -63,6 +64,7 @@ export const InputWithText = ({
           style={[input, {color: validationErr ? '#FF3D4B' : '#011627'}]}
           keyboardType={keyboardType}
           editable={editable}
+          onSubmitEditing={onSubmitEditing}
         />
       </View>
       {!!err && <Text style={[errStyleLocal, errStyle]}>{err}</Text>}
@@ -82,6 +84,7 @@ export const InputWithPassword = ({
   onChangeText,
   withoutShadow,
   value,
+  onSubmitEditing,
 }) => {
   const {
     inputWrap,
@@ -114,9 +117,8 @@ export const InputWithPassword = ({
       <View style={inputWrap}>
         <TextInput
           placeholderTextColor="rgba(0,0,0,0.2)"
-          onFocus={() => {
-            setIsShowPlaceholder(false);
-          }}
+          onFocus={() => setIsShowPlaceholder(false)}
+          onSubmitEditing={onSubmitEditing}
           value={value}
           onBlur={() => {
             passwordText

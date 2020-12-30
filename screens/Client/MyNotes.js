@@ -37,8 +37,6 @@ const shortMonthName = [
 ];
 
 const Block = ({el, navigation, key, archive, refetch}) => {
-  console.log(el, 'ELLLLLLLLLLLLLLLLLll');
-
   const [price, setPrice] = useState(0);
   const [offersAll, setOffersAll] = useState([]);
 

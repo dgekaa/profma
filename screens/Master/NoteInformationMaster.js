@@ -197,8 +197,6 @@ const NoteInformationMaster = ({navigation}) => {
     refreshAppointment,
   );
 
-  console.log(MASTER, '____MASTER_____');
-
   const CANCEL = () => {
     DELETE_APPOINTMENT_mutation({
       variables: {
@@ -207,16 +205,11 @@ const NoteInformationMaster = ({navigation}) => {
       optimisticResponse: null,
     })
       .then(res => {
-        console.log(res, 'RES RES DELETE');
         navigation.state.params.refetch();
         navigation.goBack();
       })
       .catch(err => console.log(err, '__ERR DELETE_APPOINTMENT_mutation'));
   };
-
-  useEffect(() => {
-    console.log(appointment, '__appointment');
-  }, [appointment]);
 
   useEffect(() => {
     if (appointment.data && appointment.data.appointment) {
@@ -244,34 +237,29 @@ const NoteInformationMaster = ({navigation}) => {
   );
 
   const ADD = () => {
-    console.log(appointment.data.appointment, 'lllll');
-    console.log(checkboxes, 'checkboxes');
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     checkboxes.forEach(el => {
-      el &&
-        UPDATE_APPOINTMENT_ADD_OFFERS_mutation({
-          variables: {
-            id: +appointment.data.appointment.id,
-            offersid: +el,
-          },
-          optimisticResponse: null,
-        })
-          .then(res => {
-            console.log(res, 'RES UPDATE_APPOINTMENT_ADD_OFFERS');
-            appointment.refetch();
-            setCheckboxes([]);
-            setShowAllServices(false);
+      el
+        ? UPDATE_APPOINTMENT_ADD_OFFERS_mutation({
+            variables: {
+              id: +appointment.data.appointment.id,
+              offersid: +el,
+            },
+            optimisticResponse: null,
           })
-          .catch(err =>
-            console.log(err, '__ERR UPDATE_APPOINTMENT_ADD_OFFERS'),
-          );
+            .then(res => {
+              appointment.refetch();
+              setCheckboxes([]);
+              setShowAllServices(false);
+            })
+            .catch(err =>
+              console.log(err, '__ERR UPDATE_APPOINTMENT_ADD_OFFERS'),
+            )
+        : setShowAllServices(false);
     });
   };
 
   return (
     <View style={{flex: 1}}>
-      {appointment.data &&
-        console.log(appointment.data, '++ appointment.data.appointment')}
       <BackgroundHeader
         navigation={navigation}
         title={
@@ -301,7 +289,8 @@ const NoteInformationMaster = ({navigation}) => {
                 <Text style={{fontSize: 10}}>Мобильный телефон клиента</Text>
 
                 <Text style={text}>
-                  {appointment.data.appointment.client.profile.mobile_phone}
+                  {appointment.data.appointment.client.profile.mobile_phone ||
+                    '-'}
                 </Text>
               </View>
             </View>
@@ -429,7 +418,6 @@ const NoteInformationMaster = ({navigation}) => {
             {appointment.data.appointment &&
               appointment.data.appointment.status === 'Pending' && (
                 <View>
-                  {console.log(appointment, 'APP')}
                   <ButtonDefault
                     style={{marginBottom: 8}}
                     active={true}
@@ -493,7 +481,6 @@ const NoteInformationMaster = ({navigation}) => {
                 Все услуги
               </Text>
               <ScrollView style={{paddingHorizontal: 8}}>
-                {/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */}
                 {MASTER.data &&
                   !!MASTER.data.me.offers.length &&
                   MASTER.data.me.offers.map((el, i) => {
@@ -571,6 +558,16 @@ const styles = StyleSheet.create({
   borderBottom: {
     borderBottomColor: 'rgba(0,0,0,0.2)',
     borderBottomWidth: 0.4,
+  },
+  checkbox: {
+    width: 14,
+    height: 14,
+    borderRadius: 2,
+    backgroundColor: '#fff',
+    borderWidth: 3,
+    borderColor: '#DFDFE4',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

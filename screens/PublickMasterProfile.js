@@ -89,6 +89,8 @@ const DropdownBlock = ({
   setSlideBlock,
   checkboxes,
   setCheckboxes,
+  offers,
+  setAllPrice,
 }) => {
   const {blockInGroup, borderBottom, checkbox} = styles;
 
@@ -126,7 +128,13 @@ const DropdownBlock = ({
             )}
           </View>
           <View>
-            <Text style={{fontWeight: 'bold', fontSize: 13}}>
+            <Text
+              numberOfLines={1}
+              style={{
+                fontWeight: 'bold',
+                fontSize: 13,
+                width: '95%',
+              }}>
               {el.service.name}
             </Text>
             <Text style={{fontSize: 10}}>
@@ -137,7 +145,9 @@ const DropdownBlock = ({
         </View>
         <View style={{flex: 2, flexDirection: 'row', alignItems: 'center'}}>
           <View style={{flex: 7}}>
-            <Text style={{fontSize: 10}}>Стоимость услуги</Text>
+            <Text numberOfLines={1} style={{fontSize: 10}}>
+              Стоимость услуги
+            </Text>
             <Text style={{fontWeight: 'bold', fontSize: 13}}>
               {el.price_by_pack.price} руб
             </Text>
@@ -151,11 +161,24 @@ const DropdownBlock = ({
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
-              onPress={e => {
+              onPress={() => {
                 checkboxes[index]
                   ? (checkboxes[index] = false)
                   : (checkboxes[index] = el.id);
+
                 setCheckboxes([...checkboxes]);
+
+                let priceSumm = 0;
+                checkboxes.forEach(CH => {
+                  if (CH) {
+                    offers.forEach(offer => {
+                      if (+offer.id === +CH) {
+                        priceSumm += offer.price_by_pack.price;
+                      }
+                    });
+                  }
+                });
+                setAllPrice(priceSumm);
               }}>
               <View
                 style={[
@@ -285,6 +308,7 @@ const PublickMasterProfile = ({navigation}) => {
       });
     }
   };
+
   const MASTER = useQuery(GET_USER, {
     variables: {id: +navigation.state.params.id},
   });
@@ -296,29 +320,30 @@ const PublickMasterProfile = ({navigation}) => {
   }, [MASTER]);
 
   const [slideBlock, setSlideBlock] = useState(
-    new Array(services.length).fill(false),
-  );
-  const [checkboxes, setCheckboxes] = useState(
-    new Array(services.length).fill(false),
-  );
-  const [activeTime, setActiveTime] = useState('');
-  const [dates, setDates] = useState([]);
-  const [freeTimeByMaster, setFreeTimeByMaster] = useState([]);
-  const [choosedActiveTime, setChoosedActiveTime] = useState(null);
+      new Array(services.length).fill(false),
+    ),
+    [checkboxes, setCheckboxes] = useState(
+      new Array(services.length).fill(false),
+    ),
+    [activeTime, setActiveTime] = useState(''),
+    [dates, setDates] = useState([]),
+    [freeTimeByMaster, setFreeTimeByMaster] = useState([]),
+    [choosedActiveTime, setChoosedActiveTime] = useState(null),
+    [allPrice, setAllPrice] = useState(0),
+    [CHCecked, setCHCecked] = useState(false);
 
   const FREETIME = useQuery(FREE_TIME, {
-    variables: {
-      master_id: MASTER.data && MASTER.data.user.profile.id,
-      dates: [dates[0]],
-    },
-  });
-
-  const NEXT_FREETIME = useQuery(NEXT_FREE_TIME_BY_MASTER, {
-    variables: {
-      master_id: MASTER.data && MASTER.data.user.profile.id,
-      count: 3,
-    },
-  });
+      variables: {
+        master_id: MASTER.data && MASTER.data.user.profile.id,
+        dates: [dates[0]],
+      },
+    }),
+    NEXT_FREETIME = useQuery(NEXT_FREE_TIME_BY_MASTER, {
+      variables: {
+        master_id: MASTER.data && MASTER.data.user.profile.id,
+        count: 3,
+      },
+    });
 
   const [CREATE_APPOINTMENT_mutation] = useMutation(CREATE_APPOINTMENT);
 
@@ -328,11 +353,15 @@ const PublickMasterProfile = ({navigation}) => {
       setFreeTimeByMaster(FREETIME.data.freeTimeByMaster[0].times);
   }, [FREETIME]);
 
+  useEffect(() => {
+    checkboxes.forEach(el => {
+      el && setCHCecked(true);
+    });
+  }, [checkboxes]);
+
   const showMasters = masters => {
     let arr = [];
-    for (let key in masters) {
-      arr.push(key);
-    }
+    for (let key in masters) arr.push(key);
     setDates(arr);
   };
 
@@ -396,11 +425,13 @@ const PublickMasterProfile = ({navigation}) => {
                         <DropdownBlock
                           index={i}
                           el={el}
+                          offers={MASTER.data.user.offers}
                           active={false}
                           slideBlock={slideBlock}
                           setSlideBlock={setSlideBlock}
                           checkboxes={checkboxes}
                           setCheckboxes={setCheckboxes}
+                          setAllPrice={setAllPrice}
                         />
                       </View>
                     );
@@ -527,13 +558,23 @@ const PublickMasterProfile = ({navigation}) => {
                 {MASTER.data.user.profile.about_me}
               </Text>
             </View>
-            <ButtonDefault
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}
-              title="Подтвердить запись"
-              rightTitle={'цена ' + ' руб'}
-              onPress={() => CREATE()}
-              active={true}
-            />
+
+            {allPrice && CHCecked ? (
+              <ButtonDefault
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}
+                title="Подтвердить запись"
+                rightTitle={allPrice + ' руб'}
+                onPress={() => CREATE()}
+                active={true}
+              />
+            ) : (
+              <ButtonDefault
+                style={{flexDirection: 'row', justifyContent: 'space-around'}}
+                title="Вы не указали детали сеанса"
+                onPress={() => {}}
+                active={true}
+              />
+            )}
           </View>
         </ScrollView>
         {(activeImg || activeImg === 0 || activeImg === '0') && (
@@ -624,10 +665,12 @@ const PublickMasterProfile = ({navigation}) => {
                           <DropdownBlock
                             index={i}
                             el={el}
+                            offers={MASTER.data.user.offers}
                             slideBlock={slideBlock}
                             setSlideBlock={setSlideBlock}
                             checkboxes={checkboxes}
                             setCheckboxes={setCheckboxes}
+                            setAllPrice={setAllPrice}
                           />
                         </View>
                       );

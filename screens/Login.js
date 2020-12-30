@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {useMutation} from 'react-apollo';
-import {signOut, signIn, getToken} from '../util';
 
 import {
   Text,
@@ -8,6 +7,7 @@ import {
   View,
   Dimensions,
   KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
 import {ButtonDefault, ButtonDisabled, ButtonError} from '../components/Button';
 import {InputWithText, InputWithPassword} from '../components/Input';
@@ -29,11 +29,15 @@ const Login = ({navigation, handleChangeLoginState}) => {
     loginWrap,
   } = stylesClientRegistration;
 
-  const [iconName, setIconName] = useState('closedEye');
-  const [hidePassword, setHidePassword] = useState(true);
-  const [fillErr, setFillErr] = useState('');
-  const [validationErr, setValidationErr] = useState('');
-  const [regBtnText, setRegBtnText] = useState('');
+  const height = Dimensions.get('window').height,
+    width = Dimensions.get('window').width;
+
+  const [iconName, setIconName] = useState('closedEye'),
+    [hidePassword, setHidePassword] = useState(true),
+    [fillErr, setFillErr] = useState(''),
+    [validationErr, setValidationErr] = useState(''),
+    [regBtnText, setRegBtnText] = useState(''),
+    [isKeyboard, setisKeyboard] = useState(false);
 
   const [LOGIN_mutation] = useMutation(LOGIN);
 
@@ -46,15 +50,10 @@ const Login = ({navigation, handleChangeLoginState}) => {
       optimisticResponse: null,
     })
       .then(res => {
-        console.log(res, '______________LOGIN___________RES');
         handleChangeLoginState(true, res.data.login.access_token);
-
         navigation.navigate('Main', {ID: res.data.login.user.id});
       })
-      .catch(err => {
-        setValidationErr(true);
-        console.log(err, '___Err');
-      });
+      .catch(err => setValidationErr(true));
   };
 
   const openCloseEye = () => {
@@ -67,8 +66,21 @@ const Login = ({navigation, handleChangeLoginState}) => {
     }
   };
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  useEffect(() => {
+    Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
+    Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
+
+    return () => {
+      Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
+      Keyboard.removeListener('keyboardDidHide', _keyboardDidHide);
+    };
+  }, []);
+
+  const _keyboardDidShow = () => setisKeyboard(true),
+    _keyboardDidHide = () => setisKeyboard(false);
+
+  const [email, setEmail] = useState(''),
+    [password, setPassword] = useState('');
 
   useEffect(() => {
     fillErr
@@ -79,30 +91,30 @@ const Login = ({navigation, handleChangeLoginState}) => {
   }, [fillErr, validationErr]);
 
   useEffect(() => {
-    if (email && password) {
-      setFillErr('');
-    } else {
-      setFillErr('Поля не заполнены');
-    }
+    email && password ? setFillErr('') : setFillErr('Поля не заполнены');
   }, [email, password]);
 
-  useEffect(() => {
-    getToken()
-      .then(res => console.log(res, 'getToken TOKEN RES'))
-      .catch(err => console.log(res, 'getToken TOKEN ERR'));
-  }, []);
-
   return (
-    <KeyboardAvoidingView style={loginWrap}>
+    <KeyboardAvoidingView
+      style={loginWrap}
+      behavior={Platform.OS === 'ios' ? 'padding' : null}>
       <Header navigation={navigation} />
       <View style={[container, {flex: 1}]}>
         <View style={topTextWrap}>
-          <Text style={ProfMa}>Prof.Ma</Text>
-          <Text style={topText}>
-            Войдите в свой аккаунт, чтобы начать использовать приложение😎
-          </Text>
+          <Text style={[ProfMa, height < 650 && {fontSize: 20}]}>Prof.Ma</Text>
+          {!isKeyboard && (
+            <Text
+              style={[
+                topText,
+                height < 650 && {fontSize: 20},
+                width < 340 && {width: '100%'},
+              ]}>
+              Войдите в свой аккаунт, чтобы начать использовать приложение😎
+            </Text>
+          )}
         </View>
-        <View style={inputGroup}>
+
+        <View style={[inputGroup, height < 650 && {marginTop: 40}]}>
           <InputWithText
             autoFocus={true}
             onChangeText={text => {
@@ -114,6 +126,7 @@ const Login = ({navigation, handleChangeLoginState}) => {
             placeholder="example@site.com"
             keyboardType="email-address"
             validationErr={validationErr}
+            onSubmitEditing={Keyboard.dismiss}
           />
           <InputWithPassword
             onChangeText={text => {
@@ -128,16 +141,19 @@ const Login = ({navigation, handleChangeLoginState}) => {
             forgetPassword={true}
             validationErr={validationErr}
             onPressPassRecovery={() => navigation.navigate('PasswordRecovery')}
+            onSubmitEditing={Keyboard.dismiss}
           />
         </View>
+
         <View style={login}>
-          <View style={politic}>
+          <View style={[politic, height < 650 && {paddingHorizontal: 10}]}>
             <Text style={politicText}>
               Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей
               <Text style={specialText}> Политикой конфиденциальности</Text> и
               <Text style={specialText}> Условиями использования</Text>
             </Text>
           </View>
+
           {!!fillErr && !validationErr && (
             <ButtonDisabled title={regBtnText} style={{marginBottom: 8}} />
           )}
@@ -205,8 +221,6 @@ const stylesClientRegistration = StyleSheet.create({
     fontFamily: 'FuturaPT-Medium',
   },
   specialText: {
-    fontFamily: 'FuturaPT-Medium',
-    fontSize: 13,
     color: '#B986DA',
   },
 });

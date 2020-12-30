@@ -9,7 +9,7 @@ import SvgUri from 'react-native-svg-uri';
 import DefaultIcon from '../../img/Default.svg';
 import PressedIcon from '../../img/Pressed.svg';
 
-import {Query, useMutation, useQuery} from 'react-apollo';
+import {useMutation, useQuery} from 'react-apollo';
 
 import {GET_SERVICES, CREATE_OFFER, ME} from '../../QUERYES';
 

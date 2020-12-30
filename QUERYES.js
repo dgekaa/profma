@@ -542,6 +542,13 @@ export const GET_USERS = gql`
             time
           }
         }
+        offers {
+          price_by_pack {
+            id
+            duration
+            price
+          }
+        }
       }
       paginatorInfo {
         count
@@ -700,11 +707,16 @@ export const DELETE_START_SESSION = gql`
 `;
 
 export const UPDATE_PASSWORD = gql`
-  mutation UPDATEPASSWORD($password: String!, $password_confirmation: String!) {
+  mutation UPDATEPASSWORD(
+    $password: String!
+    $password_confirmation: String!
+    $old_password: String!
+  ) {
     updatePassword(
       input: {
         password: $password
         password_confirmation: $password_confirmation
+        old_password: $old_password
       }
     ) {
       status
@@ -723,6 +735,12 @@ export const FIND_MASTER = gql`
           email
           name
           work_address
+        }
+        offers {
+          price_by_pack {
+            duration
+            price
+          }
         }
       }
       dates {

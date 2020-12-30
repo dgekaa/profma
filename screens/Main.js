@@ -3,6 +3,7 @@ import SvgUri from 'react-native-svg-uri';
 import CalendarColorIcon from '../img/CalendarColor.svg';
 import UserWhiteIcon from '../img/UserWhite.svg';
 import CrossIcon from '../img/cross.svg';
+import Girl from '../img/girl.png';
 import CalendarSvgIcon from '../img/CalendarSVG.svg';
 import ErrorInternetProblems from './ErrorInternetProblems';
 
@@ -20,7 +21,6 @@ import {
   ImageBackground,
   Dimensions,
   TextInput,
-  AsyncStorage,
   ActivityIndicator,
 } from 'react-native';
 import {useQuery} from 'react-apollo';
@@ -53,6 +53,8 @@ const screen = Dimensions.get('window');
 const Block = ({el, navigation, dates}) => {
   const {block, blockImg, timeBlock, timeBlockWrapp} = styles;
 
+  const width = Dimensions.get('window').width;
+
   const nextFreeTimeByMaster = useQuery(NEXT_FREE_TIME_BY_MASTER, {
     variables: {
       master_id: +el.id,
@@ -60,17 +62,49 @@ const Block = ({el, navigation, dates}) => {
     },
   });
 
+  const getMinimalPrice = () => {
+    let minimalPrice = Infinity;
+    const getPrice = data => {
+      data.forEach(index => {
+        if (index.price_by_pack.price < minimalPrice)
+          minimalPrice = index.price_by_pack.price;
+      });
+    };
+    if (el.offers && el.offers.length) {
+      getPrice(el.offers);
+      return minimalPrice;
+    } else if (el.user && el.user.offers && el.user.offers.length) {
+      getPrice(el.user.offers);
+      return minimalPrice;
+    } else {
+      return '';
+    }
+  };
+
   return (
     <TouchableOpacity
       style={block}
-      onPress={() => {
+      onPress={() =>
         navigation.navigate(
           'PublickMasterProfile',
           dates ? el.user.profile : el.profile,
-        );
-      }}>
-      <View style={{width: 140}}>
-        {/* <Image style={blockImg} source={{uri: el.img}} /> */}
+        )
+      }>
+      <View style={width < 340 ? {width: 100, marginRight: 10} : {width: 140}}>
+        {el.img ? (
+          <Image
+            style={[blockImg, width < 340 && {width: 100}]}
+            source={{uri: el.img}}
+          />
+        ) : (
+          <Image
+            style={[blockImg, width < 340 && {width: 100}]}
+            source={require('../img/girl.png')}
+            source={{
+              uri: 'https://hornews.com/upload/images/blank-avatar.jpg',
+            }}
+          />
+        )}
       </View>
       <View style={{flex: 1}}>
         <View
@@ -94,11 +128,13 @@ const Block = ({el, navigation, dates}) => {
             <Text numberOfLines={1} style={{fontSize: 10}}>
               Стоимость сеанса
             </Text>
-            <Text style={{fontWeight: 'bold', fontSize: 10}}>!!!!! руб</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 10}}>
+              {getMinimalPrice()} {getMinimalPrice() ? 'руб' : '-'}
+            </Text>
           </View>
           <View style={{alignItems: 'flex-end', flex: 1.2}}>
             <Text style={{fontSize: 10}} numberOfLines={1}>
-              {(el.profile && el.profile.work_address) || 'Адрес не задан'}
+              {(el.profile && el.profile.work_address) || '-'}
             </Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               {/* {el.metro && ( */}
@@ -112,7 +148,7 @@ const Block = ({el, navigation, dates}) => {
                 }}
               />
               {/* )} */}
-              <Text style={{fontSize: 10}}>?МЕТРО?</Text>
+              <Text style={{fontSize: 10}}>{el.metro || '-'}</Text>
             </View>
           </View>
         </View>
@@ -281,9 +317,7 @@ const Main = ({navigation}) => {
 
   const showMasters = masters => {
     let arr = [];
-    for (let key in masters) {
-      arr.push(key);
-    }
+    for (let key in masters) arr.push(key);
     setDates(arr);
   };
 
@@ -329,8 +363,10 @@ const Main = ({navigation}) => {
                   style={nearestSeans}
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}>
-                  {nextAppointments.data.nextAppointments.map(el => (
-                    <NearestSeansBlock el={el} navigation={navigation} />
+                  {nextAppointments.data.nextAppointments.map((el, i) => (
+                    <View key={i}>
+                      <NearestSeansBlock el={el} navigation={navigation} />
+                    </View>
                   ))}
                 </ScrollView>
               )}
@@ -370,9 +406,9 @@ const Main = ({navigation}) => {
                   !!users.data && (
                     <FlatList
                       data={users.data.users.data}
-                      renderItem={({item}) => {
-                        return <Block navigation={navigation} el={item} />;
-                      }}
+                      renderItem={({item}) => (
+                        <Block navigation={navigation} el={item} />
+                      )}
                       keyExtractor={item =>
                         dates ? item.user.id : item.id.toString()
                       }

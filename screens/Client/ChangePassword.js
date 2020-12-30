@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {InputWithPassword} from '../../components/Input';
 import {ButtonDisabled, ButtonDefault} from '../../components/Button';
 
 import {Text, View, StyleSheet, Image} from 'react-native';
-import {Query, useMutation, useQuery} from 'react-apollo';
+import {useMutation} from 'react-apollo';
 
-import {UPDATE_PASSWORD} from '../../QUERYES';
+import {UPDATE_PASSWORD, ME} from '../../QUERYES';
 
 const ChangePassword = ({navigation}) => {
   const {
@@ -33,6 +33,7 @@ const ChangePassword = ({navigation}) => {
       variables: {
         password: pass,
         password_confirmation: repass,
+        old_password: 'qweasdzxc',
       },
       optimisticResponse: null,
     })
@@ -43,7 +44,11 @@ const ChangePassword = ({navigation}) => {
       })
       .catch(err => {
         setValidationErr(true);
-        console.log(err, '__ERR PASSWORD');
+        if (JSON.stringify(err.networkError)) {
+          navigation.navigate('ErrorInternetProblems', {
+            navigation: navigation,
+          });
+        }
       });
   };
 

@@ -1,12 +1,10 @@
-import React, {useState, useEffect} from 'react';
-
-import {Text, StyleSheet, View, TouchableOpacity, Image} from 'react-native';
+import React from 'react';
+import {Text, StyleSheet, View, Image} from 'react-native';
 import {ButtonDefault} from '../components/Button';
 
-const ErrorInternetProblems = ({navigation, reload}) => {
+const ErrorInternetProblems = ({navigation}) => {
   const {
     container,
-    img,
     topText,
     bottomText,
     topTextContainer,
@@ -24,7 +22,7 @@ const ErrorInternetProblems = ({navigation, reload}) => {
         Проверьте соединение с сетью и попробуйте обновить страницу.
       </Text>
       <View style={imgContainer}>
-        <Image style={img} source={require('../img/girl3.png')} />
+        <Image source={require('../img/girl3.png')} />
       </View>
       <View style={buttonGroup}>
         <ButtonDefault
@@ -32,11 +30,10 @@ const ErrorInternetProblems = ({navigation, reload}) => {
           title="обновить страницу"
           active={true}
           onPress={() => {
-            // navigation.navigate('Main');
+            navigation.navigate('Main');
             // navigation.navigate(navigation.state.params.ROUTE);
             // navigation.goBack();
-            reload();
-            // console.log(navigation, 'ERR NAVIGATION');
+            // reload();
           }}
         />
         <ButtonDefault title="обратиться в поддержку Prof.ma" />
@@ -71,7 +68,6 @@ const styles = StyleSheet.create({
   buttonGroup: {
     marginBottom: 8,
   },
-  img: {},
 });
 
 export default ErrorInternetProblems;

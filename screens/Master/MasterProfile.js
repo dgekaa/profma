@@ -1,6 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {Query, useMutation, useQuery} from 'react-apollo';
-import {signOut, getToken} from '../../util';
+import React, {useState} from 'react';
+import {useMutation, useQuery} from 'react-apollo';
 import ErrorInternetProblems from '../ErrorInternetProblems';
 import {
   Text,
@@ -56,13 +55,6 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
   };
 
   if (USER.error) {
-    console.log(USER.error, '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-
-    // if (users.error.networkError) {}
-    // return navigation.navigate('ErrorInternetProblems', {
-    //   ROUTE: navigation.state.routeName,
-    // });
-
     return <ErrorInternetProblems reload={() => reload()} />;
   } else {
     return (

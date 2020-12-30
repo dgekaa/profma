@@ -7,6 +7,7 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
+  Keyboard,
 } from 'react-native';
 import {useMutation} from 'react-apollo';
 
@@ -15,8 +16,6 @@ import {InputWithText, InputWithPassword} from '../components/Input';
 import {Header} from '../components/BackgroundHeader';
 
 import {REGISTER, CREATE_PROFILE} from '../QUERYES';
-import {signIn} from '../util';
-import {set} from 'react-native-reanimated';
 
 const Registration = ({navigation, handleChangeLoginState}) => {
   const {
@@ -29,7 +28,11 @@ const Registration = ({navigation, handleChangeLoginState}) => {
     politic,
     btnGroup,
     registrtionWrap,
+    bottomTextBtn,
   } = stylesClientRegistration;
+
+  const width = Dimensions.get('window').width,
+    height = Dimensions.get('window').height;
 
   const [textAd, setTextAd] = useState(
     'Лучшие мастера маникюра по самой низкой цене + Кэшбэк☝',
@@ -42,17 +45,10 @@ const Registration = ({navigation, handleChangeLoginState}) => {
   const [hidePassword, setHidePassword] = useState(true);
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [isKeyBoard, setisKeyboard] = useState('');
 
   const [REGISTER_mutation] = useMutation(REGISTER);
   const [CREATE_PROFILE_mutation] = useMutation(CREATE_PROFILE);
-
-  useEffect(() => {
-    fillErr
-      ? setRegBtnText('Недостаточно данных для регистрации')
-      : validationErr
-      ? setRegBtnText('проверьте введённые данные')
-      : setRegBtnText('Зарегистрироваться');
-  }, [fillErr]);
 
   useEffect(() => {
     fillErr
@@ -86,6 +82,19 @@ const Registration = ({navigation, handleChangeLoginState}) => {
     }
   };
 
+  useEffect(() => {
+    Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
+    Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
+
+    return () => {
+      Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
+      Keyboard.removeListener('keyboardDidHide', _keyboardDidHide);
+    };
+  }, []);
+
+  const _keyboardDidShow = () => setisKeyboard(true);
+  const _keyboardDidHide = () => setisKeyboard(false);
+
   const whoObj = {
     Master: 'Master',
     Client: 'Client',
@@ -96,12 +105,8 @@ const Registration = ({navigation, handleChangeLoginState}) => {
       variables: {},
       optimisticResponse: null,
     })
-      .then(result => {
-        console.log(result, '_____res CREATE PROFILE');
-        console.log(token, '_____CREATE PROFILE token');
-        navigation.navigate('Main', {ME: token});
-      })
-      .catch(err => console.log(err, '__!!!!ERR'));
+      .then(result => navigation.navigate('Main', {ME: token}))
+      .catch(err => {});
   };
 
   const register = () => {
@@ -115,25 +120,33 @@ const Registration = ({navigation, handleChangeLoginState}) => {
       optimisticResponse: null,
     })
       .then(res => {
-        console.log(res, '__RES REGISTER');
         handleChangeLoginState(true, res.data.register.tokens.access_token);
         createProfile(res);
       })
-      .catch(err => {
-        console.log(err, '__ERR');
-        setValidationErr(true);
-      });
+      .catch(err => setValidationErr(true));
   };
 
   return (
-    <KeyboardAvoidingView style={registrtionWrap}>
+    <KeyboardAvoidingView
+      style={registrtionWrap}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <Header navigation={navigation} />
       <View style={[container, {flex: 1}]}>
-        <View style={[topTextWrap]}>
-          <Text style={ProfMa}>Prof.Ma</Text>
-          <Text style={topText}>{textAd}</Text>
-        </View>
-
+        {!isKeyBoard && (
+          <View style={[topTextWrap, height < 650 && {marginBottom: 10}]}>
+            <Text style={[ProfMa, height < 650 && {fontSize: 20}]}>
+              Prof.Ma
+            </Text>
+            <Text
+              style={[
+                topText,
+                width < 340 && {width: '100%'},
+                height < 650 && {fontSize: 20},
+              ]}>
+              {textAd}
+            </Text>
+          </View>
+        )}
         <View>
           <View style={[btnGroup]}>
             <ButtonDefault
@@ -180,14 +193,16 @@ const Registration = ({navigation, handleChangeLoginState}) => {
           </View>
         </View>
 
-        <View style={{flex: 1, justifyContent: 'flex-end'}}>
-          <View style={politic}>
-            <Text style={politicText}>
-              Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей
-              <Text style={specialText}> Политикой конфиденциальности</Text> и
-              <Text style={specialText}> Условиями использования</Text>
-            </Text>
-          </View>
+        <View style={bottomTextBtn}>
+          {height < 650 && !isKeyBoard && (
+            <View style={([politic], height < 650 && {paddingBottom: 16})}>
+              <Text style={politicText}>
+                Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей
+                <Text style={specialText}> Политикой конфиденциальности</Text> и
+                <Text style={specialText}> Условиями использования</Text>
+              </Text>
+            </View>
+          )}
 
           {!!fillErr ||
             (!!validationErr && (
@@ -258,6 +273,11 @@ const stylesClientRegistration = StyleSheet.create({
   specialText: {
     fontSize: 13,
     color: '#B986DA',
+  },
+  bottomTextBtn: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    marginBottom: 8,
   },
 });
 

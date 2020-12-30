@@ -51,16 +51,12 @@ const Start = ({navigation}) => {
           style={{marginBottom: 8}}
           title="Войти"
           active={false}
-          onPress={() => {
-            navigation.navigate('Login');
-          }}
+          onPress={() => navigation.navigate('Login')}
         />
         <ButtonDefault
           title="Зарегистрироваться"
           active={true}
-          onPress={() => {
-            navigation.navigate('Registration');
-          }}
+          onPress={() => navigation.navigate('Registration')}
         />
       </View>
     </View>

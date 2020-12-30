@@ -1,12 +1,6 @@
 import React, {useState, useRef} from 'react';
 
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  AsyncStorage,
-} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
@@ -15,9 +9,7 @@ import CalendarSvgIcon from '../../img/CalendarSVG.svg';
 import UserIcon from '../../img/User.svg';
 import PasswordIcon from '../../img/Password.svg';
 
-import {signOut, getToken, signIn} from '../../util';
-
-import {Query, useMutation, useQuery} from 'react-apollo';
+import {useMutation, useQuery} from 'react-apollo';
 import {LOGOUT, ME} from '../../QUERYES';
 
 const ClientProfile = ({navigation, handleChangeLoginState}) => {
@@ -43,7 +35,7 @@ const ClientProfile = ({navigation, handleChangeLoginState}) => {
     <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} title="Мой профиль" />
       <View style={{paddingHorizontal: 10, flex: 1}}>
-        <View style={{}}>
+        <View>
           {/* МОИ ЗАПИСИ */}
           <TouchableOpacity
             style={first}
@@ -54,7 +46,7 @@ const ClientProfile = ({navigation, handleChangeLoginState}) => {
             <Text style={text}>Мои записи</Text>
           </TouchableOpacity>
         </View>
-        <View style={{}}>
+        <View>
           <View style={groupBlock}>
             {/* ПЕРСОНАЛЬНЫЕ ДАННЫЕ*/}
             <TouchableOpacity
@@ -149,7 +141,14 @@ const ClientProfile = ({navigation, handleChangeLoginState}) => {
                   handleChangeLoginState(false);
                   navigation.navigate('Start');
                 })
-                .catch(err => console.log(err));
+                .catch(err => {
+                  console.log(err, '-----');
+                  if (JSON.stringify(err.networkError)) {
+                    navigation.navigate('ErrorInternetProblems', {
+                      navigation: navigation,
+                    });
+                  }
+                });
             }}
           />
         )}

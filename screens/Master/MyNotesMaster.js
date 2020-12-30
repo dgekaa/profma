@@ -55,11 +55,13 @@ const Block = ({el, navigation, archive, refetch}) => {
 
     let offersAllLocal = [];
     el.offers.length &&
-      el.offers.forEach((elem, i) => {
-        offersAllLocal.push(elem.service.name);
-      });
+      el.offers.forEach(
+        (elem, i) => i < 2 && offersAllLocal.push(elem.service.name),
+      );
     setOffersAll(offersAllLocal);
   }, []);
+
+  const isArchColore = archive ? '#A6ADB3' : 'black';
 
   return (
     <TouchableOpacity
@@ -76,13 +78,13 @@ const Block = ({el, navigation, archive, refetch}) => {
             style={{marginRight: 8}}
             svgXmlData={archive ? CalendarGrayIcon : CalendarColorIcon}
           />
-          <Text style={[dateText, {color: archive ? '#A6ADB3' : 'black'}]}>
+          <Text style={[dateText, {color: isArchColore}]}>
             {el.date.split('-')[2]} {shortMonthName[+el.date.split('-')[1]]} в{' '}
             {el.time.slice(0, 5)}
           </Text>
         </View>
         <View style={{flex: 4}}>
-          <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
+          <Text style={[textBold, {color: isArchColore}]}>
             {!!price && price + ' руб.'}
           </Text>
         </View>
@@ -96,16 +98,14 @@ const Block = ({el, navigation, archive, refetch}) => {
         />
         <View style={{flex: 1}}>
           <View style={{flex: 1}}>
-            <Text style={{fontSize: 10, color: archive ? '#A6ADB3' : 'black'}}>
-              Клиент
-            </Text>
+            <Text style={{fontSize: 10, color: isArchColore}}>Клиент</Text>
 
-            <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
+            <Text style={[textBold, {color: isArchColore}]}>
               {el.client.profile.name}
             </Text>
           </View>
           <View style={{flex: 1}}>
-            <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
+            <Text style={[textBold, {color: isArchColore}]}>
               {el.client.profile.home_address}
             </Text>
 
@@ -114,15 +114,11 @@ const Block = ({el, navigation, archive, refetch}) => {
         </View>
         <View style={{flex: 1}}>
           <View style={{flex: 1}}>
-            <Text style={{fontSize: 10, color: archive ? '#A6ADB3' : 'black'}}>
-              Услуга
-            </Text>
+            <Text style={{fontSize: 10, color: isArchColore}}>Услуга</Text>
+            {console.log(offersAll, '---offersAll')}
             {!!offersAll.length &&
               offersAll.map((el, i) => (
-                <Text
-                  style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
-                  {el}
-                </Text>
+                <Text style={[textBold, {color: isArchColore}]}>{el}</Text>
               ))}
           </View>
         </View>
@@ -170,9 +166,7 @@ const MyNotesMaster = ({navigation}) => {
           <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
             <Text style={blockTitle}>Активные записи</Text>
             {USER.data.me.master_appointments.map((el, i) => {
-              console.log(el.status, 'SSSSSSSSSSSSSSSSSss');
               if (el.status === 'Pending') {
-                console.log(navigation, '___');
                 return (
                   <View key={i}>
                     <Block
