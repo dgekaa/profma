@@ -22,6 +22,7 @@ import {
   Dimensions,
   TextInput,
   ActivityIndicator,
+  Platform
 } from 'react-native';
 import {useQuery} from 'react-apollo';
 
@@ -51,7 +52,7 @@ const shortMonthName = [
 const screen = Dimensions.get('window');
 
 const Block = ({el, navigation, dates}) => {
-  const {block, blockImg, timeBlock, timeBlockWrapp} = styles;
+  const {block, blockImg, timeBlock, timeBlockWrapp,blockIos} = styles;
 
   const width = Dimensions.get('window').width;
 
@@ -83,7 +84,7 @@ const Block = ({el, navigation, dates}) => {
 
   return (
     <TouchableOpacity
-      style={block}
+      style={[block,  Platform.OS === 'ios' ? blockIos : blockAndroid]}
       onPress={() =>
         navigation.navigate(
           'PublickMasterProfile',
@@ -269,7 +270,7 @@ const NearestSeansBlock = ({el, navigation}) => {
 const Main = ({navigation}) => {
   const {
     prifileBtn,
-    openCalendar,
+    openCalendarIos,openCalendarAndroid,
     header,
     foundMasters,
     closeBtn,
@@ -461,7 +462,7 @@ const Main = ({navigation}) => {
         )} */}
         {!isCalendarVisible && (
           <TouchableOpacity
-            style={[openCalendar, {top: screen.height - 80}]}
+            style={[Platform.OS === 'ios' ? openCalendarIos : openCalendarAndroid,, {top: screen.height - 80}]}
             onPress={() => setIsCalendarVisible(true)}>
             <SvgUri svgXmlData={CalendarSvgIcon} />
             <Text style={{marginLeft: 5}}>Выбрать дату</Text>
@@ -564,11 +565,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'row',
     marginTop: 8,
+  },
+  blockIos:{
+    shadowColor: '#000',
+    shadowOpacity: 0.01,
+    shadowRadius: 0.1,
+},
+blockAndroid:{
     shadowColor: '#000',
     shadowOpacity: 0.18,
     shadowRadius: 1.0,
     elevation: 0.4,
-  },
+},
   blockImg: {
     width: 130,
     height: 130,
@@ -606,6 +614,38 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.5,
   },
+  openCalendarIos: {
+    width: 160,
+    height: 45,
+    borderRadius: 45,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    alignSelf: 'center',
+    position: 'absolute',
+    backgroundColor: '#fff',
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+      shadowOffset: {
+          width: 0,
+          height: 1,
+      },
+  },
+openCalendarAndroid: {
+   width: 160,
+   height: 45,
+   borderRadius: 45,
+   justifyContent: 'center',
+   alignItems: 'center',
+   flexDirection: 'row',
+   alignSelf: 'center',
+   position: 'absolute',
+   backgroundColor: '#fff',
+   elevation: 1,
+   shadowColor: '#000',
+   shadowOpacity: 0.5,
+ },
   foundMasters: {
     flex: 1,
     flexDirection: 'row',
