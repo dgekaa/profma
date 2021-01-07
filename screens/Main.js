@@ -388,8 +388,8 @@ const Main = ({navigation}) => {
                       fontSize: 13,
                       fontWeight: 'bold',
                     }}>
-                    {dates.map(el => (
-                      <Text>
+                    {dates.map((el ,i)=> (
+                      <Text key={i}>
                         {el.split('-')[2]}{' '}
                         {shortMonthName[+el.split('-')[1] - 1].toLowerCase()},{' '}
                       </Text>

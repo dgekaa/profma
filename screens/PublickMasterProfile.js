@@ -51,9 +51,9 @@ const GalereaBlock = ({img, index, onPress}) => {
   const {galereaImgContainer, galereaImg} = styles;
   return (
     <TouchableOpacity
-      onPress={() => {
-        onPress(index);
-      }}
+      onPress={() => 
+        onPress(index)
+      }
       style={galereaImgContainer}>
       <Image
         style={galereaImg}
@@ -222,9 +222,9 @@ const AnotherBlock = ({title, onPress}) => {
           paddingRight: 16,
         },
       ]}
-      onPress={() => {
-        onPress();
-      }}>
+      onPress={() => 
+        onPress()
+      }>
       <Text style={{fontWeight: 'bold'}}>{title}</Text>
       <SvgUri svgXmlData={ArrowWhiteIcon} />
     </TouchableOpacity>
@@ -407,9 +407,9 @@ const PublickMasterProfile = ({navigation}) => {
                   <GalereaBlock
                     index={i}
                     key={i}
-                    onPress={() => {
-                      setActiveImg(i);
-                    }}
+                    onPress={() => 
+                      setActiveImg(i)
+                    }
                     img={el}
                   />
                 ))}
@@ -462,9 +462,9 @@ const PublickMasterProfile = ({navigation}) => {
                   }}>
                   <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
 
-                  {NEXT_FREETIME.data &&
-                    NEXT_FREETIME.data.nextFreeTimeByMaster &&
-                    NEXT_FREETIME.data.nextFreeTimeByMaster.length && (
+                  {!!NEXT_FREETIME.data &&
+                    !!NEXT_FREETIME.data.nextFreeTimeByMaster &&
+                    !!NEXT_FREETIME.data.nextFreeTimeByMaster.length && (
                       <Text style={{fontWeight: 'bold'}}>
                         {
                           NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
@@ -494,8 +494,9 @@ const PublickMasterProfile = ({navigation}) => {
                     flexWrap: 'wrap',
                     justifyContent: 'space-between',
                   }}>
-                  {NEXT_FREETIME.data &&
-                    NEXT_FREETIME.data.nextFreeTimeByMaster[0].times.length &&
+                  {!!NEXT_FREETIME.data &&
+                   !!NEXT_FREETIME.data.nextFreeTimeByMaster.length &&
+                    !!NEXT_FREETIME.data.nextFreeTimeByMaster[0].times.length &&
                     NEXT_FREETIME.data.nextFreeTimeByMaster[0].times.map(
                       (el, i) => {
                         return (
@@ -559,7 +560,7 @@ const PublickMasterProfile = ({navigation}) => {
               </Text>
             </View>
 
-            {allPrice && CHCecked ? (
+            {allPrice && CHCecked && activeTime? (
               <ButtonDefault
                 style={{flexDirection: 'row', justifyContent: 'space-between'}}
                 title="Подтвердить запись"
@@ -611,9 +612,7 @@ const PublickMasterProfile = ({navigation}) => {
             </ScrollView>
             <TouchableOpacity
               style={closeBtn}
-              onPress={() => {
-                setActiveImg(null);
-              }}>
+              onPress={() => setActiveImg(null)}>
               <SvgUri svgXmlData={CrossWhiteIcon} />
             </TouchableOpacity>
             <View style={imgIndicator}>

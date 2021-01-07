@@ -11,6 +11,18 @@ export const ALL_CITIES = gql`
   }
 `;
 
+export const LOAD_IMAGE = gql`
+  mutation LOADIMAGE(
+      $file: Upload!
+      $type: UserType!
+    ){
+      uploadAppointmentPhoto(
+        file: $file
+        type: $type  
+      )
+  }
+`;
+
 export const REGISTER = gql`
   mutation REGISTER(
     $type: UserType!

@@ -115,10 +115,9 @@ const Block = ({el, navigation, archive, refetch}) => {
         <View style={{flex: 1}}>
           <View style={{flex: 1}}>
             <Text style={{fontSize: 10, color: isArchColore}}>Услуга</Text>
-            {console.log(offersAll, '---offersAll')}
             {!!offersAll.length &&
               offersAll.map((el, i) => (
-                <Text style={[textBold, {color: isArchColore}]}>{el}</Text>
+                <Text key={i} style={[textBold, {color: isArchColore}]}>{el}</Text>
               ))}
           </View>
         </View>
@@ -131,8 +130,6 @@ const MyNotesMaster = ({navigation}) => {
   const {bigText, smallText, textBold, blockTitle, block} = styles;
 
   const USER = useQuery(ME);
-
-  console.log(USER, ' USER MY NOTES MASTER');
 
   return (
     <View style={{flex: 1, backgroundColor: '#fafafa'}}>

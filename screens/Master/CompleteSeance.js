@@ -21,6 +21,7 @@ import {
   UPDATE_PROFILE,
   GET_APPOINTMENT,
   UPDATE_APPOINTMENT,
+  LOAD_IMAGE
 } from '../../QUERYES';
 import {G} from 'react-native-svg';
 import {getToken} from '../../util';
@@ -39,6 +40,10 @@ const CompleteSeance = ({navigation}) => {
     ],
     awaitRefetchQueries: true,
   };
+
+  const [LOAD_IMAGE_mutation] = useMutation(
+    LOAD_IMAGE
+  );
 
   const [UPDATE_APPOINTMENT_mutation] = useMutation(
     UPDATE_APPOINTMENT,
@@ -65,6 +70,12 @@ const CompleteSeance = ({navigation}) => {
       })
       .catch(err => console.log(err, '__ERR UPDATE_SCHEDULE_mutation'));
   };
+
+  const whoObj = {
+    Master: 'Master',
+    Client: 'Client',
+  };
+
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} title="Завершить сеанс" />
@@ -122,6 +133,16 @@ const CompleteSeance = ({navigation}) => {
                 // navigation.state.params.data.photo.length == 5
                 //   ? alert('Больше добавить нельзя')
                 //   : alert('Прикрепить фото');
+
+              // LOAD_IMAGE_mutation({
+              //     variables: {
+              //       file: "file",
+              //       type: "type",
+              //     },
+              //     optimisticResponse: null,
+              //   })
+
+              // whoObj
               }}>
               <SvgUri svgXmlData={PlusIcon} />
               <Text
