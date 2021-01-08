@@ -1,8 +1,8 @@
 import React from 'react';
-import {useMutation} from 'react-apollo';
+import { useMutation } from 'react-apollo';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
-import {ButtonDefault} from '../../components/Button';
+import { ButtonDefault } from '../../components/Button';
 import SvgUri from 'react-native-svg-uri';
 import GalleryIcon from '../../img/Gallery.svg';
 import TrashIcon from '../../img/Trash.svg';
@@ -16,6 +16,8 @@ import {
   ScrollView,
 } from 'react-native';
 
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+
 import {
   GET_USER,
   UPDATE_PROFILE,
@@ -23,11 +25,11 @@ import {
   UPDATE_APPOINTMENT,
   LOAD_IMAGE
 } from '../../QUERYES';
-import {G} from 'react-native-svg';
-import {getToken} from '../../util';
+import { G } from 'react-native-svg';
+import { getToken } from '../../util';
 
-const CompleteSeance = ({navigation}) => {
-  const {groupBlock, blockTitle, blockInGroup, textBold, borderBottom} = styles;
+const CompleteSeance = ({ navigation }) => {
+  const { groupBlock, blockTitle, blockInGroup, textBold, borderBottom } = styles;
 
   const refreshObject = {
     refetchQueries: [
@@ -50,7 +52,6 @@ const CompleteSeance = ({navigation}) => {
     refreshObject,
   );
 
-  console.log(navigation.state.params);
   const COMPLETE = () => {
     const Completed = 'Completed';
     UPDATE_APPOINTMENT_mutation({
@@ -77,21 +78,21 @@ const CompleteSeance = ({navigation}) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <BackgroundHeader navigation={navigation} title="Завершить сеанс" />
       <ScrollView>
-        <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
+        <View style={{ paddingHorizontal: 8, marginBottom: 8, flex: 1 }}>
           <Text style={blockTitle}>итоги сеанса</Text>
           <View style={[groupBlock, blockInGroup]}>
-            <View style={{flex: 1}}>
-              <Text style={{fontSize: 13}}>Полученная от клиента сумма</Text>
-              <Text style={{fontWeight: 'bold', fontSize: 13}}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 13 }}>Полученная от клиента сумма</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 13 }}>
                 !!!!!!!!!!!
               </Text>
             </View>
             <View>
               <Text />
-              <Text style={{fontWeight: 'bold', fontSize: 13}}>руб</Text>
+              <Text style={{ fontWeight: 'bold', fontSize: 13 }}>руб</Text>
             </View>
           </View>
           <View
@@ -101,7 +102,7 @@ const CompleteSeance = ({navigation}) => {
               alignItems: 'center',
             }}>
             <Text style={blockTitle}>фотографии законченной работы</Text>
-            <Text style={[blockTitle, {marginRight: 8}]}>
+            <Text style={[blockTitle, { marginRight: 8 }]}>
               {/* {navigation.state.params.data.photo.length}\5 */}
             </Text>
           </View>
@@ -134,16 +135,80 @@ const CompleteSeance = ({navigation}) => {
                 //   ? alert('Больше добавить нельзя')
                 //   : alert('Прикрепить фото');
 
-              // LOAD_IMAGE_mutation({
-              //     variables: {
-              //       file: "file",
-              //       type: "type",
-              //     },
-              //     optimisticResponse: null,
-              //   })
+                const options = {
+                  title: 'Select Image',
+                  customButtons: [
+                    {
+                      name: 'customOptionKey',
+                      title: 'Choose Photo from Custom Option'
+                    },
+                  ],
+                  storageOptions: {
+                    skipBackup: true,
+                    path: 'images',
+                  },
+                }
 
-              // whoObj
+
+                launchImageLibrary(options, (response) => {
+                  const formData = new FormData();
+
+                  const operations = `{"query": "mutation ($file: Upload!, $type: UserType!){ uploadAppointmentPhoto(file: $file, type: $type) }", "variables": { "file": null, "type": "Master" }}`;
+                  formData.append('operations', operations);
+                  const map = '{"0": ["variables.file"]}';
+                  formData.append('map', map);
+
+                  console.log(response.uri, '__RESPONSE');
+
+                  let pathToFile = response.uri = Platform.OS === 'ios' ? response.uri.replace('file://', '') : response.uri;
+                  // if (Platform.OS === 'ios') {
+                  //   pathToFile = '~' + pathToFile.substring(pathToFile.indexOf('/Devices'));
+                  // }
+                  // pathToFile = "/Users/ccc/Library/Developer/CoreSimulator/Devices/758BC96C-C8CD-4A91-A9C6-8A9F8584EED0/data/Containers/Data/Application/7D01B5A4-89FF-4962-8792-EAFD9FAC61D3/tmp/0B31FD18-58EB-4E94-A81B-C20D48DE3915.jpg"
+
+                  console.log(pathToFile, '=======pathToFile')
+
+                  const finishImage = {
+                    name: "images.jpeg",
+                    type: "image/jpg",
+                    uri: pathToFile,
+                  };
+
+                  formData.append('0', finishImage);
+
+                  getToken()
+                    .then(token => {
+                      console.log(formData, '---formdata')
+
+                      fetch('http://194.87.145.192/graphql', {
+                        method: 'post',
+                        headers: {
+                          'Content-Type': 'multipart/form-data;',
+                          authorization: `Bearer ${token}`,
+                        },
+                        body: formData,
+                      })
+                        .then((res) => res.json())
+                        .then((responseJson) => {
+                          console.log(responseJson, '======responseJson')
+
+                          // LOAD_IMAGE_mutation({
+                          //   variables: {
+                          //     file: responseJson.data.placeImage,
+                          //     type: whoObj.Master,
+                          //   },
+                          //   optimisticResponse: null,
+                          // }).then(res => console.log(res, '-load res'))
+                          //   .catch(err => console.log(err, '-load err'))
+
+                        })
+                        .catch(err => console.log(err, '===errrrrr'))
+
+                    })
+                    .catch(err => console.log(err, '---errr'))
+                });
               }}>
+
               <SvgUri svgXmlData={PlusIcon} />
               <Text
                 style={{
@@ -156,15 +221,15 @@ const CompleteSeance = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
-          <View style={{padding: 8, marginTop: 8}}>
-            <Text style={{fontSize: 13}}>Итоговая стоимость сеанса</Text>
+          <View style={{ padding: 8, marginTop: 8 }}>
+            <Text style={{ fontSize: 13 }}>Итоговая стоимость сеанса</Text>
             <Text style={textBold}>{navigation.state.params.price} руб</Text>
           </View>
         </View>
       </ScrollView>
       <ButtonDefault
         onPress={() => COMPLETE()}
-        style={{margin: 8}}
+        style={{ margin: 8 }}
         title="подтвердить завершение сеанса"
         active={true}
       />
