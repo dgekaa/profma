@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {ButtonDefault} from '../components/Button';
+import React, { useState, useEffect, useRef } from 'react';
+import { ButtonDefault } from '../components/Button';
 import CalendarCustom from '../components/Calendar';
 import ModalWindow from '../components/ModalWindow';
 import SvgUri from 'react-native-svg-uri';
@@ -10,12 +10,13 @@ import ArrowWhiteIcon from '../img/ArrowRight.svg';
 import CalendarSvgIcon from '../img/CalendarSVG.svg';
 import LocationIcon from '../img/Location.svg';
 import CrossWhiteIcon from '../img/CrossWhite.svg';
-import {Query, useMutation, useQuery, useLazyQuery} from 'react-apollo';
+import { Query, useMutation, useQuery, useLazyQuery } from 'react-apollo';
 import {
   GET_USER,
   FREE_TIME,
   CREATE_APPOINTMENT,
   NEXT_FREE_TIME_BY_MASTER,
+  GET_APPOINTMENTS
 } from '../QUERYES';
 import {
   StyleSheet,
@@ -47,11 +48,11 @@ const shortMonthName = [
 import BackgroundHeader from '../components/BackgroundHeader';
 const screen = Dimensions.get('window');
 
-const GalereaBlock = ({img, index, onPress}) => {
-  const {galereaImgContainer, galereaImg} = styles;
+const GalereaBlock = ({ img, index, onPress }) => {
+  const { galereaImgContainer, galereaImg } = styles;
   return (
     <TouchableOpacity
-      onPress={() => 
+      onPress={() =>
         onPress(index)
       }
       style={galereaImgContainer}>
@@ -65,8 +66,8 @@ const GalereaBlock = ({img, index, onPress}) => {
   );
 };
 
-const BottomImgIndicator = ({index, showActiveImg}) => {
-  const {bottomIndicator} = styles;
+const BottomImgIndicator = ({ index, showActiveImg }) => {
+  const { bottomIndicator } = styles;
   return (
     <View
       key={index}
@@ -92,7 +93,7 @@ const DropdownBlock = ({
   offers,
   setAllPrice,
 }) => {
-  const {blockInGroup, borderBottom, checkbox} = styles;
+  const { blockInGroup, borderBottom, checkbox } = styles;
 
   function plural(number, titles) {
     const cases = [2, 0, 1, 1, 1, 2];
@@ -112,11 +113,11 @@ const DropdownBlock = ({
           : (slideBlock[index] = true);
         setSlideBlock([...slideBlock]);
       }}>
-      <View style={{flexDirection: 'row'}}>
-        <View style={{flex: 3, flexDirection: 'row', alignItems: 'center'}}>
+      <View style={{ flexDirection: 'row' }}>
+        <View style={{ flex: 3, flexDirection: 'row', alignItems: 'center' }}>
           <View>
             {slideBlock[index] && (
-              <SvgUri svgXmlData={pressedIcon} style={{marginRight: 8}} />
+              <SvgUri svgXmlData={pressedIcon} style={{ marginRight: 8 }} />
             )}
             {!slideBlock[index] && (
               <SvgUri
@@ -137,18 +138,18 @@ const DropdownBlock = ({
               }}>
               {el.service.name}
             </Text>
-            <Text style={{fontSize: 10}}>
+            <Text style={{ fontSize: 10 }}>
               {el.price_by_pack.duration}{' '}
               {plural(el.price_by_pack.duration, ['час', 'часа', 'часов'])}
             </Text>
           </View>
         </View>
-        <View style={{flex: 2, flexDirection: 'row', alignItems: 'center'}}>
-          <View style={{flex: 7}}>
-            <Text numberOfLines={1} style={{fontSize: 10}}>
+        <View style={{ flex: 2, flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flex: 7 }}>
+            <Text numberOfLines={1} style={{ fontSize: 10 }}>
               Стоимость услуги
             </Text>
-            <Text style={{fontWeight: 'bold', fontSize: 13}}>
+            <Text style={{ fontWeight: 'bold', fontSize: 13 }}>
               {el.price_by_pack.price} руб
             </Text>
           </View>
@@ -201,15 +202,15 @@ const DropdownBlock = ({
             paddingRight: 8,
             width: '100%',
           }}>
-          <Text style={{fontSize: 13}}>{el.description}</Text>
+          <Text style={{ fontSize: 13 }}>{el.description}</Text>
         </View>
       )}
     </TouchableOpacity>
   );
 };
 
-const AnotherBlock = ({title, onPress}) => {
-  const {blockInGroup} = styles;
+const AnotherBlock = ({ title, onPress }) => {
+  const { blockInGroup } = styles;
 
   return (
     <TouchableOpacity
@@ -222,17 +223,17 @@ const AnotherBlock = ({title, onPress}) => {
           paddingRight: 16,
         },
       ]}
-      onPress={() => 
+      onPress={() =>
         onPress()
       }>
-      <Text style={{fontWeight: 'bold'}}>{title}</Text>
+      <Text style={{ fontWeight: 'bold' }}>{title}</Text>
       <SvgUri svgXmlData={ArrowWhiteIcon} />
     </TouchableOpacity>
   );
 };
 
-const TimeBlock = ({time, active, onPress, style}) => {
-  const {timeBlock} = styles;
+const TimeBlock = ({ time, active, onPress, style }) => {
+  const { timeBlock } = styles;
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -254,7 +255,7 @@ const TimeBlock = ({time, active, onPress, style}) => {
   );
 };
 
-const PublickMasterProfile = ({navigation}) => {
+const PublickMasterProfile = ({ navigation }) => {
   const {
     container,
     galerea,
@@ -269,24 +270,9 @@ const PublickMasterProfile = ({navigation}) => {
   } = styles;
 
   const scrollImage = useRef(null);
-  // const timeBlockRef = useRef();
-
-  // const [allPhoto, setAllPhoto] = useState([]);
-
-  // useEffect(() => {
-  //   const arr = [];
-  //   navigation.state.params.my_notes.forEach((el, i) => {
-  //     if (el.photo && el.photo.length) {
-  //       el.photo.forEach(el => {
-  //         arr.push(el);
-  //       });
-  //     }
-  //   });
-  //   setImgArr([...arr]);
-  // }, []);
+  const [allPhoto, setAllPhoto] = useState([]);
 
   const [activeImg, setActiveImg] = useState(null);
-  const [imgArr, setImgArr] = useState([]);
   const [y, setY] = useState(null);
 
   const [showAllServices, setShowAllServices] = useState(false);
@@ -304,14 +290,35 @@ const PublickMasterProfile = ({navigation}) => {
       setMarkedDates({});
     } else {
       setMarkedDates({
-        [day.dateString]: {selected: true, selectedColor: '#B986DA'},
+        [day.dateString]: { selected: true, selectedColor: '#B986DA' },
       });
     }
   };
 
   const MASTER = useQuery(GET_USER, {
-    variables: {id: +navigation.state.params.id},
+    variables: { id: +navigation.state.params.id },
   });
+
+  const APPOINTMENTS = useQuery(GET_APPOINTMENTS, {
+    variables: { first: 30 },
+  });
+
+  useEffect(() => {
+    if (!allPhoto.length) {
+      let photoArr = [];
+      if (APPOINTMENTS.data && APPOINTMENTS.data.appointments && APPOINTMENTS.data.appointments.data) {
+        APPOINTMENTS.data.appointments.data.forEach(el => {
+          if (el.photos.length) {
+            el.photos.forEach(elem => {
+              photoArr.push("http://194.87.145.192/storage/" + elem.src)
+            })
+          }
+        })
+      }
+      setAllPhoto(photoArr)
+    }
+  }, [APPOINTMENTS]);
+
 
   const [services, setServices] = useState([]);
 
@@ -320,8 +327,8 @@ const PublickMasterProfile = ({navigation}) => {
   }, [MASTER]);
 
   const [slideBlock, setSlideBlock] = useState(
-      new Array(services.length).fill(false),
-    ),
+    new Array(services.length).fill(false),
+  ),
     [checkboxes, setCheckboxes] = useState(
       new Array(services.length).fill(false),
     ),
@@ -333,11 +340,11 @@ const PublickMasterProfile = ({navigation}) => {
     [CHCecked, setCHCecked] = useState(false);
 
   const FREETIME = useQuery(FREE_TIME, {
-      variables: {
-        master_id: MASTER.data && MASTER.data.user.profile.id,
-        dates: [dates[0]],
-      },
-    }),
+    variables: {
+      master_id: MASTER.data && MASTER.data.user.profile.id,
+      dates: [dates[0]],
+    },
+  }),
     NEXT_FREETIME = useQuery(NEXT_FREE_TIME_BY_MASTER, {
       variables: {
         master_id: MASTER.data && MASTER.data.user.profile.id,
@@ -390,29 +397,28 @@ const PublickMasterProfile = ({navigation}) => {
     return <ActivityIndicator size="large" color="#00ff00" />;
   } else if (MASTER.data) {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <BackgroundHeader
           navigation={navigation}
           title={MASTER.data.user.profile.name || 'Имя не задано'}
-          // description={navigation.state.params.skills}
+        // description={navigation.state.params.skills}
         />
         <ScrollView>
           <View style={container}>
-            {!!imgArr.length && (
+            {!!allPhoto.length && (
               <ScrollView
                 style={galerea}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}>
-                {imgArr.map((el, i) => (
-                  <GalereaBlock
+                {allPhoto.map((el, i) => {
+                  return <GalereaBlock
                     index={i}
                     key={i}
-                    onPress={() => 
-                      setActiveImg(i)
-                    }
+                    onPress={() => setActiveImg(i)}
                     img={el}
                   />
-                ))}
+                }
+                )}
               </ScrollView>
             )}
             <Text style={textTitle}>Услуги</Text>
@@ -465,7 +471,7 @@ const PublickMasterProfile = ({navigation}) => {
                   {!!NEXT_FREETIME.data &&
                     !!NEXT_FREETIME.data.nextFreeTimeByMaster &&
                     !!NEXT_FREETIME.data.nextFreeTimeByMaster.length && (
-                      <Text style={{fontWeight: 'bold'}}>
+                      <Text style={{ fontWeight: 'bold' }}>
                         {
                           NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
                             '-',
@@ -473,9 +479,9 @@ const PublickMasterProfile = ({navigation}) => {
                         }{' '}
                         {
                           shortMonthName[
-                            +NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
-                              '-',
-                            )[1] - 1
+                          +NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
+                            '-',
+                          )[1] - 1
                           ]
                         }{' '}
                         {
@@ -495,14 +501,14 @@ const PublickMasterProfile = ({navigation}) => {
                     justifyContent: 'space-between',
                   }}>
                   {!!NEXT_FREETIME.data &&
-                   !!NEXT_FREETIME.data.nextFreeTimeByMaster.length &&
+                    !!NEXT_FREETIME.data.nextFreeTimeByMaster.length &&
                     !!NEXT_FREETIME.data.nextFreeTimeByMaster[0].times.length &&
                     NEXT_FREETIME.data.nextFreeTimeByMaster[0].times.map(
                       (el, i) => {
                         return (
                           <TimeBlock
                             key={i}
-                            style={{width: '30%'}}
+                            style={{ width: '30%' }}
                             time={el}
                             active={choosedActiveTime === i}
                             onPress={() => {
@@ -525,15 +531,15 @@ const PublickMasterProfile = ({navigation}) => {
             </View>
             <Text style={textTitle}>адрес мастера</Text>
             <View style={groupBlock}>
-              <View style={[blockInGroup, {flexDirection: 'row'}]}>
-                <SvgUri svgXmlData={LocationIcon} style={{marginRight: 8}} />
-                <View style={{flexDirection: 'column'}}>
-                  <Text style={{fontSize: 13, fontWeight: 'bold'}}>
+              <View style={[blockInGroup, { flexDirection: 'row' }]}>
+                <SvgUri svgXmlData={LocationIcon} style={{ marginRight: 8 }} />
+                <View style={{ flexDirection: 'column' }}>
+                  <Text style={{ fontSize: 13, fontWeight: 'bold' }}>
                     {MASTER.data.user.profile.work_address},{' '}
                     {MASTER.data.user.profile.city &&
                       MASTER.data.user.profile.city.name}
                   </Text>
-                  <View style={{alignItems: 'center', flexDirection: 'row'}}>
+                  <View style={{ alignItems: 'center', flexDirection: 'row' }}>
                     <View
                       style={{
                         height: 4,
@@ -543,13 +549,13 @@ const PublickMasterProfile = ({navigation}) => {
                         marginRight: 5,
                       }}
                     />
-                    <Text style={{fontSize: 13}}>?metro?</Text>
+                    <Text style={{ fontSize: 13 }}>?metro?</Text>
                   </View>
                 </View>
               </View>
             </View>
             <Text style={textTitle}> О мастере</Text>
-            <View style={[groupBlock, blockInGroup, {marginBottom: 30}]}>
+            <View style={[groupBlock, blockInGroup, { marginBottom: 30 }]}>
               <Text
                 style={{
                   fontSize: 13,
@@ -560,27 +566,28 @@ const PublickMasterProfile = ({navigation}) => {
               </Text>
             </View>
 
-            {allPrice && CHCecked && activeTime? (
+            {allPrice && CHCecked && activeTime ? (
               <ButtonDefault
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}
+                style={{ flexDirection: 'row', justifyContent: 'space-between' }}
                 title="Подтвердить запись"
                 rightTitle={allPrice + ' руб'}
                 onPress={() => CREATE()}
                 active={true}
               />
             ) : (
-              <ButtonDefault
-                style={{flexDirection: 'row', justifyContent: 'space-around'}}
-                title="Вы не указали детали сеанса"
-                onPress={() => {}}
-                active={true}
-              />
-            )}
+                <ButtonDefault
+                  style={{ flexDirection: 'row', justifyContent: 'space-around' }}
+                  title="Вы не указали детали сеанса"
+                  onPress={() => { }}
+                  active={true}
+                />
+              )}
           </View>
         </ScrollView>
+        {console.log(activeImg, '------111111')}
         {(activeImg || activeImg === 0 || activeImg === '0') && (
           <View style={bigImg}>
-            <ScrollView
+            <ScrollView scrollEventThrottle={0}
               onScroll={event => {
                 // setY(
                 //   Math.round(event.nativeEvent.contentOffset.x / screen.width),
@@ -590,7 +597,8 @@ const PublickMasterProfile = ({navigation}) => {
               horizontal={true}
               showsHorizontalScrollIndicator={false}
               pagingEnabled={true}>
-              {imgArr.map((el, i) => {
+              {allPhoto.map((el, i) => {
+                console.log(el, '--pppppp')
                 setTimeout(() => {
                   scrollImage.current.scrollTo({
                     x: screen.width * activeImg,
@@ -604,7 +612,7 @@ const PublickMasterProfile = ({navigation}) => {
                         width: screen.width,
                         resizeMode: 'cover',
                       }}
-                      source={{uri: el}}
+                      source={{ uri: el }}
                     />
                   </View>
                 );
@@ -616,7 +624,7 @@ const PublickMasterProfile = ({navigation}) => {
               <SvgUri svgXmlData={CrossWhiteIcon} />
             </TouchableOpacity>
             <View style={imgIndicator}>
-              {imgArr.map((el, i) => {
+              {allPhoto.map((el, i) => {
                 return (
                   <BottomImgIndicator
                     key={i}
@@ -642,7 +650,7 @@ const PublickMasterProfile = ({navigation}) => {
                 backgroundColor: 'rgba(0,0,0,0.2)',
                 justifyContent: 'flex-end',
               }}>
-              <View style={{height: '70%', backgroundColor: '#fff'}}>
+              <View style={{ height: '70%', backgroundColor: '#fff' }}>
                 <Text
                   style={{
                     backgroundColor: '#fafafa',
@@ -656,7 +664,7 @@ const PublickMasterProfile = ({navigation}) => {
                   }}>
                   Все услуги
                 </Text>
-                <ScrollView style={{paddingHorizontal: 8}}>
+                <ScrollView style={{ paddingHorizontal: 8 }} >
                   {!!MASTER.data.user.offers.length &&
                     MASTER.data.user.offers.map((el, i) => {
                       return (
@@ -683,7 +691,7 @@ const PublickMasterProfile = ({navigation}) => {
                     ')'
                   }
                   active={true}
-                  style={{margin: 8}}
+                  style={{ margin: 8 }}
                 />
               </View>
             </View>
@@ -702,7 +710,7 @@ const PublickMasterProfile = ({navigation}) => {
           />
         )}
         {isShowTime && (
-          <ModalWindow style={{padding: 0, paddingBottom: 24}}>
+          <ModalWindow style={{ padding: 0, paddingBottom: 24 }}>
             <View
               style={{
                 backgroundColor: '#C092DE',
@@ -712,7 +720,7 @@ const PublickMasterProfile = ({navigation}) => {
                 alignItems: 'center',
                 marginBottom: 16,
               }}>
-              <Text style={{color: '#fff'}}>
+              <Text style={{ color: '#fff' }}>
                 {todayInfo.dayOfWeek}, {todayInfo.date}{' '}
                 {todayInfo.monthName.toLowerCase()}
               </Text>
@@ -744,7 +752,7 @@ const PublickMasterProfile = ({navigation}) => {
                     <TimeBlock
                       key={i}
                       onPress={() => setActiveTime(el)}
-                      style={{marginBottom: 8}}
+                      style={{ marginBottom: 8 }}
                       time={el}
                       active={activeTime === el ? true : false}
                     />
@@ -756,15 +764,15 @@ const PublickMasterProfile = ({navigation}) => {
               </View>
             )}
 
-            <View style={{width: '100%'}}>
+            <View style={{ width: '100%' }}>
               <ButtonDefault
-                style={{marginBottom: 8, marginHorizontal: 24}}
+                style={{ marginBottom: 8, marginHorizontal: 24 }}
                 onPress={() => setIsShowTime(false)}
                 title="Выбрать это время"
                 active={true}
               />
               <ButtonDefault
-                style={{marginHorizontal: 24}}
+                style={{ marginHorizontal: 24 }}
                 onPress={() => {
                   setIsShowTime(false);
                   setActiveTime([]);
@@ -779,7 +787,7 @@ const PublickMasterProfile = ({navigation}) => {
             <Text>Вы записаны</Text>
             <Text>
               на{' '}
-              <Text style={{fontWeight: 'bold'}}>
+              <Text style={{ fontWeight: 'bold' }}>
                 {dates[0] && dates[0].split('-')[2]}{' '}
                 {dates[0] && shortMonthName[+dates[0].split('-')[1]]}{' '}
                 {dates[0] && dates[0].split('-')[0]}
@@ -787,15 +795,15 @@ const PublickMasterProfile = ({navigation}) => {
               в {activeTime} к мастеру
             </Text>
             <Image
-              style={{marginTop: 16}}
+              style={{ marginTop: 16 }}
               source={require('../img/girl1.png')}
             />
-            <Text style={{fontWeight: 'bold', marginVertical: 16}}>
+            <Text style={{ fontWeight: 'bold', marginVertical: 16 }}>
               {MASTER.data.user.profile.name}
             </Text>
-            <View style={{width: '100%'}}>
+            <View style={{ width: '100%' }}>
               <ButtonDefault
-                style={{marginBottom: 8}}
+                style={{ marginBottom: 8 }}
                 title="спасибо, закрыть окно"
                 active={true}
                 onPress={() => {

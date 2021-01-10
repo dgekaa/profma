@@ -16,14 +16,19 @@ import {
   ScrollView,
 } from 'react-native';
 
+import ImagePicker from 'react-native-image-crop-picker';
+
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+
+
 
 import {
   GET_USER,
   UPDATE_PROFILE,
   GET_APPOINTMENT,
   UPDATE_APPOINTMENT,
-  LOAD_IMAGE
+  LOAD_IMAGE,
+  UPDATE_APPOINTMENT_ADD_PHOTO
 } from '../../QUERYES';
 import { G } from 'react-native-svg';
 import { getToken } from '../../util';
@@ -45,6 +50,10 @@ const CompleteSeance = ({ navigation }) => {
 
   const [LOAD_IMAGE_mutation] = useMutation(
     LOAD_IMAGE
+  );
+
+  const [UPDATE_APPOINTMENT_PHOTO_mutation] = useMutation(
+    UPDATE_APPOINTMENT_ADD_PHOTO
   );
 
   const [UPDATE_APPOINTMENT_mutation] = useMutation(
@@ -149,63 +158,72 @@ const CompleteSeance = ({ navigation }) => {
                   },
                 }
 
-
                 launchImageLibrary(options, (response) => {
                   const formData = new FormData();
 
-                  const operations = `{"query": "mutation ($file: Upload!, $type: UserType!){ uploadAppointmentPhoto(file: $file, type: $type) }", "variables": { "file": null, "type": "Master" }}`;
-                  formData.append('operations', operations);
+                  const operations = `{"query": "mutation ($file: Upload!, $type: UserType!){ uploadAppointmentPhoto(file: $file, type: $type) }", "variables": { "file": null, "type": "Master" }}`; formData.append('operations', operations);
                   const map = '{"0": ["variables.file"]}';
                   formData.append('map', map);
 
-                  console.log(response.uri, '__RESPONSE');
+                  ImagePicker.openCropper({
+                    path: response.uri,
+                    width: 200,
+                    height: 200,
+                  })
+                    .then((image) => {
+                      const finishImage = {
+                        name: 'images.jpeg',
+                        type: image.mime,
+                        uri: Platform.OS === 'ios' ? `file:///${image.path}` : image.path,
+                      };
+                      formData.append('0', finishImage);
+                      getToken()
+                        .then(token => {
+                          fetch('http://194.87.145.192/graphql', {
+                            method: 'post',
+                            headers: {
+                              'Content-Type': 'multipart/form-data;',
+                              authorization: `Bearer ${token}`,
+                            },
+                            body: formData,
+                          })
+                            .then((res) => res.json())
+                            .then((responseJson) => {
+                              console.log(responseJson.data,'---responseJson.data')
+                              // !!!!!!!!!
+                              UPDATE_APPOINTMENT_PHOTO_mutation({
+                                variables: {
+                                  id: +navigation.state.params.data.id,
+                                  src: responseJson.data.uploadAppointmentPhoto,
+                                },
+                                optimisticResponse: null,
+                              })
+                                .then(res => console.log(res, '__RES PHOTO'))
+                                .catch(err => console.log(err, '__ERR PHOTO'));
 
-                  let pathToFile = response.uri = Platform.OS === 'ios' ? response.uri.replace('file://', '') : response.uri;
-                  // if (Platform.OS === 'ios') {
-                  //   pathToFile = '~' + pathToFile.substring(pathToFile.indexOf('/Devices'));
-                  // }
-                  // pathToFile = "/Users/ccc/Library/Developer/CoreSimulator/Devices/758BC96C-C8CD-4A91-A9C6-8A9F8584EED0/data/Containers/Data/Application/7D01B5A4-89FF-4962-8792-EAFD9FAC61D3/tmp/0B31FD18-58EB-4E94-A81B-C20D48DE3915.jpg"
-
-                  console.log(pathToFile, '=======pathToFile')
-
-                  const finishImage = {
-                    name: "images.jpeg",
-                    type: "image/jpg",
-                    uri: pathToFile,
-                  };
-
-                  formData.append('0', finishImage);
-
-                  getToken()
-                    .then(token => {
-                      console.log(formData, '---formdata')
-
-                      fetch('http://194.87.145.192/graphql', {
-                        method: 'post',
-                        headers: {
-                          'Content-Type': 'multipart/form-data;',
-                          authorization: `Bearer ${token}`,
-                        },
-                        body: formData,
-                      })
-                        .then((res) => res.json())
-                        .then((responseJson) => {
-                          console.log(responseJson, '======responseJson')
-
-                          // LOAD_IMAGE_mutation({
-                          //   variables: {
-                          //     file: responseJson.data.placeImage,
-                          //     type: whoObj.Master,
-                          //   },
-                          //   optimisticResponse: null,
-                          // }).then(res => console.log(res, '-load res'))
-                          //   .catch(err => console.log(err, '-load err'))
+                            })
+                            .catch(err => console.log(err, '===errrrrr'))
 
                         })
-                        .catch(err => console.log(err, '===errrrrr'))
+                        .catch(err => console.log(err, '---errr'))
 
+                      // fetch('http://194.87.145.192/graphql', {
+                      //   method: 'post',
+                      //   headers: {
+                      //     'Content-Type': 'multipart/form-data;',
+                      //     authorization: `Bearer ${token}`,
+                      //   },
+                      //   body: formData,
+                      // })
+                      //   .then((res) => res.json())
+                      //   .then((responseJson) => {
+                      //     console.log(responseJson, '-----respJS')
+                      //   })
+                      //   .catch((err) => console.log(err, 'ERR'));
                     })
-                    .catch(err => console.log(err, '---errr'))
+                    .catch((e) => {
+                      console.log(e);
+                    });
                 });
               }}>
 

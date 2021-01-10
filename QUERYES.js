@@ -310,6 +310,25 @@ export const UPDATE_APPOINTMENT_ADD_OFFERS = gql`
   }
 `;
 
+export const UPDATE_APPOINTMENT_ADD_PHOTO = gql`
+  mutation UPDATEAPPOINTMENTADDPHOTO(
+      $id: ID!
+      $src: String!
+    ) {
+    updateAppointment(
+      input: {
+        id: $id
+        photos: {create: {src: $src}}
+      }
+    ){
+      id
+      date
+      comment
+      time
+    }
+  }
+`;
+
 export const DELETE_APPOINTMENT = gql`
   mutation DELETEAPPOINTMENT($id: ID!) {
     deleteAppointment(input: {id: $id}) {
@@ -560,6 +579,23 @@ export const GET_USERS = gql`
             duration
             price
           }
+        }
+      }
+      paginatorInfo {
+        count
+        currentPage
+      }
+    }
+  }
+`;
+export const GET_APPOINTMENTS = gql`
+  query GETAPPOINTMENTS($first: Int) {
+    appointments(first: $first) {
+      data {
+        id
+        photos {
+          id
+          src
         }
       }
       paginatorInfo {
