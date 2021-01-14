@@ -117,7 +117,9 @@ const Block = ({el, navigation, archive, refetch}) => {
             <Text style={{fontSize: 10, color: isArchColore}}>Услуга</Text>
             {!!offersAll.length &&
               offersAll.map((el, i) => (
-                <Text key={i} style={[textBold, {color: isArchColore}]}>{el}</Text>
+                <Text key={i} style={[textBold, {color: isArchColore}]}>
+                  {el}
+                </Text>
               ))}
           </View>
         </View>
@@ -146,12 +148,16 @@ const MyNotesMaster = ({navigation}) => {
               </Text>
             </View>
             <View style={{}}>
-              <ButtonDefault
+              {/* <ButtonDefault
                 title="Записаться на сеанс"
                 active={true}
                 style={{marginBottom: 8}}
+              /> */}
+              <ButtonDefault
+                title="Найти мастера"
+                style={{marginBottom: 8}}
+                onPress={() => navigation.navigate('Main', {})}
               />
-              <ButtonDefault title="Найти мастера" style={{marginBottom: 8}} />
             </View>
           </View>
         </View>

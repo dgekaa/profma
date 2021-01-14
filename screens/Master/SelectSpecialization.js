@@ -60,10 +60,8 @@ const SelectSpecialization = ({navigation}) => {
     variables: {first: 10},
   });
 
-  const [activeSpecialization, setActiveSpecialization] = useState('');
-  const [activeSpecializationID, setActiveSpecializationID] = useState('');
-
-  console.log(navigation, '______NAVIGATION');
+  const [activeSpecialization, setActiveSpecialization] = useState(''),
+    [activeSpecializationID, setActiveSpecializationID] = useState('');
 
   return (
     <View style={{flex: 1}}>
@@ -81,7 +79,7 @@ const SelectSpecialization = ({navigation}) => {
                 border={
                   i + 1 == data.specializations.data.length ? false : true
                 }
-                key={i}
+                key={i + '_key'}
                 title={el.name}
                 active={i === activeSpecialization}
                 onPress={() => {
@@ -92,18 +90,22 @@ const SelectSpecialization = ({navigation}) => {
             ))}
         </View>
       </ScrollView>
+
       <ButtonDefault
         title="Выбрать эту специализацию"
         active={true}
         style={{margin: 8}}
         onPress={() => {
-          navigation.navigate('SelectServices', {
-            save: bool => {
-              navigation.state.params.save(bool);
-            },
-            ID: activeSpecializationID,
-            refetch: navigation.state.params.refetch,
-          });
+          if (activeSpecializationID) {
+            navigation.navigate('SelectServices', {
+              save: bool => {
+                navigation.state.params.save(bool);
+              },
+              ID: activeSpecializationID,
+              refetch: navigation.state.params.refetch,
+              reload: navigation.state.params.reload,
+            });
+          }
         }}
       />
     </View>

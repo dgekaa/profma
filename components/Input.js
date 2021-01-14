@@ -28,12 +28,12 @@ export const InputWithText = ({
   withoutShadow,
   autoFocus,
   onSubmitEditing,
+  maxLength,
 }) => {
   const {
     inputWrap,
     input,
     wrapper,
-    maxLength,
     topInputTextWrap,
     smallText,
     errStyleLocal,
@@ -84,6 +84,7 @@ export const InputWithPassword = ({
   onChangeText,
   withoutShadow,
   value,
+  maxLength,
   onSubmitEditing,
 }) => {
   const {
@@ -92,15 +93,14 @@ export const InputWithPassword = ({
     eye,
     wrapper,
     eyeWrap,
-    maxLength,
     forgetText,
     topInputTextWrap,
     forgetTextWrap,
     smallText,
   } = styles;
 
-  const [isShowPlaceholder, setIsShowPlaceholder] = useState(true);
-  const [passwordText, setPasswordText] = useState('');
+  const [isShowPlaceholder, setIsShowPlaceholder] = useState(true),
+    [passwordText, setPasswordText] = useState('');
 
   return (
     <View

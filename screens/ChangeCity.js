@@ -33,24 +33,19 @@ const ChangeCity = ({navigation}) => {
   const {groupBlock} = styles;
 
   const [city, setCity] = useState(
-    navigation.state.params.city.name || 'Укажите город',
-  );
-  const [cityId, setCityID] = useState(null);
-  const [manualCity, setManualCity] = useState('');
+      navigation.state.params.city.name || 'Укажите город',
+    ),
+    [cityId, setCityID] = useState(null),
+    [manualCity, setManualCity] = useState(''),
+    [filteredData, setFilteredData] = useState([]);
 
   const cityInputRef = useRef(null);
 
   const {data, loading} = useQuery(ALL_CITIES);
 
-  const [filteredData, setFilteredData] = useState([]);
-
   useEffect(() => {
     data && data.cities && setFilteredData(data.cities.data);
   }, [data]);
-
-  useEffect(() => {
-    console.log(filteredData, '____filteredData');
-  }, [filteredData]);
 
   useEffect(() => {
     const filteredCities =
@@ -66,10 +61,12 @@ const ChangeCity = ({navigation}) => {
     refetchQueries: [
       {
         query: ME,
+        variables: {},
       },
     ],
     awaitRefetchQueries: true,
   };
+
   const [UPDATE_PROFILE_mutation] = useMutation(UPDATE_PROFILE, refreshObject);
 
   const SAVE = () => {
@@ -81,7 +78,8 @@ const ChangeCity = ({navigation}) => {
       optimisticResponse: null,
     })
       .then(res => {
-        console.log(res, '__RES');
+        navigation.navigate('ClientProfile', {ID: res.data.updateProfile.id});
+        navigation.state.params.reload();
       })
       .catch(err => console.log(err, '__ERR'));
   };

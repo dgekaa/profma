@@ -7,7 +7,7 @@ import {
   UPDATE_SCHEDULE_WORK_TIME,
   DELETE_SCHEDULE,
 } from '../../QUERYES';
-import {Query, useMutation, useQuery} from 'react-apollo';
+import {useMutation, useQuery} from 'react-apollo';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {InputWithText} from '../../components/Input';
@@ -24,16 +24,16 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-const weekDaysEnShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const weekDaysRuLong = [
-  'понедельник',
-  'вторник',
-  'среда',
-  'четверг',
-  'пятница',
-  'суббота',
-  'воскресенье',
-];
+const weekDaysEnShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  weekDaysRuLong = [
+    'понедельник',
+    'вторник',
+    'среда',
+    'четверг',
+    'пятница',
+    'суббота',
+    'воскресенье',
+  ];
 
 const Block = ({
   index,
@@ -43,8 +43,29 @@ const Block = ({
   switchCheck,
   setFirstInputText,
   setSecondInputText,
+  validationErr,
 }) => {
   const {groupBlock, blockTitle, blockInGroup, textBold, borderBottom} = styles;
+
+  const [startErr, setStartErr] = useState(''),
+    [endErr, setEndErr] = useState('');
+
+  const regExp = '(\\d{2}:\\d{2})';
+  useEffect(() => {
+    if (schedules && schedules.start_time) {
+      !schedules.start_time.slice(0, 5).match(regExp)
+        ? setStartErr('Невернное время')
+        : setStartErr('');
+
+      !schedules.end_time.slice(0, 5).match(regExp)
+        ? setEndErr('Невернное время')
+        : setEndErr('');
+    }
+  }, [schedules]);
+
+  useEffect(() => {
+    startErr || endErr ? validationErr(true) : validationErr(false);
+  }, [startErr, endErr]);
 
   return (
     <View>
@@ -61,7 +82,7 @@ const Block = ({
             {color: !schedules || schedules.day_off ? '#B986DA' : '#D4D7DA'},
           ]}>
           {weekDaysRuLong[index]}
-          {!schedules || (schedules.day_off && ' 😎')}
+          {(!schedules || schedules.day_off) && ' 😎'}
         </Text>
         <View
           style={{
@@ -82,30 +103,30 @@ const Block = ({
       <View style={[groupBlock, {marginBottom: index === 6 ? 16 : 0}]}>
         <View style={[blockInGroup, borderBottom]}>
           <InputWithText
+            keyboardType={'numeric'}
+            maxLength={5}
             onChangeText={text => setFirstInputText(text, schedules, el)}
-            value={
-              schedules &&
-              !schedules.day_off &&
-              schedules.start_time.slice(0, 5)
-            }
+            value={schedules && !schedules.day_off ? schedules.start_time : ''}
             style={{width: '100%'}}
             text="Начало рабочего дня"
             placeholder="00:00"
             withoutShadow={true}
             editable={!!schedules && !schedules.day_off}
+            validationErr={startErr}
           />
         </View>
         <View style={[blockInGroup, borderBottom]}>
           <InputWithText
+            keyboardType={'numeric'}
+            maxLength={5}
             onChangeText={text => setSecondInputText(text, schedules, el)}
-            value={
-              schedules && !schedules.day_off && schedules.end_time.slice(0, 5)
-            }
+            value={schedules && !schedules.day_off ? schedules.end_time : ''}
             style={{width: '100%'}}
             text="Конец рабочего дня"
             placeholder="00:00"
             withoutShadow={true}
             editable={!!schedules && !schedules.day_off}
+            validationErr={endErr}
           />
         </View>
         <TouchableOpacity
@@ -146,24 +167,21 @@ const WorkTimeSettings = ({navigation}) => {
   };
 
   const [CREATE_SCHEDULE_mutation] = useMutation(
-    CREATE_SCHEDULE,
-    refreshObject,
-  );
-  const [UPDATE_SCHEDULE_WORK_TIME_mutation] = useMutation(
-    UPDATE_SCHEDULE_WORK_TIME,
-    refreshObject,
-  );
-  const [DELETE_SCHEDULE_mutation] = useMutation(
-    DELETE_SCHEDULE,
-    refreshObject,
-  );
+      CREATE_SCHEDULE,
+      refreshObject,
+    ),
+    [UPDATE_SCHEDULE_WORK_TIME_mutation] = useMutation(
+      UPDATE_SCHEDULE_WORK_TIME,
+      refreshObject,
+    ),
+    [DELETE_SCHEDULE_mutation] = useMutation(DELETE_SCHEDULE, refreshObject);
 
   const [changedData, setChangedData] = useState({});
 
   useEffect(() => {
     if (USER.data) {
       const obj = {};
-      weekDaysEnShort.forEach((day, ind) => {
+      weekDaysEnShort.forEach(day => {
         USER.data.me.schedules.forEach((el, i) => {
           if (day === el.day) {
             obj[day] = el;
@@ -196,10 +214,6 @@ const WorkTimeSettings = ({navigation}) => {
             },
           };
         });
-
-    console.log(changedData, '_____changedData');
-    console.log(bool, '_BOOL');
-    console.log(schedules, '_SCHEDULES');
   };
 
   const setFirstInputText = (text, schedules, day) => {
@@ -215,7 +229,6 @@ const WorkTimeSettings = ({navigation}) => {
   };
 
   const SAVE = () => {
-    console.log(changedData, '________________-________________!');
     for (let key in changedData) {
       if (changedData[key]) {
         if (changedData[key].id) {
@@ -227,9 +240,7 @@ const WorkTimeSettings = ({navigation}) => {
               },
               optimisticResponse: null,
             })
-              .then(res => {
-                console.log(res, '__RES DELETE_SCHEDULE_mutation');
-              })
+              .then(res => console.log(res, '__RES DELETE_SCHEDULE_mutation'))
               .catch(err => console.log(err, '__ERR DELETE_SCHEDULE_mutation'));
           } else {
             console.log(changedData[key], 'РАБ----РАБ');
@@ -242,9 +253,7 @@ const WorkTimeSettings = ({navigation}) => {
               },
               optimisticResponse: null,
             })
-              .then(res => {
-                console.log(res, '__RES UPDATE_SCHEDULE_mutation');
-              })
+              .then(res => console.log(res, '__RES UPDATE_SCHEDULE_mutation'))
               .catch(err => console.log(err, '__ERR UPDATE_SCHEDULE_mutation'));
           }
         } else {
@@ -259,9 +268,7 @@ const WorkTimeSettings = ({navigation}) => {
               },
               optimisticResponse: null,
             })
-              .then(res => {
-                console.log(res, '__RES  CREATE_SCHEDULE_mutation');
-              })
+              .then(res => console.log(res, '__RES  CREATE_SCHEDULE_mutation'))
               .catch(err =>
                 console.log(err, '__ERR  CREATE_SCHEDULE_mutation'),
               );
@@ -271,6 +278,10 @@ const WorkTimeSettings = ({navigation}) => {
     }
   };
 
+  const [isValidationErr, setIsValidationErr] = useState(false);
+
+  const validationErr = data => setIsValidationErr(data);
+
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader
@@ -278,26 +289,25 @@ const WorkTimeSettings = ({navigation}) => {
         title="Настройка рабочего времени"
       />
       <ScrollView style={{paddingHorizontal: 8}}>
-        {!changedData.Mon && <ActivityIndicator size="large" color="#00ff00" />}
-        {changedData.Mon &&
-          weekDaysEnShort.map((el, i) => {
-            return (
-              <View key={i}>
-                <Block
-                  setFirstInputText={setFirstInputText}
-                  setSecondInputText={setSecondInputText}
-                  switchCheck={switchCheck}
-                  schedules={changedData[el]}
-                  el={el}
-                  index={i}
-                  navigation={navigation}
-                />
-              </View>
-            );
-          })}
-        {changedData.Mon && (
+        {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
+        {!USER.loading &&
+          weekDaysEnShort.map((el, i) => (
+            <View key={i}>
+              <Block
+                setFirstInputText={setFirstInputText}
+                setSecondInputText={setSecondInputText}
+                switchCheck={switchCheck}
+                schedules={changedData[el]}
+                el={el}
+                index={i}
+                navigation={navigation}
+                validationErr={data => validationErr(data)}
+              />
+            </View>
+          ))}
+        {!USER.loading && (
           <ButtonDefault
-            onPress={() => USER.data && SAVE()}
+            onPress={() => USER.data && !isValidationErr && SAVE()}
             title="сохранить расписание"
             active={true}
             style={{marginBottom: 8}}

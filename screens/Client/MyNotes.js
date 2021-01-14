@@ -138,8 +138,13 @@ const MyNotes = ({navigation}) => {
       {USER.data && !USER.data.me.client_appointments.length && (
         <View style={{flex: 1}}>
           <Header navigation={navigation} />
-          <View style={{flex: 1, paddingHorizontal: 18}}>
-            <View style={{flex: 8}}>
+          <View
+            style={{
+              flex: 1,
+              paddingHorizontal: 18,
+              justifyContent: 'space-between',
+            }}>
+            <View style={{flex: 7}}>
               <Text style={bigText}>
                 У вас пока нет ни одной активной записи😞
               </Text>
@@ -147,52 +152,58 @@ const MyNotes = ({navigation}) => {
                 Сделайте вашу первую запись уже сегодня.
               </Text>
             </View>
-            <View style={{}}>
-              <ButtonDefault
+            <View style={{flex: 2}}>
+              {/* <ButtonDefault
                 title="Записаться на сеанс"
                 active={true}
                 style={{marginBottom: 8}}
+              /> */}
+              <ButtonDefault
+                title="Найти мастера"
+                style={{marginBottom: 8}}
+                onPress={() => navigation.navigate('Main', {})}
               />
-              <ButtonDefault title="Найти мастера" style={{marginBottom: 8}} />
             </View>
           </View>
         </View>
       )}
+      {USER.data && !!USER.data.me.client_appointments.length && (
+        <View style={{flex: 1}}>
+          <BackgroundHeader navigation={navigation} title="Мои записи" />
 
-      <View style={{flex: 1}}>
-        <BackgroundHeader navigation={navigation} title="Мои записи" />
-        {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
-        {USER.data && !!USER.data.me.client_appointments.length && (
-          <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
-            <Text style={blockTitle}>Активные записи</Text>
-            {USER.data.me.client_appointments.map((el, i) => {
-              if (el.status) {
-                return (
-                  <Block
-                    el={el}
-                    navigation={navigation}
-                    key={i}
-                    refetch={USER.refetch}
-                  />
-                );
-              }
-            })}
-            {/* <Text style={blockTitle}>Архив записей</Text>
+          {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
+          {USER.data && !!USER.data.me.client_appointments.length && (
+            <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
+              <Text style={blockTitle}>Активные записи</Text>
               {USER.data.me.client_appointments.map((el, i) => {
                 if (el.status) {
                   return (
                     <Block
                       el={el}
                       navigation={navigation}
-                      archive={true}
                       key={i}
+                      refetch={USER.refetch}
                     />
                   );
                 }
-              })} */}
-          </ScrollView>
-        )}
-      </View>
+              })}
+              {/* <Text style={blockTitle}>Архив записей</Text>
+        {USER.data.me.client_appointments.map((el, i) => {
+          if (el.status) {
+            return (
+              <Block
+                el={el}
+                navigation={navigation}
+                archive={true}
+                key={i}
+              />
+            );
+          }
+        })} */}
+            </ScrollView>
+          )}
+        </View>
+      )}
     </View>
   );
 };

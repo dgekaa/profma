@@ -3,7 +3,6 @@ import SvgUri from 'react-native-svg-uri';
 import CalendarColorIcon from '../img/CalendarColor.svg';
 import UserWhiteIcon from '../img/UserWhite.svg';
 import CrossIcon from '../img/cross.svg';
-import Girl from '../img/girl.png';
 import CalendarSvgIcon from '../img/CalendarSVG.svg';
 import ErrorInternetProblems from './ErrorInternetProblems';
 
@@ -51,7 +50,7 @@ const shortMonthName = [
 
 const screen = Dimensions.get('window');
 
-const Block = ({el, navigation, dates}) => {
+const Block = ({el, navigation, dates, reload, photoArr}) => {
   const {
     block,
     blockImg,
@@ -89,124 +88,151 @@ const Block = ({el, navigation, dates}) => {
     }
   };
 
-  return (
-    <TouchableOpacity
-      style={[block, Platform.OS === 'ios' ? blockIos : blockAndroid]}
-      onPress={() =>
-        navigation.navigate(
-          'PublickMasterProfile',
-          dates ? el.user.profile : el.profile,
-        )
-      }>
-      <View style={width < 340 ? {width: 100, marginRight: 10} : {width: 140}}>
-        {el.img ? (
-          <Image
-            style={[blockImg, width < 340 && {width: 100}]}
-            source={{uri: el.img}}
-          />
-        ) : (
-          <Image
-            style={[blockImg, width < 340 && {width: 100}]}
-            source={require('../img/girl.png')}
-            source={{
-              uri: 'https://hornews.com/upload/images/blank-avatar.jpg',
-            }}
-          />
-        )}
-      </View>
-      <View style={{flex: 1}}>
+  const [photo, setPhoto] = useState(
+    'https://hornews.com/upload/images/blank-avatar.jpg',
+  );
+
+  useEffect(() => {
+    photoArr.master_appointments &&
+      photoArr.master_appointments.length &&
+      photoArr.master_appointments.forEach(obj => {
+        obj.photos.length &&
+          setPhoto('http://194.87.145.192/storage/' + obj.photos[0].src);
+      });
+  }, []);
+
+  if (!!nextFreeTimeByMaster.data) {
+    return (
+      <TouchableOpacity
+        style={[block, Platform.OS === 'ios' ? blockIos : blockAndroid]}
+        onPress={() => {
+          navigation.navigate('PublickMasterProfile', {
+            dates: dates ? el.user.profile : el.profile,
+            reload: reload,
+            id: el.id,
+          });
+        }}>
         <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <Text style={{fontWeight: 'bold', fontSize: 13}}>
-            {dates
-              ? el.user.profile && el.user.profile.name
-              : (el.profile && el.profile.name) || 'Имя не задано'}
-          </Text>
+          style={width < 340 ? {width: 100, marginRight: 10} : {width: 140}}>
+          {el.img ? (
+            <Image
+              style={[blockImg, width < 340 && {width: 100}]}
+              source={{uri: el.img}}
+            />
+          ) : (
+            <Image
+              style={[blockImg, width < 340 && {width: 100}]}
+              source={require('../img/girl.png')}
+              source={{
+                uri: photo,
+              }}
+            />
+          )}
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginVertical: 5,
-          }}>
-          <View style={{flex: 1.2}}>
-            <Text numberOfLines={1} style={{fontSize: 10}}>
-              Стоимость сеанса
-            </Text>
-            <Text style={{fontWeight: 'bold', fontSize: 10}}>
-              {getMinimalPrice()} {getMinimalPrice() ? 'руб' : '-'}
+        <View style={{flex: 1}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            <Text style={{fontWeight: 'bold', fontSize: 13}}>
+              {dates
+                ? el.user.profile && el.user.profile.name
+                : (el.profile && el.profile.name) || 'Имя не задано'}
             </Text>
           </View>
-          <View style={{alignItems: 'flex-end', flex: 1.2}}>
-            <Text style={{fontSize: 10}} numberOfLines={1}>
-              {(el.profile && el.profile.work_address) || '-'}
-            </Text>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              {/* {el.metro && ( */}
-              <View
-                style={{
-                  height: 4,
-                  width: 4,
-                  borderRadius: 4,
-                  backgroundColor: '#9155FF',
-                  marginRight: 5,
-                }}
-              />
-              {/* )} */}
-              <Text style={{fontSize: 10}}>{el.metro || '-'}</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginVertical: 5,
+            }}>
+            <View style={{flex: 1.2}}>
+              <Text numberOfLines={1} style={{fontSize: 10}}>
+                Стоимость сеанса
+              </Text>
+              <Text style={{fontWeight: 'bold', fontSize: 10}}>
+                {getMinimalPrice()} {getMinimalPrice() ? 'руб' : '-'}
+              </Text>
+            </View>
+            <View style={{alignItems: 'flex-end', flex: 1.2}}>
+              <Text style={{fontSize: 10}} numberOfLines={1}>
+                {(el.profile && el.profile.work_address) || '-'}
+              </Text>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                {/* {el.metro && ( */}
+                <View
+                  style={{
+                    height: 4,
+                    width: 4,
+                    borderRadius: 4,
+                    backgroundColor: '#9155FF',
+                    marginRight: 5,
+                  }}
+                />
+                {/* )} */}
+                <Text style={{fontSize: 10}}>{el.metro || '-'}</Text>
+              </View>
             </View>
           </View>
+          <View style={timeBlockWrapp}>
+            {!!nextFreeTimeByMaster.data &&
+              !!nextFreeTimeByMaster.data.nextFreeTimeByMaster.length &&
+              nextFreeTimeByMaster.data.nextFreeTimeByMaster[0].times.map(
+                (el, index) => {
+                  return (
+                    <View key={index} style={timeBlock}>
+                      <Text
+                        style={{
+                          color: '#B986DA',
+                          fontSize: 10,
+                          fontWeight: 'bold',
+                        }}>
+                        {
+                          nextFreeTimeByMaster.data.nextFreeTimeByMaster[0].date.split(
+                            '-',
+                          )[2]
+                        }{' '}
+                        {shortMonthName[
+                          +nextFreeTimeByMaster.data.nextFreeTimeByMaster[0].date.split(
+                            '-',
+                          )[1] - 1
+                        ].toLowerCase()}{' '}
+                      </Text>
+                      <Text style={{color: '#B986DA', fontSize: 10}}>{el}</Text>
+                    </View>
+                  );
+                },
+              )}
+          </View>
         </View>
-        <View style={timeBlockWrapp}>
-          {!!nextFreeTimeByMaster.data &&
-            !!nextFreeTimeByMaster.data.nextFreeTimeByMaster.length &&
-            nextFreeTimeByMaster.data.nextFreeTimeByMaster[0].times.map(
-              (el, index) => {
-                return (
-                  <View key={index} style={timeBlock}>
-                    <Text
-                      style={{
-                        color: '#B986DA',
-                        fontSize: 10,
-                        fontWeight: 'bold',
-                      }}>
-                      {
-                        nextFreeTimeByMaster.data.nextFreeTimeByMaster[0].date.split(
-                          '-',
-                        )[2]
-                      }{' '}
-                      {shortMonthName[
-                        +nextFreeTimeByMaster.data.nextFreeTimeByMaster[0].date.split(
-                          '-',
-                        )[1] - 1
-                      ].toLowerCase()}{' '}
-                    </Text>
-                    <Text style={{color: '#B986DA', fontSize: 10}}>{el}</Text>
-                  </View>
-                );
-              },
-            )}
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  } else {
+    return <View />;
+  }
 };
 
-const NearestSeansBlock = ({el, navigation}) => {
+const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
   const {nearestSeansBlock} = styles;
 
-  const [offersAll, setOffersAll] = useState([]);
+  const [offersAll, setOffersAll] = useState([]),
+    [photo, setPhoto] = useState(
+      'https://hornews.com/upload/images/blank-avatar.jpg',
+    );
 
   useEffect(() => {
     let offersAllLocal = [];
     el.offers.length &&
-      el.offers.forEach((elem, i) => {
-        offersAllLocal.push(elem.service.name);
-      });
+      el.offers.forEach((elem, i) => offersAllLocal.push(elem.service.name));
     setOffersAll(offersAllLocal);
+
+    photoArr.master_appointments &&
+      photoArr.master_appointments.length &&
+      photoArr.master_appointments.forEach(obj => {
+        obj.photos.length &&
+          setPhoto('http://194.87.145.192/storage/' + obj.photos[0].src);
+      });
   }, []);
 
   return (
@@ -214,13 +240,13 @@ const NearestSeansBlock = ({el, navigation}) => {
       key={el.id}
       style={[nearestSeansBlock]}
       onPress={() => {
-        el.type === 'Client'
-          ? navigation.navigate('NoteInformation', el)
+        type === 'Client'
+          ? navigation.navigate('NoteInformation', {el: el, reload: reload})
           : navigation.navigate('NoteInformationMaster', {el: el});
       }}>
       <View>
         <Image
-          source={{uri: ''}}
+          source={{uri: photo}}
           style={{width: 47, height: 47, marginRight: 8}}
         />
       </View>
@@ -251,15 +277,18 @@ const NearestSeansBlock = ({el, navigation}) => {
               </Text>
             </View>
             <Text style={{fontSize: 10}}>
-              <Text>{el.master && el.master.profile.name}</Text>
-              <Text>{el.client && el.client.profile.name}</Text>
+              <Text>
+                {type === 'Client'
+                  ? el.master.profile.name
+                  : el.client.profile.name}
+              </Text>
             </Text>
           </View>
           <View tyle={{flex: 1}}>
             <Text style={{fontSize: 10}}>Услуга</Text>
             {!!offersAll.length &&
               offersAll.map((el, i) => {
-                if (i <= 2) {
+                if (i < 2) {
                   return (
                     <Text key={i} style={{fontSize: 10, fontWeight: 'bold'}}>
                       {el}
@@ -290,13 +319,13 @@ const Main = ({navigation}) => {
     Client: 'Client',
   };
 
-  const USER = useQuery(ME);
-  const users = useQuery(GET_USERS, {
-    variables: {first: 10, type: whoObj.Master},
-  });
+  const USER = useQuery(ME),
+    users = useQuery(GET_USERS, {
+      variables: {first: 10, type: whoObj.Master},
+    });
 
-  const [dates, setDates] = useState();
-  const [cityid, setCityid] = useState(null);
+  const [dates, setDates] = useState(),
+    [cityid, setCityid] = useState(null);
 
   const findMaster = useQuery(FIND_MASTER, {
     variables: {
@@ -311,6 +340,8 @@ const Main = ({navigation}) => {
     },
   });
 
+  const [photoArr, setPhotoArr] = useState([]);
+
   useEffect(() => {
     setCityid(
       USER.data &&
@@ -321,6 +352,10 @@ const Main = ({navigation}) => {
         : null,
     );
   }, [USER, users]);
+
+  useEffect(() => {
+    users.data && setPhotoArr(users.data.users.data);
+  }, [users]);
 
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
@@ -339,7 +374,8 @@ const Main = ({navigation}) => {
     ];
   }
 
-  const reload = () => USER.refetch();
+  const reload = () => USER.refetch(),
+    reloadAppointments = () => nextAppointments.refetch();
 
   if (USER.error) {
     return <ErrorInternetProblems reload={() => reload()} />;
@@ -364,25 +400,33 @@ const Main = ({navigation}) => {
               <Text style={{color: '#fff', marginLeft: 5}}>Мой профиль</Text>
             </TouchableOpacity>
           </ImageBackground>
-
           <View style={{paddingHorizontal: 8}}>
             {nextAppointments.data &&
-              !!nextAppointments.data.nextAppointments.length && (
+              !!nextAppointments.data.nextAppointments.length &&
+              USER.data && (
                 <ScrollView
                   style={nearestSeans}
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}>
                   {nextAppointments.data.nextAppointments.map((el, i) => (
                     <View key={i}>
-                      <NearestSeansBlock el={el} navigation={navigation} />
+                      <NearestSeansBlock
+                        el={el}
+                        navigation={navigation}
+                        type={USER.data.me.type}
+                        reload={reloadAppointments}
+                        photoArr={
+                          photoArr && photoArr.length ? photoArr[i] : []
+                        }
+                      />
                     </View>
                   ))}
                 </ScrollView>
               )}
-
             {dates && !!findMaster.data && (
               <View style={foundMasters}>
                 <View style={{flex: 1}}>
+                  {console.log(findMaster, '----findMaster')}
                   <Text>{`Найдено ${
                     findMaster.data.findMaster.length
                   }  ${plural(findMaster.data.findMaster.length, [
@@ -410,13 +454,23 @@ const Main = ({navigation}) => {
               </View>
             )}
             <View style={{paddingBottom: 80}}>
+              {/* !!!!!!!!!!!!!!!!! */}
+
               {!dates
                 ? !!users &&
                   !!users.data && (
                     <FlatList
                       data={users.data.users.data}
-                      renderItem={({item}) => (
-                        <Block navigation={navigation} el={item} />
+                      renderItem={({item, index}) => (
+                        <Block
+                          navigation={navigation}
+                          el={item}
+                          reload={reloadAppointments}
+                          photoArr={
+                            photoArr && photoArr.length ? photoArr[index] : []
+                          }
+                          blockId={index}
+                        />
                       )}
                       keyExtractor={item =>
                         dates ? item.user.id : item.id.toString()
@@ -427,15 +481,18 @@ const Main = ({navigation}) => {
                   !!findMaster.data.findMaster && (
                     <FlatList
                       data={findMaster.data.findMaster}
-                      renderItem={({item}) => {
-                        return (
-                          <Block
-                            navigation={navigation}
-                            el={item}
-                            dates={dates}
-                          />
-                        );
-                      }}
+                      renderItem={({item, index}) => (
+                        <Block
+                          navigation={navigation}
+                          el={item}
+                          dates={dates}
+                          reload={reloadAppointments}
+                          photoArr={
+                            photoArr && photoArr.length ? photoArr[index] : []
+                          }
+                          blockId={index}
+                        />
+                      )}
                       keyExtractor={item =>
                         dates ? item.user.id : item.id.toString()
                       }
@@ -689,7 +746,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     flexDirection: 'row',
     width: screen.width - 50,
-    height: '100%',
+    height: '80%',
     alignItems: 'center',
   },
 });

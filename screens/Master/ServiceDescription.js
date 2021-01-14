@@ -36,20 +36,13 @@ const ServiceDescription = ({navigation}) => {
     SERVICES.data && setDATA(SERVICES.data.services.data);
   }, [SERVICES.data]);
 
-  useEffect(() => {
-    console.log(DATA, '_____DATA_____');
-  }, [DATA]);
-
-  const [serviceCount, setServiceCount] = useState(0);
-
-  const [deleteModal, setDeleteModal] = useState(false);
-  const [deleteService, setDeleteService] = useState(false);
-
-  const [err, setErr] = useState('');
-
-  const [howLong, setHowLong] = useState('');
-  const [howMach, setHowMach] = useState('');
-  const [desc, setDesc] = useState('');
+  const [serviceCount, setServiceCount] = useState(0),
+    [deleteModal, setDeleteModal] = useState(false),
+    [deleteService, setDeleteService] = useState(false),
+    [err, setErr] = useState(''),
+    [howLong, setHowLong] = useState(''),
+    [howMach, setHowMach] = useState(''),
+    [desc, setDesc] = useState('');
 
   const refreshObject = {
     refetchQueries: [
@@ -84,14 +77,12 @@ const ServiceDescription = ({navigation}) => {
         if (serviceCount != DATA.length - 1 && howLong && howMach && desc) {
           setServiceCount(prev => prev + 1);
         } else {
-          console.log(navigation, 'NAV');
           navigation.navigate('MyServices');
           navigation.state.params.refetch();
+          navigation.state.params.reload();
         }
       })
-      .catch(err => {
-        console.log(err, '__ERR CREATE_OFFER_mutation');
-      });
+      .catch(err => console.log(err, '__ERR CREATE_OFFER_mutation'));
   };
 
   if (SERVICES.error) {

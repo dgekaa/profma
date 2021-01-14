@@ -9,11 +9,10 @@ import CalendarColorIcon from '../../img/CalendarColor.svg';
 import moment from 'moment';
 import 'moment/locale/fr';
 
-import {Query, useMutation, useQuery} from 'react-apollo';
-import {LOGOUT, ME} from '../../QUERYES';
+import {useQuery} from 'react-apollo';
+import {ME} from '../../QUERYES';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
-import {people} from '../../data';
 
 import {
   Text,
@@ -79,10 +78,8 @@ const Block = ({el, navigation, key}) => {
   //     : el.services.length && setPrice(el.services[0].how_mach);
   // }, []);
 
-  console.log(el, '+el');
-
-  const [price, setPrice] = useState(0);
-  const [offersAll, setOffersAll] = useState([]);
+  const [price, setPrice] = useState(0),
+    [offersAll, setOffersAll] = useState([]);
 
   useEffect(() => {
     let count = 0;
@@ -127,12 +124,10 @@ const Block = ({el, navigation, key}) => {
         <View style={{flex: 1}}>
           <View style={{flex: 1}}>
             <Text style={{fontSize: 10}}>Клиент</Text>
-
             <Text style={[textBold]}> {el.client.profile.name} </Text>
           </View>
           <View style={{flex: 1}}>
             <Text style={[textBold]}>{el.client.profile.home_address} </Text>
-
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <View
                 style={{
@@ -141,7 +136,6 @@ const Block = ({el, navigation, key}) => {
                   backgroundColor: '#9155FF',
                 }}
               />
-
               <Text style={{fontSize: 10}}> метро </Text>
             </View>
           </View>
@@ -166,17 +160,15 @@ const MasterCalendar = ({navigation}) => {
   const {calendarContainer, arrow, headerText, hederArrowContainer} = styles;
 
   const [currentDate, setCurrentDate] = useState(
-    new Date()
-      .toLocaleDateString()
-      .split('.')
-      .reverse()
-      .join('-'),
-  );
+      new Date()
+        .toLocaleDateString()
+        .split('.')
+        .reverse()
+        .join('-'),
+    ),
+    [filteredData, setFilteredData] = useState([]);
 
-  const [filteredData, setFilteredData] = useState([]);
   const USER = useQuery(ME);
-
-  console.log(USER.data, 'USER MASTER CALENDAR');
 
   useEffect(() => {
     if (USER.data && USER.data.me.master_appointments.length) {
@@ -201,9 +193,9 @@ const MasterCalendar = ({navigation}) => {
     },
   };
 
-  const [weekFirst, setWeekFirst] = useState();
-  const [weekLast, setWeekLast] = useState();
-  const [month, setMonth] = useState();
+  const [weekFirst, setWeekFirst] = useState(),
+    [weekLast, setWeekLast] = useState(),
+    [month, setMonth] = useState();
 
   const calendarRef = useRef(null);
 
@@ -222,27 +214,27 @@ const MasterCalendar = ({navigation}) => {
     setMonth(monthsNamesHeader[dateArr[1]].name);
 
     const date1 = new Date(
-      dateArr[3],
-      monthsNamesHeader[dateArr[1]].number - 1,
-      1,
-    );
-    const date2 = new Date(dateArr[3], monthsNamesHeader[dateArr[1]].number, 1);
-    const maxDayInMonth = Math.round((date2 - date1) / 1000 / 3600 / 24);
+        dateArr[3],
+        monthsNamesHeader[dateArr[1]].number - 1,
+        1,
+      ),
+      date2 = new Date(dateArr[3], monthsNamesHeader[dateArr[1]].number, 1),
+      maxDayInMonth = Math.round((date2 - date1) / 1000 / 3600 / 24);
 
     setWeekFirst(dateArr[2]);
     if (+dateArr[2] + 6 > maxDayInMonth) {
       const last = 7 - (maxDayInMonth - dateArr[2] + 1);
       last < 10 ? setWeekLast('0' + last) : setWeekLast(last);
     } else {
-      const last = +dateArr[2] + 6;
-      const lastNumber = +dateArr[2] + 6;
+      const last = +dateArr[2] + 6,
+        lastNumber = +dateArr[2] + 6;
       last < 10 ? setWeekLast('0' + lastNumber) : setWeekLast(+dateArr[2] + 6);
     }
   };
 
-  const monthNumber = new Date().getMonth();
-  const stringMonth = monthNames[monthNumber];
-  const dayNumber = new Date().getDate();
+  const monthNumber = new Date().getMonth(),
+    stringMonth = monthNames[monthNumber],
+    dayNumber = new Date().getDate();
 
   const [notes, setNotes] = useState();
   let dateNowSorted = [];
@@ -321,8 +313,9 @@ const MasterCalendar = ({navigation}) => {
           calendarColor={'#fff'}
           dateNumberStyle={{color: '#A6ADB3'}}
           dateNameStyle={{color: '#A6ADB3'}}
-          // iconContainer={{flex: 0.07}}
           iconStyle={{height: 0, width: 0}}
+          highlightDateNameStyle={{color: 'black'}}
+          highlightDateNumberStyle={{color: 'black'}}
         />
       </View>
       <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>

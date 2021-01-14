@@ -27,8 +27,6 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
 
   const USER = useQuery(ME);
 
-  console.log(USER.data, 'USER MASTER CALENDAR');
-
   const refreshObject = {
     refetchQueries: [
       {

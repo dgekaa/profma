@@ -82,8 +82,6 @@ const SelectServices = ({navigation}) => {
     }
   };
 
-  console.log(navigation, 'NAV++++++++++++++++++++++++++++');
-
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} title="Выберите услуги" />
@@ -109,13 +107,16 @@ const SelectServices = ({navigation}) => {
       </ScrollView>
       <ButtonDefault
         onPress={() => {
-          navigation.navigate('ServiceDescription', {
-            save: bool => {
-              navigation.state.params.save(bool);
-            },
-            checkedServices: checkedServicesBack,
-            refetch: navigation.state.params.refetch,
-          });
+          if (checkedServicesBack.length) {
+            navigation.navigate('ServiceDescription', {
+              save: bool => {
+                navigation.state.params.save(bool);
+              },
+              checkedServices: checkedServicesBack,
+              refetch: navigation.state.params.refetch,
+              reload: navigation.state.params.reload,
+            });
+          }
         }}
         title={`выбрать эти услуги ${checkedServicesFront.length}`}
         active={true}

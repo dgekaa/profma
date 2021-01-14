@@ -158,6 +158,7 @@ const CalendarCustom = ({
             {!singleDate && (
               <ButtonDefault
                 onPress={() => {
+                  console.log(markedDates, '---markedDates');
                   showMasters(markedDates);
                   onClose(false);
                 }}

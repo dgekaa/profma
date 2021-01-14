@@ -47,12 +47,9 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
   };
 
   const [LOGOUT_mutation] = useMutation(LOGOUT);
-
   const USER = useQuery(ME);
 
-  const reload = () => {
-    USER.refetch();
-  };
+  const reload = () => USER.refetch();
 
   if (USER.error) {
     return <ErrorInternetProblems reload={() => reload()} />;
@@ -101,7 +98,10 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                   style={[blockInGroup, borderBottom]}
                   onPress={() =>
                     USER.data &&
-                    navigation.navigate('MyServices', {ID: USER.data.me.id})
+                    navigation.navigate('MyServices', {
+                      ID: USER.data.me.id,
+                      reload,
+                    })
                   }>
                   <SvgUri width="16" height="16" svgXmlData={ManicureIcon} />
                   <Text style={text}>
@@ -148,9 +148,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                 {/* ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ*/}
                 <TouchableOpacity
                   style={[blockInGroup, borderBottom]}
-                  onPress={() => {
-                    alert('Политика конфиденциальности');
-                  }}>
+                  onPress={() => alert('Политика конфиденциальности')}>
                   <Text style={{fontSize: 13}}>
                     Политика конфиденциальности и Условия использования
                   </Text>
@@ -164,6 +162,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                           ? USER.data.me.profile.city
                           : '',
                         id: USER.data.me.profile.id,
+                        reload,
                       });
                   }}>
                   <View

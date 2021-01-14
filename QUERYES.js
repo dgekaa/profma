@@ -12,14 +12,8 @@ export const ALL_CITIES = gql`
 `;
 
 export const LOAD_IMAGE = gql`
-  mutation LOADIMAGE(
-      $file: Upload!
-      $type: UserType!
-    ){
-      uploadAppointmentPhoto(
-        file: $file
-        type: $type  
-      )
+  mutation LOADIMAGE($file: Upload!, $type: UserType!) {
+    uploadAppointmentPhoto(file: $file, type: $type)
   }
 `;
 
@@ -311,16 +305,8 @@ export const UPDATE_APPOINTMENT_ADD_OFFERS = gql`
 `;
 
 export const UPDATE_APPOINTMENT_ADD_PHOTO = gql`
-  mutation UPDATEAPPOINTMENTADDPHOTO(
-      $id: ID!
-      $src: String!
-    ) {
-    updateAppointment(
-      input: {
-        id: $id
-        photos: {create: {src: $src}}
-      }
-    ){
+  mutation UPDATEAPPOINTMENTADDPHOTO($id: ID!, $src: String!) {
+    updateAppointment(input: {id: $id, photos: {create: {src: $src}}}) {
       id
       date
       comment
@@ -552,6 +538,13 @@ export const GET_USERS = gql`
         id
         email
         type
+        master_appointments {
+          id
+          photos {
+            id
+            src
+          }
+        }
         profile {
           id
           name
@@ -563,6 +556,7 @@ export const GET_USERS = gql`
           about_me
           site
         }
+
         schedules {
           id
           day
@@ -609,6 +603,7 @@ export const GET_APPOINTMENTS = gql`
 export const GET_USER = gql`
   query GETUSER($id: ID!) {
     user(id: $id) {
+      id
       profile {
         id
         name
@@ -822,6 +817,10 @@ export const NEXT_APPOINTMENTS = gql`
       }
       offers {
         id
+        price_by_pack {
+          price
+          duration
+        }
         service {
           id
           name
@@ -830,12 +829,29 @@ export const NEXT_APPOINTMENTS = gql`
       master {
         id
         type
+        offers {
+          id
+          service {
+            id
+            name
+            specialization {
+              id
+              name
+            }
+          }
+          description
+          price_by_pack {
+            price
+            duration
+          }
+        }
         profile {
           id
           city {
             id
             name
           }
+
           name
           email
         }

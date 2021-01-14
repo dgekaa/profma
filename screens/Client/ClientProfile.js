@@ -31,6 +31,8 @@ const ClientProfile = ({navigation, handleChangeLoginState}) => {
   const USER = useQuery(ME);
   const [LOGOUT_mutation] = useMutation(LOGOUT);
 
+  const reload = () => USER.refetch();
+
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} title="Мой профиль" />
@@ -97,6 +99,7 @@ const ClientProfile = ({navigation, handleChangeLoginState}) => {
                     ? USER.data.me.profile.city
                     : '',
                   id: USER.data.me.profile.id,
+                  reload,
                 })
               }>
               <View
@@ -119,9 +122,7 @@ const ClientProfile = ({navigation, handleChangeLoginState}) => {
             {/* СВЯЗЬ С ПООДЕРЖКОЙ*/}
             <TouchableOpacity
               style={blockInGroup}
-              onPress={() => {
-                alert('Связь с поддержкой');
-              }}>
+              onPress={() => alert('Связь с поддержкой')}>
               <Text style={{fontSize: 13}}>Связаться с поддержкой Prof.Ma</Text>
             </TouchableOpacity>
           </View>

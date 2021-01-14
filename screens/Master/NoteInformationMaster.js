@@ -205,6 +205,7 @@ const NoteInformationMaster = ({navigation}) => {
       optimisticResponse: null,
     })
       .then(res => {
+        console.log(navigation.state.params, '--- navigation.state.params');
         navigation.state.params.refetch();
         navigation.goBack();
       })

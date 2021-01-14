@@ -20,7 +20,6 @@ import {
 const Block = ({navigation, deleteService, el, refetch}) => {
   const {block, headerText, text, textBold} = styles;
 
-  console.log(el, 'SERVICE');
   return (
     <TouchableOpacity
       style={block}
@@ -68,8 +67,8 @@ const Block = ({navigation, deleteService, el, refetch}) => {
 const MyServices = ({navigation}) => {
   const {blockTitle} = styles;
 
-  const [successDeleted, setSuccessDeleted] = useState(false);
-  const [successSaved, setSuccessSaved] = useState(false);
+  const [successDeleted, setSuccessDeleted] = useState(false),
+    [successSaved, setSuccessSaved] = useState(false);
 
   const deleteOneService = bool => {
     setSuccessDeleted(bool);
@@ -89,8 +88,9 @@ const MyServices = ({navigation}) => {
             <Text style={blockTitle}>мои активные услуги</Text>
             {USER.data &&
               !!USER.data.me.offers.length &&
-              USER.data.me.offers.map(el => (
+              USER.data.me.offers.map((el, i) => (
                 <Block
+                  key={i}
                   el={el}
                   navigation={navigation}
                   refetch={USER.refetch}
@@ -114,8 +114,10 @@ const MyServices = ({navigation}) => {
           {!successDeleted && !successSaved && (
             <ButtonDefault
               onPress={() => {
+                console.log(navigation.state.params, '----NAV');
                 navigation.navigate('SelectSpecialization', {
                   refetch: USER.refetch,
+                  reload: navigation.state.params.reload,
                 });
                 // navigation.navigate('SelectSpecialization', {
                 //   save: bool => {
