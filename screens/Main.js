@@ -64,7 +64,7 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
 
   const nextFreeTimeByMaster = useQuery(NEXT_FREE_TIME_BY_MASTER, {
     variables: {
-      master_id: +el.id,
+      master_id: +el.id || +el.user.id,
       count: 6,
     },
   });
@@ -109,7 +109,7 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
           navigation.navigate('PublickMasterProfile', {
             dates: dates ? el.user.profile : el.profile,
             reload: reload,
-            id: el.id,
+            id: el.id || el.user.id,
           });
         }}>
         <View
@@ -159,57 +159,55 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
               <Text style={{fontSize: 10}} numberOfLines={1}>
                 {(el.profile && el.profile.work_address) || '-'}
               </Text>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                {/* {el.metro && ( */}
-                <View
-                  style={{
-                    height: 4,
-                    width: 4,
-                    borderRadius: 4,
-                    backgroundColor: '#9155FF',
-                    marginRight: 5,
-                  }}
-                />
-                {/* )} */}
-                <Text style={{fontSize: 10}}>{el.metro || '-'}</Text>
-              </View>
+              {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                {el.metro && (
+                  <View
+                    style={{
+                      height: 4,
+                      width: 4,
+                      borderRadius: 4,
+                      backgroundColor: '#9155FF',
+                      marginRight: 5,
+                    }}
+                  />
+                )}
+                <Text style={{fontSize: 10}}>{el.metro || ''}</Text>
+              </View> */}
             </View>
           </View>
           <View style={timeBlockWrapp}>
             {!!nextFreeTimeByMaster.data &&
               !!nextFreeTimeByMaster.data.nextFreeTimeByMaster.length &&
               nextFreeTimeByMaster.data.nextFreeTimeByMaster[0].times.map(
-                (el, index) => {
-                  return (
-                    <View key={index} style={timeBlock}>
-                      <Text
-                        style={{
-                          color: '#B986DA',
-                          fontSize: 10,
-                          fontWeight: 'bold',
-                        }}>
-                        {
-                          nextFreeTimeByMaster.data.nextFreeTimeByMaster[0].date.split(
-                            '-',
-                          )[2]
-                        }{' '}
-                        {shortMonthName[
-                          +nextFreeTimeByMaster.data.nextFreeTimeByMaster[0].date.split(
-                            '-',
-                          )[1] - 1
-                        ].toLowerCase()}{' '}
-                      </Text>
-                      <Text style={{color: '#B986DA', fontSize: 10}}>{el}</Text>
-                    </View>
-                  );
-                },
+                (el, index) => (
+                  <View key={index} style={timeBlock}>
+                    <Text
+                      style={{
+                        color: '#B986DA',
+                        fontSize: 10,
+                        fontWeight: 'bold',
+                      }}>
+                      {
+                        nextFreeTimeByMaster.data.nextFreeTimeByMaster[0].date.split(
+                          '-',
+                        )[2]
+                      }{' '}
+                      {shortMonthName[
+                        +nextFreeTimeByMaster.data.nextFreeTimeByMaster[0].date.split(
+                          '-',
+                        )[1] - 1
+                      ].toLowerCase()}{' '}
+                    </Text>
+                    <Text style={{color: '#B986DA', fontSize: 10}}>{el}</Text>
+                  </View>
+                ),
               )}
           </View>
         </View>
       </TouchableOpacity>
     );
   } else {
-    return <View />;
+    return <Text> </Text>;
   }
 };
 
@@ -242,7 +240,10 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
       onPress={() => {
         type === 'Client'
           ? navigation.navigate('NoteInformation', {el: el, reload: reload})
-          : navigation.navigate('NoteInformationMaster', {el: el});
+          : navigation.navigate('NoteInformationMaster', {
+              el: el,
+              reload: reload,
+            });
       }}>
       <View>
         <Image
@@ -423,10 +424,10 @@ const Main = ({navigation}) => {
                   ))}
                 </ScrollView>
               )}
+
             {dates && !!findMaster.data && (
               <View style={foundMasters}>
                 <View style={{flex: 1}}>
-                  {console.log(findMaster, '----findMaster')}
                   <Text>{`Найдено ${
                     findMaster.data.findMaster.length
                   }  ${plural(findMaster.data.findMaster.length, [
@@ -454,8 +455,6 @@ const Main = ({navigation}) => {
               </View>
             )}
             <View style={{paddingBottom: 80}}>
-              {/* !!!!!!!!!!!!!!!!! */}
-
               {!dates
                 ? !!users &&
                   !!users.data && (

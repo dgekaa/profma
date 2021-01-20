@@ -205,8 +205,7 @@ const NoteInformationMaster = ({navigation}) => {
       optimisticResponse: null,
     })
       .then(res => {
-        console.log(navigation.state.params, '--- navigation.state.params');
-        navigation.state.params.refetch();
+        navigation.state.params.reload();
         navigation.goBack();
       })
       .catch(err => console.log(err, '__ERR DELETE_APPOINTMENT_mutation'));

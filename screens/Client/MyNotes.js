@@ -3,7 +3,6 @@ import SvgUri from 'react-native-svg-uri';
 
 import BackgroundHeader, {Header} from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
-import {people} from '../../data';
 import CalendarGrayIcon from '../../img/calendarGray.svg';
 import CalendarColorIcon from '../../img/CalendarColor.svg';
 
@@ -17,9 +16,9 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-import {Query, useMutation, useQuery} from 'react-apollo';
+import {useQuery} from 'react-apollo';
 
-import {LOGOUT, ME} from '../../QUERYES';
+import {ME, GET_USER} from '../../QUERYES';
 
 const shortMonthName = [
   'Янв',
@@ -36,9 +35,11 @@ const shortMonthName = [
   'Дек',
 ];
 
-const Block = ({el, navigation, key, archive, refetch}) => {
-  const [price, setPrice] = useState(0);
-  const [offersAll, setOffersAll] = useState([]);
+const Block = ({el, navigation, key, archive, reload}) => {
+  const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
+
+  const [price, setPrice] = useState(0),
+    [offersAll, setOffersAll] = useState([]);
 
   useEffect(() => {
     let count = 0;
@@ -56,17 +57,40 @@ const Block = ({el, navigation, key, archive, refetch}) => {
     setOffersAll(offersAllLocal);
   }, []);
 
-  const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
+  const MASTER = useQuery(GET_USER, {
+    variables: {id: +el.master.id},
+  });
+
+  const [photo, setPhoto] = useState(
+    'https://hornews.com/upload/images/blank-avatar.jpg',
+  );
+
+  useEffect(() => {
+    if (
+      MASTER.data &&
+      MASTER.data.user &&
+      MASTER.data.user.master_appointments &&
+      MASTER.data.user.master_appointments.length
+    ) {
+      MASTER.data.user.master_appointments.forEach(el => {
+        el.photos.forEach(
+          photo =>
+            photo.src && setPhoto('http://194.87.145.192/storage/' + photo.src),
+        );
+      });
+    }
+  }, [MASTER]);
+
   return (
     <TouchableOpacity
       style={block}
       key={key}
-      onPress={() => {
+      onPress={() =>
         navigation.navigate('NoteInformation', {
           person: el,
-          refetch: refetch,
-        });
-      }}>
+          reload: reload,
+        })
+      }>
       <View style={topBlock}>
         <View style={{flexDirection: 'row', flex: 6, alignItems: 'center'}}>
           <SvgUri
@@ -90,7 +114,7 @@ const Block = ({el, navigation, key, archive, refetch}) => {
         <Image
           style={img}
           source={{
-            uri: el.img,
+            uri: photo,
           }}
         />
         <View style={{flex: 1}}>
@@ -106,7 +130,7 @@ const Block = ({el, navigation, key, archive, refetch}) => {
             <Text style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
               {el.master.profile.work_address}
             </Text>
-            <Text style={{fontSize: 10}}>Садовая</Text>
+            <Text style={{fontSize: 10}} />
           </View>
         </View>
         <View style={{flex: 1}}>
@@ -117,6 +141,7 @@ const Block = ({el, navigation, key, archive, refetch}) => {
             {!!offersAll.length &&
               offersAll.map((el, i) => (
                 <Text
+                  key={i}
                   style={[textBold, {color: archive ? '#A6ADB3' : 'black'}]}>
                   {el}
                 </Text>
@@ -132,6 +157,8 @@ const MyNotes = ({navigation}) => {
   const {bigText, smallText, textBold, blockTitle, block} = styles;
 
   const USER = useQuery(ME);
+
+  const reload = () => USER.refetch();
 
   return (
     <View style={{flex: 1}}>
@@ -182,7 +209,7 @@ const MyNotes = ({navigation}) => {
                       el={el}
                       navigation={navigation}
                       key={i}
-                      refetch={USER.refetch}
+                      reload={reload}
                     />
                   );
                 }

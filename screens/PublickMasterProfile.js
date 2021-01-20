@@ -352,12 +352,10 @@ const PublickMasterProfile = ({navigation}) => {
     FREETIME.data &&
       FREETIME.data.freeTimeByMaster[0] &&
       setFreeTimeByMaster(FREETIME.data.freeTimeByMaster[0].times);
-  }, [FREETIME]);
+  }, [FREETIME, freeTimeByMaster]);
 
   useEffect(() => {
-    checkboxes.forEach(el => {
-      el && setCHCecked(true);
-    });
+    checkboxes.forEach(el => el && setCHCecked(true));
   }, [checkboxes]);
 
   const showMasters = masters => {
@@ -370,9 +368,14 @@ const PublickMasterProfile = ({navigation}) => {
     const CH = checkboxes.filter(el => +el),
       finishCH = CH.map(el => +el);
 
+    console.log(MASTER.data.user.id);
+    console.log(dates[0]);
+    console.log(activeTime);
+    console.log(finishCH);
+
     CREATE_APPOINTMENT_mutation({
       variables: {
-        id: +MASTER.data.user.profile.id,
+        id: +MASTER.data.user.id,
         date: dates[0],
         time: activeTime,
         offers_id: finishCH,
@@ -381,12 +384,21 @@ const PublickMasterProfile = ({navigation}) => {
     })
       .then(res => {
         setTimeWasSelected(true);
+
+        setChoosedActiveTime(null);
+        setAllPrice(0);
+        setCHCecked(false);
+
         navigation.state.params.reload();
       })
       .catch(err =>
         console.log(JSON.stringify(err), '__ERR CREATE_APPOINTMENT'),
       );
   };
+
+  useEffect(() => {
+    console.log(FREETIME, '----FREETIME');
+  }, [FREETIME]);
 
   if (MASTER.error) {
     return <Text>Err</Text>;
@@ -532,11 +544,13 @@ const PublickMasterProfile = ({navigation}) => {
                 <SvgUri svgXmlData={LocationIcon} style={{marginRight: 8}} />
                 <View style={{flexDirection: 'column'}}>
                   <Text style={{fontSize: 13, fontWeight: 'bold'}}>
-                    {MASTER.data.user.profile.work_address},{' '}
-                    {MASTER.data.user.profile.city &&
-                      MASTER.data.user.profile.city.name}
+                    {MASTER.data.user.profile.work_address || 'Адрес не указан'}
+                    ,{' '}
+                    {(MASTER.data.user.profile.city &&
+                      MASTER.data.user.profile.city.name) ||
+                      'город не указан'}
                   </Text>
-                  <View style={{alignItems: 'center', flexDirection: 'row'}}>
+                  {/* <View style={{alignItems: 'center', flexDirection: 'row'}}>
                     <View
                       style={{
                         height: 4,
@@ -547,7 +561,7 @@ const PublickMasterProfile = ({navigation}) => {
                       }}
                     />
                     <Text style={{fontSize: 13}}>?metro?</Text>
-                  </View>
+                  </View> */}
                 </View>
               </View>
             </View>
@@ -734,6 +748,10 @@ const PublickMasterProfile = ({navigation}) => {
             )}
             {FREETIME.error && <Text />}
 
+            {!freeTimeByMaster.length && (
+              <Text>Нет свободного времени на данный день</Text>
+            )}
+
             {FREETIME.data && (
               <View
                 style={{
@@ -753,10 +771,6 @@ const PublickMasterProfile = ({navigation}) => {
                       active={activeTime === el ? true : false}
                     />
                   ))}
-
-                {!freeTimeByMaster.length && (
-                  <Text>Нет свободного времени на данный день</Text>
-                )}
               </View>
             )}
 

@@ -152,14 +152,14 @@ const NoteInformation = ({navigation}) => {
     [canceledNote, setCanceledNote] = useState(false);
 
   const appointment = useQuery(GET_APPOINTMENT, {
-    variables: {id: +navigation.state.params.el.id},
+    variables: {id: +navigation.state.params.person.id},
   });
 
   const refreshObject = {
     refetchQueries: [
       {
         query: GET_APPOINTMENT,
-        variables: {id: +navigation.state.params.el.master.id},
+        variables: {id: +navigation.state.params.person.master.id},
       },
       {
         query: ME,
@@ -181,7 +181,7 @@ const NoteInformation = ({navigation}) => {
   const CANCEL = () => {
     DELETE_APPOINTMENT_mutation({
       variables: {
-        id: +navigation.state.params.el.id,
+        id: +navigation.state.params.person.id,
       },
       optimisticResponse: null,
     })
@@ -197,9 +197,9 @@ const NoteInformation = ({navigation}) => {
     [showAllServices, setShowAllServices] = useState(false);
 
   useEffect(() => {
-    navigation.state.params.el.master.offers &&
-      setServices(navigation.state.params.el.master.offers);
-  }, [navigation.state.params.el.master.offers]);
+    navigation.state.params.person.master.offers &&
+      setServices(navigation.state.params.person.master.offers);
+  }, [navigation.state.params.person.master.offers]);
 
   const [slideBlock, setSlideBlock] = useState(
     new Array(services.length).fill(false),
@@ -245,7 +245,7 @@ const NoteInformation = ({navigation}) => {
         <View style={{flex: 1, paddingHorizontal: 8, paddingTop: 15}}>
           <View style={first}>
             <Text style={text}>
-              {navigation.state.params.el.master.profile.name}
+              {navigation.state.params.person.master.profile.name}
             </Text>
           </View>
           {/* УСЛУГИ */}
@@ -253,9 +253,9 @@ const NoteInformation = ({navigation}) => {
             <Text style={blockTitle}>Услуги</Text>
             <View>
               <View style={groupBlock}>
-                {navigation.state.params.el.offers &&
-                  navigation.state.params.el.offers.length &&
-                  navigation.state.params.el.offers.map((el, i) => (
+                {navigation.state.params.person.offers &&
+                  navigation.state.params.person.offers.length &&
+                  navigation.state.params.person.offers.map((el, i) => (
                     <View
                       key={i}
                       style={[
@@ -263,7 +263,7 @@ const NoteInformation = ({navigation}) => {
                           height: 60,
                           flexDirection: 'row',
                         },
-                        navigation.state.params.el.offers.length - 1 === i
+                        navigation.state.params.person.offers.length - 1 === i
                           ? {}
                           : {
                               borderBottomColor: 'rgba(0,0,0,0.2)',
@@ -331,11 +331,15 @@ const NoteInformation = ({navigation}) => {
             <Text style={blockTitle}>дата и время сеанса</Text>
             <View style={[first, {flexDirection: 'row'}]}>
               <Text style={{fontWeight: 'bold'}}>
-                {navigation.state.params.el.date.split('-')[2]}{' '}
-                {shortMonthName[+navigation.state.params.el.date.split('-')[1]]}{' '}
-                {navigation.state.params.el.date.split('-')[0]}
+                {navigation.state.params.person.date.split('-')[2]}{' '}
+                {
+                  shortMonthName[
+                    +navigation.state.params.person.date.split('-')[1]
+                  ]
+                }{' '}
+                {navigation.state.params.person.date.split('-')[0]}
               </Text>
-              <Text> в {navigation.state.params.el.time.slice(0, 5)}</Text>
+              <Text> в {navigation.state.params.person.time.slice(0, 5)}</Text>
             </View>
           </View>
           {/* АДРЕС ПРОВЕДЕНИЯ СЕАНСА */}
@@ -394,7 +398,7 @@ const NoteInformation = ({navigation}) => {
           </Text>
           <Text style={{paddingVertical: 8, fontWeight: 'bold', fontSize: 13}}>
             <Text style={text}>
-              {navigation.state.params.el.master.profile.name}
+              {navigation.state.params.person.master.profile.name}
             </Text>
           </Text>
           <Image source={require('../../img/girl5.png')} />
@@ -460,9 +464,9 @@ const NoteInformation = ({navigation}) => {
                 Все услуги
               </Text>
               <ScrollView style={{paddingHorizontal: 8}}>
-                {navigation.state.params.el.master.offers &&
-                  !!navigation.state.params.el.master.offers.length &&
-                  navigation.state.params.el.master.offers.map((el, i) => {
+                {navigation.state.params.person.master.offers &&
+                  !!navigation.state.params.person.master.offers.length &&
+                  navigation.state.params.person.master.offers.map((el, i) => {
                     return (
                       <View key={i}>
                         <DropdownBlock

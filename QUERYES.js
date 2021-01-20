@@ -438,6 +438,7 @@ export const ME = gql`
       client_appointments {
         id
         master {
+          id
           email
           profile {
             id
@@ -461,7 +462,12 @@ export const ME = gql`
       }
       master_appointments {
         id
+        photos {
+          id
+          src
+        }
         client {
+          id
           email
           profile {
             id
@@ -485,7 +491,6 @@ export const ME = gql`
           }
         }
       }
-
       offers {
         id
         description
@@ -617,6 +622,13 @@ export const GET_USER = gql`
         city {
           name
           id
+        }
+      }
+      master_appointments {
+        id
+        photos {
+          id
+          src
         }
       }
       schedules {

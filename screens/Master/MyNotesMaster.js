@@ -3,13 +3,8 @@ import SvgUri from 'react-native-svg-uri';
 import CalendarGrayIcon from '../../img/calendarGray.svg';
 import CalendarColorIcon from '../../img/CalendarColor.svg';
 
-import {Query, useMutation, useQuery} from 'react-apollo';
-import {
-  LOGOUT,
-  ME,
-  DELETE_APPOINTMENT,
-  UPDATE_APPOINTMENT,
-} from '../../QUERYES';
+import {useQuery} from 'react-apollo';
+import {ME, GET_USER} from '../../QUERYES';
 
 import BackgroundHeader, {Header} from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
@@ -39,11 +34,23 @@ const shortMonthName = [
   'Дек',
 ];
 
-const Block = ({el, navigation, archive, refetch}) => {
+const Block = ({el, navigation, archive, reload, me}) => {
   const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
 
-  const [price, setPrice] = useState(0);
-  const [offersAll, setOffersAll] = useState([]);
+  const [price, setPrice] = useState(0),
+    [offersAll, setOffersAll] = useState([]),
+    [photo, setPhoto] = useState(
+      'https://hornews.com/upload/images/blank-avatar.jpg',
+    );
+
+  if (me.master_appointments && me.master_appointments.length) {
+    me.master_appointments.forEach(el => {
+      el.photos.forEach(
+        photo =>
+          photo.src && setPhoto('http://194.87.145.192/storage/' + photo.src),
+      );
+    });
+  }
 
   useEffect(() => {
     let count = 0;
@@ -69,7 +76,7 @@ const Block = ({el, navigation, archive, refetch}) => {
       onPress={() =>
         navigation.navigate('NoteInformationMaster', {
           el: el,
-          refetch: refetch,
+          reload: reload,
         })
       }>
       <View style={topBlock}>
@@ -93,7 +100,7 @@ const Block = ({el, navigation, archive, refetch}) => {
         <Image
           style={img}
           source={{
-            uri: 'https://hornews.com/upload/images/blank-avatar.jpg',
+            uri: photo,
           }}
         />
         <View style={{flex: 1}}>
@@ -132,6 +139,8 @@ const MyNotesMaster = ({navigation}) => {
   const {bigText, smallText, textBold, blockTitle, block} = styles;
 
   const USER = useQuery(ME);
+
+  const reload = () => USER.refetch();
 
   return (
     <View style={{flex: 1, backgroundColor: '#fafafa'}}>
@@ -173,10 +182,11 @@ const MyNotesMaster = ({navigation}) => {
                 return (
                   <View key={i}>
                     <Block
+                      me={USER.data.me}
                       el={el}
                       navigation={navigation}
                       index={i}
-                      refetch={USER.refetch}
+                      reload={reload}
                     />
                   </View>
                 );
