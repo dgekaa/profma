@@ -7,7 +7,7 @@ import {ButtonDisabled, ButtonDefault} from '../../components/Button';
 import {Text, View, StyleSheet, Image} from 'react-native';
 import {useMutation} from 'react-apollo';
 
-import {UPDATE_PASSWORD, ME} from '../../QUERYES';
+import {UPDATE_PASSWORD} from '../../QUERYES';
 
 const ChangePassword = ({navigation}) => {
   const {
@@ -33,7 +33,6 @@ const ChangePassword = ({navigation}) => {
       variables: {
         password: pass,
         password_confirmation: repass,
-        old_password: 'qweasdzxc',
       },
       optimisticResponse: null,
     })
@@ -44,11 +43,12 @@ const ChangePassword = ({navigation}) => {
       })
       .catch(err => {
         setValidationErr(true);
-        if (JSON.stringify(err.networkError)) {
-          navigation.navigate('ErrorInternetProblems', {
-            navigation: navigation,
-          });
-        }
+        console.log(JSON.stringify(err), '----err password');
+        // if (JSON.stringify(err.networkError)) {
+        //   navigation.navigate('ErrorInternetProblems', {
+        //     navigation: navigation,
+        //   });
+        // }
       });
   };
 

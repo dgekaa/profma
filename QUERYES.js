@@ -762,16 +762,11 @@ export const DELETE_START_SESSION = gql`
 `;
 
 export const UPDATE_PASSWORD = gql`
-  mutation UPDATEPASSWORD(
-    $password: String!
-    $password_confirmation: String!
-    $old_password: String!
-  ) {
+  mutation UPDATEPASSWORD($password: String!, $password_confirmation: String!) {
     updatePassword(
       input: {
         password: $password
         password_confirmation: $password_confirmation
-        old_password: $old_password
       }
     ) {
       status
