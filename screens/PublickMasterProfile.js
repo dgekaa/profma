@@ -269,7 +269,6 @@ const PublickMasterProfile = ({navigation}) => {
 
   const [allPhoto, setAllPhoto] = useState([]),
     [activeImg, setActiveImg] = useState(null),
-    [y, setY] = useState(null),
     [showAllServices, setShowAllServices] = useState(false),
     [isCalendarVisible, setIsCalendarVisible] = useState(false),
     [markedDates, setMarkedDates] = useState({}),
@@ -395,10 +394,6 @@ const PublickMasterProfile = ({navigation}) => {
         console.log(JSON.stringify(err), '__ERR CREATE_APPOINTMENT'),
       );
   };
-
-  useEffect(() => {
-    console.log(FREETIME, '----FREETIME');
-  }, [FREETIME]);
 
   if (MASTER.error) {
     return <Text>Err</Text>;
@@ -594,24 +589,21 @@ const PublickMasterProfile = ({navigation}) => {
               />
             )}
           </View>
+          
         </ScrollView>
         {(activeImg || activeImg === 0 || activeImg === '0') && (
           <View style={bigImg}>
             <ScrollView
               scrollEventThrottle={0}
-              onScroll={event => {
-                // setY(
-                //   Math.round(event.nativeEvent.contentOffset.x / screen.width),
-                // );
-              }}
+              onScroll={event => {}}
               ref={scrollImage}
               horizontal={true}
-              showsHorizontalScrollIndicator={false}
+              showsHorizontalScrollIndicator={true}
               pagingEnabled={true}>
               {allPhoto.map((el, i) => {
                 setTimeout(() => {
                   scrollImage.current.scrollTo({
-                    x: screen.width * activeImg,
+                    x: screen.width * activeImg,animated : false
                   });
                 }, 0);
                 return (
@@ -633,12 +625,13 @@ const PublickMasterProfile = ({navigation}) => {
               onPress={() => setActiveImg(null)}>
               <SvgUri svgXmlData={CrossWhiteIcon} />
             </TouchableOpacity>
+            {/* bottom dots */}
             <View style={imgIndicator}>
               {allPhoto.map((el, i) => {
                 return (
                   <BottomImgIndicator
                     key={i}
-                    showActiveImg={y || activeImg}
+                    showActiveImg={activeImg}
                     index={i}
                   />
                 );
