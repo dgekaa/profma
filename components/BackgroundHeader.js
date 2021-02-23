@@ -16,7 +16,7 @@ export const Header = ({navigation, title, description, children}) => {
     <View style={[bg, {paddingTop: 25}]}>
       <View style={container}>
         <LeftArrowBlack onPress={() => navigation.goBack(null)} />
-        <View style={{flex: 1, flexDirection: 'column'}}>
+        <View style={{flex: 1, flexDirection: 'column',marginLeft:-60}}>
           <Text style={headerTitle}>{title}</Text>
           <Text style={headerdescription}>{description}</Text>
           {children}
@@ -41,7 +41,7 @@ const BackgroundHeader = ({
       style={[bg, {paddingTop: 0}]}>
       <View style={container}>
         <LeftArrowWhite onPress={() => navigation.goBack(null)} />
-        <View style={{flex: 1, flexDirection: 'column'}}>
+        <View style={{flex: 1, flexDirection: 'column',marginLeft:-60}}>
           <Text style={headerTitle}>{title}</Text>
           {description && <Text style={headerdescription}>{description}</Text>}
           {children}

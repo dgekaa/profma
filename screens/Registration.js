@@ -7,7 +7,7 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
-  Keyboard,
+  Keyboard,ActivityIndicator
 } from 'react-native';
 import {useMutation} from 'react-apollo';
 
@@ -44,8 +44,8 @@ const Registration = ({navigation, handleChangeLoginState}) => {
   const [iconName, setIconName] = useState('closedEye');
   const [hidePassword, setHidePassword] = useState(true);
   const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [isKeyBoard, setisKeyboard] = useState('');
+  const [email, setEmail] = useState(''),
+    [loading, setLoading] = useState(false);
 
   const [REGISTER_mutation] = useMutation(REGISTER);
   const [CREATE_PROFILE_mutation] = useMutation(CREATE_PROFILE);
@@ -82,19 +82,6 @@ const Registration = ({navigation, handleChangeLoginState}) => {
     }
   };
 
-  useEffect(() => {
-    Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
-    Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
-
-    return () => {
-      Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
-      Keyboard.removeListener('keyboardDidHide', _keyboardDidHide);
-    };
-  }, []);
-
-  const _keyboardDidShow = () => setisKeyboard(true);
-  const _keyboardDidHide = () => setisKeyboard(false);
-
   const whoObj = {
     Master: 'Master',
     Client: 'Client',
@@ -110,6 +97,7 @@ const Registration = ({navigation, handleChangeLoginState}) => {
   };
 
   const register = () => {
+    setLoading(true)
     REGISTER_mutation({
       variables: {
         type: whoObj[personType],
@@ -120,19 +108,21 @@ const Registration = ({navigation, handleChangeLoginState}) => {
       optimisticResponse: null,
     })
       .then(res => {
+        setLoading(false)
         handleChangeLoginState(true, res.data.register.tokens.access_token);
         createProfile(res);
       })
-      .catch(err => setValidationErr(true));
+      .catch(err => {setLoading(false);setValidationErr(true)});
   };
 
   return (
-    <KeyboardAvoidingView
+    <View  style={registrtionWrap}>
+      <KeyboardAvoidingView
       style={registrtionWrap}
+      keyboardVerticalOffset={Platform.select({ ios: 60 })}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <Header navigation={navigation} />
       <View style={[container, {flex: 1}]}>
-        {!isKeyBoard && (
           <View style={[topTextWrap, height < 650 && {marginBottom: 10}]}>
             <Text style={[ProfMa, height < 650 && {fontSize: 20}]}>
               Prof.Ma
@@ -146,8 +136,7 @@ const Registration = ({navigation, handleChangeLoginState}) => {
               {textAd}
             </Text>
           </View>
-        )}
-        <View>
+          <View style={[{flex: 1}]}>
           <View style={[btnGroup]}>
             <ButtonDefault
               flex={true}
@@ -164,7 +153,7 @@ const Registration = ({navigation, handleChangeLoginState}) => {
               style={{opacity: 0.8}}
             />
           </View>
-          <View style={{backgroundColor: '#fff'}}>
+          <View style={{backgroundColor: '#fff', height: 200}}>
             <InputWithText
               onChangeText={text => {
                 setValidationErr('');
@@ -191,10 +180,11 @@ const Registration = ({navigation, handleChangeLoginState}) => {
               validationErr={validationErr}
             />
           </View>
+          </View>
         </View>
 
         <View style={bottomTextBtn}>
-          {height < 650 && !isKeyBoard && (
+          {height < 650  && (
             <View style={([politic], height < 650 && {paddingBottom: 16})}>
               <Text style={politicText}>
                 Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей
@@ -204,12 +194,11 @@ const Registration = ({navigation, handleChangeLoginState}) => {
             </View>
           )}
 
-          {!!fillErr ||
+{!!fillErr ||
             (!!validationErr && (
               <ButtonDisabled
                 onPress={() => {}}
                 title={regBtnText}
-                style={{marginBottom: 8}}
               />
             ))}
           {!fillErr && !validationErr && (
@@ -219,9 +208,17 @@ const Registration = ({navigation, handleChangeLoginState}) => {
               active={true}
             />
           )}
+
+         
         </View>
-      </View>
+      
     </KeyboardAvoidingView>
+       {loading && <View style={{
+            flex:1, justifyContent:"center", alignItems:"center"}}>
+            <ActivityIndicator size="large" color="#00ff00" />
+          </View>}
+    </View>
+    
   );
 };
 
@@ -275,9 +272,13 @@ const stylesClientRegistration = StyleSheet.create({
     color: '#B986DA',
   },
   bottomTextBtn: {
+    position:"absolute",
+    bottom:8,
+    width:"100%",
     flex: 1,
     justifyContent: 'flex-end',
     marginBottom: 8,
+    paddingHorizontal:8
   },
 });
 

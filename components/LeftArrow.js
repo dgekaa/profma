@@ -8,8 +8,8 @@ export const LeftArrowBlack = ({onPress}) => (
   <TouchableOpacity
     onPress={onPress}
     style={{
-      height: 24,
-      width: 24,
+      height: 80,
+      width: 80,
       justifyContent: 'center',
     }}>
     <SvgUri width="13" height="13" svgXmlData={LeftArrowBlackIcon} />
@@ -17,7 +17,11 @@ export const LeftArrowBlack = ({onPress}) => (
 );
 
 export const LeftArrowWhite = ({onPress}) => (
-  <TouchableOpacity onPress={onPress}>
+  <TouchableOpacity onPress={onPress} style={{
+    height: 80,
+    width: 80,
+    justifyContent: 'center',
+  }}>
     <SvgUri width="13" height="13" svgXmlData={LeftArrowIcon} />
   </TouchableOpacity>
 );
