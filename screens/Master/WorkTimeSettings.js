@@ -106,7 +106,7 @@ const Block = ({
             keyboardType={'numeric'}
             maxLength={5}
             onChangeText={text => setFirstInputText(text, schedules, el)}
-            value={schedules && !schedules.day_off ? schedules.start_time : ''}
+            value={schedules && !schedules.day_off ? schedules.start_time.slice(0,5) : ''}
             style={{width: '100%'}}
             text="Начало рабочего дня"
             placeholder="00:00"
@@ -120,7 +120,7 @@ const Block = ({
             keyboardType={'numeric'}
             maxLength={5}
             onChangeText={text => setSecondInputText(text, schedules, el)}
-            value={schedules && !schedules.day_off ? schedules.end_time : ''}
+            value={schedules && !schedules.day_off ? schedules.end_time.slice(0,5) : ''}
             style={{width: '100%'}}
             text="Конец рабочего дня"
             placeholder="00:00"
