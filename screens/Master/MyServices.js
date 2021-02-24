@@ -18,11 +18,11 @@ import {
 } from 'react-native';
 
 const Block = ({navigation, deleteService, el, refetch}) => {
-  const {block, headerText, text, textBold} = styles;
+  const {block,blockIos, headerText, text, textBold} = styles;
 
   return (
     <TouchableOpacity
-      style={block}
+      style={Platform.OS === 'ios' ? blockIos : block}
       onPress={() => {
         navigation.navigate('SelectedServiceDescription', {
           deleteService: bool => deleteService(bool),
@@ -179,6 +179,15 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.5,
     backgroundColor: '#fff',
+  },
+  blockIos: {
+    marginTop: 8,
+    flexDirection: 'row',
+    padding: 8,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.01,
+    shadowRadius: 0.1,
   },
   headerText: {
     fontSize: 13,

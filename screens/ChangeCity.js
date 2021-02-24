@@ -30,7 +30,7 @@ const Border = () => (
 );
 
 const ChangeCity = ({navigation}) => {
-  const {groupBlock} = styles;
+  const {groupBlock,groupBlockIos} = styles;
 
   const [city, setCity] = useState(
       navigation.state.params.city.name || 'Укажите город',
@@ -128,7 +128,7 @@ const ChangeCity = ({navigation}) => {
             />
           </View>
 
-          <View style={[groupBlock]}>
+          <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock ]}>
             <ScrollView>
               {data &&
                 !!filteredData &&
@@ -181,6 +181,16 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingLeft: 16,
     marginBottom: 8,
+  },
+  groupBlockIos: {
+    flex: 1,
+    borderRadius: 0.2,
+    marginTop: 20,
+    paddingLeft: 16,
+    marginBottom: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.01,
+    shadowRadius: 0.1,
   },
 });
 

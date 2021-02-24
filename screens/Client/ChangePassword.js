@@ -18,7 +18,7 @@ const ChangePassword = ({navigation}) => {
     rightBlock,
     imgSize,
     textWrap,
-    textBold,
+    textBold,groupBlockIos
   } = styles;
 
   const [pass, setPass] = useState('');
@@ -58,7 +58,7 @@ const ChangePassword = ({navigation}) => {
       <View style={{flex: 1, paddingHorizontal: 8}}>
         <View>
           <Text style={blockTitle}>изменить пароль</Text>
-          <View style={groupBlock}>
+          <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock}>
             <InputWithPassword
               validationErr={validationErr}
               value={pass}
@@ -119,6 +119,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 4,
     backgroundColor: '#fff',
     elevation: 1,
+  },
+  groupBlockIos: {
+    borderRadius: 2,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.01,
+    shadowRadius: 0.1,
   },
   blockTitle: {
     marginTop: 20,

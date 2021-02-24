@@ -35,7 +35,7 @@ const shortMonthName = [
 ];
 
 const Block = ({el, navigation, archive, reload, me}) => {
-  const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
+  const {block,blockIos, topBlock, img, textBold, dateText, bottomBlock} = styles;
 
   const [price, setPrice] = useState(0),
     [offersAll, setOffersAll] = useState([]),
@@ -72,7 +72,7 @@ const Block = ({el, navigation, archive, reload, me}) => {
 
   return (
     <TouchableOpacity
-      style={block}
+      style={Platform.OS === 'ios' ? blockIos : block}
       onPress={() =>
         navigation.navigate('NoteInformationMaster', {
           el: el,
@@ -217,6 +217,15 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     paddingLeft: 8,
     marginHorizontal: 8,
+  },
+  blockIos: {
+    backgroundColor: '#fff',
+    marginBottom: 8,
+    paddingLeft: 8,
+    marginHorizontal: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.01,
+    shadowRadius: 0.1,
   },
   topBlock: {
     height: 33,

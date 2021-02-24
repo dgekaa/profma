@@ -49,11 +49,11 @@ import BackgroundHeader from '../components/BackgroundHeader';
 const screen = Dimensions.get('window');
 
 const GalereaBlock = ({img, index, onPress}) => {
-  const {galereaImgContainer, galereaImg} = styles;
+  const {galereaImgContainer,galereaImgContainerIos, galereaImg} = styles;
   return (
     <TouchableOpacity
       onPress={() => onPress(index)}
-      style={galereaImgContainer}>
+      style={Platform.OS === 'ios' ? galereaImgContainerIos : galereaImgContainer }>
       <Image
         style={galereaImg}
         source={{
@@ -901,6 +901,18 @@ const styles = StyleSheet.create({
     elevation: 1,
     shadowOpacity: 0.5,
     shadowColor: '#000',
+    height: 216,
+    width: 166,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    marginHorizontal: 2,
+  },
+  galereaImgContainerIos: {
+    borderRadius: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.01,
+    shadowRadius: 0.1,
     height: 216,
     width: 166,
     justifyContent: 'center',

@@ -24,7 +24,7 @@ import {
 } from 'react-native';
 
 const ServiceDescription = ({navigation}) => {
-  const {groupBlock, blockTitle, blockInGroup, borderBottom} = styles;
+  const {groupBlock,groupBlockIos, blockTitle, blockInGroup, borderBottom} = styles;
 
   const SERVICES = useQuery(GET_SERVICES, {
     variables: {ids: navigation.state.params.checkedServices},
@@ -101,20 +101,20 @@ const ServiceDescription = ({navigation}) => {
         <ScrollView>
           <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
             <Text style={blockTitle}>ваша специализация</Text>
-            <View style={[groupBlock, blockInGroup]}>
+            <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock , blockInGroup]}>
               <Text style={{fontWeight: 'bold', fontSize: 13}}>
                 {DATA && DATA[serviceCount].specialization.name}
               </Text>
             </View>
             <Text style={blockTitle}>ваша услуга</Text>
-            <View style={[groupBlock, blockInGroup]}>
+            <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock, blockInGroup]}>
               <Text style={{fontWeight: 'bold', fontSize: 13}}>
                 {DATA && DATA[serviceCount].name}
               </Text>
             </View>
             <View
               style={[
-                groupBlock,
+                Platform.OS === 'ios' ? groupBlockIos : groupBlock,
                 {
                   paddingLeft: 8,
                   paddingTop: 8,
@@ -312,6 +312,15 @@ const styles = StyleSheet.create({
     shadowRadius: 0.2,
     elevation: 0.8,
     shadowColor: '#000',
+  },
+  groupBlockIos: {
+    marginTop: 8,
+    flexDirection: 'column',
+    paddingLeft: 18,
+    borderRadius: 0.2,
+    shadowColor: '#000',
+    shadowOpacity: 0.01,
+    shadowRadius: 0.1,
   },
   blockInGroup: {
     height: 50,

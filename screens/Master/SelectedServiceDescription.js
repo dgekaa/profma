@@ -189,12 +189,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     flexDirection: 'column',
     paddingLeft: 18,
-
     borderRadius: 0.2,
-    shadowOpacity: 0.18,
-    shadowRadius: 0.2,
-    elevation: 0.2,
-    shadowColor: 'red',
   },
   blockInGroup: {
     height: 50,

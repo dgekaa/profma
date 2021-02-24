@@ -6,7 +6,7 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  AsyncStorage,
+  AsyncStorage, Platform
 } from 'react-native';
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
@@ -28,7 +28,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
     blockInGroup,
     borderBottom,
     outsideCircle,
-    insideCircle,
+    insideCircle, firstIos,groupBlockIos
   } = styles;
 
   console.log(navigation, 'NAVIGATION MASTER');
@@ -62,7 +62,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
             <View>
               {/* МОИ ЗАПИСИ */}
               <TouchableOpacity
-                style={first}
+                style={Platform.OS === 'ios' ? firstIos : first}
                 onPress={() =>
                   USER.data &&
                   navigation.navigate('MyNotesMaster', USER.data.me.profile)
@@ -72,7 +72,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
               </TouchableOpacity>
             </View>
             <View>
-              <View style={groupBlock}>
+              <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock }>
                 {/* КАЛЕНДАРЬ*/}
                 <TouchableOpacity
                   style={[
@@ -121,7 +121,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                   <Text style={text}>Настроить рабочее расписание</Text>
                 </TouchableOpacity>
               </View>
-              <View style={groupBlock}>
+              <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock}>
                 {/* ПЕРСОНАЛЬНЫЕ ДАННЫЕ*/}
                 <TouchableOpacity
                   style={[blockInGroup, borderBottom]}
@@ -144,7 +144,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
               </View>
             </View>
             <View style={{marginBottom: 8}}>
-              <View style={groupBlock}>
+              <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock}>
                 {/* ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ*/}
                 <TouchableOpacity
                   style={[blockInGroup, borderBottom]}
@@ -225,11 +225,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 18,
     borderRadius: 0.2,
-
     shadowColor: '#000',
     shadowOpacity: 0.18,
     shadowRadius: 1.0,
     elevation: 0.4,
+  },
+  firstIos:{
+    marginTop: 10,
+    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 18,
+    borderRadius: 0.2,
+    shadowColor: '#000',
+    shadowOpacity: 0.01,
+    shadowRadius: 0.1,
   },
   text: {
     fontSize: 13,
@@ -246,6 +256,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.18,
     shadowRadius: 1.0,
     elevation: 0.4,
+  },
+  groupBlockIos: {
+    marginTop: 20,
+    flexDirection: 'column',
+    paddingLeft: 18,
+    paddingRight: 0,
+    borderRadius: 0.2,
+    shadowColor: '#000',
+    shadowOpacity: 0.01,
+    shadowRadius: 0.1,
   },
   blockInGroup: {
     height: 50,

@@ -23,7 +23,7 @@ const Border = () => (
 );
 
 const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
-  const {blockTitle, groupBlock} = styles;
+  const {blockTitle, groupBlock,groupBlockIos} = styles;
 
   const USER = useQuery(ME);
 
@@ -125,7 +125,7 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
           <View style={{flex: 1, paddingHorizontal: 8}}>
             <View style={{flex: 1}}>
               <Text style={blockTitle}>персональные данные</Text>
-              <View style={[groupBlock, {marginBottom: 16}]}>
+              <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock , {marginBottom: 16}]}>
                 <InputWithText
                   text="Ваше имя"
                   placeholder="Начните вводить имя"
@@ -159,7 +159,7 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
                   onChangeText={text => setAdditionPhoneLocal(text)}
                 />
               </View>
-              <View style={[groupBlock, {marginBottom: 16}]}>
+              <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock, {marginBottom: 16}]}>
                 {/* <InputWithText
                 text="Город, в котором вы работаете"
                 placeholder="Начните вводить город"
@@ -213,7 +213,7 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
                 </View>
               </View>
               <View
-                style={[groupBlock, {marginBottom: 16, paddingHorizontal: 16}]}>
+                style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock, {marginBottom: 16, paddingHorizontal: 16}]}>
                 <TextInput
                   maxLength={140}
                   value={aboutMeLocal}
@@ -263,10 +263,17 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
 const styles = StyleSheet.create({
   groupBlock: {
     borderRadius: 2,
-    shadowColor: 'red',
+    shadowColor: '#000',
     shadowOpacity: 4,
     backgroundColor: '#fff',
     elevation: 1,
+  },
+  groupBlockIos: {
+    borderRadius: 2,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.01,
+    shadowRadius: 0.1,
   },
   blockTitle: {
     marginTop: 20,

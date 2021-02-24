@@ -23,7 +23,7 @@ const Border = () => (
 );
 
 const PersonalData = ({navigation}) => {
-  const {blockTitle, groupBlock, keyboardWrap} = styles;
+  const {blockTitle, groupBlock,groupBlockIos, keyboardWrap} = styles;
 
   const USER = useQuery(ME);
 
@@ -91,7 +91,7 @@ const PersonalData = ({navigation}) => {
             <Text style={blockTitle}>персональные данные</Text>
             <View
               style={[
-                groupBlock,
+                Platform.OS === 'ios' ? groupBlockIos : groupBlock  ,
                 {
                   flex: 1,
                 },
@@ -158,9 +158,16 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
     bottom: 0,
   },
+  groupBlockIos: {
+    borderRadius: 2,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.01,
+    shadowRadius: 0.1,
+  },
   groupBlock: {
     borderRadius: 2,
-    shadowColor: 'red',
+    shadowColor: '#000',
     shadowOpacity: 4,
     backgroundColor: '#fff',
     elevation: 1,
