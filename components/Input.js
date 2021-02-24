@@ -29,6 +29,7 @@ export const InputWithText = ({
   autoFocus,
   onSubmitEditing,
   maxLength,
+  onFocus
 }) => {
   const {
     inputWrap,
@@ -54,6 +55,7 @@ export const InputWithText = ({
       </View>
       <View style={inputWrap}>
         <TextInput
+          onFocus={onFocus}
           autoFocus
           selectTextOnFocus={selectTextOnFocus}
           value={value}

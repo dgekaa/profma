@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import SvgUri from 'react-native-svg-uri';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import {
   ME,
@@ -10,7 +11,6 @@ import {
 import {useMutation, useQuery} from 'react-apollo';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
-import {InputWithText} from '../../components/Input';
 import {ButtonDefault} from '../../components/Button';
 import ArrowRightIcon from '../../img/ArrowRight.svg';
 
@@ -21,7 +21,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Switch,
-  ActivityIndicator,
+  ActivityIndicator, Keyboard
 } from 'react-native';
 
 const weekDaysEnShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -44,11 +44,13 @@ const Block = ({
   setFirstInputText,
   setSecondInputText,
   validationErr,
+  setShowPicker, setTimeInfo
 }) => {
   const {groupBlock, blockTitle, blockInGroup, textBold, borderBottom} = styles;
 
   const [startErr, setStartErr] = useState(''),
     [endErr, setEndErr] = useState('');
+   
 
   const regExp = '(\\d{2}:\\d{2})';
   useEffect(() => {
@@ -66,6 +68,11 @@ const Block = ({
   useEffect(() => {
     startErr || endErr ? validationErr(true) : validationErr(false);
   }, [startErr, endErr]);
+
+  const onPressInput =(isFirst, schedules, el)=>{
+    setShowPicker(true)
+    setTimeInfo({isFirst, schedules, el})
+  }
 
   return (
     <View>
@@ -102,32 +109,22 @@ const Block = ({
       </View>
       <View style={[groupBlock, {marginBottom: index === 6 ? 16 : 0}]}>
         <View style={[blockInGroup, borderBottom]}>
-          <InputWithText
-            keyboardType={'numeric'}
-            maxLength={5}
-            onChangeText={text => setFirstInputText(text, schedules, el)}
-            value={schedules && !schedules.day_off ? schedules.start_time.slice(0,5) : ''}
-            style={{width: '100%'}}
-            text="Начало рабочего дня"
-            placeholder="00:00"
-            withoutShadow={true}
-            editable={!!schedules && !schedules.day_off}
-            validationErr={startErr}
-          />
+        <TouchableOpacity style={{ width:"100%"}}
+            onPress={()=>!schedules || schedules.day_off ? null : onPressInput(true, schedules, el)}
+          >
+            <Text style={{  
+              fontSize:10, fontFamily:"FuturaPT-Medium", paddingLeft:15, paddingVertical:10}}>Начало рабочего дня</Text>
+            <Text style={{color: !schedules || schedules.day_off ? '#D4D7DA' : '#000',fontFamily:"FuturaPT-Medium", paddingLeft:15, paddingBottom:15}}>{schedules && !schedules.day_off ? schedules.start_time.slice(0,5) : '00:00'}</Text>
+          </TouchableOpacity>
         </View>
         <View style={[blockInGroup, borderBottom]}>
-          <InputWithText
-            keyboardType={'numeric'}
-            maxLength={5}
-            onChangeText={text => setSecondInputText(text, schedules, el)}
-            value={schedules && !schedules.day_off ? schedules.end_time.slice(0,5) : ''}
-            style={{width: '100%'}}
-            text="Конец рабочего дня"
-            placeholder="00:00"
-            withoutShadow={true}
-            editable={!!schedules && !schedules.day_off}
-            validationErr={endErr}
-          />
+        <TouchableOpacity 
+           style={{ width:"100%"}}
+            onPress={()=>onPressInput(false, schedules, el)}
+          >
+            <Text style={{fontSize:10, fontFamily:"FuturaPT-Medium", paddingLeft:15, paddingVertical:10}}>Конец рабочего дня</Text>
+            <Text style={{color: !schedules || schedules.day_off ? '#D4D7DA' : '#000',fontFamily:"FuturaPT-Medium", paddingLeft:15, paddingBottom:15}}>{schedules && !schedules.day_off ? schedules.end_time.slice(0,5) : '00:00'}</Text>
+          </TouchableOpacity>
         </View>
         <TouchableOpacity
           onPress={() => {
@@ -176,7 +173,8 @@ const WorkTimeSettings = ({navigation}) => {
     ),
     [DELETE_SCHEDULE_mutation] = useMutation(DELETE_SCHEDULE, refreshObject);
 
-  const [changedData, setChangedData] = useState({});
+  const [changedData, setChangedData] = useState({}),
+    [showPicker, setShowPicker] = useState(false);
 
   useEffect(() => {
     if (USER.data) {
@@ -278,8 +276,10 @@ const WorkTimeSettings = ({navigation}) => {
     }
   };
 
-  const [isValidationErr, setIsValidationErr] = useState(false);
-
+  const [isValidationErr, setIsValidationErr] = useState(false),
+    [date, setDate] = useState(new Date()),
+    [timeInfo, setTimeInfo] = useState();
+    
   const validationErr = data => setIsValidationErr(data);
 
   return (
@@ -288,12 +288,49 @@ const WorkTimeSettings = ({navigation}) => {
         navigation={navigation}
         title="Настройка рабочего времени"
       />
+       {
+          showPicker && 
+          <TouchableOpacity style={{
+            position:"absolute",top:0,left:0,
+            width:"100%",height:"100%", 
+            backgroundColor:"rgba(255,255,255, 0.2)",
+             zIndex:100, alignItems:"center",justifyContent:"center"
+          }} onPress={()=>setShowPicker(false)}>
+            <DateTimePicker
+              style={{ backgroundColor:"#eee", width: "80%"}}
+              testID="dateTimePicker"
+              timeZoneOffsetInMinutes={+180}
+              value={date}
+              mode={"time"}
+              locale={'en_GB'}
+              is24Hour={true}
+              display="spinner"
+              onChange={(event, selectedTime)=>{
+                const hours = selectedTime.getHours(),
+                  minutes = selectedTime.getMinutes();
+                  setDate(selectedTime || date);
+                  const time =
+                    '' +
+                    (hours > 9 ? hours : '0' + hours) +
+                    ':' +
+                    (minutes > 9 ? minutes : '0' + minutes);
+                    if(timeInfo.isFirst){
+                      setFirstInputText(time, timeInfo.schedules, timeInfo.el)
+                    }else{
+                      setSecondInputText(time, timeInfo.schedules, timeInfo.el)
+                    }
+              }}
+          />
+         </TouchableOpacity>
+        }
       <ScrollView style={{paddingHorizontal: 8}}>
         {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
         {!USER.loading &&
           weekDaysEnShort.map((el, i) => (
             <View key={i}>
               <Block
+                setTimeInfo={setTimeInfo}
+                setShowPicker={setShowPicker}
                 setFirstInputText={setFirstInputText}
                 setSecondInputText={setSecondInputText}
                 switchCheck={switchCheck}
@@ -313,6 +350,8 @@ const WorkTimeSettings = ({navigation}) => {
             style={{marginBottom: 8}}
           />
         )}
+       
+        
       </ScrollView>
     </View>
   );
