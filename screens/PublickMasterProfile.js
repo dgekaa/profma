@@ -405,25 +405,22 @@ const PublickMasterProfile = ({navigation}) => {
         <BackgroundHeader
           navigation={navigation}
           title={MASTER.data.user.profile.name || 'Имя не задано'}
-          // description={navigation.state.params.skills}
         />
-        <ScrollView>
+        <ScrollView > 
           <View style={container}>
             {!!allPhoto.length && (
-              <ScrollView
+              <ScrollView  
                 style={galerea}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}>
-                {allPhoto.map((el, i) => {
-                  return (
+                {allPhoto.map((el, i) => 
                     <GalereaBlock
                       index={i}
                       key={i}
-                      onPress={() => setActiveImg(i)}
+                      onPress={() =>  setActiveImg(i)}
                       img={el}
                     />
-                  );
-                })}
+              )}
               </ScrollView>
             )}
             <Text style={textTitle}>Услуги</Text>
@@ -594,11 +591,13 @@ const PublickMasterProfile = ({navigation}) => {
         {(activeImg || activeImg === 0 || activeImg === '0') && (
           <View style={bigImg}>
             <ScrollView
-              scrollEventThrottle={0}
-              onScroll={event => {}}
+              scrollEventThrottle={16}
               ref={scrollImage}
+              showsHorizontalScrollIndicator={false}
+              onScroll = {(event)=>
+                setActiveImg((event.nativeEvent.contentOffset.x/screen.width).toFixed())
+           }
               horizontal={true}
-              showsHorizontalScrollIndicator={true}
               pagingEnabled={true}>
               {allPhoto.map((el, i) => {
                 setTimeout(() => {
