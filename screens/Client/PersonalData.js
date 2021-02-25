@@ -91,7 +91,7 @@ const PersonalData = ({navigation}) => {
             <Text style={blockTitle}>персональные данные</Text>
             <View
               style={[
-                Platform.OS === 'ios' ? groupBlockIos : groupBlock  ,
+                Platform.OS === 'ios' ? groupBlockIos : groupBlock,
                 {
                   flex: 1,
                 },
@@ -153,7 +153,7 @@ const PersonalData = ({navigation}) => {
 const styles = StyleSheet.create({
   keyboardWrap: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#fff',
     width: '100%',
     height: Dimensions.get('window').height,
     bottom: 0,
@@ -162,8 +162,12 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     backgroundColor: '#fff',
     shadowColor: '#000',
-    shadowOpacity: 0.01,
+    shadowOpacity: 0.5,
     shadowRadius: 0.1,
+    shadowOffset: {
+      height: 0,
+      width: 0
+    },
   },
   groupBlock: {
     borderRadius: 2,

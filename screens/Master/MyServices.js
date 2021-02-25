@@ -186,8 +186,12 @@ const styles = StyleSheet.create({
     padding: 8,
     backgroundColor: '#fff',
     shadowColor: '#000',
-    shadowOpacity: 0.01,
+    shadowOpacity: 0.5,
     shadowRadius: 0.1,
+    shadowOffset: {
+      height: 0,
+      width: 0
+    },
   },
   headerText: {
     fontSize: 13,

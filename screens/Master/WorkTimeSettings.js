@@ -361,10 +361,16 @@ const styles = StyleSheet.create({
   groupBlock: {
     marginTop: 8,
     borderRadius: 2,
-    shadowColor: 'rgba(0, 0, 0, 0.17)',
-    elevation: 1,
+    shadowColor: '#000',
+    elevation: 10,
     flexDirection: 'column',
     paddingLeft: 18,
+    shadowOpacity: 0.1,
+    backgroundColor:"#fff",
+    shadowOffset: {
+      height: 0,
+      width: 0
+    },
   },
   blockInGroup: {
     borderRadius: 2,
@@ -372,6 +378,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingRight: 8,
+
   },
   borderBottom: {
     borderBottomColor: '#aaa',

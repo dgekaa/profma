@@ -131,7 +131,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                 </TouchableOpacity>
                 {/* ИЗМЕНИТЬ ПАРОЛЬ*/}
                 <TouchableOpacity
-                  style={[blockInGroup, borderBottom]}
+                  style={[blockInGroup]}
                   onPress={() => {
                     navigation.navigate('ChangePassword', {
                       onGoBack: isSuccess => onGoBackFromPasword(isSuccess),
@@ -231,14 +231,16 @@ const styles = StyleSheet.create({
     elevation: 0.4,
   },
   firstIos:{
+    backgroundColor:"#fff",
     marginTop: 10,
     height: 50,
     flexDirection: 'row',
+    paddingTop:10,
     alignItems: 'center',
     paddingHorizontal: 18,
     borderRadius: 0.2,
     shadowColor: '#000',
-    shadowOpacity: 0.01,
+    shadowOpacity: 0.02,
     shadowRadius: 0.1,
   },
   text: {
@@ -258,13 +260,14 @@ const styles = StyleSheet.create({
     elevation: 0.4,
   },
   groupBlockIos: {
+    backgroundColor:"#fff",
     marginTop: 20,
     flexDirection: 'column',
     paddingLeft: 18,
     paddingRight: 0,
     borderRadius: 0.2,
     shadowColor: '#000',
-    shadowOpacity: 0.01,
+    shadowOpacity: 0.02,
     shadowRadius: 0.1,
   },
   blockInGroup: {

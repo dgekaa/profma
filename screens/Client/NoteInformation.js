@@ -10,9 +10,7 @@ import PlusIcon from '../../img/Plus.svg';
 import VectorIcon from '../../img/Vector.svg';
 
 import {
-  GET_USER,
   GET_APPOINTMENT,
-  UPDATE_PROFILE,
   DELETE_APPOINTMENT,
   ME,
   UPDATE_APPOINTMENT_ADD_OFFERS,
@@ -146,7 +144,7 @@ const DropdownBlock = ({
 };
 
 const NoteInformation = ({navigation}) => {
-  const {first, text, blockTitle, groupBlock} = styles;
+  const {first,firstIos, text, blockTitle, groupBlock,groupBlockIos} = styles;
 
   const [cancelNote, setCancelNote] = useState(false),
     [canceledNote, setCanceledNote] = useState(false);
@@ -243,7 +241,7 @@ const NoteInformation = ({navigation}) => {
       />
       <ScrollView style={{}}>
         <View style={{flex: 1, paddingHorizontal: 8, paddingTop: 15}}>
-          <View style={first}>
+          <View style={Platform.OS === 'ios' ? firstIos : first}>
             <Text style={text}>
               {navigation.state.params.person.master.profile.name}
             </Text>
@@ -252,7 +250,7 @@ const NoteInformation = ({navigation}) => {
           <View style={{}}>
             <Text style={blockTitle}>Услуги</Text>
             <View>
-              <View style={groupBlock}>
+              <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock}>
                 {navigation.state.params.person.offers &&
                   navigation.state.params.person.offers.length &&
                   navigation.state.params.person.offers.map((el, i) => (
@@ -329,7 +327,7 @@ const NoteInformation = ({navigation}) => {
           {/* ДАТА И ВРЕМЯ */}
           <View>
             <Text style={blockTitle}>дата и время сеанса</Text>
-            <View style={[first, {flexDirection: 'row'}]}>
+            <View style={[Platform.OS === 'ios' ? firstIos : first, {flexDirection: 'row'}]}>
               <Text style={{fontWeight: 'bold'}}>
                 {navigation.state.params.person.date.split('-')[2]}{' '}
                 {
@@ -347,7 +345,7 @@ const NoteInformation = ({navigation}) => {
             <Text style={blockTitle}>Адрес проведения сеанса</Text>
             <View
               style={[
-                first,
+                Platform.OS === 'ios' ? firstIos : first,
                 {
                   flexDirection: 'column',
                   alignItems: 'flex-start',
@@ -509,6 +507,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 18,
   },
+  firstIos: {
+    height: 50,
+    borderRadius: 0.2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 18,
+    shadowColor: '#000',
+    shadowOpacity: 0.5,
+    backgroundColor:"#fff",
+    shadowRadius: 0.1,
+    shadowOffset: {
+      height: 0,
+      width: 0
+    },
+  },
   text: {
     fontSize: 15,
     fontFamily: 'FuturaPT-Bold',
@@ -528,6 +541,19 @@ const styles = StyleSheet.create({
     elevation: 0.4,
     flexDirection: 'column',
     paddingLeft: 18,
+  },
+  groupBlockIos: {
+    borderRadius: 0.2,
+    flexDirection: 'column',
+    paddingLeft: 18,
+    shadowColor: '#000',
+    shadowOpacity: 0.5,
+    backgroundColor:"#fff",
+    shadowRadius: 0.1,
+    shadowOffset: {
+      height: 0,
+      width: 0
+    },
   },
 });
 

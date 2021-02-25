@@ -272,7 +272,11 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     backgroundColor: '#fff',
     shadowColor: '#000',
-    shadowOpacity: 0.01,
+    shadowOpacity: 0.5,
+    shadowOffset: {
+      height: 0,
+      width: 0
+  },
     shadowRadius: 0.1,
   },
   blockTitle: {

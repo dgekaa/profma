@@ -224,8 +224,12 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     marginHorizontal: 8,
     shadowColor: '#000',
-    shadowOpacity: 0.01,
+    shadowOpacity: 0.3,
     shadowRadius: 0.1,
+    shadowOffset: {
+      height: 0,
+      width: 0
+    },
   },
   topBlock: {
     height: 33,

@@ -256,10 +256,15 @@ const styles = StyleSheet.create({
   blockIos: {
     flex: 1,
     shadowColor: '#000',
-    shadowOpacity: 0.01,
-    shadowRadius: 0.1,
+    shadowOpacity: 0.5,
+    backgroundColor:"#fff",
+    shadowRadius: 0.2,
     marginBottom: 8,
     paddingLeft: 8,
+    shadowOffset: {
+      height: 0,
+      width: 0
+    },
   },
   topBlock: {
     height: 33,

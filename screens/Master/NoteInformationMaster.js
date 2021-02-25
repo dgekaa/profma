@@ -151,9 +151,9 @@ const NoteInformationMaster = ({navigation}) => {
     first,
     text,
     blockTitle,
-    groupBlock,
+    groupBlock, groupBlockIos,
     blockInGroup,
-    borderBottom,
+    borderBottom, firstIos
   } = styles;
 
   const [price, setPrice] = useState();
@@ -277,7 +277,7 @@ const NoteInformationMaster = ({navigation}) => {
         <ScrollView>
           <View style={{flex: 1, paddingHorizontal: 8, paddingTop: 0}}>
             <Text style={blockTitle}>персональные данные</Text>
-            <View style={groupBlock}>
+            <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock }>
               <View style={[blockInGroup, borderBottom]}>
                 <Text style={{fontSize: 10}}>Имя клиента</Text>
 
@@ -298,7 +298,7 @@ const NoteInformationMaster = ({navigation}) => {
             <View>
               <Text style={blockTitle}>Услуги</Text>
               <View>
-                <View style={groupBlock}>
+                <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock}>
                   {!!appointment.data.appointment.offers &&
                     !!appointment.data.appointment.offers.length &&
                     appointment.data.appointment.offers.map((el, i) => (
@@ -362,7 +362,7 @@ const NoteInformationMaster = ({navigation}) => {
             {/* ДАТА И ВРЕМЯ */}
             <View>
               <Text style={blockTitle}>дата и время сеанса</Text>
-              <View style={[first, {flexDirection: 'row'}]}>
+              <View style={[Platform.OS === 'ios' ? firstIos : first, {flexDirection: 'row'}]}>
                 <Text style={{fontWeight: 'bold', textTransform: 'uppercase'}}>
                   {appointment.data.appointment.date.split('-')[2]}{' '}
                   {
@@ -380,7 +380,7 @@ const NoteInformationMaster = ({navigation}) => {
              <Text style={blockTitle}>Адрес проведения сеанса</Text>
              <View
                style={[
-                 first,
+                 Platform.OS === 'ios' ? firstIos : first,
                  {
                    flexDirection: 'column',
                    alignItems: 'flex-start',
@@ -521,11 +521,25 @@ const styles = StyleSheet.create({
     height: 50,
     shadowColor: 'rgba(0, 0, 0, 0.17)',
     borderRadius: 0.2,
-
     elevation: 0.4,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 18,
+  },
+  firstIos: {
+    height: 50,
+    borderRadius: 0.2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 18,
+    shadowColor: '#000',
+    shadowOpacity: 0.5,
+    backgroundColor:"#fff",
+    shadowRadius: 0.1,
+    shadowOffset: {
+      height: 0,
+      width: 0
+    },
   },
   text: {
     fontSize: 13,
@@ -543,10 +557,21 @@ const styles = StyleSheet.create({
   groupBlock: {
     shadowColor: 'rgba(0, 0, 0, 0.17)',
     borderRadius: 0.2,
-
     elevation: 0.4,
     flexDirection: 'column',
     paddingLeft: 18,
+  },
+  groupBlockIos: {
+    shadowColor: '#000',
+    shadowOpacity: 0.07,
+    backgroundColor:"#fff",
+    borderRadius: 0.2,
+    flexDirection: 'column',
+    paddingLeft: 18,
+    shadowOffset: {
+      height: 0,
+      width: 0
+    },
   },
   blockInGroup: {
     height: 50,

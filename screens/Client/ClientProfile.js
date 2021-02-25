@@ -13,7 +13,7 @@ import {useMutation, useQuery} from 'react-apollo';
 import {LOGOUT, ME} from '../../QUERYES';
 
 const ClientProfile = ({navigation, handleChangeLoginState}) => {
-  const {first, text, groupBlock, blockInGroup, borderBottom} = styles;
+  const {first,firstIos, text, groupBlock,groupBlockIos, blockInGroup, borderBottom} = styles;
 
   const [isChangePassword, setIsChangePassword] = useState();
 
@@ -40,7 +40,7 @@ const ClientProfile = ({navigation, handleChangeLoginState}) => {
         <View>
           {/* МОИ ЗАПИСИ */}
           <TouchableOpacity
-            style={first}
+            style={Platform.OS === 'ios' ? firstIos : first}
             onPress={() =>
               USER.data && navigation.navigate('MyNotes', {ID: USER.data.me.id})
             }>
@@ -49,7 +49,7 @@ const ClientProfile = ({navigation, handleChangeLoginState}) => {
           </TouchableOpacity>
         </View>
         <View>
-          <View style={groupBlock}>
+          <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock}>
             {/* ПЕРСОНАЛЬНЫЕ ДАННЫЕ*/}
             <TouchableOpacity
               style={[blockInGroup, borderBottom]}
@@ -79,7 +79,7 @@ const ClientProfile = ({navigation, handleChangeLoginState}) => {
           </View>
         </View>
         <View style={{}}>
-          <View style={groupBlock}>
+          <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock}>
             {/* ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ*/}
             <TouchableOpacity
               style={[blockInGroup, borderBottom]}
@@ -169,6 +169,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 18,
   },
+  firstIos: {
+    marginTop: 10,
+    height: 50,
+    borderRadius: 0.2,
+    shadowColor: 'rgba(0, 0, 0, 0.17)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 18,
+    backgroundColor:"#fff",
+    shadowColor: '#000',
+    shadowOpacity: 0.5,
+    shadowRadius: 0.1,
+    shadowOffset: {
+      height: 0,
+      width: 0
+    },
+  },
   text: {
     fontSize: 13,
     marginLeft: 13,
@@ -177,9 +194,22 @@ const styles = StyleSheet.create({
   groupBlock: {
     marginTop: 20,
     borderRadius: 0.2,
-
     shadowColor: 'rgba(0, 0, 0, 0.17)',
     elevation: 0.4,
+    flexDirection: 'column',
+    paddingLeft: 18,
+  },
+  groupBlockIos: {
+    marginTop: 20,
+    borderRadius: 0.2,
+    shadowColor: '#000',
+    shadowOpacity: 0.5,
+    shadowRadius: 0.1,
+    shadowOffset: {
+      height: 0,
+      width: 0
+    },
+    backgroundColor:"#fff",
     flexDirection: 'column',
     paddingLeft: 18,
   },
