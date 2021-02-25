@@ -23,12 +23,10 @@ const Login = ({ navigation, handleChangeLoginState }) => {
     topTextWrap,
     ProfMa,
     topText,
-    inputGroup,
     login,
     politic,
     politicText,
     specialText,
-    loginWrap,
   } = stylesClientRegistration;
 
   const height = Dimensions.get('window').height,
@@ -86,59 +84,63 @@ const Login = ({ navigation, handleChangeLoginState }) => {
   }, [email, password]);
 
   return (
-    <TouchableHighlight  style={loginWrap} onPress={()=>{
+    <TouchableWithoutFeedback  style={{flex:1}} onPress={()=>{
       Keyboard.dismiss()
     }}>
-      <>
-        <KeyboardAvoidingView  style={loginWrap}
-          behavior={Platform.OS === 'ios' ? 'padding' : null}>
-          <Header navigation={navigation} />
-          <View style={[container, { flex: 1 }]}>
-            <View style={topTextWrap}>
-              <Text style={[ProfMa, height < 650 && { fontSize: 20 }]}>Prof.Ma</Text>
-              <Text
-                style={[
-                  topText,
-                  height < 650 && { fontSize: 20 },
-                  width < 340 && { width: '100%' },
-                ]}>
-                Войдите в свой аккаунт, чтобы начать использовать приложение😎
-              </Text>
-            </View>
-            <View style={[inputGroup, height < 650 && { marginTop: 40 }]}>
-              <InputWithText
-                autoFocus={false}
-                onChangeText={text => {
-                  setValidationErr('');
-                  setEmail(text);
-                }}
-                value={email}
-                text="Введите адрес электронной почты"
-                placeholder="example@site.com"
-                keyboardType="email-address"
-                validationErr={validationErr}
-                onSubmitEditing={Keyboard.dismiss}
-              />
-              <InputWithPassword
-                onChangeText={text => {
-                  setValidationErr('');
-                  setPassword(text);
-                }}
-                value={password}
-                text="Введите пароль"
-                secureTextEntry={hidePassword}
-                icon={iconName}
-                onPress={openCloseEye}
-                forgetPassword={true}
-                validationErr={validationErr}
-                onPressPassRecovery={() => navigation.navigate('PasswordRecovery')}
-                onSubmitEditing={Keyboard.dismiss}
-              />
-            </View>
-          </View>
-        </KeyboardAvoidingView>
+      <View style={{flex:1}}>
+        <Header navigation={navigation} />
+        
+        <View style={[{flex:1, paddingHorizontal: 20}]}>
+            <Text style={[ProfMa, height < 650 && { fontSize: 20 }]}>Prof.Ma</Text>
+            <Text
+              style={[
+                topText,
+                height < 650 && { fontSize: 20 },
+                width < 340 && { width: '100%' },
+              ]}>
+              Войдите в свой аккаунт, чтобы начать использовать приложение😎
+            </Text>
+        </View>
 
-          <View style={login}>
+        <KeyboardAvoidingView  style={{height:350,backgroundColor:"#fff" ,paddingHorizontal:8, justifyContent:"space-between"}}
+          behavior={Platform.OS === 'ios' ? 'position' : null}>
+          <View style={[height < 650 && { marginTop: 40 }, 
+              {
+                height:190,
+                backgroundColor:"#fff",
+                paddingHorizontal: 8
+              }]}>
+            <InputWithText
+              autoFocus={false}
+              onChangeText={text => {
+                setValidationErr('');
+                setEmail(text);
+              }}
+              value={email}
+              text="Введите адрес электронной почты"
+              placeholder="example@site.com"
+              keyboardType="email-address"
+              validationErr={validationErr}
+              onSubmitEditing={Keyboard.dismiss}
+            />
+            <InputWithPassword
+              onChangeText={text => {
+                setValidationErr('');
+                setPassword(text);
+              }}
+              value={password}
+              text="Введите пароль"
+              secureTextEntry={hidePassword}
+              icon={iconName}
+              onPress={openCloseEye}
+              forgetPassword={true}
+              validationErr={validationErr}
+              onPressPassRecovery={() => navigation.navigate('PasswordRecovery')}
+              onSubmitEditing={Keyboard.dismiss}
+            />
+          </View>
+            
+          <View style={login,{height:150, justifyContent:"flex-end" ,backgroundColor:"#fff"}}>
             <View style={[politic, height < 650 && { paddingHorizontal: 10 }]}>
               <Text style={politicText}>
                 Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей
@@ -148,11 +150,11 @@ const Login = ({ navigation, handleChangeLoginState }) => {
             </View>
          
             {!!fillErr && !validationErr && (
-              <ButtonDisabled title={regBtnText} style={{ marginBottom: 8 }} />
+              <ButtonDisabled title={regBtnText} style={{ }} />
             )}
             {!fillErr && !validationErr && (
               <ButtonDefault
-                style={{ marginBottom: 8 }}
+                style={{  }}
                 title={regBtnText}
                 active={true}
                 onPress={() => toLogin()}
@@ -161,33 +163,23 @@ const Login = ({ navigation, handleChangeLoginState }) => {
             {!!validationErr && (
               <ButtonError
                 title={regBtnText}
-                style={{ marginBottom: 8 }}
+                style={{}}
                 onPress={() => { }}
               />
             )}
           </View>
+        </KeyboardAvoidingView>
           
-          {loading && <View style={{
-            flex:1, justifyContent:"center", alignItems:"center"}}>
-            <ActivityIndicator size="large" color="#00ff00" />
-          </View>}
-        </>
-      </TouchableHighlight>
+        {loading && <View style={{
+          flex:1, justifyContent:"center", alignItems:"center"}}>
+          <ActivityIndicator size="large" color="#00ff00" />
+        </View>}
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
 const stylesClientRegistration = StyleSheet.create({
-  loginWrap: {
-    flex: 1,
-    backgroundColor: '#FAFAFA',
-    position: 'absolute',
-    width: '100%',
-    height: Dimensions.get('window').height,
-    bottom: 0,
-  },
-  container: {
-    paddingHorizontal: 8,
-  },
   topTextWrap: {
     flex: 3,
     paddingHorizontal: 12,
@@ -205,9 +197,6 @@ const stylesClientRegistration = StyleSheet.create({
     marginTop: 16,
     width: '85%',
   },
-  inputGroup: {
-    flex: 5,
-  },
   politic: {
     textAlign: 'center',
     paddingHorizontal: 30,
@@ -222,8 +211,6 @@ const stylesClientRegistration = StyleSheet.create({
     color: '#B986DA',
   },
   login:{
-    position: "absolute",
-    bottom:10,
     paddingHorizontal:8,
     width:"100%"
   }
