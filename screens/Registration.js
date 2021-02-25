@@ -7,7 +7,7 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
-  Keyboard,ActivityIndicator, TouchableHighlight
+  Keyboard,ActivityIndicator, TouchableWithoutFeedback
 } from 'react-native';
 import {useMutation} from 'react-apollo';
 
@@ -116,17 +116,13 @@ const Registration = ({navigation, handleChangeLoginState}) => {
   };
 
   return (
-    <TouchableHighlight  style={registrtionWrap} onPress={()=>{
+    <TouchableWithoutFeedback  style={{flex:1}} onPress={()=>{
       Keyboard.dismiss()
     }}>
-      <>
-      <KeyboardAvoidingView
-      style={registrtionWrap}
-      keyboardVerticalOffset={Platform.select({ ios: 60 })}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <Header navigation={navigation} />
-      <View style={[container, {flex: 1}]}>
-          <View style={[topTextWrap, height < 650 && {marginBottom: 10}]}>
+      <View style={{flex:1}}>
+        <Header navigation={navigation} />
+
+        <View style={[{paddingHorizontal:20,flex:1}, height < 650 && {marginBottom: 10}]}>
             <Text style={[ProfMa, height < 650 && {fontSize: 20}]}>
               Prof.Ma
             </Text>
@@ -139,14 +135,20 @@ const Registration = ({navigation, handleChangeLoginState}) => {
               {textAd}
             </Text>
           </View>
-          <View style={[{flex: 1}]}>
-          <View style={[btnGroup]}>
+        
+        <KeyboardAvoidingView
+          style={{height:350,backgroundColor:"#fff" ,paddingHorizontal:8, justifyContent:"space-between"}}
+          behavior={Platform.OS === 'ios' ? 'position' : "height"}>
+     
+          <View style={{paddingHorizontal:8, height:200}}>
+            <View style={[{flex: 1}]}>
+            <View style={[btnGroup]}>
             <ButtonDefault
               flex={true}
               title="Я - КЛИЕНТ"
               active={personType === 'Client'}
               onPress={() => selectPersonType('Client')}
-              style={{marginRight: 5, opacity: 0.8}}
+              style={{marginRight: 5, opacity: 1}}
             />
             <ButtonDefault
               flex={true}
@@ -156,72 +158,68 @@ const Registration = ({navigation, handleChangeLoginState}) => {
               style={{opacity: 0.8}}
             />
           </View>
-          <View style={{backgroundColor: '#fff', height: 200}}>
-            <InputWithText
-              onChangeText={text => {
-                setValidationErr('');
-                setEmail(text);
-              }}
-              value={email}
-              autoFocus={false}
-              text="Введите адрес электронной почты"
-              placeholder="example@site.com"
-              keyboardType="email-address"
-              validationErr={validationErr}
-            />
-
-            <InputWithPassword
-              onChangeText={text => {
-                setValidationErr('');
-                setPassword(text);
-              }}
-              value={password}
-              text="Придумайте пароль"
-              secureTextEntry={hidePassword}
-              icon={iconName}
-              onPress={openCloseEye}
-              validationErr={validationErr}
-            />
-          </View>
-          </View>
-        </View>
-
-        <View style={bottomTextBtn}>
-          {height < 650  && (
-            <View style={([politic], height < 650 && {paddingBottom: 16})}>
-              <Text style={politicText}>
-                Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей
-                <Text style={specialText}> Политикой конфиденциальности</Text> и
-                <Text style={specialText}> Условиями использования</Text>
-              </Text>
-            </View>
-          )}
-
-{!!fillErr ||
-            (!!validationErr && (
-              <ButtonDisabled
-                onPress={() => {}}
-                title={regBtnText}
+            <View style={{backgroundColor: '#fff', height: 200}}>
+              <InputWithText
+                onChangeText={text => {
+                  setValidationErr('');
+                  setEmail(text);
+                }}
+                value={email}
+                autoFocus={false}
+                text="Введите адрес электронной почты"
+                placeholder="example@site.com"
+                keyboardType="email-address"
+                validationErr={validationErr}
               />
-            ))}
-          {!fillErr && !validationErr && (
-            <ButtonDefault
-              onPress={() => register()}
-              title={regBtnText}
-              active={true}
-            />
-          )}
+              <InputWithPassword
+                onChangeText={text => {
+                  setValidationErr('');
+                  setPassword(text);
+                }}
+                value={password}
+                text="Придумайте пароль"
+                secureTextEntry={hidePassword}
+                icon={iconName}
+                onPress={openCloseEye}
+                validationErr={validationErr}
+              />
+          </View>
+            </View>
+          </View>
 
-         
-        </View>
-      
-    </KeyboardAvoidingView>
-       {loading && <View style={{
-            flex:1, justifyContent:"center", alignItems:"center"}}>
-            <ActivityIndicator size="large" color="#00ff00" />
-          </View>}
-          </>
-    </TouchableHighlight>
+          <View style={bottomTextBtn,{height:140, justifyContent:"flex-end" ,backgroundColor:"#fff"}}>
+            {height < 650  && (
+              <View style={([politic], height < 650 && {paddingBottom: 16})}>
+                <Text style={politicText}>
+                  Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей
+                  <Text style={specialText}> Политикой конфиденциальности</Text> и
+                  <Text style={specialText}> Условиями использования</Text>
+                </Text>
+              </View>
+            )}
+            {!!fillErr ||
+              (!!validationErr && (
+                <ButtonDisabled
+                  onPress={() => {}}
+                  title={regBtnText}
+                />
+              ))}
+            {!fillErr && !validationErr && (
+              <ButtonDefault
+                onPress={() => register()}
+                title={regBtnText}
+                active={true}
+              />
+            )}
+          </View>
+        </KeyboardAvoidingView>
+          
+        {loading && <View style={{
+          flex:1, justifyContent:"center", alignItems:"center"}}>
+          <ActivityIndicator size="large" color="#00ff00" />
+        </View>}
+      </View>
+  </TouchableWithoutFeedback>
     
   );
 };

@@ -170,7 +170,7 @@ const Login = ({ navigation, handleChangeLoginState }) => {
           </View>
         </KeyboardAvoidingView>
           
-        {loading && <View style={{
+        {loading && <View style={{ position:"absolute",  width:"100%",height:"100%",
           flex:1, justifyContent:"center", alignItems:"center"}}>
           <ActivityIndicator size="large" color="#00ff00" />
         </View>}
