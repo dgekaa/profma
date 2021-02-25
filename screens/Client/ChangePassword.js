@@ -4,7 +4,8 @@ import BackgroundHeader from '../../components/BackgroundHeader';
 import {InputWithPassword} from '../../components/Input';
 import {ButtonDisabled, ButtonDefault} from '../../components/Button';
 
-import {Text, View, StyleSheet, Image} from 'react-native';
+import {Text, View, StyleSheet, Image, Keyboard,
+ TouchableWithoutFeedback,ActivityIndicator} from 'react-native';
 import {useMutation} from 'react-apollo';
 
 import {UPDATE_PASSWORD} from '../../QUERYES';
@@ -21,14 +22,16 @@ const ChangePassword = ({navigation}) => {
     textBold,groupBlockIos
   } = styles;
 
-  const [pass, setPass] = useState('');
-  const [repass, setRepass] = useState('');
+  const [pass, setPass] = useState(''),
+    [repass, setRepass] = useState(''),
+    [loading, setLoading] = useState(false);
 
   const [validationErr, setValidationErr] = useState('');
 
   const [UPDATE_PASSWORD_mutation] = useMutation(UPDATE_PASSWORD);
 
   const UPDATE = () => {
+    setLoading(true)
     UPDATE_PASSWORD_mutation({
       variables: {
         password: pass,
@@ -39,9 +42,11 @@ const ChangePassword = ({navigation}) => {
       .then(res => {
         console.log(res, '__RES PASSWORD');
         navigation.state.params.onGoBack(true);
+        setLoading(false)
         navigation.goBack();
       })
       .catch(err => {
+        setLoading(false)
         setValidationErr(true);
         console.log(JSON.stringify(err), '----err password');
         // if (JSON.stringify(err.networkError)) {
@@ -53,7 +58,10 @@ const ChangePassword = ({navigation}) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <TouchableWithoutFeedback style={{flex: 1}} onPress={()=>{
+      Keyboard.dismiss()
+    }}>
+      <View style={{flex:1}}>
       <BackgroundHeader navigation={navigation} title={`Изменить пароль`} />
       <View style={{flex: 1, paddingHorizontal: 8}}>
         <View>
@@ -99,6 +107,12 @@ const ChangePassword = ({navigation}) => {
           </View>
         </View>
       </View>
+
+      {loading && <View style={{
+            flex:1, justifyContent:"center", alignItems:"center"}}>
+            <ActivityIndicator size="large" color="#00ff00" />
+          </View>}
+          
       <View style={{padding: 16}}>
         {false && <ButtonDisabled title="введённые пароли не совпадают" />}
         {true && (
@@ -109,7 +123,9 @@ const ChangePassword = ({navigation}) => {
           />
         )}
       </View>
-    </View>
+     
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

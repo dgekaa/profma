@@ -7,7 +7,9 @@ import {
   View,
   Dimensions,
   KeyboardAvoidingView,
-  Keyboard,ActivityIndicator
+  Keyboard,ActivityIndicator, TouchableWithoutFeedback, 
+  TouchableOpacity, TouchableWithoutFeedbackBase,
+  TouchableHighlight
 } from 'react-native';
 import { ButtonDefault, ButtonDisabled, ButtonError } from '../components/Button';
 import { InputWithText, InputWithPassword } from '../components/Input';
@@ -84,56 +86,59 @@ const Login = ({ navigation, handleChangeLoginState }) => {
   }, [email, password]);
 
   return (
-    <View  style={loginWrap}>
-      <KeyboardAvoidingView  style={loginWrap}
-        behavior={Platform.OS === 'ios' ? 'padding' : null}>
-        <Header navigation={navigation} />
-        <View style={[container, { flex: 1 }]}>
-          <View style={topTextWrap}>
-            <Text style={[ProfMa, height < 650 && { fontSize: 20 }]}>Prof.Ma</Text>
-            <Text
-              style={[
-                topText,
-                height < 650 && { fontSize: 20 },
-                width < 340 && { width: '100%' },
-              ]}>
-              Войдите в свой аккаунт, чтобы начать использовать приложение😎
-            </Text>
+    <TouchableHighlight  style={loginWrap} onPress={()=>{
+      Keyboard.dismiss()
+    }}>
+      <>
+        <KeyboardAvoidingView  style={loginWrap}
+          behavior={Platform.OS === 'ios' ? 'padding' : null}>
+          <Header navigation={navigation} />
+          <View style={[container, { flex: 1 }]}>
+            <View style={topTextWrap}>
+              <Text style={[ProfMa, height < 650 && { fontSize: 20 }]}>Prof.Ma</Text>
+              <Text
+                style={[
+                  topText,
+                  height < 650 && { fontSize: 20 },
+                  width < 340 && { width: '100%' },
+                ]}>
+                Войдите в свой аккаунт, чтобы начать использовать приложение😎
+              </Text>
+            </View>
+            <View style={[inputGroup, height < 650 && { marginTop: 40 }]}>
+              <InputWithText
+                autoFocus={false}
+                onChangeText={text => {
+                  setValidationErr('');
+                  setEmail(text);
+                }}
+                value={email}
+                text="Введите адрес электронной почты"
+                placeholder="example@site.com"
+                keyboardType="email-address"
+                validationErr={validationErr}
+                onSubmitEditing={Keyboard.dismiss}
+              />
+              <InputWithPassword
+                onChangeText={text => {
+                  setValidationErr('');
+                  setPassword(text);
+                }}
+                value={password}
+                text="Введите пароль"
+                secureTextEntry={hidePassword}
+                icon={iconName}
+                onPress={openCloseEye}
+                forgetPassword={true}
+                validationErr={validationErr}
+                onPressPassRecovery={() => navigation.navigate('PasswordRecovery')}
+                onSubmitEditing={Keyboard.dismiss}
+              />
+            </View>
           </View>
-          <View style={[inputGroup, height < 650 && { marginTop: 40 }]}>
-            <InputWithText
-              autoFocus={true}
-              onChangeText={text => {
-                setValidationErr('');
-                setEmail(text);
-              }}
-              value={email}
-              text="Введите адрес электронной почты"
-              placeholder="example@site.com"
-              keyboardType="email-address"
-              validationErr={validationErr}
-              onSubmitEditing={Keyboard.dismiss}
-            />
-            <InputWithPassword
-              onChangeText={text => {
-                setValidationErr('');
-                setPassword(text);
-              }}
-              value={password}
-              text="Введите пароль"
-              secureTextEntry={hidePassword}
-              icon={iconName}
-              onPress={openCloseEye}
-              forgetPassword={true}
-              validationErr={validationErr}
-              onPressPassRecovery={() => navigation.navigate('PasswordRecovery')}
-              onSubmitEditing={Keyboard.dismiss}
-            />
-          </View>
-        </View>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
 
-      <View style={login}>
+          <View style={login}>
             <View style={[politic, height < 650 && { paddingHorizontal: 10 }]}>
               <Text style={politicText}>
                 Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей
@@ -141,6 +146,7 @@ const Login = ({ navigation, handleChangeLoginState }) => {
               <Text style={specialText}> Условиями использования</Text>
               </Text>
             </View>
+         
             {!!fillErr && !validationErr && (
               <ButtonDisabled title={regBtnText} style={{ marginBottom: 8 }} />
             )}
@@ -165,7 +171,8 @@ const Login = ({ navigation, handleChangeLoginState }) => {
             flex:1, justifyContent:"center", alignItems:"center"}}>
             <ActivityIndicator size="large" color="#00ff00" />
           </View>}
-      </View>
+        </>
+      </TouchableHighlight>
   );
 };
 

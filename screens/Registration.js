@@ -7,7 +7,7 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
-  Keyboard,ActivityIndicator
+  Keyboard,ActivityIndicator, TouchableHighlight
 } from 'react-native';
 import {useMutation} from 'react-apollo';
 
@@ -116,7 +116,10 @@ const Registration = ({navigation, handleChangeLoginState}) => {
   };
 
   return (
-    <View  style={registrtionWrap}>
+    <TouchableHighlight  style={registrtionWrap} onPress={()=>{
+      Keyboard.dismiss()
+    }}>
+      <>
       <KeyboardAvoidingView
       style={registrtionWrap}
       keyboardVerticalOffset={Platform.select({ ios: 60 })}
@@ -160,7 +163,7 @@ const Registration = ({navigation, handleChangeLoginState}) => {
                 setEmail(text);
               }}
               value={email}
-              autoFocus={true}
+              autoFocus={false}
               text="Введите адрес электронной почты"
               placeholder="example@site.com"
               keyboardType="email-address"
@@ -217,7 +220,8 @@ const Registration = ({navigation, handleChangeLoginState}) => {
             flex:1, justifyContent:"center", alignItems:"center"}}>
             <ActivityIndicator size="large" color="#00ff00" />
           </View>}
-    </View>
+          </>
+    </TouchableHighlight>
     
   );
 };

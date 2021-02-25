@@ -43,16 +43,18 @@ const Block = ({el, navigation, archive, reload, me}) => {
       'https://hornews.com/upload/images/blank-avatar.jpg',
     );
 
-  if (me.master_appointments && me.master_appointments.length) {
-    me.master_appointments.forEach(el => {
-      el.photos.forEach(
-        photo =>
-          photo.src && setPhoto('http://194.87.145.192/storage/' + photo.src),
-      );
-    });
-  }
+
 
   useEffect(() => {
+    if (me.master_appointments && me.master_appointments.length) {
+      me.master_appointments.forEach(el => {
+        el.photos.forEach(
+          photo =>
+            photo.src && setPhoto('http://194.87.145.192/storage/' + photo.src),
+        );
+      });
+    }
+    
     let count = 0;
     el.offers.length &&
       el.offers.forEach((elem, i) => {

@@ -96,10 +96,11 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
     photoArr.master_appointments &&
       photoArr.master_appointments.length &&
       photoArr.master_appointments.forEach(obj => {
+        console.log(obj.photos,'---obj.photos')
         obj.photos.length &&
           setPhoto('http://194.87.145.192/storage/' + obj.photos[0].src);
       });
-  }, []);
+  }, [photoArr]);
 
   if (!!nextFreeTimeByMaster.data) {
     return (
@@ -212,7 +213,7 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
 };
 
 const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
-  const {nearestSeansBlock} = styles;
+  const {nearestSeansBlock,nearestSeansBlockIos} = styles;
 
   const [offersAll, setOffersAll] = useState([]),
     [photo, setPhoto] = useState(
@@ -236,7 +237,7 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
   return (
     <TouchableOpacity
       key={el.id}
-      style={[nearestSeansBlock]}
+      style={[Platform.OS === 'ios' ? nearestSeansBlockIos : nearestSeansBlock ]}
       onPress={() => {
         type === 'Client'
           ? navigation.navigate('NoteInformation', {el: el, reload: reload})
@@ -263,7 +264,7 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
             flex: 1,
             marginTop: 5,
           }}>
-          <View style={{marginRight: 24}}>
+          <View style={{flex:1}}>
             <View style={{flexDirection: 'row'}}>
               <SvgUri svgXmlData={CalendarColorIcon} />
               <Text
@@ -285,13 +286,13 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
               </Text>
             </Text>
           </View>
-          <View tyle={{flex: 1}}>
-            <Text style={{fontSize: 10}}>Услуга</Text>
+          <View style={{flex:1}}>
+            <Text style={{fontSize: 10,paddingLeft:10}}>Услуга</Text>
             {!!offersAll.length &&
               offersAll.map((el, i) => {
                 if (i < 2) {
                   return (
-                    <Text key={i} style={{fontSize: 10, fontWeight: 'bold'}}>
+                    <Text numberOfLines={1} key={i} style={{fontSize: 10, fontWeight: 'bold',paddingLeft:10}}>
                       {el}
                     </Text>
                   );
@@ -460,8 +461,8 @@ const Main = ({navigation}) => {
                   !!users.data && (
                     <FlatList
                       data={users.data.users.data}
-                      renderItem={({item, index}) => (
-                        <Block
+                      renderItem={({item, index}) => {
+                        return <Block
                           navigation={navigation}
                           el={item}
                           reload={reloadAppointments}
@@ -470,7 +471,7 @@ const Main = ({navigation}) => {
                           }
                           blockId={index}
                         />
-                      )}
+  }}
                       keyExtractor={item =>
                         dates ? item.user.id : item.id.toString()
                       }
@@ -480,8 +481,8 @@ const Main = ({navigation}) => {
                   !!findMaster.data.findMaster && (
                     <FlatList
                       data={findMaster.data.findMaster}
-                      renderItem={({item, index}) => (
-                        <Block
+                      renderItem={({item, index}) => {
+                        return <Block
                           navigation={navigation}
                           el={item}
                           dates={dates}
@@ -491,7 +492,7 @@ const Main = ({navigation}) => {
                           }
                           blockId={index}
                         />
-                      )}
+                      }}
                       keyExtractor={item =>
                         dates ? item.user.id : item.id.toString()
                       }
@@ -736,6 +737,7 @@ const styles = StyleSheet.create({
     maxHeight: 95,
   },
   nearestSeansBlock: {
+    overflow:"hidden",
     padding: 8,
     marginRight: 8,
     marginVertical: 8,
@@ -747,6 +749,24 @@ const styles = StyleSheet.create({
     width: screen.width - 50,
     height: '80%',
     alignItems: 'center',
+  },
+  nearestSeansBlockIos: {
+    overflow:"hidden",
+    padding: 8,
+    marginRight: 8,
+    marginVertical: 8,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    width: screen.width - 50,
+    height: '80%',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 0.1,
+    shadowOffset: {
+      height: 0,
+      width: 0
+    },
   },
 });
 

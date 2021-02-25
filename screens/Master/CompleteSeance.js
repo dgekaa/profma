@@ -13,7 +13,7 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
+  ScrollView, Image
 } from 'react-native';
 
 import ImagePicker from 'react-native-image-crop-picker';
@@ -32,6 +32,7 @@ import {
 } from '../../QUERYES';
 import { G } from 'react-native-svg';
 import { getToken } from '../../util';
+import { useState } from 'react';
 
 const CompleteSeance = ({ navigation }) => {
   const { groupBlock, blockTitle, blockInGroup, textBold, borderBottom } = styles;
@@ -47,6 +48,8 @@ const CompleteSeance = ({ navigation }) => {
     ],
     awaitRefetchQueries: true,
   };
+
+  const [photo, setPhoto]  = useState("");
 
   const [LOAD_IMAGE_mutation] = useMutation(
     LOAD_IMAGE
@@ -92,7 +95,7 @@ const CompleteSeance = ({ navigation }) => {
       <ScrollView>
         <View style={{ paddingHorizontal: 8, marginBottom: 8, flex: 1 }}>
           <Text style={blockTitle}>итоги сеанса</Text>
-          <View style={[groupBlock, blockInGroup]}>
+          {/* <View style={[groupBlock, blockInGroup]}>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: 13 }}>Полученная от клиента сумма</Text>
               <Text style={{ fontWeight: 'bold', fontSize: 13 }}>
@@ -103,7 +106,7 @@ const CompleteSeance = ({ navigation }) => {
               <Text />
               <Text style={{ fontWeight: 'bold', fontSize: 13 }}>руб</Text>
             </View>
-          </View>
+          </View> */}
           <View
             style={{
               flexDirection: 'row',
@@ -190,6 +193,7 @@ const CompleteSeance = ({ navigation }) => {
                             .then((res) => res.json())
                             .then((responseJson) => {
                               console.log(responseJson.data,'---responseJson.data')
+                              setPhoto("http://194.87.145.192/storage/" + responseJson.data.uploadAppointmentPhoto)
                               // !!!!!!!!!
                               UPDATE_APPOINTMENT_PHOTO_mutation({
                                 variables: {
@@ -238,6 +242,17 @@ const CompleteSeance = ({ navigation }) => {
                 Прикрепить фото
               </Text>
             </TouchableOpacity>
+            {
+              !!photo && 
+              <View style={{width:100, height:100}}>
+                <Image
+                  style={{width:100, height:100, borderRadius:5}}
+                  source={{
+                    uri: photo,
+                  }}
+                />
+              </View>
+            }
           </View>
           <View style={{ padding: 8, marginTop: 8 }}>
             <Text style={{ fontSize: 13 }}>Итоговая стоимость сеанса</Text>

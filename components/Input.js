@@ -56,7 +56,7 @@ export const InputWithText = ({
       <View style={inputWrap}>
         <TextInput
           onFocus={onFocus}
-          autoFocus
+          autoFocus={autoFocus}
           selectTextOnFocus={selectTextOnFocus}
           value={value}
           placeholderTextColor="rgba(0,0,0,0.2)"

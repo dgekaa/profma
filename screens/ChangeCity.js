@@ -91,7 +91,7 @@ const ChangeCity = ({navigation}) => {
           navigation={navigation}
           title={`Выбрать другой город`}
         />
-        <View style={{flex: 1, paddingHorizontal: 8}}>
+        <View style={{flex: 1, paddingLeft: 8}}>
           <View
             style={{
               height: 60,
@@ -110,6 +110,12 @@ const ChangeCity = ({navigation}) => {
               paddingHorizontal: 19,
               shadowColor: 'rgba(0, 0, 0, 0.17)',
               elevation: 2,
+              shadowOpacity: 0.5,
+              shadowRadius: 1.0,
+              shadowOffset: {
+                height: 0,
+                width: 0
+              },
             }}>
             <SvgUri
               style={{marginRight: 10}}

@@ -235,13 +235,16 @@ const styles = StyleSheet.create({
     marginTop: 10,
     height: 50,
     flexDirection: 'row',
-    paddingTop:10,
     alignItems: 'center',
     paddingHorizontal: 18,
     borderRadius: 0.2,
     shadowColor: '#000',
-    shadowOpacity: 0.02,
+    shadowOpacity: 0.8,
     shadowRadius: 0.1,
+    shadowOffset: {
+      height: 0,
+      width: 0
+    },
   },
   text: {
     fontSize: 13,
@@ -267,8 +270,12 @@ const styles = StyleSheet.create({
     paddingRight: 0,
     borderRadius: 0.2,
     shadowColor: '#000',
-    shadowOpacity: 0.02,
+    shadowOpacity: 0.8,
     shadowRadius: 0.1,
+    shadowOffset: {
+      height: 0,
+      width: 0
+    },
   },
   blockInGroup: {
     height: 50,

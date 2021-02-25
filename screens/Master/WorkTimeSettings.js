@@ -120,7 +120,7 @@ const Block = ({
         <View style={[blockInGroup, borderBottom]}>
         <TouchableOpacity 
            style={{ width:"100%"}}
-            onPress={()=>onPressInput(false, schedules, el)}
+            onPress={()=>!schedules || schedules.day_off ? null : onPressInput(false, schedules, el)}
           >
             <Text style={{fontSize:10, fontFamily:"FuturaPT-Medium", paddingLeft:15, paddingVertical:10}}>Конец рабочего дня</Text>
             <Text style={{color: !schedules || schedules.day_off ? '#D4D7DA' : '#000',fontFamily:"FuturaPT-Medium", paddingLeft:15, paddingBottom:15}}>{schedules && !schedules.day_off ? schedules.end_time.slice(0,5) : '00:00'}</Text>
