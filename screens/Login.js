@@ -7,9 +7,8 @@ import {
   View,
   Dimensions,
   KeyboardAvoidingView,
-  Keyboard,ActivityIndicator, TouchableWithoutFeedback, 
-  TouchableOpacity, TouchableWithoutFeedbackBase,
-  TouchableHighlight
+  Keyboard,ActivityIndicator, 
+  TouchableWithoutFeedback, 
 } from 'react-native';
 import { ButtonDefault, ButtonDisabled, ButtonError } from '../components/Button';
 import { InputWithText, InputWithPassword } from '../components/Input';
@@ -19,8 +18,6 @@ import { LOGIN } from '../QUERYES';
 
 const Login = ({ navigation, handleChangeLoginState }) => {
   const {
-    container,
-    topTextWrap,
     ProfMa,
     topText,
     login,
@@ -180,10 +177,6 @@ const Login = ({ navigation, handleChangeLoginState }) => {
 };
 
 const stylesClientRegistration = StyleSheet.create({
-  topTextWrap: {
-    flex: 3,
-    paddingHorizontal: 12,
-  },
   ProfMa: {
     fontSize: 23,
     color: '#B986DA',

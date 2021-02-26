@@ -38,12 +38,13 @@ export const InputWithText = ({
     topInputTextWrap,
     smallText,
     errStyleLocal,
+    wrapperIos
   } = styles;
 
   return (
     <View
       style={[
-        wrapper,
+        Platform.OS === 'ios' ? wrapperIos : wrapper ,
         style,
         {
           shadowOpacity: withoutShadow ? 0 : 0.5,
@@ -99,6 +100,7 @@ export const InputWithPassword = ({
     topInputTextWrap,
     forgetTextWrap,
     smallText,
+    wrapperIos
   } = styles;
 
   const [isShowPlaceholder, setIsShowPlaceholder] = useState(true),
@@ -107,7 +109,7 @@ export const InputWithPassword = ({
   return (
     <View
       style={[
-        wrapper,
+        Platform.OS === 'ios' ? wrapperIos : wrapper,
         {
           shadowOpacity: withoutShadow ? 0 : 0.5,
           elevation: withoutShadow ? 0 : 1.5,
@@ -191,6 +193,22 @@ const styles = StyleSheet.create({
     shadowOffset: {
       width: 2,
       height: 2,
+    },
+    shadowRadius: 1.41,
+    shadowOpacity: 0.5,
+    elevation: 1.5,
+  },
+  wrapperIos: {
+    backgroundColor: '#fff',
+    borderRadius: 2,
+    marginVertical: 5,
+    paddingHorizontal: 16,
+    paddingVertical: 5,
+    fontSize: 10,
+    shadowColor: 'rgba(0, 0, 0, 0.17)',
+    shadowOffset: {
+      width: 0,
+      height: 0,
     },
     shadowRadius: 1.41,
     shadowOpacity: 0.5,

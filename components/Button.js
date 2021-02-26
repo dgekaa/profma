@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
 
 export const ButtonDefault = ({
   title,
@@ -32,6 +32,40 @@ export const ButtonDefault = ({
           )}
         </View>
       </TouchableOpacity>
+    </View>
+  );
+};
+
+export const ButtonDefaultWithoutFeedback = ({
+  title,
+  active,
+  onPress,
+  style,
+  flex,
+  rightTitle,
+}) => {
+  const {btn, btnText, notActiveBtn} = styles;
+  return (
+    <View style={flex ? {flex: 1} : null}>
+      <TouchableWithoutFeedback onPress={onPress}>
+        <View
+          style={[
+            btn,
+            style,
+            active ? {backgroundColor: '#B986DA'} : notActiveBtn,
+          ]}>
+          <Text
+            style={[btnText, active ? {color: '#fff'} : {color: '#B986DA'}]}>
+            {title}
+          </Text>
+          {rightTitle && (
+            <Text
+              style={[btnText, active ? {color: '#fff'} : {color: '#B986DA'}]}>
+              {rightTitle}
+            </Text>
+          )}
+        </View>
+      </TouchableWithoutFeedback>
     </View>
   );
 };

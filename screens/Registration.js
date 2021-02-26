@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {useMutation} from 'react-apollo';
 
-import {ButtonDefault, ButtonDisabled} from '../components/Button';
+import {ButtonDefault, ButtonDefaultWithoutFeedback, ButtonDisabled} from '../components/Button';
 import {InputWithText, InputWithPassword} from '../components/Input';
 import {Header} from '../components/BackgroundHeader';
 
@@ -143,19 +143,19 @@ const Registration = ({navigation, handleChangeLoginState}) => {
           <View style={{paddingHorizontal:8, height:200}}>
             <View style={[{flex: 1}]}>
             <View style={[btnGroup]}>
-            <ButtonDefault
+            <ButtonDefaultWithoutFeedback
               flex={true}
               title="Я - КЛИЕНТ"
               active={personType === 'Client'}
               onPress={() => selectPersonType('Client')}
               style={{marginRight: 5, opacity: 1}}
             />
-            <ButtonDefault
+            <ButtonDefaultWithoutFeedback
               flex={true}
               title="Я - МАСТЕР"
               active={personType === 'Master'}
               onPress={() => selectPersonType('Master')}
-              style={{opacity: 0.8}}
+              style={{opacity: 1}}
             />
           </View>
             <View style={{backgroundColor: '#fff', height: 200}}>

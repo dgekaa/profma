@@ -591,7 +591,7 @@ const PublickMasterProfile = ({navigation}) => {
         {(activeImg || activeImg === 0 || activeImg === '0') && (
           <View style={bigImg}>
             <ScrollView
-              scrollEventThrottle={16}
+              scrollEventThrottle={0}
               ref={scrollImage}
               showsHorizontalScrollIndicator={false}
               onScroll = {(event)=>
