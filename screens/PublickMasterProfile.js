@@ -17,6 +17,7 @@ import {
   CREATE_APPOINTMENT,
   NEXT_FREE_TIME_BY_MASTER,
   GET_APPOINTMENTS,
+  ME
 } from '../QUERYES';
 import {
   StyleSheet,
@@ -291,7 +292,8 @@ const PublickMasterProfile = ({navigation}) => {
     }),
     APPOINTMENTS = useQuery(GET_APPOINTMENTS, {
       variables: {first: 30},
-    });
+    }),
+    USER = useQuery(ME);
 
   useEffect(() => {
     if (!allPhoto.length) {
@@ -366,11 +368,6 @@ const PublickMasterProfile = ({navigation}) => {
   const CREATE = () => {
     const CH = checkboxes.filter(el => +el),
       finishCH = CH.map(el => +el);
-
-    console.log(MASTER.data.user.id);
-    console.log(dates[0]);
-    console.log(activeTime);
-    console.log(finishCH);
 
     CREATE_APPOINTMENT_mutation({
       variables: {
@@ -464,14 +461,16 @@ const PublickMasterProfile = ({navigation}) => {
                 ]}>
                 <View
                   style={{
-                    flex: 1,
+                    flex:!!NEXT_FREETIME.data &&
+                    !!NEXT_FREETIME.data.nextFreeTimeByMaster &&
+                    !!NEXT_FREETIME.data.nextFreeTimeByMaster.length ? 1 :3,
                     flexDirection: 'row',
                     alignItems: 'center',
                   }}>
                   <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
                   {!!NEXT_FREETIME.data &&
                     !!NEXT_FREETIME.data.nextFreeTimeByMaster &&
-                    !!NEXT_FREETIME.data.nextFreeTimeByMaster.length && (
+                    !!NEXT_FREETIME.data.nextFreeTimeByMaster.length ? (
                       <Text style={{fontWeight: 'bold'}}>
                         {
                           NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
@@ -491,7 +490,9 @@ const PublickMasterProfile = ({navigation}) => {
                           )[0]
                         }
                       </Text>
-                    )}
+                    ): <Text style={{width:"100%", paddingLeft:10}}>
+                        Нет свободного времени
+                      </Text>}
                 </View>
 
                 <View
@@ -569,22 +570,24 @@ const PublickMasterProfile = ({navigation}) => {
               </Text>
             </View>
 
-            {allPrice && CHCecked && activeTime ? (
-              <ButtonDefault
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}
-                title="Подтвердить запись"
-                rightTitle={allPrice + ' руб'}
-                onPress={() => CREATE()}
-                active={true}
-              />
-            ) : (
-              <ButtonDefault
-                style={{flexDirection: 'row', justifyContent: 'space-around'}}
-                title="Вы не указали детали сеанса"
-                onPress={() => {}}
-                active={true}
-              />
-            )}
+            {
+              !!USER.data && USER.data.me.type !== "Master" &&
+              allPrice && CHCecked && activeTime ? (
+                <ButtonDefault
+                  style={{flexDirection: 'row', justifyContent: 'space-between'}}
+                  title="Подтвердить запись"
+                  rightTitle={allPrice + ' руб'}
+                  onPress={() => CREATE()}
+                  active={true}
+                />
+              ) : !!USER.data && USER.data.me.type !== "Master" ?(
+                <ButtonDefault
+                  style={{flexDirection: 'row', justifyContent: 'space-around'}}
+                  title="Вы не указали детали сеанса"
+                  onPress={() => {}}
+                  active={true}
+                />
+            ): <></>}
           </View>
           
         </ScrollView>

@@ -10,7 +10,8 @@ import {
   View,
   StyleSheet,
   KeyboardAvoidingView,
-  Dimensions,
+  TouchableWithoutFeedback, 
+  Keyboard
 } from 'react-native';
 
 import {useMutation, useQuery} from 'react-apollo';
@@ -81,84 +82,81 @@ const PersonalData = ({navigation}) => {
   }, [nameLocal, emailLocal, phoneNumberLocal, homeAddressLocal]);
 
   return (
-    <View style={{flex: 1, position: 'relative'}}>
-      <BackgroundHeader navigation={navigation} title="Персональные данные" />
-      <KeyboardAvoidingView
-        style={keyboardWrap}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <View style={{flex: 1, paddingHorizontal: 8}}>
-          <View style={{flex: 1}}>
-            <Text style={blockTitle}>персональные данные</Text>
-            <View
-              style={[
-                Platform.OS === 'ios' ? groupBlockIos : groupBlock,
-                {
-                  flex: 1,
-                },
+    <TouchableWithoutFeedback style={{flex: 1}} onPress={()=>{
+      Keyboard.dismiss()
+    }}>
+      <View style={{flex:1}}>
+        <BackgroundHeader navigation={navigation} title="Персональные данные" zInd={100} />
+        
+        <KeyboardAvoidingView
+          style={[keyboardWrap]}
+          behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
+
+          <Text style={[blockTitle]}>персональные данные</Text>
+        
+          <View  style={[
+              Platform.OS === 'ios' ? groupBlockIos : groupBlock,
               ]}>
-              <View style={[{flex: 1}]}>
-                <InputWithText
-                  value={nameLocal}
-                  text="Ваше имя"
-                  placeholder="Начните вводить имя"
-                  withoutShadow={true}
-                  onChangeText={text => setNameLocal(text)}
-                />
-                <Border />
-                <InputWithText
-                  text="Ваш e-mail"
-                  placeholder="Начните вводить e-mail"
-                  withoutShadow={true}
-                  value={emailLocal}
-                  onChangeText={text => setEmailLocal(text)}
-                />
-                <Border />
-                <InputWithText
-                  text="Ваш мобильный телефон"
-                  placeholder="Начните вводить номер телефона"
-                  withoutShadow={true}
-                  value={phoneNumberLocal}
-                  onChangeText={text => setPhoneNumberLocal(text)}
-                />
-                <Border />
-                <InputWithText
-                  style={{fontSize: 13}}
-                  longText={true}
-                  text="Домашний адрес (необходим для мастеров, которые работают с выездом)"
-                  placeholder="Начните вводить домашний адрес"
-                  withoutShadow={true}
-                  value={homeAddressLocal}
-                  onChangeText={text => setHomeAddressLocal(text)}
-                />
-              </View>
-              {showBtn && USER.data && (
-                <View style={{padding: 16}}>
-                  <ButtonDefault
-                    title="Сохранить изменения"
-                    onPress={() => SAVE()}
-                  />
-                </View>
-              )}
-            </View>
+              <InputWithText
+                value={nameLocal}
+                text="Ваше имя"
+                placeholder="Начните вводить имя"
+                withoutShadow={true}
+                onChangeText={text => setNameLocal(text)}
+              />
+              <Border />
+              <InputWithText
+                text="Ваш e-mail"
+                placeholder="Начните вводить e-mail"
+                withoutShadow={true}
+                value={emailLocal}
+                onChangeText={text => setEmailLocal(text)}
+              />
+              <Border />
+              <InputWithText
+                text="Ваш мобильный телефон"
+                placeholder="Начните вводить номер телефона"
+                withoutShadow={true}
+                value={phoneNumberLocal}
+                onChangeText={text => setPhoneNumberLocal(text)}
+              />
+              <Border />
+              <InputWithText
+                style={{fontSize: 13}}
+                longText={true}
+                text="Домашний адрес (необходим для мастеров, которые работают с выездом)"
+                placeholder="Начните вводить домашний адрес"
+                withoutShadow={true}
+                value={homeAddressLocal}
+                onChangeText={text => setHomeAddressLocal(text)}
+              />
           </View>
+          
           {savedSuccess && (
             <SaveSuccess title="👍 Изменения успешно сохранены." />
           )}
-        </View>
-      </KeyboardAvoidingView>
-    </View>
+        </KeyboardAvoidingView>
+        
+        {showBtn && USER.data && (
+            <View style={{padding: 16}}>
+              <ButtonDefault
+                title="Сохранить изменения"
+                onPress={() => SAVE()}
+              />
+            </View>
+          )}
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   keyboardWrap: {
-    flex: 1,
-    backgroundColor: '#fff',
+    height:363,
     width: '100%',
-    height: Dimensions.get('window').height,
-    bottom: 0,
   },
   groupBlockIos: {
+    height:315,
     borderRadius: 2,
     backgroundColor: '#fff',
     shadowColor: '#000',
@@ -177,6 +175,7 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   blockTitle: {
+    height:20,
     marginTop: 20,
     marginBottom: 8,
     color: '#011627',

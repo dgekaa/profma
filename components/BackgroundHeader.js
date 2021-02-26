@@ -33,12 +33,13 @@ const BackgroundHeader = ({
   children,
   settings,
   onSettingsPress,
+  zInd
 }) => {
   const {bg, container, headerTitle, headerdescription, settingsStyle} = styles;
   return (
     <ImageBackground
       source={require('../img/headerBG.png')}
-      style={[bg, {paddingTop: 0}]}>
+      style={[bg,zInd?{zIndex:zInd}:{}, {paddingTop: 0}]}>
       <View style={container}>
         <LeftArrowWhite onPress={() => navigation.goBack(null)} />
         <View style={{flex: 1, flexDirection: 'column',marginLeft:-60}}>
