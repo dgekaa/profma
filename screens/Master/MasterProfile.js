@@ -6,7 +6,8 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  AsyncStorage, Platform
+  AsyncStorage,
+  Platform,
 } from 'react-native';
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
@@ -28,7 +29,9 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
     blockInGroup,
     borderBottom,
     outsideCircle,
-    insideCircle, firstIos,groupBlockIos
+    insideCircle,
+    firstIos,
+    groupBlockIos,
   } = styles;
 
   console.log(navigation, 'NAVIGATION MASTER');
@@ -72,7 +75,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
               </TouchableOpacity>
             </View>
             <View>
-              <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock }>
+              <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock}>
                 {/* КАЛЕНДАРЬ*/}
                 <TouchableOpacity
                   style={[
@@ -230,8 +233,8 @@ const styles = StyleSheet.create({
     shadowRadius: 1.0,
     elevation: 0.4,
   },
-  firstIos:{
-    backgroundColor:"#fff",
+  firstIos: {
+    backgroundColor: '#fff',
     marginTop: 10,
     height: 50,
     flexDirection: 'row',
@@ -243,7 +246,7 @@ const styles = StyleSheet.create({
     shadowRadius: 0.1,
     shadowOffset: {
       height: 0,
-      width: 0
+      width: 0,
     },
   },
   text: {
@@ -263,7 +266,7 @@ const styles = StyleSheet.create({
     elevation: 0.4,
   },
   groupBlockIos: {
-    backgroundColor:"#fff",
+    backgroundColor: '#fff',
     marginTop: 20,
     flexDirection: 'column',
     paddingLeft: 18,
@@ -274,7 +277,7 @@ const styles = StyleSheet.create({
     shadowRadius: 0.1,
     shadowOffset: {
       height: 0,
-      width: 0
+      width: 0,
     },
   },
   blockInGroup: {

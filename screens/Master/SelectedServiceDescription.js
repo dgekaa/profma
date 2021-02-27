@@ -15,7 +15,13 @@ import ModalWindow from '../../components/ModalWindow';
 import {Text, View, StyleSheet, Image, ScrollView} from 'react-native';
 
 const SelectedServiceDescription = ({navigation}) => {
-  const {groupBlock, blockTitle, blockInGroup, borderBottom,groupBlockIos} = styles;
+  const {
+    groupBlock,
+    blockTitle,
+    blockInGroup,
+    borderBottom,
+    groupBlockIos,
+  } = styles;
 
   const [deleteModal, setDeleteModal] = useState(false);
 
@@ -62,13 +68,21 @@ const SelectedServiceDescription = ({navigation}) => {
       <ScrollView>
         <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
           <Text style={blockTitle}>ваша специализация</Text>
-          <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock , blockInGroup]}>
+          <View
+            style={[
+              Platform.OS === 'ios' ? groupBlockIos : groupBlock,
+              blockInGroup,
+            ]}>
             <Text style={{fontWeight: 'bold', fontSize: 13}}>
               {service.specialization.name}
             </Text>
           </View>
           <Text style={blockTitle}>ваша услуга</Text>
-          <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock, blockInGroup]}>
+          <View
+            style={[
+              Platform.OS === 'ios' ? groupBlockIos : groupBlock,
+              blockInGroup,
+            ]}>
             <Text style={{fontWeight: 'bold', fontSize: 13}}>
               {service.name}
             </Text>
@@ -145,7 +159,11 @@ const SelectedServiceDescription = ({navigation}) => {
             </View>
           </View>
           <Text style={blockTitle}>Описание услуги</Text>
-          <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock, {padding: 8}]}>
+          <View
+            style={[
+              Platform.OS === 'ios' ? groupBlockIos : groupBlock,
+              {padding: 8},
+            ]}>
             <Text style={{fontSize: 13, color: '#011627'}}>{description}</Text>
           </View>
         </View>
@@ -196,13 +214,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     paddingLeft: 18,
     borderRadius: 0.2,
-    backgroundColor:"#fff",
+    backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOpacity: 0.5,
     shadowRadius: 0.1,
     shadowOffset: {
       height: 0,
-      width: 0
+      width: 0,
     },
   },
   blockInGroup: {

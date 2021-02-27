@@ -36,7 +36,15 @@ const shortMonthName = [
 ];
 
 const Block = ({el, navigation, key, archive, reload}) => {
-  const {block,blockIos, topBlock, img, textBold, dateText, bottomBlock} = styles;
+  const {
+    block,
+    blockIos,
+    topBlock,
+    img,
+    textBold,
+    dateText,
+    bottomBlock,
+  } = styles;
 
   const [price, setPrice] = useState(0),
     [offersAll, setOffersAll] = useState([]);
@@ -83,7 +91,7 @@ const Block = ({el, navigation, key, archive, reload}) => {
 
   return (
     <TouchableOpacity
-      style={Platform.OS === 'ios' ? blockIos : block }
+      style={Platform.OS === 'ios' ? blockIos : block}
       key={key}
       onPress={() =>
         navigation.navigate('NoteInformation', {
@@ -257,13 +265,13 @@ const styles = StyleSheet.create({
     flex: 1,
     shadowColor: '#000',
     shadowOpacity: 0.5,
-    backgroundColor:"#fff",
+    backgroundColor: '#fff',
     shadowRadius: 0.2,
     marginBottom: 8,
     paddingLeft: 8,
     shadowOffset: {
       height: 0,
-      width: 0
+      width: 0,
     },
   },
   topBlock: {

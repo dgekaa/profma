@@ -30,7 +30,7 @@ const Border = () => (
 );
 
 const ChangeCity = ({navigation}) => {
-  const {groupBlock,groupBlockIos} = styles;
+  const {groupBlock, groupBlockIos} = styles;
 
   const [city, setCity] = useState(
       navigation.state.params.city.name || 'Укажите город',
@@ -114,7 +114,7 @@ const ChangeCity = ({navigation}) => {
               shadowRadius: 1.0,
               shadowOffset: {
                 height: 0,
-                width: 0
+                width: 0,
               },
             }}>
             <SvgUri
@@ -134,7 +134,7 @@ const ChangeCity = ({navigation}) => {
             />
           </View>
 
-          <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock ]}>
+          <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock]}>
             <ScrollView>
               {data &&
                 !!filteredData &&

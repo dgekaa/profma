@@ -17,7 +17,7 @@ import {
   CREATE_APPOINTMENT,
   NEXT_FREE_TIME_BY_MASTER,
   GET_APPOINTMENTS,
-  ME
+  ME,
 } from '../QUERYES';
 import {
   StyleSheet,
@@ -50,11 +50,13 @@ import BackgroundHeader from '../components/BackgroundHeader';
 const screen = Dimensions.get('window');
 
 const GalereaBlock = ({img, index, onPress}) => {
-  const {galereaImgContainer,galereaImgContainerIos, galereaImg} = styles;
+  const {galereaImgContainer, galereaImgContainerIos, galereaImg} = styles;
   return (
     <TouchableOpacity
       onPress={() => onPress(index)}
-      style={Platform.OS === 'ios' ? galereaImgContainerIos : galereaImgContainer }>
+      style={
+        Platform.OS === 'ios' ? galereaImgContainerIos : galereaImgContainer
+      }>
       <Image
         style={galereaImg}
         source={{
@@ -403,21 +405,21 @@ const PublickMasterProfile = ({navigation}) => {
           navigation={navigation}
           title={MASTER.data.user.profile.name || 'Имя не задано'}
         />
-        <ScrollView > 
+        <ScrollView>
           <View style={container}>
             {!!allPhoto.length && (
-              <ScrollView  
+              <ScrollView
                 style={galerea}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}>
-                {allPhoto.map((el, i) => 
-                    <GalereaBlock
-                      index={i}
-                      key={i}
-                      onPress={() =>  setActiveImg(i)}
-                      img={el}
-                    />
-              )}
+                {allPhoto.map((el, i) => (
+                  <GalereaBlock
+                    index={i}
+                    key={i}
+                    onPress={() => setActiveImg(i)}
+                    img={el}
+                  />
+                ))}
               </ScrollView>
             )}
             <Text style={textTitle}>Услуги</Text>
@@ -461,38 +463,43 @@ const PublickMasterProfile = ({navigation}) => {
                 ]}>
                 <View
                   style={{
-                    flex:!!NEXT_FREETIME.data &&
-                    !!NEXT_FREETIME.data.nextFreeTimeByMaster &&
-                    !!NEXT_FREETIME.data.nextFreeTimeByMaster.length ? 1 :3,
+                    flex:
+                      !!NEXT_FREETIME.data &&
+                      !!NEXT_FREETIME.data.nextFreeTimeByMaster &&
+                      !!NEXT_FREETIME.data.nextFreeTimeByMaster.length
+                        ? 1
+                        : 3,
                     flexDirection: 'row',
                     alignItems: 'center',
                   }}>
                   <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
                   {!!NEXT_FREETIME.data &&
-                    !!NEXT_FREETIME.data.nextFreeTimeByMaster &&
-                    !!NEXT_FREETIME.data.nextFreeTimeByMaster.length ? (
-                      <Text style={{fontWeight: 'bold'}}>
-                        {
-                          NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
+                  !!NEXT_FREETIME.data.nextFreeTimeByMaster &&
+                  !!NEXT_FREETIME.data.nextFreeTimeByMaster.length ? (
+                    <Text style={{fontWeight: 'bold'}}>
+                      {
+                        NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
+                          '-',
+                        )[2]
+                      }{' '}
+                      {
+                        shortMonthName[
+                          +NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
                             '-',
-                          )[2]
-                        }{' '}
-                        {
-                          shortMonthName[
-                            +NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
-                              '-',
-                            )[1] - 1
-                          ]
-                        }{' '}
-                        {
-                          NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
-                            '-',
-                          )[0]
-                        }
-                      </Text>
-                    ): <Text style={{width:"100%", paddingLeft:10}}>
-                        Нет свободного времени
-                      </Text>}
+                          )[1] - 1
+                        ]
+                      }{' '}
+                      {
+                        NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
+                          '-',
+                        )[0]
+                      }
+                    </Text>
+                  ) : (
+                    <Text style={{width: '100%', paddingLeft: 10}}>
+                      Нет свободного времени
+                    </Text>
+                  )}
                 </View>
 
                 <View
@@ -570,26 +577,29 @@ const PublickMasterProfile = ({navigation}) => {
               </Text>
             </View>
 
-            {
-              !!USER.data && USER.data.me.type !== "Master" &&
-              allPrice && CHCecked && activeTime ? (
-                <ButtonDefault
-                  style={{flexDirection: 'row', justifyContent: 'space-between'}}
-                  title="Подтвердить запись"
-                  rightTitle={allPrice + ' руб'}
-                  onPress={() => CREATE()}
-                  active={true}
-                />
-              ) : !!USER.data && USER.data.me.type !== "Master" ?(
-                <ButtonDefault
-                  style={{flexDirection: 'row', justifyContent: 'space-around'}}
-                  title="Вы не указали детали сеанса"
-                  onPress={() => {}}
-                  active={true}
-                />
-            ): <></>}
+            {!!USER.data &&
+            USER.data.me.type !== 'Master' &&
+            allPrice &&
+            CHCecked &&
+            activeTime ? (
+              <ButtonDefault
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}
+                title="Подтвердить запись"
+                rightTitle={allPrice + ' руб'}
+                onPress={() => CREATE()}
+                active={true}
+              />
+            ) : !!USER.data && USER.data.me.type !== 'Master' ? (
+              <ButtonDefault
+                style={{flexDirection: 'row', justifyContent: 'space-around'}}
+                title="Вы не указали детали сеанса"
+                onPress={() => {}}
+                active={true}
+              />
+            ) : (
+              <></>
+            )}
           </View>
-          
         </ScrollView>
         {(activeImg || activeImg === 0 || activeImg === '0') && (
           <View style={bigImg}>
@@ -597,15 +607,18 @@ const PublickMasterProfile = ({navigation}) => {
               scrollEventThrottle={0}
               ref={scrollImage}
               showsHorizontalScrollIndicator={false}
-              onScroll = {(event)=>
-                setActiveImg((event.nativeEvent.contentOffset.x/screen.width).toFixed())
-           }
+              onScroll={event =>
+                setActiveImg(
+                  (event.nativeEvent.contentOffset.x / screen.width).toFixed(),
+                )
+              }
               horizontal={true}
               pagingEnabled={true}>
               {allPhoto.map((el, i) => {
                 setTimeout(() => {
                   scrollImage.current.scrollTo({
-                    x: screen.width * activeImg,animated : false
+                    x: screen.width * activeImg,
+                    animated: false,
                   });
                 }, 0);
                 return (

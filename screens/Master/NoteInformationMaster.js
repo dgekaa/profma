@@ -151,9 +151,11 @@ const NoteInformationMaster = ({navigation}) => {
     first,
     text,
     blockTitle,
-    groupBlock, groupBlockIos,
+    groupBlock,
+    groupBlockIos,
     blockInGroup,
-    borderBottom, firstIos
+    borderBottom,
+    firstIos,
   } = styles;
 
   const [price, setPrice] = useState();
@@ -277,7 +279,7 @@ const NoteInformationMaster = ({navigation}) => {
         <ScrollView>
           <View style={{flex: 1, paddingHorizontal: 8, paddingTop: 0}}>
             <Text style={blockTitle}>персональные данные</Text>
-            <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock }>
+            <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock}>
               <View style={[blockInGroup, borderBottom]}>
                 <Text style={{fontSize: 10}}>Имя клиента</Text>
 
@@ -298,7 +300,8 @@ const NoteInformationMaster = ({navigation}) => {
             <View>
               <Text style={blockTitle}>Услуги</Text>
               <View>
-                <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock}>
+                <View
+                  style={Platform.OS === 'ios' ? groupBlockIos : groupBlock}>
                   {!!appointment.data.appointment.offers &&
                     !!appointment.data.appointment.offers.length &&
                     appointment.data.appointment.offers.map((el, i) => (
@@ -362,7 +365,11 @@ const NoteInformationMaster = ({navigation}) => {
             {/* ДАТА И ВРЕМЯ */}
             <View>
               <Text style={blockTitle}>дата и время сеанса</Text>
-              <View style={[Platform.OS === 'ios' ? firstIos : first, {flexDirection: 'row'}]}>
+              <View
+                style={[
+                  Platform.OS === 'ios' ? firstIos : first,
+                  {flexDirection: 'row'},
+                ]}>
                 <Text style={{fontWeight: 'bold', textTransform: 'uppercase'}}>
                   {appointment.data.appointment.date.split('-')[2]}{' '}
                   {
@@ -534,11 +541,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     shadowColor: '#000',
     shadowOpacity: 0.5,
-    backgroundColor:"#fff",
+    backgroundColor: '#fff',
     shadowRadius: 0.1,
     shadowOffset: {
       height: 0,
-      width: 0
+      width: 0,
     },
   },
   text: {
@@ -564,13 +571,13 @@ const styles = StyleSheet.create({
   groupBlockIos: {
     shadowColor: '#000',
     shadowOpacity: 0.07,
-    backgroundColor:"#fff",
+    backgroundColor: '#fff',
     borderRadius: 0.2,
     flexDirection: 'column',
     paddingLeft: 18,
     shadowOffset: {
       height: 0,
-      width: 0
+      width: 0,
     },
   },
   blockInGroup: {

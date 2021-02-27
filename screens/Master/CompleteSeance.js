@@ -1,8 +1,8 @@
 import React from 'react';
-import { useMutation } from 'react-apollo';
+import {useMutation} from 'react-apollo';
 
 import BackgroundHeader from '../../components/BackgroundHeader';
-import { ButtonDefault } from '../../components/Button';
+import {ButtonDefault} from '../../components/Button';
 import SvgUri from 'react-native-svg-uri';
 import GalleryIcon from '../../img/Gallery.svg';
 import TrashIcon from '../../img/Trash.svg';
@@ -13,14 +13,13 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  ScrollView, Image
+  ScrollView,
+  Image,
 } from 'react-native';
 
 import ImagePicker from 'react-native-image-crop-picker';
 
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-
-
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 import {
   GET_USER,
@@ -28,14 +27,14 @@ import {
   GET_APPOINTMENT,
   UPDATE_APPOINTMENT,
   LOAD_IMAGE,
-  UPDATE_APPOINTMENT_ADD_PHOTO
+  UPDATE_APPOINTMENT_ADD_PHOTO,
 } from '../../QUERYES';
-import { G } from 'react-native-svg';
-import { getToken } from '../../util';
-import { useState } from 'react';
+import {G} from 'react-native-svg';
+import {getToken} from '../../util';
+import {useState} from 'react';
 
-const CompleteSeance = ({ navigation }) => {
-  const { groupBlock, blockTitle, blockInGroup, textBold, borderBottom } = styles;
+const CompleteSeance = ({navigation}) => {
+  const {groupBlock, blockTitle, blockInGroup, textBold, borderBottom} = styles;
 
   const refreshObject = {
     refetchQueries: [
@@ -49,14 +48,12 @@ const CompleteSeance = ({ navigation }) => {
     awaitRefetchQueries: true,
   };
 
-  const [photo, setPhoto]  = useState("");
+  const [photo, setPhoto] = useState('');
 
-  const [LOAD_IMAGE_mutation] = useMutation(
-    LOAD_IMAGE
-  );
+  const [LOAD_IMAGE_mutation] = useMutation(LOAD_IMAGE);
 
   const [UPDATE_APPOINTMENT_PHOTO_mutation] = useMutation(
-    UPDATE_APPOINTMENT_ADD_PHOTO
+    UPDATE_APPOINTMENT_ADD_PHOTO,
   );
 
   const [UPDATE_APPOINTMENT_mutation] = useMutation(
@@ -90,10 +87,10 @@ const CompleteSeance = ({ navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} title="Завершить сеанс" />
       <ScrollView>
-        <View style={{ paddingHorizontal: 8, marginBottom: 8, flex: 1 }}>
+        <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
           <Text style={blockTitle}>итоги сеанса</Text>
           {/* <View style={[groupBlock, blockInGroup]}>
             <View style={{ flex: 1 }}>
@@ -114,7 +111,7 @@ const CompleteSeance = ({ navigation }) => {
               alignItems: 'center',
             }}>
             <Text style={blockTitle}>фотографии законченной работы</Text>
-            <Text style={[blockTitle, { marginRight: 8 }]}>
+            <Text style={[blockTitle, {marginRight: 8}]}>
               {/* {navigation.state.params.data.photo.length}\5 */}
             </Text>
           </View>
@@ -152,19 +149,20 @@ const CompleteSeance = ({ navigation }) => {
                   customButtons: [
                     {
                       name: 'customOptionKey',
-                      title: 'Choose Photo from Custom Option'
+                      title: 'Choose Photo from Custom Option',
                     },
                   ],
                   storageOptions: {
                     skipBackup: true,
                     path: 'images',
                   },
-                }
+                };
 
-                launchImageLibrary(options, (response) => {
+                launchImageLibrary(options, response => {
                   const formData = new FormData();
 
-                  const operations = `{"query": "mutation ($file: Upload!, $type: UserType!){ uploadAppointmentPhoto(file: $file, type: $type) }", "variables": { "file": null, "type": "Master" }}`; formData.append('operations', operations);
+                  const operations = `{"query": "mutation ($file: Upload!, $type: UserType!){ uploadAppointmentPhoto(file: $file, type: $type) }", "variables": { "file": null, "type": "Master" }}`;
+                  formData.append('operations', operations);
                   const map = '{"0": ["variables.file"]}';
                   formData.append('map', map);
 
@@ -173,11 +171,14 @@ const CompleteSeance = ({ navigation }) => {
                     width: 200,
                     height: 200,
                   })
-                    .then((image) => {
+                    .then(image => {
                       const finishImage = {
                         name: 'images.jpeg',
                         type: image.mime,
-                        uri: Platform.OS === 'ios' ? `file:///${image.path}` : image.path,
+                        uri:
+                          Platform.OS === 'ios'
+                            ? `file:///${image.path}`
+                            : image.path,
                       };
                       formData.append('0', finishImage);
                       getToken()
@@ -190,10 +191,16 @@ const CompleteSeance = ({ navigation }) => {
                             },
                             body: formData,
                           })
-                            .then((res) => res.json())
-                            .then((responseJson) => {
-                              console.log(responseJson.data,'---responseJson.data')
-                              setPhoto("http://194.87.145.192/storage/" + responseJson.data.uploadAppointmentPhoto)
+                            .then(res => res.json())
+                            .then(responseJson => {
+                              console.log(
+                                responseJson.data,
+                                '---responseJson.data',
+                              );
+                              setPhoto(
+                                'http://194.87.145.192/storage/' +
+                                  responseJson.data.uploadAppointmentPhoto,
+                              );
                               // !!!!!!!!!
                               UPDATE_APPOINTMENT_PHOTO_mutation({
                                 variables: {
@@ -204,12 +211,10 @@ const CompleteSeance = ({ navigation }) => {
                               })
                                 .then(res => console.log(res, '__RES PHOTO'))
                                 .catch(err => console.log(err, '__ERR PHOTO'));
-
                             })
-                            .catch(err => console.log(err, '===errrrrr'))
-
+                            .catch(err => console.log(err, '===errrrrr'));
                         })
-                        .catch(err => console.log(err, '---errr'))
+                        .catch(err => console.log(err, '---errr'));
 
                       // fetch('http://194.87.145.192/graphql', {
                       //   method: 'post',
@@ -225,12 +230,11 @@ const CompleteSeance = ({ navigation }) => {
                       //   })
                       //   .catch((err) => console.log(err, 'ERR'));
                     })
-                    .catch((e) => {
+                    .catch(e => {
                       console.log(e);
                     });
                 });
               }}>
-
               <SvgUri svgXmlData={PlusIcon} />
               <Text
                 style={{
@@ -242,27 +246,26 @@ const CompleteSeance = ({ navigation }) => {
                 Прикрепить фото
               </Text>
             </TouchableOpacity>
-            {
-              !!photo && 
-              <View style={{width:100, height:100}}>
+            {!!photo && (
+              <View style={{width: 100, height: 100}}>
                 <Image
-                  style={{width:100, height:100, borderRadius:5}}
+                  style={{width: 100, height: 100, borderRadius: 5}}
                   source={{
                     uri: photo,
                   }}
                 />
               </View>
-            }
+            )}
           </View>
-          <View style={{ padding: 8, marginTop: 8 }}>
-            <Text style={{ fontSize: 13 }}>Итоговая стоимость сеанса</Text>
+          <View style={{padding: 8, marginTop: 8}}>
+            <Text style={{fontSize: 13}}>Итоговая стоимость сеанса</Text>
             <Text style={textBold}>{navigation.state.params.price} руб</Text>
           </View>
         </View>
       </ScrollView>
       <ButtonDefault
         onPress={() => COMPLETE()}
-        style={{ margin: 8 }}
+        style={{margin: 8}}
         title="подтвердить завершение сеанса"
         active={true}
       />

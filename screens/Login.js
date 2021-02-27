@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useMutation } from 'react-apollo';
+import React, {useState, useEffect} from 'react';
+import {useMutation} from 'react-apollo';
 
 import {
   Text,
@@ -7,16 +7,17 @@ import {
   View,
   Dimensions,
   KeyboardAvoidingView,
-  Keyboard,ActivityIndicator, 
-  TouchableWithoutFeedback, 
+  Keyboard,
+  ActivityIndicator,
+  TouchableWithoutFeedback,
 } from 'react-native';
-import { ButtonDefault, ButtonDisabled, ButtonError } from '../components/Button';
-import { InputWithText, InputWithPassword } from '../components/Input';
-import { Header } from '../components/BackgroundHeader';
+import {ButtonDefault, ButtonDisabled, ButtonError} from '../components/Button';
+import {InputWithText, InputWithPassword} from '../components/Input';
+import {Header} from '../components/BackgroundHeader';
 
-import { LOGIN } from '../QUERYES';
+import {LOGIN} from '../QUERYES';
 
-const Login = ({ navigation, handleChangeLoginState }) => {
+const Login = ({navigation, handleChangeLoginState}) => {
   const {
     ProfMa,
     topText,
@@ -39,7 +40,7 @@ const Login = ({ navigation, handleChangeLoginState }) => {
   const [LOGIN_mutation] = useMutation(LOGIN);
 
   const toLogin = () => {
-    setLoading(true)
+    setLoading(true);
     LOGIN_mutation({
       variables: {
         username: email,
@@ -48,11 +49,14 @@ const Login = ({ navigation, handleChangeLoginState }) => {
       optimisticResponse: null,
     })
       .then(res => {
-        setLoading(false)
+        setLoading(false);
         handleChangeLoginState(true, res.data.login.access_token);
-        navigation.navigate('Main', { ID: res.data.login.user.id });
+        navigation.navigate('Main', {ID: res.data.login.user.id});
       })
-      .catch(err => {setLoading(false);setValidationErr(true)});
+      .catch(err => {
+        setLoading(false);
+        setValidationErr(true);
+      });
   };
 
   const openCloseEye = () => {
@@ -72,8 +76,8 @@ const Login = ({ navigation, handleChangeLoginState }) => {
     fillErr
       ? setRegBtnText('Недостаточно данных для входа')
       : validationErr
-        ? setRegBtnText('проверьте введённые данные')
-        : setRegBtnText('Войти');
+      ? setRegBtnText('проверьте введённые данные')
+      : setRegBtnText('Войти');
   }, [fillErr, validationErr]);
 
   useEffect(() => {
@@ -81,32 +85,43 @@ const Login = ({ navigation, handleChangeLoginState }) => {
   }, [email, password]);
 
   return (
-    <TouchableWithoutFeedback  style={{flex:1}} onPress={()=>{
-      Keyboard.dismiss()
-    }}>
-      <View style={{flex:1}}>
+    <TouchableWithoutFeedback
+      style={{flex: 1}}
+      onPress={() => {
+        Keyboard.dismiss();
+      }}>
+      <View style={{flex: 1}}>
         <Header navigation={navigation} />
-        
-        <View style={[{flex:1, paddingHorizontal: 20}]}>
-            <Text style={[ProfMa, height < 650 && { fontSize: 20 }]}>Prof.Ma</Text>
-            <Text
-              style={[
-                topText,
-                height < 650 && { fontSize: 20 },
-                width < 340 && { width: '100%' },
-              ]}>
-              Войдите в свой аккаунт, чтобы начать использовать приложение😎
-            </Text>
+
+        <View style={[{flex: 1, paddingHorizontal: 20}]}>
+          <Text style={[ProfMa, height < 650 && {fontSize: 20}]}>Prof.Ma</Text>
+          <Text
+            style={[
+              topText,
+              height < 650 && {fontSize: 20},
+              width < 340 && {width: '100%'},
+            ]}>
+            Войдите в свой аккаунт, чтобы начать использовать приложение😎
+          </Text>
         </View>
 
-        <KeyboardAvoidingView  style={{height:350,backgroundColor:"#fff" ,paddingHorizontal:8, justifyContent:"space-between"}}
+        <KeyboardAvoidingView
+          style={{
+            height: 350,
+            backgroundColor: '#fff',
+            paddingHorizontal: 8,
+            justifyContent: 'space-between',
+          }}
           behavior={Platform.OS === 'ios' ? 'position' : null}>
-          <View style={[height < 650 && { marginTop: 40 }, 
+          <View
+            style={[
+              height < 650 && {marginTop: 40},
               {
-                height:190,
-                backgroundColor:"#fff",
-                paddingHorizontal: 8
-              }]}>
+                height: 190,
+                backgroundColor: '#fff',
+                paddingHorizontal: 8,
+              },
+            ]}>
             <InputWithText
               autoFocus={false}
               onChangeText={text => {
@@ -132,45 +147,60 @@ const Login = ({ navigation, handleChangeLoginState }) => {
               onPress={openCloseEye}
               forgetPassword={true}
               validationErr={validationErr}
-              onPressPassRecovery={() => navigation.navigate('PasswordRecovery')}
+              onPressPassRecovery={() =>
+                navigation.navigate('PasswordRecovery')
+              }
               onSubmitEditing={Keyboard.dismiss}
             />
           </View>
-            
-          <View style={login,{height:150, justifyContent:"flex-end" ,backgroundColor:"#fff"}}>
-            <View style={[politic, height < 650 && { paddingHorizontal: 10 }]}>
+
+          <View
+            style={
+              (login,
+              {
+                height: 150,
+                justifyContent: 'flex-end',
+                backgroundColor: '#fff',
+              })
+            }>
+            <View style={[politic, height < 650 && {paddingHorizontal: 10}]}>
               <Text style={politicText}>
                 Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей
-              <Text style={specialText}> Политикой конфиденциальности</Text> и
-              <Text style={specialText}> Условиями использования</Text>
+                <Text style={specialText}> Политикой конфиденциальности</Text> и
+                <Text style={specialText}> Условиями использования</Text>
               </Text>
             </View>
-         
+
             {!!fillErr && !validationErr && (
-              <ButtonDisabled title={regBtnText} style={{ }} />
+              <ButtonDisabled title={regBtnText} style={{}} />
             )}
             {!fillErr && !validationErr && (
               <ButtonDefault
-                style={{  }}
+                style={{}}
                 title={regBtnText}
                 active={true}
                 onPress={() => toLogin()}
               />
             )}
             {!!validationErr && (
-              <ButtonError
-                title={regBtnText}
-                style={{}}
-                onPress={() => { }}
-              />
+              <ButtonError title={regBtnText} style={{}} onPress={() => {}} />
             )}
           </View>
         </KeyboardAvoidingView>
-          
-        {loading && <View style={{ position:"absolute",  width:"100%",height:"100%",
-          flex:1, justifyContent:"center", alignItems:"center"}}>
-          <ActivityIndicator size="large" color="#00ff00" />
-        </View>}
+
+        {loading && (
+          <View
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <ActivityIndicator size="large" color="#00ff00" />
+          </View>
+        )}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -203,10 +233,10 @@ const stylesClientRegistration = StyleSheet.create({
   specialText: {
     color: '#B986DA',
   },
-  login:{
-    paddingHorizontal:8,
-    width:"100%"
-  }
+  login: {
+    paddingHorizontal: 8,
+    width: '100%',
+  },
 });
 
 export default Login;

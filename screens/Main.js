@@ -96,7 +96,7 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
     photoArr.master_appointments &&
       photoArr.master_appointments.length &&
       photoArr.master_appointments.forEach(obj => {
-        console.log(obj.photos,'---obj.photos')
+        console.log(obj.photos, '---obj.photos');
         obj.photos.length &&
           setPhoto('http://194.87.145.192/storage/' + obj.photos[0].src);
       });
@@ -213,7 +213,7 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
 };
 
 const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
-  const {nearestSeansBlock,nearestSeansBlockIos} = styles;
+  const {nearestSeansBlock, nearestSeansBlockIos} = styles;
 
   const [offersAll, setOffersAll] = useState([]),
     [photo, setPhoto] = useState(
@@ -237,7 +237,7 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
   return (
     <TouchableOpacity
       key={el.id}
-      style={[Platform.OS === 'ios' ? nearestSeansBlockIos : nearestSeansBlock ]}
+      style={[Platform.OS === 'ios' ? nearestSeansBlockIos : nearestSeansBlock]}
       onPress={() => {
         type === 'Client'
           ? navigation.navigate('NoteInformation', {el: el, reload: reload})
@@ -264,7 +264,7 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
             flex: 1,
             marginTop: 5,
           }}>
-          <View style={{flex:1}}>
+          <View style={{flex: 1}}>
             <View style={{flexDirection: 'row'}}>
               <SvgUri svgXmlData={CalendarColorIcon} />
               <Text
@@ -286,13 +286,20 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
               </Text>
             </Text>
           </View>
-          <View style={{flex:1}}>
-            <Text style={{fontSize: 10,paddingLeft:10}}>Услуга</Text>
+          <View style={{flex: 1}}>
+            <Text style={{fontSize: 10, paddingLeft: 10}}>Услуга</Text>
             {!!offersAll.length &&
               offersAll.map((el, i) => {
                 if (i < 2) {
                   return (
-                    <Text numberOfLines={1} key={i} style={{fontSize: 10, fontWeight: 'bold',paddingLeft:10}}>
+                    <Text
+                      numberOfLines={1}
+                      key={i}
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 'bold',
+                        paddingLeft: 10,
+                      }}>
                       {el}
                     </Text>
                   );
@@ -462,16 +469,18 @@ const Main = ({navigation}) => {
                     <FlatList
                       data={users.data.users.data}
                       renderItem={({item, index}) => {
-                        return <Block
-                          navigation={navigation}
-                          el={item}
-                          reload={reloadAppointments}
-                          photoArr={
-                            photoArr && photoArr.length ? photoArr[index] : []
-                          }
-                          blockId={index}
-                        />
-  }}
+                        return (
+                          <Block
+                            navigation={navigation}
+                            el={item}
+                            reload={reloadAppointments}
+                            photoArr={
+                              photoArr && photoArr.length ? photoArr[index] : []
+                            }
+                            blockId={index}
+                          />
+                        );
+                      }}
                       keyExtractor={item =>
                         dates ? item.user.id : item.id.toString()
                       }
@@ -482,16 +491,18 @@ const Main = ({navigation}) => {
                     <FlatList
                       data={findMaster.data.findMaster}
                       renderItem={({item, index}) => {
-                        return <Block
-                          navigation={navigation}
-                          el={item}
-                          dates={dates}
-                          reload={reloadAppointments}
-                          photoArr={
-                            photoArr && photoArr.length ? photoArr[index] : []
-                          }
-                          blockId={index}
-                        />
+                        return (
+                          <Block
+                            navigation={navigation}
+                            el={item}
+                            dates={dates}
+                            reload={reloadAppointments}
+                            photoArr={
+                              photoArr && photoArr.length ? photoArr[index] : []
+                            }
+                            blockId={index}
+                          />
+                        );
                       }}
                       keyExtractor={item =>
                         dates ? item.user.id : item.id.toString()
@@ -737,7 +748,7 @@ const styles = StyleSheet.create({
     maxHeight: 95,
   },
   nearestSeansBlock: {
-    overflow:"hidden",
+    overflow: 'hidden',
     padding: 8,
     marginRight: 8,
     marginVertical: 8,
@@ -751,7 +762,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   nearestSeansBlockIos: {
-    overflow:"hidden",
+    overflow: 'hidden',
     padding: 8,
     marginRight: 8,
     marginVertical: 8,
@@ -765,7 +776,7 @@ const styles = StyleSheet.create({
     shadowRadius: 0.1,
     shadowOffset: {
       height: 0,
-      width: 0
+      width: 0,
     },
   },
 });

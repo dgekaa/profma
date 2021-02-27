@@ -21,7 +21,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Switch,
-  ActivityIndicator, Keyboard
+  ActivityIndicator,
 } from 'react-native';
 
 const weekDaysEnShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -44,13 +44,13 @@ const Block = ({
   setFirstInputText,
   setSecondInputText,
   validationErr,
-  setShowPicker, setTimeInfo
+  setShowPicker,
+  setTimeInfo,
 }) => {
   const {groupBlock, blockTitle, blockInGroup, textBold, borderBottom} = styles;
 
   const [startErr, setStartErr] = useState(''),
     [endErr, setEndErr] = useState('');
-   
 
   const regExp = '(\\d{2}:\\d{2})';
   useEffect(() => {
@@ -69,10 +69,10 @@ const Block = ({
     startErr || endErr ? validationErr(true) : validationErr(false);
   }, [startErr, endErr]);
 
-  const onPressInput =(isFirst, schedules, el)=>{
-    setShowPicker(true)
-    setTimeInfo({isFirst, schedules, el})
-  }
+  const onPressInput = (isFirst, schedules, el) => {
+    setShowPicker(true);
+    setTimeInfo({isFirst, schedules, el});
+  };
 
   return (
     <View>
@@ -109,21 +109,63 @@ const Block = ({
       </View>
       <View style={[groupBlock, {marginBottom: index === 6 ? 16 : 0}]}>
         <View style={[blockInGroup, borderBottom]}>
-        <TouchableOpacity style={{ width:"100%"}}
-            onPress={()=>!schedules || schedules.day_off ? null : onPressInput(true, schedules, el)}
-          >
-            <Text style={{  
-              fontSize:10, fontFamily:"FuturaPT-Medium", paddingLeft:15, paddingVertical:10}}>Начало рабочего дня</Text>
-            <Text style={{color: !schedules || schedules.day_off ? '#D4D7DA' : '#000',fontFamily:"FuturaPT-Medium", paddingLeft:15, paddingBottom:15}}>{schedules && !schedules.day_off ? schedules.start_time.slice(0,5) : '00:00'}</Text>
+          <TouchableOpacity
+            style={{width: '100%'}}
+            onPress={() =>
+              !schedules || schedules.day_off
+                ? null
+                : onPressInput(true, schedules, el)
+            }>
+            <Text
+              style={{
+                fontSize: 10,
+                fontFamily: 'FuturaPT-Medium',
+                paddingLeft: 15,
+                paddingVertical: 10,
+              }}>
+              Начало рабочего дня
+            </Text>
+            <Text
+              style={{
+                color: !schedules || schedules.day_off ? '#D4D7DA' : '#000',
+                fontFamily: 'FuturaPT-Medium',
+                paddingLeft: 15,
+                paddingBottom: 15,
+              }}>
+              {schedules && !schedules.day_off
+                ? schedules.start_time.slice(0, 5)
+                : '00:00'}
+            </Text>
           </TouchableOpacity>
         </View>
         <View style={[blockInGroup, borderBottom]}>
-        <TouchableOpacity 
-           style={{ width:"100%"}}
-            onPress={()=>!schedules || schedules.day_off ? null : onPressInput(false, schedules, el)}
-          >
-            <Text style={{fontSize:10, fontFamily:"FuturaPT-Medium", paddingLeft:15, paddingVertical:10}}>Конец рабочего дня</Text>
-            <Text style={{color: !schedules || schedules.day_off ? '#D4D7DA' : '#000',fontFamily:"FuturaPT-Medium", paddingLeft:15, paddingBottom:15}}>{schedules && !schedules.day_off ? schedules.end_time.slice(0,5) : '00:00'}</Text>
+          <TouchableOpacity
+            style={{width: '100%'}}
+            onPress={() =>
+              !schedules || schedules.day_off
+                ? null
+                : onPressInput(false, schedules, el)
+            }>
+            <Text
+              style={{
+                fontSize: 10,
+                fontFamily: 'FuturaPT-Medium',
+                paddingLeft: 15,
+                paddingVertical: 10,
+              }}>
+              Конец рабочего дня
+            </Text>
+            <Text
+              style={{
+                color: !schedules || schedules.day_off ? '#D4D7DA' : '#000',
+                fontFamily: 'FuturaPT-Medium',
+                paddingLeft: 15,
+                paddingBottom: 15,
+              }}>
+              {schedules && !schedules.day_off
+                ? schedules.end_time.slice(0, 5)
+                : '00:00'}
+            </Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity
@@ -279,7 +321,7 @@ const WorkTimeSettings = ({navigation}) => {
   const [isValidationErr, setIsValidationErr] = useState(false),
     [date, setDate] = useState(new Date()),
     [timeInfo, setTimeInfo] = useState();
-    
+
   const validationErr = data => setIsValidationErr(data);
 
   return (
@@ -288,41 +330,47 @@ const WorkTimeSettings = ({navigation}) => {
         navigation={navigation}
         title="Настройка рабочего времени"
       />
-       {
-          showPicker && 
-          <TouchableOpacity style={{
-            position:"absolute",top:0,left:0,
-            width:"100%",height:"100%", 
-            backgroundColor:"rgba(255,255,255, 0.2)",
-             zIndex:100, alignItems:"center",justifyContent:"center"
-          }} onPress={()=>setShowPicker(false)}>
-            <DateTimePicker
-              style={{ backgroundColor:"#eee", width: "80%"}}
-              testID="dateTimePicker"
-              timeZoneOffsetInMinutes={+180}
-              value={date}
-              mode={"time"}
-              locale={'en_GB'}
-              is24Hour={true}
-              display="spinner"
-              onChange={(event, selectedTime)=>{
-                const hours = selectedTime.getHours(),
-                  minutes = selectedTime.getMinutes();
-                  setDate(selectedTime || date);
-                  const time =
-                    '' +
-                    (hours > 9 ? hours : '0' + hours) +
-                    ':' +
-                    (minutes > 9 ? minutes : '0' + minutes);
-                    if(timeInfo.isFirst){
-                      setFirstInputText(time, timeInfo.schedules, timeInfo.el)
-                    }else{
-                      setSecondInputText(time, timeInfo.schedules, timeInfo.el)
-                    }
-              }}
+      {showPicker && (
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(255,255,255, 0.2)',
+            zIndex: 100,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onPress={() => setShowPicker(false)}>
+          <DateTimePicker
+            style={{backgroundColor: '#eee', width: '80%'}}
+            testID="dateTimePicker"
+            timeZoneOffsetInMinutes={+180}
+            value={date}
+            mode={'time'}
+            locale={'en_GB'}
+            is24Hour={true}
+            display="spinner"
+            onChange={(event, selectedTime) => {
+              const hours = selectedTime.getHours(),
+                minutes = selectedTime.getMinutes();
+              setDate(selectedTime || date);
+              const time =
+                '' +
+                (hours > 9 ? hours : '0' + hours) +
+                ':' +
+                (minutes > 9 ? minutes : '0' + minutes);
+              if (timeInfo.isFirst) {
+                setFirstInputText(time, timeInfo.schedules, timeInfo.el);
+              } else {
+                setSecondInputText(time, timeInfo.schedules, timeInfo.el);
+              }
+            }}
           />
-         </TouchableOpacity>
-        }
+        </TouchableOpacity>
+      )}
       <ScrollView style={{paddingHorizontal: 8}}>
         {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
         {!USER.loading &&
@@ -350,8 +398,6 @@ const WorkTimeSettings = ({navigation}) => {
             style={{marginBottom: 8}}
           />
         )}
-       
-        
       </ScrollView>
     </View>
   );
@@ -366,10 +412,10 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     paddingLeft: 18,
     shadowOpacity: 0.1,
-    backgroundColor:"#fff",
+    backgroundColor: '#fff',
     shadowOffset: {
       height: 0,
-      width: 0
+      width: 0,
     },
   },
   blockInGroup: {
@@ -378,7 +424,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingRight: 8,
-
   },
   borderBottom: {
     borderBottomColor: '#aaa',

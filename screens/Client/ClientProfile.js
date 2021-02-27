@@ -13,7 +13,15 @@ import {useMutation, useQuery} from 'react-apollo';
 import {LOGOUT, ME} from '../../QUERYES';
 
 const ClientProfile = ({navigation, handleChangeLoginState}) => {
-  const {first,firstIos, text, groupBlock,groupBlockIos, blockInGroup, borderBottom} = styles;
+  const {
+    first,
+    firstIos,
+    text,
+    groupBlock,
+    groupBlockIos,
+    blockInGroup,
+    borderBottom,
+  } = styles;
 
   const [isChangePassword, setIsChangePassword] = useState();
 
@@ -177,13 +185,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 18,
-    backgroundColor:"#fff",
+    backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOpacity: 0.5,
     shadowRadius: 0.1,
     shadowOffset: {
       height: 0,
-      width: 0
+      width: 0,
     },
   },
   text: {
@@ -207,9 +215,9 @@ const styles = StyleSheet.create({
     shadowRadius: 0.1,
     shadowOffset: {
       height: 0,
-      width: 0
+      width: 0,
     },
-    backgroundColor:"#fff",
+    backgroundColor: '#fff',
     flexDirection: 'column',
     paddingLeft: 18,
   },

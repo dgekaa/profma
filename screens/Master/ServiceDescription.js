@@ -24,7 +24,13 @@ import {
 } from 'react-native';
 
 const ServiceDescription = ({navigation}) => {
-  const {groupBlock,groupBlockIos, blockTitle, blockInGroup, borderBottom} = styles;
+  const {
+    groupBlock,
+    groupBlockIos,
+    blockTitle,
+    blockInGroup,
+    borderBottom,
+  } = styles;
 
   const SERVICES = useQuery(GET_SERVICES, {
     variables: {ids: navigation.state.params.checkedServices},
@@ -101,13 +107,21 @@ const ServiceDescription = ({navigation}) => {
         <ScrollView>
           <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
             <Text style={blockTitle}>ваша специализация</Text>
-            <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock , blockInGroup]}>
+            <View
+              style={[
+                Platform.OS === 'ios' ? groupBlockIos : groupBlock,
+                blockInGroup,
+              ]}>
               <Text style={{fontWeight: 'bold', fontSize: 13}}>
                 {DATA && DATA[serviceCount].specialization.name}
               </Text>
             </View>
             <Text style={blockTitle}>ваша услуга</Text>
-            <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock, blockInGroup]}>
+            <View
+              style={[
+                Platform.OS === 'ios' ? groupBlockIos : groupBlock,
+                blockInGroup,
+              ]}>
               <Text style={{fontWeight: 'bold', fontSize: 13}}>
                 {DATA && DATA[serviceCount].name}
               </Text>

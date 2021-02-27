@@ -10,8 +10,8 @@ import {
   View,
   StyleSheet,
   KeyboardAvoidingView,
-  TouchableWithoutFeedback, 
-  Keyboard
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 
 import {useMutation, useQuery} from 'react-apollo';
@@ -24,7 +24,7 @@ const Border = () => (
 );
 
 const PersonalData = ({navigation}) => {
-  const {blockTitle, groupBlock,groupBlockIos, keyboardWrap} = styles;
+  const {blockTitle, groupBlock, groupBlockIos, keyboardWrap} = styles;
 
   const USER = useQuery(ME);
 
@@ -82,69 +82,69 @@ const PersonalData = ({navigation}) => {
   }, [nameLocal, emailLocal, phoneNumberLocal, homeAddressLocal]);
 
   return (
-    <TouchableWithoutFeedback style={{flex: 1}} onPress={()=>{
-      Keyboard.dismiss()
-    }}>
-      <View style={{flex:1}}>
-        <BackgroundHeader navigation={navigation} title="Персональные данные" zInd={100} />
-        
+    <TouchableWithoutFeedback
+      style={{flex: 1}}
+      onPress={() => {
+        Keyboard.dismiss();
+      }}>
+      <View style={{flex: 1}}>
+        <BackgroundHeader
+          navigation={navigation}
+          title="Персональные данные"
+          zInd={100}
+        />
+
         <KeyboardAvoidingView
           style={[keyboardWrap]}
           behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
-
           <Text style={[blockTitle]}>персональные данные</Text>
-        
-          <View  style={[
-              Platform.OS === 'ios' ? groupBlockIos : groupBlock,
-              ]}>
-              <InputWithText
-                value={nameLocal}
-                text="Ваше имя"
-                placeholder="Начните вводить имя"
-                withoutShadow={true}
-                onChangeText={text => setNameLocal(text)}
-              />
-              <Border />
-              <InputWithText
-                text="Ваш e-mail"
-                placeholder="Начните вводить e-mail"
-                withoutShadow={true}
-                value={emailLocal}
-                onChangeText={text => setEmailLocal(text)}
-              />
-              <Border />
-              <InputWithText
-                text="Ваш мобильный телефон"
-                placeholder="Начните вводить номер телефона"
-                withoutShadow={true}
-                value={phoneNumberLocal}
-                onChangeText={text => setPhoneNumberLocal(text)}
-              />
-              <Border />
-              <InputWithText
-                style={{fontSize: 13}}
-                longText={true}
-                text="Домашний адрес (необходим для мастеров, которые работают с выездом)"
-                placeholder="Начните вводить домашний адрес"
-                withoutShadow={true}
-                value={homeAddressLocal}
-                onChangeText={text => setHomeAddressLocal(text)}
-              />
+
+          <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock]}>
+            <InputWithText
+              value={nameLocal}
+              text="Ваше имя"
+              placeholder="Начните вводить имя"
+              withoutShadow={true}
+              onChangeText={text => setNameLocal(text)}
+            />
+            <Border />
+            <InputWithText
+              text="Ваш e-mail"
+              placeholder="Начните вводить e-mail"
+              withoutShadow={true}
+              value={emailLocal}
+              onChangeText={text => setEmailLocal(text)}
+            />
+            <Border />
+            <InputWithText
+              text="Ваш мобильный телефон"
+              placeholder="Начните вводить номер телефона"
+              withoutShadow={true}
+              value={phoneNumberLocal}
+              onChangeText={text => setPhoneNumberLocal(text)}
+            />
+            <Border />
+            <InputWithText
+              style={{fontSize: 13}}
+              longText={true}
+              text="Домашний адрес (необходим для мастеров, которые работают с выездом)"
+              placeholder="Начните вводить домашний адрес"
+              withoutShadow={true}
+              value={homeAddressLocal}
+              onChangeText={text => setHomeAddressLocal(text)}
+            />
           </View>
-          
+
           {savedSuccess && (
             <SaveSuccess title="👍 Изменения успешно сохранены." />
           )}
         </KeyboardAvoidingView>
-        
+
         {showBtn && USER.data && (
-            <View style={{padding: 16}}>
-              <ButtonDefault
-                title="Сохранить изменения"
-                onPress={() => SAVE()}
-              />
-            </View>
-          )}
+          <View style={{padding: 16}}>
+            <ButtonDefault title="Сохранить изменения" onPress={() => SAVE()} />
+          </View>
+        )}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -152,11 +152,11 @@ const PersonalData = ({navigation}) => {
 
 const styles = StyleSheet.create({
   keyboardWrap: {
-    height:363,
+    height: 363,
     width: '100%',
   },
   groupBlockIos: {
-    height:315,
+    height: 315,
     borderRadius: 2,
     backgroundColor: '#fff',
     shadowColor: '#000',
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     shadowRadius: 0.1,
     shadowOffset: {
       height: 0,
-      width: 0
+      width: 0,
     },
   },
   groupBlock: {
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   blockTitle: {
-    height:20,
+    height: 20,
     marginTop: 20,
     marginBottom: 8,
     color: '#011627',

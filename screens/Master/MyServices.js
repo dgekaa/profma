@@ -18,7 +18,7 @@ import {
 } from 'react-native';
 
 const Block = ({navigation, deleteService, el, refetch}) => {
-  const {block,blockIos, headerText, text, textBold} = styles;
+  const {block, blockIos, headerText, text, textBold} = styles;
 
   return (
     <TouchableOpacity
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     shadowRadius: 0.1,
     shadowOffset: {
       height: 0,
-      width: 0
+      width: 0,
     },
   },
   headerText: {

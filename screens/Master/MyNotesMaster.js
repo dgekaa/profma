@@ -35,15 +35,21 @@ const shortMonthName = [
 ];
 
 const Block = ({el, navigation, archive, reload, me}) => {
-  const {block,blockIos, topBlock, img, textBold, dateText, bottomBlock} = styles;
+  const {
+    block,
+    blockIos,
+    topBlock,
+    img,
+    textBold,
+    dateText,
+    bottomBlock,
+  } = styles;
 
   const [price, setPrice] = useState(0),
     [offersAll, setOffersAll] = useState([]),
     [photo, setPhoto] = useState(
       'https://hornews.com/upload/images/blank-avatar.jpg',
     );
-
-
 
   useEffect(() => {
     if (me.master_appointments && me.master_appointments.length) {
@@ -54,7 +60,7 @@ const Block = ({el, navigation, archive, reload, me}) => {
         );
       });
     }
-    
+
     let count = 0;
     el.offers.length &&
       el.offers.forEach((elem, i) => {
@@ -230,7 +236,7 @@ const styles = StyleSheet.create({
     shadowRadius: 0.1,
     shadowOffset: {
       height: 0,
-      width: 0
+      width: 0,
     },
   },
   topBlock: {
