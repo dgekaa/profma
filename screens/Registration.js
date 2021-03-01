@@ -124,12 +124,9 @@ const Registration = ({navigation, handleChangeLoginState}) => {
   return (
     <TouchableWithoutFeedback
       style={{flex: 1}}
-      onPress={() => {
-        Keyboard.dismiss();
-      }}>
+      onPress={() => Keyboard.dismiss()}>
       <View style={{flex: 1}}>
         <Header navigation={navigation} />
-
         <View
           style={[
             {paddingHorizontal: 20, flex: 1},
@@ -145,16 +142,24 @@ const Registration = ({navigation, handleChangeLoginState}) => {
             {textAd}
           </Text>
         </View>
-
+        {console.log(height, '----------683')}
         <KeyboardAvoidingView
+          keyboardVerticalOffset={
+            Platform.OS === 'ios' ? 0 : height > 650 ? -140 : -80
+          }
           style={{
             height: 350,
             backgroundColor: '#fff',
             paddingHorizontal: 8,
             justifyContent: 'space-between',
           }}
-          behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
-          <View style={{paddingHorizontal: 8, height: 205}}>
+          behavior={Platform.OS === 'ios' ? 'position' : 'position'}>
+          <View
+            style={{
+              paddingHorizontal: 8,
+              height: 205,
+              backgroundColor: '#fff',
+            }}>
             <View style={[{flex: 1}]}>
               <View style={[btnGroup]}>
                 <ButtonDefaultWithoutFeedback
@@ -206,11 +211,12 @@ const Registration = ({navigation, handleChangeLoginState}) => {
               (bottomTextBtn,
               {
                 height: 140,
+                marginBottom: Platform.OS === 'ios' ? 0 : 10,
                 justifyContent: 'flex-end',
                 backgroundColor: '#fff',
               })
             }>
-            {height < 650 && (
+            {!fillErr && !validationErr && (
               <View style={([politic], height < 650 && {paddingBottom: 16})}>
                 <Text style={politicText}>
                   Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей
