@@ -30,7 +30,7 @@ const Border = () => (
 );
 
 const ChangeCity = ({navigation}) => {
-  const {groupBlock, groupBlockIos} = styles;
+  const {groupBlock, groupBlockIos, input, topTextWrap} = styles;
 
   const [city, setCity] = useState(
       navigation.state.params.city.name || 'Укажите город',
@@ -91,32 +91,13 @@ const ChangeCity = ({navigation}) => {
           navigation={navigation}
           title={`Выбрать другой город`}
         />
-        <View style={{flex: 1, paddingLeft: 8}}>
-          <View
-            style={{
-              height: 60,
-              padding: 10,
-              justifyContent: 'center',
-            }}>
+        <View style={{flex: 1, paddingHorizontal: 8}}>
+          <View style={topTextWrap}>
             <Text style={{fontSize: 10}}>Ваш город</Text>
             <Text style={{fontSize: 13, fontWeight: 'bold'}}>{city}</Text>
           </View>
-          <View
-            style={{
-              height: 60,
-              backgroundColor: '#fff',
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingHorizontal: 19,
-              shadowColor: 'rgba(0, 0, 0, 0.17)',
-              elevation: 2,
-              shadowOpacity: 0.5,
-              shadowRadius: 1.0,
-              shadowOffset: {
-                height: 0,
-                width: 0,
-              },
-            }}>
+
+          <View style={input}>
             <SvgUri
               style={{marginRight: 10}}
               width="13"
@@ -133,8 +114,13 @@ const ChangeCity = ({navigation}) => {
               style={{width: '100%', paddingRight: 16}}
             />
           </View>
-
-          <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock]}>
+          <View
+            style={[
+              Platform.OS === 'ios' ? groupBlockIos : groupBlock,
+              data && !!filteredData && filteredData.length === 1
+                ? {height: 50}
+                : {flex: 1},
+            ]}>
             <ScrollView>
               {data &&
                 !!filteredData &&
@@ -156,21 +142,17 @@ const ChangeCity = ({navigation}) => {
                             {el.name}
                           </Text>
                         </TouchableOpacity>
-                        <Border />
+                        {filteredData.length - 1 !== i && <Border />}
                       </View>
                     );
                   }
                 })}
               {loading && <ActivityIndicator size="large" color="#00ff00" />}
-              {true && (
-                <View style={{padding: 16}}>
-                  <ButtonDefault
-                    title="Сохранить изменения"
-                    onPress={() => SAVE()}
-                  />
-                </View>
-              )}
             </ScrollView>
+          </View>
+
+          <View style={{padding: 16}}>
+            <ButtonDefault title="Сохранить изменения" onPress={() => SAVE()} />
           </View>
         </View>
       </View>
@@ -180,7 +162,6 @@ const ChangeCity = ({navigation}) => {
 
 const styles = StyleSheet.create({
   groupBlock: {
-    flex: 1,
     borderRadius: 0.2,
     shadowOpacity: 4,
     elevation: 0.4,
@@ -189,7 +170,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   groupBlockIos: {
-    flex: 1,
     borderRadius: 0.2,
     marginTop: 20,
     paddingLeft: 16,
@@ -197,6 +177,26 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.01,
     shadowRadius: 0.1,
+  },
+  topTextWrap: {
+    height: 60,
+    padding: 10,
+    justifyContent: 'center',
+  },
+  input: {
+    height: 60,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 19,
+    shadowColor: 'rgba(0, 0, 0, 0.17)',
+    elevation: 2,
+    shadowOpacity: 0.5,
+    shadowRadius: 1.0,
+    shadowOffset: {
+      height: 0,
+      width: 0,
+    },
   },
 });
 

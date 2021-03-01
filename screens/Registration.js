@@ -142,7 +142,6 @@ const Registration = ({navigation, handleChangeLoginState}) => {
             {textAd}
           </Text>
         </View>
-        {console.log(height, '----------683')}
         <KeyboardAvoidingView
           keyboardVerticalOffset={
             Platform.OS === 'ios' ? 0 : height > 650 ? -140 : -80
