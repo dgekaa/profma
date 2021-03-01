@@ -5,6 +5,7 @@ import BackgroundHeader, {Header} from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 import CalendarGrayIcon from '../../img/calendarGray.svg';
 import CalendarColorIcon from '../../img/CalendarColor.svg';
+import {shortMonthName} from '../../constants';
 
 import {
   Text,
@@ -20,22 +21,7 @@ import {useQuery} from 'react-apollo';
 
 import {ME, GET_USER} from '../../QUERYES';
 
-const shortMonthName = [
-  'Янв',
-  'Фев',
-  'Март',
-  'Апр',
-  'Май',
-  'Июнь',
-  'Июль',
-  'Авг',
-  'Сент',
-  'Окт',
-  'Нояб',
-  'Дек',
-];
-
-const Block = ({el, navigation, key, archive, reload}) => {
+const Block = ({el, navigation, archive, reload}) => {
   const {
     block,
     blockIos,
@@ -92,7 +78,6 @@ const Block = ({el, navigation, key, archive, reload}) => {
   return (
     <TouchableOpacity
       style={Platform.OS === 'ios' ? blockIos : block}
-      key={key}
       onPress={() =>
         navigation.navigate('NoteInformation', {
           person: el,
@@ -213,12 +198,14 @@ const MyNotes = ({navigation}) => {
               {USER.data.me.client_appointments.map((el, i) => {
                 if (el.status) {
                   return (
-                    <Block
-                      el={el}
-                      navigation={navigation}
-                      key={i}
-                      reload={reload}
-                    />
+                    <View key={i}>
+                      <Block
+                        el={el}
+                        navigation={navigation}
+                        key={i}
+                        reload={reload}
+                      />
+                    </View>
                   );
                 }
               })}

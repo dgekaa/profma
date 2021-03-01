@@ -9,6 +9,7 @@ import ErrorInternetProblems from './ErrorInternetProblems';
 import CalendarCustom from '../components/Calendar';
 import ModalWindow from '../components/ModalWindow';
 import {ButtonDefault} from '../components/Button';
+import {shortMonthName} from '../constants';
 import {
   Text,
   View,
@@ -32,21 +33,6 @@ import {
   NEXT_APPOINTMENTS,
   NEXT_FREE_TIME_BY_MASTER,
 } from '../QUERYES';
-
-const shortMonthName = [
-  'дек',
-  'янв',
-  'фев',
-  'март',
-  'апр',
-  'май',
-  'июнь',
-  'июль',
-  'авг',
-  'сент',
-  'окт',
-  'нояб',
-];
 
 const screen = Dimensions.get('window');
 
@@ -197,6 +183,10 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
                           '-',
                         )[1]
                       ].toLowerCase()}{' '}
+                      {console.log(
+                        nextFreeTimeByMaster,
+                        '---nextFreeTimeByMaster',
+                      )}
                     </Text>
                     <Text style={{color: '#B986DA', fontSize: 10}}>{el}</Text>
                   </View>

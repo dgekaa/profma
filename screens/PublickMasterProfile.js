@@ -11,6 +11,7 @@ import CalendarSvgIcon from '../img/CalendarSVG.svg';
 import LocationIcon from '../img/Location.svg';
 import CrossWhiteIcon from '../img/CrossWhite.svg';
 import {Query, useMutation, useQuery, useLazyQuery} from 'react-apollo';
+import {shortMonthName} from '../constants';
 import {
   GET_USER,
   FREE_TIME,
@@ -30,21 +31,6 @@ import {
   TouchableWithoutFeedback,
   ActivityIndicator,
 } from 'react-native';
-
-const shortMonthName = [
-  'янв',
-  'фев',
-  'март',
-  'апр',
-  'май',
-  'июн',
-  'июл',
-  'авг',
-  'сент',
-  'окт',
-  'нояб',
-  'дек',
-];
 
 import BackgroundHeader from '../components/BackgroundHeader';
 const screen = Dimensions.get('window');
@@ -362,37 +348,35 @@ const PublickMasterProfile = ({navigation}) => {
   }, [checkboxes]);
 
   const showMasters = masters => {
-    let arr = [];
-    for (let key in masters) arr.push(key);
-    setDates(arr);
-  };
+      let arr = [];
+      for (let key in masters) arr.push(key);
+      setDates(arr);
+    },
+    CREATE = () => {
+      const CH = checkboxes.filter(el => +el),
+        finishCH = CH.map(el => +el);
 
-  const CREATE = () => {
-    const CH = checkboxes.filter(el => +el),
-      finishCH = CH.map(el => +el);
-
-    CREATE_APPOINTMENT_mutation({
-      variables: {
-        id: +MASTER.data.user.id,
-        date: dates[0],
-        time: activeTime,
-        offers_id: finishCH,
-      },
-      optimisticResponse: null,
-    })
-      .then(res => {
-        setTimeWasSelected(true);
-
-        setChoosedActiveTime(null);
-        setAllPrice(0);
-        setCHCecked(false);
-
-        navigation.state.params.reload();
+      CREATE_APPOINTMENT_mutation({
+        variables: {
+          id: +MASTER.data.user.id,
+          date: dates[0],
+          time: activeTime,
+          offers_id: finishCH,
+        },
+        optimisticResponse: null,
       })
-      .catch(err =>
-        console.log(JSON.stringify(err), '__ERR CREATE_APPOINTMENT'),
-      );
-  };
+        .then(res => {
+          setTimeWasSelected(true);
+          setChoosedActiveTime(null);
+          setAllPrice(0);
+          setCHCecked(false);
+
+          navigation.state.params.reload();
+        })
+        .catch(err =>
+          console.log(JSON.stringify(err), '__ERR CREATE_APPOINTMENT'),
+        );
+    };
 
   if (MASTER.error) {
     return <Text>Err</Text>;
@@ -486,7 +470,7 @@ const PublickMasterProfile = ({navigation}) => {
                         shortMonthName[
                           +NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
                             '-',
-                          )[1] - 1
+                          )[1]
                         ]
                       }{' '}
                       {

@@ -5,6 +5,7 @@ import SvgUri from 'react-native-svg-uri';
 import ArrowLIcon from '../../img/ArrowL.svg';
 import ArrowRIcon from '../../img/ArrowR.svg';
 import CalendarColorIcon from '../../img/CalendarColor.svg';
+import {shortMonthName} from '../../constants';
 
 import moment from 'moment';
 import 'moment/locale/fr';
@@ -24,20 +25,6 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-const shortMonthName = [
-  'Янв',
-  'Фев',
-  'Март',
-  'Апр',
-  'Май',
-  'Июнь',
-  'Июль',
-  'Авг',
-  'Сент',
-  'Окт',
-  'Нояб',
-  'Дек',
-];
 const monthNames = [
   'января',
   'февраля',
@@ -67,7 +54,7 @@ const monthsNamesHeader = {
   Dec: {name: 'Декабрь', number: 12},
 };
 
-const Block = ({el, navigation, key}) => {
+const Block = ({el, navigation}) => {
   const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
 
   // useEffect(() => {
@@ -100,13 +87,12 @@ const Block = ({el, navigation, key}) => {
   return (
     <TouchableOpacity
       style={block}
-      key={key}
       onPress={() => navigation.navigate('NoteInformationMaster', el)}>
       <View style={topBlock}>
         <View style={{flexDirection: 'row', flex: 6}}>
           <SvgUri svgXmlData={CalendarColorIcon} style={{marginRight: 5}} />
           <Text style={[dateText]}>
-            {el.date.split('-')[2]} {shortMonthName[el.date.split('-')[1]]} в{' '}
+            {el.date.split('-')[2]} {shortMonthName[+el.date.split('-')[1]]} в{' '}
             {el.time.slice(0, 5)}
           </Text>
         </View>
@@ -145,7 +131,7 @@ const Block = ({el, navigation, key}) => {
             <Text style={{fontSize: 10}}>Услуга</Text>
             {!!offersAll.length &&
               offersAll.map((el, i) => (
-                <Text key={key} style={[textBold]}>
+                <Text key={i} style={[textBold]}>
                   {el}
                 </Text>
               ))}
@@ -159,13 +145,17 @@ const Block = ({el, navigation, key}) => {
 const MasterCalendar = ({navigation}) => {
   const {calendarContainer, arrow, headerText, hederArrowContainer} = styles;
 
-  const [currentDate, setCurrentDate] = useState(
-      new Date()
-        .toLocaleDateString()
-        .split('.')
-        .reverse()
-        .join('-'),
-    ),
+  const date = new Date().toLocaleDateString().split('/'),
+    refreshDate = date => {
+      if (+date > 9) {
+        return date;
+      } else {
+        return '0' + date;
+      }
+    },
+    dateNew = date[2] + '-' + refreshDate(date[0]) + '-' + refreshDate(date[1]);
+
+  const [currentDate, setCurrentDate] = useState(dateNew),
     [filteredData, setFilteredData] = useState([]);
 
   const USER = useQuery(ME);
@@ -175,7 +165,6 @@ const MasterCalendar = ({navigation}) => {
       const filtered = USER.data.me.master_appointments.filter((el, i) => {
         return el.date === currentDate;
       });
-      console.log(filtered, ' FILTERED');
       setFilteredData(filtered);
     }
   }, [USER.data, currentDate]);
@@ -236,46 +225,20 @@ const MasterCalendar = ({navigation}) => {
     stringMonth = monthNames[monthNumber],
     dayNumber = new Date().getDate();
 
-  const [notes, setNotes] = useState();
-  let dateNowSorted = [];
-
-  // useEffect(() => {
-  //   dateNowSorted = notes.filter((el, i) => {
-  //     if (
-  //       Number(el.day) == Number(new Date().toString().split(' ')[2]) &&
-  //       Number(el.month) ==
-  //         Number(
-  //           monthsNamesHeader[new Date().toString().split(' ')[1]].number,
-  //         ) &&
-  //       Number(el.year) == Number(new Date().toString().split(' ')[3])
-  //     ) {
-  //       return el;
-  //     }
-  //   });
-  //   setSortNotes([...dateNowSorted]);
-  // }, [notes]);
-
   const [sortNotes, setSortNotes] = useState([]);
 
   const onDateSelected = date => {
-    setCurrentDate(
-      date._d
-        .toLocaleDateString()
-        .split('.')
-        .reverse()
-        .join('-'),
-    );
-    // const sorted = notes.filter((el, i) => {
-    //   if (
-    //     Number(el.day) == Number(date._d.toString().split(' ')[2]) &&
-    //     Number(el.month) ==
-    //       Number(monthsNamesHeader[date._d.toString().split(' ')[1]].number) &&
-    //     Number(el.year) == Number(date._d.toString().split(' ')[3])
-    //   ) {
-    //     return el;
-    //   }
-    // });
-    // setSortNotes([...sorted]);
+    const dateSelected = date._d.toLocaleDateString().split('/'),
+      dateNewSelected =
+        dateSelected[2] +
+        '-' +
+        refreshDate(dateSelected[0]) +
+        '-' +
+        refreshDate(dateSelected[1]);
+
+    console.log(dateNewSelected, '---dateNewSelected');
+
+    setCurrentDate(dateNewSelected);
   };
 
   return (

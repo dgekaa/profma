@@ -4,10 +4,11 @@ import CalendarGrayIcon from '../../img/calendarGray.svg';
 import CalendarColorIcon from '../../img/CalendarColor.svg';
 
 import {useQuery} from 'react-apollo';
-import {ME, GET_USER} from '../../QUERYES';
+import {ME} from '../../QUERYES';
 
 import BackgroundHeader, {Header} from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
+import {shortMonthName} from '../../constants';
 
 import {
   Text,
@@ -18,21 +19,6 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-
-const shortMonthName = [
-  'Янв',
-  'Фев',
-  'Март',
-  'Апр',
-  'Май',
-  'Июнь',
-  'Июль',
-  'Авг',
-  'Сент',
-  'Окт',
-  'Нояб',
-  'Дек',
-];
 
 const Block = ({el, navigation, archive, reload, me}) => {
   const {

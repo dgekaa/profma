@@ -5,21 +5,8 @@ import {Calendar, LocaleConfig} from 'react-native-calendars';
 import {ButtonDefault, ButtonDisabled} from '../components/Button';
 
 import {Text, View, StyleSheet, ScrollView} from 'react-native';
+import {shortMonthName12} from '../constants';
 
-const shortMonthName = [
-  'Янв',
-  'Фев',
-  'Март',
-  'Апр',
-  'Май',
-  'Июнь',
-  'Июль',
-  'Авг',
-  'Сент',
-  'Окт',
-  'Нояб',
-  'Дек',
-];
 const dayNames = [
   'Воскресенье',
   'Понедельник',
@@ -45,7 +32,7 @@ LocaleConfig.locales['ru'] = {
     'Ноябрь',
     'Декабрь',
   ],
-  monthNamesShort: shortMonthName,
+  monthNamesShort: shortMonthName12,
   dayNames,
   dayNamesShort: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
 };
@@ -84,7 +71,7 @@ const CalendarCustom = ({
       todayInfo &&
         todayInfo({
           dayOfWeek: dayNames[new Date().getDay()],
-          monthName: shortMonthName[month - 1],
+          monthName: shortMonthName12[month - 1],
           date: date,
         });
     }
@@ -120,7 +107,7 @@ const CalendarCustom = ({
             <Text style={{color: '#FFF'}}>{dayNames[new Date().getDay()]}</Text>
           </View>
           <View style={middleBlock}>
-            <Text style={monthText}>{shortMonthName[month - 1]}</Text>
+            <Text style={monthText}>{shortMonthName12[month - 1]}</Text>
             <Text style={dayText}>{date}</Text>
             <Text style={yearText}>{year}</Text>
           </View>

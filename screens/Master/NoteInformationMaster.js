@@ -9,10 +9,9 @@ import pressedIcon from '../../img/Pressed.svg';
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 import SaveSuccess from '../../components/SaveSuccess';
+import {shortMonthName} from '../../constants';
 import {
-  GET_USER,
   GET_APPOINTMENT,
-  UPDATE_PROFILE,
   DELETE_APPOINTMENT,
   UPDATE_APPOINTMENT_ADD_OFFERS,
   ME,
@@ -22,26 +21,11 @@ import {
   Text,
   View,
   StyleSheet,
-  Image,
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
   TouchableWithoutFeedback,
 } from 'react-native';
-const shortMonthName = [
-  'Янв',
-  'Фев',
-  'Март',
-  'Апр',
-  'Май',
-  'Июн',
-  'Июл',
-  'Авг',
-  'Сент',
-  'Окт',
-  'Нояб',
-  'Дек',
-];
 
 const DropdownBlock = ({
   el,
