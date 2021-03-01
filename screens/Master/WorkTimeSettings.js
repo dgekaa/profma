@@ -192,7 +192,7 @@ const Block = ({
 };
 
 const WorkTimeSettings = ({navigation}) => {
-  const {} = styles;
+  const {picker} = styles;
 
   const USER = useQuery(ME);
 
@@ -322,7 +322,23 @@ const WorkTimeSettings = ({navigation}) => {
     [date, setDate] = useState(new Date()),
     [timeInfo, setTimeInfo] = useState();
 
-  const validationErr = data => setIsValidationErr(data);
+  const validationErr = data => setIsValidationErr(data),
+    onChangeTime = selectedTime => {
+      setShowPicker(Platform.OS === 'ios');
+      const hours = selectedTime.getHours(),
+        minutes = selectedTime.getMinutes(),
+        time =
+          '' +
+          (hours > 9 ? hours : '0' + hours) +
+          ':' +
+          (minutes > 9 ? minutes : '0' + minutes);
+
+      setDate(selectedTime || date);
+
+      timeInfo.isFirst
+        ? setFirstInputText(time, timeInfo.schedules, timeInfo.el)
+        : setSecondInputText(time, timeInfo.schedules, timeInfo.el);
+    };
 
   return (
     <View style={{flex: 1}}>
@@ -331,19 +347,7 @@ const WorkTimeSettings = ({navigation}) => {
         title="Настройка рабочего времени"
       />
       {showPicker && (
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(255,255,255, 0.2)',
-            zIndex: 100,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          onPress={() => setShowPicker(false)}>
+        <TouchableOpacity style={picker} onPress={() => setShowPicker(false)}>
           <DateTimePicker
             style={{backgroundColor: '#eee', width: '80%'}}
             testID="dateTimePicker"
@@ -353,21 +357,7 @@ const WorkTimeSettings = ({navigation}) => {
             locale={'en_GB'}
             is24Hour={true}
             display="spinner"
-            onChange={(event, selectedTime) => {
-              const hours = selectedTime.getHours(),
-                minutes = selectedTime.getMinutes();
-              setDate(selectedTime || date);
-              const time =
-                '' +
-                (hours > 9 ? hours : '0' + hours) +
-                ':' +
-                (minutes > 9 ? minutes : '0' + minutes);
-              if (timeInfo.isFirst) {
-                setFirstInputText(time, timeInfo.schedules, timeInfo.el);
-              } else {
-                setSecondInputText(time, timeInfo.schedules, timeInfo.el);
-              }
-            }}
+            onChange={(event, selectedTime) => onChangeTime(selectedTime)}
           />
         </TouchableOpacity>
       )}
@@ -438,6 +428,17 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginLeft: 8,
     marginBottom: 8,
+  },
+  picker: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(255,255,255, 0.2)',
+    zIndex: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

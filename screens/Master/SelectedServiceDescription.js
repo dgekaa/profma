@@ -25,7 +25,6 @@ const SelectedServiceDescription = ({navigation}) => {
 
   const [deleteModal, setDeleteModal] = useState(false);
 
-  console.log(navigation.state.params.service, 'NAV___');
   const {
     description,
     price_by_pack,
