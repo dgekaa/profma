@@ -335,7 +335,31 @@ const PublickMasterProfile = ({navigation}) => {
       },
     });
 
-  const [CREATE_APPOINTMENT_mutation] = useMutation(CREATE_APPOINTMENT);
+  const refreshObject = {
+    refetchQueries: [
+      {
+        query: NEXT_FREE_TIME_BY_MASTER,
+        variables: {
+          master_id:
+            !!MASTER.data && !!MASTER.data.user && +MASTER.data.user.id,
+        },
+      },
+      {
+        query: FREE_TIME,
+        variables: {
+          master_id:
+            !!MASTER.data && !!MASTER.data.user && +MASTER.data.user.id,
+          dates: [dates[0]],
+        },
+      },
+    ],
+    awaitRefetchQueries: true,
+  };
+
+  const [CREATE_APPOINTMENT_mutation] = useMutation(
+    CREATE_APPOINTMENT,
+    refreshObject,
+  );
 
   useEffect(() => {
     FREETIME.data &&
@@ -371,6 +395,7 @@ const PublickMasterProfile = ({navigation}) => {
           setAllPrice(0);
           setCHCecked(false);
 
+          NEXT_FREETIME.refetch();
           navigation.state.params.reload();
         })
         .catch(err =>

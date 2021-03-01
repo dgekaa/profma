@@ -19,11 +19,9 @@ import {
 
 import ImagePicker from 'react-native-image-crop-picker';
 
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 import {
-  GET_USER,
-  UPDATE_PROFILE,
   GET_APPOINTMENT,
   UPDATE_APPOINTMENT,
   LOAD_IMAGE,

@@ -183,10 +183,6 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
                           '-',
                         )[1]
                       ].toLowerCase()}{' '}
-                      {console.log(
-                        nextFreeTimeByMaster,
-                        '---nextFreeTimeByMaster',
-                      )}
                     </Text>
                     <Text style={{color: '#B986DA', fontSize: 10}}>{el}</Text>
                   </View>
