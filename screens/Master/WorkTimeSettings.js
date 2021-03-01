@@ -398,15 +398,11 @@ const styles = StyleSheet.create({
     marginTop: 8,
     borderRadius: 2,
     shadowColor: '#000',
-    elevation: 10,
+    elevation: 2,
     flexDirection: 'column',
     paddingLeft: 18,
-    shadowOpacity: 0.1,
+    shadowOpacity: 1,
     backgroundColor: '#fff',
-    shadowOffset: {
-      height: 0,
-      width: 0,
-    },
   },
   blockInGroup: {
     borderRadius: 2,
