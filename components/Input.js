@@ -205,14 +205,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 5,
     fontSize: 10,
-    shadowColor: 'rgba(0, 0, 0, 0.17)',
+    shadowColor: 'rgba(0, 0, 0, 0.5)',
     shadowOffset: {
       width: 0,
       height: 0,
     },
-    shadowRadius: 1.41,
-    shadowOpacity: 0.5,
-    elevation: 1.5,
+    shadowRadius: 1,
+    shadowOpacity: 0.2,
   },
   topInputTextWrap: {
     marginTop: 10,

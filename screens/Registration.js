@@ -25,15 +25,12 @@ import {REGISTER, CREATE_PROFILE} from '../QUERYES';
 
 const Registration = ({navigation, handleChangeLoginState}) => {
   const {
-    container,
     topText,
     ProfMa,
-    topTextWrap,
     specialText,
     politicText,
     politic,
     btnGroup,
-    registrtionWrap,
     bottomTextBtn,
   } = stylesClientRegistration;
 
@@ -157,7 +154,7 @@ const Registration = ({navigation, handleChangeLoginState}) => {
             justifyContent: 'space-between',
           }}
           behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
-          <View style={{paddingHorizontal: 8, height: 200}}>
+          <View style={{paddingHorizontal: 8, height: 205}}>
             <View style={[{flex: 1}]}>
               <View style={[btnGroup]}>
                 <ButtonDefaultWithoutFeedback
@@ -255,21 +252,6 @@ const Registration = ({navigation, handleChangeLoginState}) => {
 };
 
 const stylesClientRegistration = StyleSheet.create({
-  registrtionWrap: {
-    flex: 1,
-    backgroundColor: '#FAFAFA',
-    position: 'absolute',
-    width: '100%',
-    height: Dimensions.get('window').height,
-    bottom: 0,
-  },
-  container: {
-    paddingHorizontal: 8,
-  },
-  topTextWrap: {
-    paddingHorizontal: 12,
-    marginBottom: 40,
-  },
   ProfMa: {
     fontSize: 23,
     color: '#B986DA',
