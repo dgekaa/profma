@@ -90,7 +90,12 @@ const SelectedServiceDescription = ({navigation}) => {
           <View
             style={[
               Platform.OS === 'ios' ? groupBlockIos : groupBlock,
-              {paddingLeft: 8, paddingTop: 8, marginTop: 20, marginBottom: 10},
+              {
+                paddingLeft: 8,
+                paddingTop: 8,
+                marginTop: 20,
+                marginBottom: 10,
+              },
             ]}>
             <View
               style={{
@@ -124,7 +129,7 @@ const SelectedServiceDescription = ({navigation}) => {
                   placeholder={`Укажите продолжительность сеанса`}
                   withoutShadow={true}
                   onChangeText={text => {}}
-                  style={[borderBottom, {flex: 1, marginRight: 8}]}
+                  style={[borderBottom, {flex: 1}]}
                   errStyle={{paddingBottom: 10}}
                 />
               </View>
@@ -150,7 +155,7 @@ const SelectedServiceDescription = ({navigation}) => {
                     paddingHorizontal: 8,
                     paddingTop: 20,
                     fontSize: 13,
-                    color: 'rgba(0,0,0,.2)',
+                    color: '#000',
                     fontWeight: 'bold',
                   }}>
                   руб
@@ -208,6 +213,10 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     paddingLeft: 18,
     borderRadius: 0.2,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOpacity: 0.8,
+    backgroundColor: '#fff',
   },
   groupBlockIos: {
     marginTop: 8,
