@@ -34,8 +34,6 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
     groupBlockIos,
   } = styles;
 
-  console.log(navigation, 'NAVIGATION MASTER');
-
   const [isChangePassword, setIsChangePassword] = useState();
 
   const onGoBackFromPasword = isSuccess => {

@@ -25,6 +25,11 @@ const Login = ({navigation, handleChangeLoginState}) => {
     politic,
     politicText,
     specialText,
+    btnAndroid,
+    keyboardIos,
+    keyboardAndroid,
+    topTextWrapIos,
+    topTextWrapAndrod,
   } = stylesClientRegistration;
 
   const height = Dimensions.get('window').height,
@@ -40,34 +45,33 @@ const Login = ({navigation, handleChangeLoginState}) => {
   const [LOGIN_mutation] = useMutation(LOGIN);
 
   const toLogin = () => {
-    setLoading(true);
-    LOGIN_mutation({
-      variables: {
-        username: email,
-        password: password,
-      },
-      optimisticResponse: null,
-    })
-      .then(res => {
-        setLoading(false);
-        handleChangeLoginState(true, res.data.login.access_token);
-        navigation.navigate('Main', {ID: res.data.login.user.id});
+      setLoading(true);
+      LOGIN_mutation({
+        variables: {
+          username: email,
+          password: password,
+        },
+        optimisticResponse: null,
       })
-      .catch(err => {
-        setLoading(false);
-        setValidationErr(true);
-      });
-  };
-
-  const openCloseEye = () => {
-    if (iconName === 'openedEye') {
-      setIconName('closedEye');
-      setHidePassword(true);
-    } else {
-      setIconName('openedEye');
-      setHidePassword(false);
-    }
-  };
+        .then(res => {
+          setLoading(false);
+          handleChangeLoginState(true, res.data.login.access_token);
+          navigation.navigate('Main', {ID: res.data.login.user.id});
+        })
+        .catch(err => {
+          setLoading(false);
+          setValidationErr(true);
+        });
+    },
+    openCloseEye = () => {
+      if (iconName === 'openedEye') {
+        setIconName('closedEye');
+        setHidePassword(true);
+      } else {
+        setIconName('openedEye');
+        setHidePassword(false);
+      }
+    };
 
   const [email, setEmail] = useState(''),
     [password, setPassword] = useState('');
@@ -87,13 +91,11 @@ const Login = ({navigation, handleChangeLoginState}) => {
   return (
     <TouchableWithoutFeedback
       style={{flex: 1}}
-      onPress={() => {
-        Keyboard.dismiss();
-      }}>
+      onPress={() => Keyboard.dismiss()}>
       <View style={{flex: 1}}>
         <Header navigation={navigation} />
-
-        <View style={[{flex: 1, paddingHorizontal: 20}]}>
+        <View
+          style={[Platform.OS === 'ios' ? topTextWrapIos : topTextWrapAndrod]}>
           <Text style={[ProfMa, height < 650 && {fontSize: 20}]}>Prof.Ma</Text>
           <Text
             style={[
@@ -106,16 +108,11 @@ const Login = ({navigation, handleChangeLoginState}) => {
         </View>
 
         <KeyboardAvoidingView
-          style={{
-            height: 350,
-            backgroundColor: '#fff',
-            paddingHorizontal: 8,
-            justifyContent: 'space-between',
-          }}
-          behavior={Platform.OS === 'ios' ? 'position' : null}>
+          keyboardVerticalOffset={-30}
+          style={[Platform.OS === 'ios' ? keyboardIos : keyboardAndroid]}
+          behavior={Platform.OS === 'ios' ? 'position' : 'position'}>
           <View
             style={[
-              height < 650 && {marginTop: 40},
               {
                 height: 190,
                 backgroundColor: '#fff',
@@ -172,18 +169,22 @@ const Login = ({navigation, handleChangeLoginState}) => {
             </View>
 
             {!!fillErr && !validationErr && (
-              <ButtonDisabled title={regBtnText} style={{}} />
+              <ButtonDisabled title={regBtnText} style={btnAndroid} />
             )}
             {!fillErr && !validationErr && (
               <ButtonDefault
-                style={{}}
+                style={btnAndroid}
                 title={regBtnText}
                 active={true}
                 onPress={() => toLogin()}
               />
             )}
             {!!validationErr && (
-              <ButtonError title={regBtnText} style={{}} onPress={() => {}} />
+              <ButtonError
+                title={regBtnText}
+                style={btnAndroid}
+                onPress={() => {}}
+              />
             )}
           </View>
         </KeyboardAvoidingView>
@@ -213,6 +214,15 @@ const stylesClientRegistration = StyleSheet.create({
     fontWeight: 'bold',
     width: '75%',
   },
+  topTextWrapIos: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+  topTextWrapAndrod: {
+    flex: 1,
+    paddingHorizontal: 20,
+    backgroundColor: '#fff',
+  },
   topText: {
     color: '#011627',
     fontFamily: 'FuturaPT-Bold',
@@ -236,6 +246,21 @@ const stylesClientRegistration = StyleSheet.create({
   login: {
     paddingHorizontal: 8,
     width: '100%',
+  },
+  keyboardIos: {
+    height: 350,
+    backgroundColor: '#fff',
+    paddingHorizontal: 8,
+    justifyContent: 'space-between',
+  },
+  keyboardAndroid: {
+    flex: 2.5,
+    backgroundColor: '#fff',
+    paddingHorizontal: 8,
+    justifyContent: 'space-between',
+  },
+  btnAndroid: {
+    marginBottom: 8,
   },
 });
 

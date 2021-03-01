@@ -96,7 +96,6 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
     photoArr.master_appointments &&
       photoArr.master_appointments.length &&
       photoArr.master_appointments.forEach(obj => {
-        console.log(obj.photos, '---obj.photos');
         obj.photos.length &&
           setPhoto('http://194.87.145.192/storage/' + obj.photos[0].src);
       });
@@ -196,7 +195,7 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
                       {shortMonthName[
                         +nextFreeTimeByMaster.data.nextFreeTimeByMaster[0].date.split(
                           '-',
-                        )[1] - 1
+                        )[1]
                       ].toLowerCase()}{' '}
                     </Text>
                     <Text style={{color: '#B986DA', fontSize: 10}}>{el}</Text>
@@ -225,14 +224,16 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
     el.offers.length &&
       el.offers.forEach((elem, i) => offersAllLocal.push(elem.service.name));
     setOffersAll(offersAllLocal);
+  }, []);
 
+  useEffect(() => {
     photoArr.master_appointments &&
       photoArr.master_appointments.length &&
       photoArr.master_appointments.forEach(obj => {
         obj.photos.length &&
           setPhoto('http://194.87.145.192/storage/' + obj.photos[0].src);
       });
-  }, []);
+  }, [photoArr]);
 
   return (
     <TouchableOpacity
