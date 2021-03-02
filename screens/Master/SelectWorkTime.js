@@ -49,9 +49,13 @@ const SelectWorkTime = ({navigation}) => {
     for (let j = 0; j <= 45; j = j + 15) {
       if (i == startHour && j < startMinutes) continue;
       if (i == endHour && j > endMinutes - 30) continue;
+
+      let hours = 0;
+      i < 10 ? (hours = '0' + i) : (hours = i);
+
       j == 0
-        ? timeArr.push({time: +i + ':' + '00', active: false})
-        : timeArr.push({time: +i + ':' + j, active: false});
+        ? timeArr.push({time: hours + ':' + '00', active: false})
+        : timeArr.push({time: hours + ':' + j, active: false});
     }
   }
   endMinutes < 15 && timeArr.pop();
@@ -71,11 +75,9 @@ const SelectWorkTime = ({navigation}) => {
         objCreate = {};
 
       activeArr.some(el => {
-        if (!schedules.start_sessions.length) {
-          if (el.active) {
-            objCreate[el.time] = el;
-          }
-        }
+        if (!schedules.start_sessions.length && el.active)
+          objCreate[el.time] = el;
+
         schedules.start_sessions.some((inDB, i) => {
           if (inDB.time.slice(0, 5) === el.time && el.active) {
             objSimple[inDB.time.slice(0, 5)] = inDB;
@@ -93,7 +95,7 @@ const SelectWorkTime = ({navigation}) => {
           UPDATE_SCHEDULE_mutation({
             variables: {
               id: +schedules.id,
-              time: key,
+              time: key.split(':')[0].length === 1 ? '0' + key : key,
             },
             optimisticResponse: null,
           })
@@ -105,7 +107,10 @@ const SelectWorkTime = ({navigation}) => {
         console.log(objDelete[key], '_____KEY DELETE');
         DELETE_START_SESSION_mutation({
           variables: {
-            id: +objDelete[key].id,
+            id:
+              key.split(':')[0].length === 1
+                ? +objDelete['0' + key].i
+                : +objDelete[key].id,
           },
           optimisticResponse: null,
         })

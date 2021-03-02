@@ -44,6 +44,7 @@ const Block = ({
   validationErr,
   setShowPicker,
   setTimeInfo,
+  SAVE,
 }) => {
   const {groupBlock, blockTitle, blockInGroup, textBold, borderBottom} = styles;
 
@@ -169,7 +170,11 @@ const Block = ({
         <TouchableOpacity
           onPress={() => {
             if (schedules && !schedules.day_off) {
-              navigation.navigate('SelectWorkTime', {schedules: schedules});
+              if (!schedules.start_sessions) {
+                schedules.start_sessions = [];
+              }
+
+              SAVE(schedules);
             }
           }}
           style={[
@@ -230,8 +235,6 @@ const WorkTimeSettings = ({navigation}) => {
       });
       setChangedData(obj);
     }
-
-    console.log(USER, '----USER----');
   }, [USER]);
 
   const switchCheck = (bool, schedules, day) => {
@@ -268,7 +271,7 @@ const WorkTimeSettings = ({navigation}) => {
     });
   };
 
-  const SAVE = () => {
+  const SAVE = schedules => {
     for (let key in changedData) {
       if (changedData[key]) {
         if (changedData[key].id) {
@@ -280,10 +283,17 @@ const WorkTimeSettings = ({navigation}) => {
               },
               optimisticResponse: null,
             })
-              .then(res => console.log(res, '__RES DELETE_SCHEDULE_mutation'))
+              .then(res => {
+                if (schedules) {
+                  if (!schedules.id) schedules.id = res.data.updateSchedule.id;
+                  navigation.navigate('SelectWorkTime', {schedules: schedules});
+                }
+                console.log(res, '__RES DELETE_SCHEDULE_mutation');
+              })
               .catch(err => console.log(err, '__ERR DELETE_SCHEDULE_mutation'));
           } else {
             console.log(changedData[key], 'РАБ----РАБ');
+
             UPDATE_SCHEDULE_WORK_TIME_mutation({
               variables: {
                 id: +changedData[key].id,
@@ -293,7 +303,14 @@ const WorkTimeSettings = ({navigation}) => {
               },
               optimisticResponse: null,
             })
-              .then(res => console.log(res, '__RES UPDATE_SCHEDULE_mutation'))
+              .then(res => {
+                if (schedules) {
+                  if (!schedules.id) schedules.id = res.data.updateSchedule.id;
+                  navigation.navigate('SelectWorkTime', {schedules: schedules});
+                }
+
+                console.log(res, '__RES UPDATE_SCHEDULE_mutation !!!');
+              })
               .catch(err => console.log(err, '__ERR UPDATE_SCHEDULE_mutation'));
           }
         } else {
@@ -308,7 +325,14 @@ const WorkTimeSettings = ({navigation}) => {
               },
               optimisticResponse: null,
             })
-              .then(res => console.log(res, '__RES  CREATE_SCHEDULE_mutation'))
+              .then(res => {
+                if (schedules) {
+                  if (!schedules.id) schedules.id = res.data.updateSchedule.id;
+
+                  navigation.navigate('SelectWorkTime', {schedules: schedules});
+                }
+                console.log(res, '__RES  CREATE_SCHEDULE_mutation');
+              })
               .catch(err =>
                 console.log(err, '__ERR  CREATE_SCHEDULE_mutation'),
               );
@@ -377,6 +401,7 @@ const WorkTimeSettings = ({navigation}) => {
                 index={i}
                 navigation={navigation}
                 validationErr={data => validationErr(data)}
+                SAVE={SAVE}
               />
             </View>
           ))}
