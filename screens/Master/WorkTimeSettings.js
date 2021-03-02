@@ -41,8 +41,6 @@ const Block = ({
   schedules,
   navigation,
   switchCheck,
-  setFirstInputText,
-  setSecondInputText,
   validationErr,
   setShowPicker,
   setTimeInfo,
@@ -232,6 +230,8 @@ const WorkTimeSettings = ({navigation}) => {
       });
       setChangedData(obj);
     }
+
+    console.log(USER, '----USER----');
   }, [USER]);
 
   const switchCheck = (bool, schedules, day) => {

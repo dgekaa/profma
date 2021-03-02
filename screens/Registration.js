@@ -116,6 +116,8 @@ const Registration = ({navigation, handleChangeLoginState}) => {
         createProfile(res);
       })
       .catch(err => {
+        console.log(JSON.stringify(err), 'err register');
+
         setLoading(false);
         setValidationErr(true);
       });

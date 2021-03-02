@@ -12,16 +12,8 @@ import {
   ScrollView,
 } from 'react-native';
 
-import {
-  ME,
-  CREATE_SCHEDULE,
-  UPDATE_SCHEDULE,
-  DELETE_SCHEDULE,
-  GET_SCHEDULE,
-  DELETE_START_SESSION,
-} from '../../QUERYES';
+import {ME, UPDATE_SCHEDULE, DELETE_START_SESSION} from '../../QUERYES';
 import {useMutation} from 'react-apollo';
-import {act} from 'react-test-renderer';
 
 const SelectWorkTime = ({navigation}) => {
   const {container, topBlock, timeBlock, timeContainer} = styles;
@@ -36,32 +28,27 @@ const SelectWorkTime = ({navigation}) => {
   };
 
   const [UPDATE_SCHEDULE_mutation] = useMutation(
-    UPDATE_SCHEDULE,
-    refreshObject,
-  );
+      UPDATE_SCHEDULE,
+      refreshObject,
+    ),
+    [DELETE_START_SESSION_mutation] = useMutation(
+      DELETE_START_SESSION,
+      refreshObject,
+    );
 
-  const [DELETE_START_SESSION_mutation] = useMutation(
-    DELETE_START_SESSION,
-    refreshObject,
-  );
-
-  const startTime = navigation.state.params.schedules.start_time.slice(0, 5);
-  const endTime = navigation.state.params.schedules.end_time.slice(0, 5);
-
-  const startHour = +startTime.split(':')[0];
-  const startMinutes = +startTime.split(':')[1];
-  const endHour = +endTime.split(':')[0];
-  const endMinutes = +endTime.split(':')[1];
+  const schedules = navigation.state.params.schedules,
+    startTime = schedules.start_time.slice(0, 5),
+    endTime = schedules.end_time.slice(0, 5),
+    startHour = +startTime.split(':')[0],
+    startMinutes = +startTime.split(':')[1],
+    endHour = +endTime.split(':')[0],
+    endMinutes = +endTime.split(':')[1];
 
   let timeArr = [];
   for (let i = startHour; i <= endHour; i++) {
     for (let j = 0; j <= 45; j = j + 15) {
-      if (i == startHour && j < startMinutes) {
-        continue;
-      }
-      if (i == endHour && j > endMinutes - 30) {
-        continue;
-      }
+      if (i == startHour && j < startMinutes) continue;
+      if (i == endHour && j > endMinutes - 30) continue;
       j == 0
         ? timeArr.push({time: +i + ':' + '00', active: false})
         : timeArr.push({time: +i + ':' + j, active: false});
@@ -70,21 +57,68 @@ const SelectWorkTime = ({navigation}) => {
   endMinutes < 15 && timeArr.pop();
 
   for (let i = 0; i < timeArr.length; i++) {
-    for (
-      let j = 0;
-      j < navigation.state.params.schedules.start_sessions.length;
-      j++
-    ) {
-      if (
-        timeArr[i].time ===
-        navigation.state.params.schedules.start_sessions[j].time.slice(0, 5)
-      ) {
+    for (let j = 0; j < schedules.start_sessions.length; j++) {
+      if (timeArr[i].time === schedules.start_sessions[j].time.slice(0, 5))
         timeArr[i].active = true;
-      }
     }
   }
 
   const [activeArr, setActiveArr] = useState(timeArr);
+
+  const saveTime = () => {
+      const objSimple = {},
+        objDelete = {},
+        objCreate = {};
+
+      activeArr.some(el => {
+        if (!schedules.start_sessions.length) {
+          if (el.active) {
+            objCreate[el.time] = el;
+          }
+        }
+        schedules.start_sessions.some((inDB, i) => {
+          if (inDB.time.slice(0, 5) === el.time && el.active) {
+            objSimple[inDB.time.slice(0, 5)] = inDB;
+          } else if (inDB.time.slice(0, 5) === el.time && !el.active) {
+            objDelete[inDB.time.slice(0, 5)] = inDB;
+          } else if (el.active) {
+            objCreate[el.time] = el;
+          }
+        });
+      });
+
+      for (let key in objCreate) {
+        if (!objSimple[key]) {
+          console.log(key, 'KEY CREATE');
+          UPDATE_SCHEDULE_mutation({
+            variables: {
+              id: +schedules.id,
+              time: key,
+            },
+            optimisticResponse: null,
+          })
+            .then(res => console.log(res, '__RES UPDATE_SCHEDULE_mutation'))
+            .catch(err => console.log(err, '__ERR UPDATE_SCHEDULE_mutation'));
+        }
+      }
+      for (let key in objDelete) {
+        console.log(objDelete[key], '_____KEY DELETE');
+        DELETE_START_SESSION_mutation({
+          variables: {
+            id: +objDelete[key].id,
+          },
+          optimisticResponse: null,
+        })
+          .then(res => console.log(res, '__RES DELETE_START_SESSION'))
+          .catch(err => console.log(err, '__ERR DELETE_START_SESSION'));
+      }
+    },
+    pressBtn = i => {
+      activeArr[i].active == true
+        ? (activeArr[i].active = false)
+        : (activeArr[i].active = true);
+      setActiveArr([...activeArr]);
+    };
 
   return (
     <View style={{flex: 1}}>
@@ -112,33 +146,26 @@ const SelectWorkTime = ({navigation}) => {
             </View>
           </View>
           <View style={timeContainer}>
-            {activeArr.map((el, i) => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    activeArr[i].active == true
-                      ? (activeArr[i].active = false)
-                      : (activeArr[i].active = true);
-                    setActiveArr([...activeArr]);
-                  }}
-                  style={[
-                    timeBlock,
-                    {
-                      backgroundColor: !el.active ? '#fff' : '#B986DA',
-                    },
-                  ]}
-                  key={i}>
-                  <Text
-                    style={{
-                      color: !el.active ? '#B986DA' : '#fff',
-                      fontWeight: 'bold',
-                      fontSize: 13,
-                    }}>
-                    {el.time}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
+            {activeArr.map((el, i) => (
+              <TouchableOpacity
+                onPress={() => pressBtn(i)}
+                style={[
+                  timeBlock,
+                  {
+                    backgroundColor: !el.active ? '#fff' : '#B986DA',
+                  },
+                ]}
+                key={i}>
+                <Text
+                  style={{
+                    color: !el.active ? '#B986DA' : '#fff',
+                    fontWeight: 'bold',
+                    fontSize: 13,
+                  }}>
+                  {el.time}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
       </ScrollView>
@@ -150,65 +177,7 @@ const SelectWorkTime = ({navigation}) => {
           ')'
         }
         active={true}
-        onPress={() => {
-          const objSimple = {};
-          const objDelete = {};
-          const objCreate = {};
-          activeArr.some(el => {
-            if (!navigation.state.params.schedules.start_sessions.length) {
-              if (el.active) {
-                objCreate[el.time] = el;
-              }
-            }
-            navigation.state.params.schedules.start_sessions.some((inDB, i) => {
-              console.log(inDB, '___INDB');
-              if (inDB.time.slice(0, 5) === el.time && el.active) {
-                objSimple[inDB.time.slice(0, 5)] = inDB;
-              } else if (inDB.time.slice(0, 5) === el.time && !el.active) {
-                objDelete[inDB.time.slice(0, 5)] = inDB;
-              } else if (el.active) {
-                objCreate[el.time] = el;
-              }
-            });
-          });
-          console.log(activeArr, '____________activeArr');
-          console.log(navigation.state.params.schedules, '____schedules');
-          console.log(objDelete, '-------------------objDelete');
-          console.log(objSimple, '-------------------objSimple');
-          console.log(objCreate, '-------------------objCreate');
-
-          for (let key in objCreate) {
-            if (!objSimple[key]) {
-              console.log(key, 'KEY CREATE');
-              UPDATE_SCHEDULE_mutation({
-                variables: {
-                  id: +navigation.state.params.schedules.id,
-                  time: key,
-                },
-                optimisticResponse: null,
-              })
-                .then(res => {
-                  console.log(res, '__RES UPDATE_SCHEDULE_mutation');
-                })
-                .catch(err =>
-                  console.log(err, '__ERR UPDATE_SCHEDULE_mutation'),
-                );
-            }
-          }
-          for (let key in objDelete) {
-            console.log(objDelete[key], '_____KEY DELETE');
-            DELETE_START_SESSION_mutation({
-              variables: {
-                id: +objDelete[key].id,
-              },
-              optimisticResponse: null,
-            })
-              .then(res => {
-                console.log(res, '__RES DELETE_START_SESSION');
-              })
-              .catch(err => console.log(err, '__ERR DELETE_START_SESSION'));
-          }
-        }}
+        onPress={() => saveTime()}
       />
     </View>
   );
