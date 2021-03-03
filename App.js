@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, ImageBackground, AsyncStorage} from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import {HttpLink} from 'apollo-link-http';
@@ -34,6 +33,7 @@ import MasterCalendar from './screens/Master/MasterCalendar';
 import WorkTimeSettings from './screens/Master/WorkTimeSettings';
 import SelectWorkTime from './screens/Master/SelectWorkTime';
 import PersonalDataMaster from './screens/Master/PersonalDataMaster';
+import loaderPage from './loaderPage';
 
 import ChangeCity from './screens/ChangeCity';
 import PublickMasterProfile from './screens/PublickMasterProfile';
@@ -44,7 +44,8 @@ import ErrorDepartmentConstruction from './screens/ErrorDepartmentConstruction';
 import {getToken, signIn, signOut} from './util';
 
 const App = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false),
+    [loading, setLoading] = useState(false);
 
   const httpLink = new HttpLink({
     uri: 'http://194.87.145.192/graphql',
@@ -74,11 +75,19 @@ const App = () => {
   });
 
   const getAsyncToken = async () => {
+    setLoading(true);
     const token = await getToken();
     if (token) {
+      setLoading(false);
       setLoggedIn(true);
+    } else {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    console.log(loading, '----loading');
+  }, [loading]);
 
   useEffect(() => {
     getAsyncToken();
@@ -112,6 +121,10 @@ const App = () => {
         screen: props => (
           <Login {...props} handleChangeLoginState={handleChangeLoginState} />
         ),
+        navigationOptions: navOptionHandler,
+      },
+      loaderPage: {
+        screen: loaderPage,
         navigationOptions: navOptionHandler,
       },
       PasswordRecovery: {
@@ -230,7 +243,7 @@ const App = () => {
         navigationOptions: navOptionHandler,
       },
     },
-    {initialRouteName: loggedIn ? 'Main' : 'Start'},
+    {initialRouteName: loggedIn ? 'Main' : loading ? 'loaderPage' : 'Start'},
   );
 
   const AppContainer = createAppContainer(MainStack);
