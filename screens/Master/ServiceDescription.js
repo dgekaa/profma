@@ -142,19 +142,19 @@ const ServiceDescription = ({navigation}) => {
                   },
                 ]}>
                 {/* <View
-      style={{
-        marginTop: 6,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-      }}>
-      <ButtonDefault
-        onPress={() => {}}
-        style={{marginRight: 5}}
-        flex={true}
-        title="оплата по времени"
-        active={true}
-      />
-    </View> */}
+                  style={{
+                    marginTop: 6,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <ButtonDefault
+                    onPress={() => {}}
+                    style={{marginRight: 5}}
+                    flex={true}
+                    title="оплата по времени"
+                    active={true}
+                  />
+                </View> */}
                 <View>
                   <View
                     style={{

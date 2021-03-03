@@ -73,9 +73,7 @@ const PasswordRecovery = ({navigation}) => {
             <ButtonDefault
               title={btnText}
               active={activeBtn}
-              onPress={() => {
-                setSavePass(true);
-              }}
+              onPress={() => setSavePass(true)}
             />
           )}
         </View>
@@ -99,7 +97,7 @@ const PasswordRecovery = ({navigation}) => {
                 marginTop: 8,
                 fontSize: 13,
               }}>
-              myadress@gmail.com
+              {address}
             </Text>
             <Image
               style={{marginVertical: 16}}
@@ -109,9 +107,7 @@ const PasswordRecovery = ({navigation}) => {
               <ButtonDefault
                 title="спасибо, закрыть окно"
                 active={true}
-                onPress={() => {
-                  setSavePass(false);
-                }}
+                onPress={() => setSavePass(false)}
               />
             </View>
           </View>
