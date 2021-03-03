@@ -50,7 +50,7 @@ const Block = ({title, active, onPress, key, idBack, idFront, border}) => {
 };
 
 const SelectServices = ({navigation}) => {
-  const {groupBlock, blockTitle} = styles;
+  const {groupBlock, blockTitle, groupBlockIos} = styles;
 
   const {data, loading, error} = useQuery(GET_SPECIALIZATION, {
     variables: {id: +navigation.state.params.ID},
@@ -87,7 +87,7 @@ const SelectServices = ({navigation}) => {
       <BackgroundHeader navigation={navigation} title="Выберите услуги" />
       <ScrollView style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
         <Text style={blockTitle}>ваши Услуги</Text>
-        <View style={groupBlock}>
+        <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock}>
           {loading && <ActivityIndicator size="large" color="#00ff00" />}
           {data &&
             data.specialization.services.map((el, i) => (
@@ -134,6 +134,20 @@ const styles = StyleSheet.create({
     elevation: 1,
     flexDirection: 'column',
     paddingLeft: 18,
+  },
+  groupBlockIos: {
+    marginTop: 8,
+    borderRadius: 2,
+    shadowColor: 'rgba(0, 0, 0, 0.17)',
+    flexDirection: 'column',
+    paddingLeft: 18,
+    backgroundColor:"#fff",
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowRadius: 1,
+    shadowOpacity: 1,
   },
   blockInGroup: {
     height: 50,

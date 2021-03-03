@@ -215,9 +215,10 @@ const ServiceDescription = ({navigation}) => {
             <Text style={blockTitle}>Описание услуги</Text>
             <View
               style={[
-                groupBlock,
+                Platform.OS === 'ios' ? groupBlockIos : groupBlock,
+               
                 blockInGroup,
-                {flexDirection: 'column', marginBottom: err ? 10 : 0},
+                {flexDirection: 'column', marginBottom: err ? 10 : 0,},
               ]}>
               <TextInput
                 placeholder="Расскажите об услуге поподробнее"
@@ -226,7 +227,11 @@ const ServiceDescription = ({navigation}) => {
                   setDesc(text);
                 }}
                 value={desc}
-                style={{width: '100%'}}
+                style={Platform.OS === 'ios' 
+                  ? {width: '100%',  padding:10,
+                height:50}
+                  : {width: '100%'}
+                }
               />
               <Text
                 style={{
@@ -235,7 +240,8 @@ const ServiceDescription = ({navigation}) => {
                   fontSize: 10,
                   alignSelf: 'flex-start',
                   paddingLeft: 30,
-                }}>
+                }}
+                >
                 {err}
               </Text>
             </View>
@@ -353,8 +359,13 @@ const styles = StyleSheet.create({
     paddingLeft: 18,
     borderRadius: 0.2,
     shadowColor: '#000',
-    shadowOpacity: 0.01,
+    backgroundColor:"#fff",
+    shadowOpacity: 0.5,
     shadowRadius: 0.1,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
   },
   blockInGroup: {
     height: 50,

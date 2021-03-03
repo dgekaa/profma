@@ -54,7 +54,7 @@ const Block = ({title, active, onPress, key, border}) => {
 };
 
 const SelectSpecialization = ({navigation}) => {
-  const {groupBlock, blockTitle} = styles;
+  const {groupBlock, blockTitle, groupBlockIos} = styles;
 
   const {data, loading, error} = useQuery(GET_SPECIALIZATIONS, {
     variables: {first: 10},
@@ -71,7 +71,7 @@ const SelectSpecialization = ({navigation}) => {
       />
       <ScrollView style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
         <Text style={blockTitle}>ваша специализация</Text>
-        <View style={groupBlock}>
+        <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock }>
           {loading && <ActivityIndicator size="large" color="#00ff00" />}
           {data &&
             data.specializations.data.map((el, i) => (
@@ -120,6 +120,19 @@ const styles = StyleSheet.create({
     elevation: 1,
     flexDirection: 'column',
     paddingLeft: 18,
+  },
+  groupBlockIos: {
+    marginTop: 8,
+    flexDirection: 'column',
+    paddingLeft: 18,
+    backgroundColor:"#fff",
+    shadowColor: 'rgba(0, 0, 0, 0.5)',
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowRadius: 0.5,
+    shadowOpacity: 1,
   },
   blockInGroup: {
     height: 50,
