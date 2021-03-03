@@ -136,7 +136,7 @@ const ServiceDescription = ({navigation}) => {
                   marginBottom: 10,
                 },
               ]}>
-              <View
+              {/* <View
                 style={{
                   marginTop: 6,
                   flexDirection: 'row',
@@ -149,7 +149,7 @@ const ServiceDescription = ({navigation}) => {
                   title="оплата по времени"
                   active={true}
                 />
-              </View>
+              </View> */}
               <View>
                 <View
                   style={{
@@ -175,6 +175,7 @@ const ServiceDescription = ({navigation}) => {
                     err={err}
                     value={howLong}
                     errStyle={{paddingBottom: 10}}
+                    keyboardType={'numeric'}
                   />
                 </View>
                 <View
@@ -196,6 +197,7 @@ const ServiceDescription = ({navigation}) => {
                     err={err}
                     value={howMach}
                     errStyle={{paddingBottom: 10}}
+                    keyboardType={'numeric'}
                   />
                   <Text
                     style={{
@@ -211,12 +213,30 @@ const ServiceDescription = ({navigation}) => {
               </View>
             </View>
             <Text style={blockTitle}>Описание услуги</Text>
-            <View style={[groupBlock, blockInGroup]}>
+            <View
+              style={[
+                groupBlock,
+                blockInGroup,
+                {flexDirection: 'column', marginBottom: err ? 10 : 0},
+              ]}>
               <TextInput
                 placeholder="Расскажите об услуге поподробнее"
-                onChangeText={text => setDesc(text)}
+                onChangeText={text => {
+                  setErr('');
+                  setDesc(text);
+                }}
                 value={desc}
               />
+              <Text
+                style={{
+                  color: '#FF3D4B',
+                  paddingTop: 3,
+                  fontSize: 10,
+                  alignSelf: 'flex-start',
+                  paddingLeft: 30,
+                }}>
+                {err}
+              </Text>
             </View>
           </View>
           <View
@@ -275,7 +295,7 @@ const ServiceDescription = ({navigation}) => {
           <ModalWindow>
             <Text style={{fontSize: 13}}>Вы собираетесь удалить услугу</Text>
             <Text style={{fontSize: 13, fontWeight: 'bold'}}>
-              Европейский маникюр
+              {DATA[serviceCount].name}
             </Text>
             <Image
               style={{marginVertical: 12}}
