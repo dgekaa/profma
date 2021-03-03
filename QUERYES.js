@@ -885,10 +885,11 @@ export const NEXT_FREE_TIME_BY_MASTER = gql`
   }
 `;
 
-// export const FORGOT_PASSWORD = gql`
-//   mutation FORGOTPASSWORD($email: String!) {
-//     forgotPasswordApp(input: {email: $email}) {
-//       message
-//       status
-//   }
-// `;
+export const FORGOT_PASSWORD = gql`
+  mutation FORGOTPASSWORD($email: String!) {
+    forgotPasswordApp(input: {email: $email}) {
+      message
+      status
+    }
+  }
+`;

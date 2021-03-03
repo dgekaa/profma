@@ -3,15 +3,10 @@ import {InputWithText} from '../components/Input';
 import {ButtonDefault} from '../components/Button';
 import ModalWindow from '../components/ModalWindow';
 import BackgroundHeader from '../components/BackgroundHeader';
+import {FORGOT_PASSWORD} from '../QUERYES';
+import {useMutation} from 'react-apollo';
 
-import {
-  Text,
-  Modal,
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, View, StyleSheet, Image} from 'react-native';
 
 const PasswordRecovery = ({navigation}) => {
   const {
@@ -26,10 +21,10 @@ const PasswordRecovery = ({navigation}) => {
     btnContainer,
   } = styles;
 
-  const [address, setAddress] = useState('');
-  const [btnText, setBtnText] = useState('');
-  const [activeBtn, setActiveBtn] = useState(false);
-  const [savePass, setSavePass] = useState(false);
+  const [address, setAddress] = useState(''),
+    [btnText, setBtnText] = useState(''),
+    [activeBtn, setActiveBtn] = useState(false),
+    [savePass, setSavePass] = useState(false);
 
   useEffect(() => {
     if (address.length > 0) {
@@ -40,6 +35,8 @@ const PasswordRecovery = ({navigation}) => {
       setActiveBtn(false);
     }
   }, [address, btnText]);
+
+  const [FORGOT_PASSWORD_mutation] = useMutation(FORGOT_PASSWORD);
 
   return (
     <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
@@ -73,7 +70,21 @@ const PasswordRecovery = ({navigation}) => {
             <ButtonDefault
               title={btnText}
               active={activeBtn}
-              onPress={() => setSavePass(true)}
+              onPress={() => {
+                FORGOT_PASSWORD_mutation({
+                  variables: {
+                    email: address,
+                  },
+                  optimisticResponse: null,
+                })
+                  .then(res => {
+                    console.log(res, '--res pasword');
+                    setSavePass(true);
+                  })
+                  .catch(err =>
+                    console.log(JSON.stringify(err), '--err password'),
+                  );
+              }}
             />
           )}
         </View>
