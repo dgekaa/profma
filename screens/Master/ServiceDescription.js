@@ -21,6 +21,7 @@ import {
   ScrollView,
   TextInput,
   ActivityIndicator,
+  KeyboardAvoidingView
 } from 'react-native';
 
 const ServiceDescription = ({navigation}) => {
@@ -104,170 +105,176 @@ const ServiceDescription = ({navigation}) => {
             !!DATA ? DATA.length : ''
           })`}
         />
-        <ScrollView>
-          <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
-            <Text style={blockTitle}>ваша специализация</Text>
+        <KeyboardAvoidingView
+          style={{flex:1}}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+
+          <ScrollView>
+            <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
+  <Text style={blockTitle}>ваша специализация</Text>
+  <View
+    style={[
+      Platform.OS === 'ios' ? groupBlockIos : groupBlock,
+      blockInGroup,
+    ]}>
+    <Text style={{fontWeight: 'bold', fontSize: 13}}>
+      {DATA && DATA[serviceCount].specialization.name}
+    </Text>
+  </View>
+  <Text style={blockTitle}>ваша услуга</Text>
+  <View
+    style={[
+      Platform.OS === 'ios' ? groupBlockIos : groupBlock,
+      blockInGroup,
+    ]}>
+    <Text style={{fontWeight: 'bold', fontSize: 13}}>
+      {DATA && DATA[serviceCount].name}
+    </Text>
+  </View>
+  <View
+    style={[
+      Platform.OS === 'ios' ? groupBlockIos : groupBlock,
+      {
+        paddingLeft: 8,
+        paddingTop: 8,
+        marginTop: 20,
+        marginBottom: 10,
+      },
+    ]}>
+    {/* <View
+      style={{
+        marginTop: 6,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      }}>
+      <ButtonDefault
+        onPress={() => {}}
+        style={{marginRight: 5}}
+        flex={true}
+        title="оплата по времени"
+        active={true}
+      />
+    </View> */}
+    <View>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingLeft: 8,
+          width: '99%',
+        }}>
+        {true ? (
+          <SvgUri svgXmlData={DefaultIcon} />
+        ) : (
+          <SvgUri svgXmlData={PressedIcon} />
+        )}
+        <InputWithText
+          text={`Продолжительность услуги (в часах)`}
+          placeholder={`Укажите продолжительность сеанса`}
+          withoutShadow={true}
+          onChangeText={text => {
+            setErr('');
+            setHowLong(text);
+          }}
+          style={[borderBottom, {flex: 1}]}
+          err={err}
+          value={howLong}
+          errStyle={{paddingBottom: 10}}
+          keyboardType={'numeric'}
+        />
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingHorizontal: 8,
+        }}>
+        <SvgUri svgXmlData={DefaultIcon} />
+        <InputWithText
+          text={`Стоимость услуги`}
+          placeholder={`Укажите стоимость сеанса`}
+          withoutShadow={true}
+          onChangeText={text => {
+            setErr('');
+            setHowMach(text);
+          }}
+          style={{flex: 1}}
+          err={err}
+          value={howMach}
+          errStyle={{paddingBottom: 10}}
+          keyboardType={'numeric'}
+        />
+        <Text
+          style={{
+            paddingHorizontal: 8,
+            paddingTop: 20,
+            fontSize: 13,
+            color: 'rgba(0,0,0,.2)',
+            fontWeight: 'bold',
+          }}>
+          руб
+        </Text>
+      </View>
+    </View>
+  </View>
+  <Text style={blockTitle}>Описание услуги</Text>
+  <View
+    style={[
+      Platform.OS === 'ios' ? groupBlockIos : groupBlock,
+     
+      blockInGroup,
+      {flexDirection: 'column', marginBottom: err ? 10 : 0,},
+    ]}>
+    <TextInput
+      placeholder="Расскажите об услуге поподробнее"
+      onChangeText={text => {
+        setErr('');
+        setDesc(text);
+      }}
+      value={desc}
+      style={Platform.OS === 'ios' 
+        ? {width: '100%',  padding:10,
+      height:50}
+        : {width: '100%'}
+      }
+    />
+    <Text
+      style={{
+        color: '#FF3D4B',
+        paddingTop: 3,
+        fontSize: 10,
+        alignSelf: 'flex-start',
+        paddingLeft: 30,
+      }}
+      >
+      {err}
+    </Text>
+  </View>
+</View>
             <View
-              style={[
-                Platform.OS === 'ios' ? groupBlockIos : groupBlock,
-                blockInGroup,
-              ]}>
-              <Text style={{fontWeight: 'bold', fontSize: 13}}>
-                {DATA && DATA[serviceCount].specialization.name}
-              </Text>
-            </View>
-            <Text style={blockTitle}>ваша услуга</Text>
-            <View
-              style={[
-                Platform.OS === 'ios' ? groupBlockIos : groupBlock,
-                blockInGroup,
-              ]}>
-              <Text style={{fontWeight: 'bold', fontSize: 13}}>
-                {DATA && DATA[serviceCount].name}
-              </Text>
-            </View>
-            <View
-              style={[
-                Platform.OS === 'ios' ? groupBlockIos : groupBlock,
-                {
-                  paddingLeft: 8,
-                  paddingTop: 8,
-                  marginTop: 20,
-                  marginBottom: 10,
-                },
-              ]}>
-              {/* <View
-                style={{
-                  marginTop: 6,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <ButtonDefault
-                  onPress={() => {}}
-                  style={{marginRight: 5}}
-                  flex={true}
-                  title="оплата по времени"
-                  active={true}
-                />
-              </View> */}
-              <View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingLeft: 8,
-                    width: '99%',
-                  }}>
-                  {true ? (
-                    <SvgUri svgXmlData={DefaultIcon} />
-                  ) : (
-                    <SvgUri svgXmlData={PressedIcon} />
-                  )}
-                  <InputWithText
-                    text={`Продолжительность услуги (в часах)`}
-                    placeholder={`Укажите продолжительность сеанса`}
-                    withoutShadow={true}
-                    onChangeText={text => {
-                      setErr('');
-                      setHowLong(text);
-                    }}
-                    style={[borderBottom, {flex: 1}]}
-                    err={err}
-                    value={howLong}
-                    errStyle={{paddingBottom: 10}}
-                    keyboardType={'numeric'}
-                  />
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingHorizontal: 8,
-                  }}>
-                  <SvgUri svgXmlData={DefaultIcon} />
-                  <InputWithText
-                    text={`Стоимость услуги`}
-                    placeholder={`Укажите стоимость сеанса`}
-                    withoutShadow={true}
-                    onChangeText={text => {
-                      setErr('');
-                      setHowMach(text);
-                    }}
-                    style={{flex: 1}}
-                    err={err}
-                    value={howMach}
-                    errStyle={{paddingBottom: 10}}
-                    keyboardType={'numeric'}
-                  />
-                  <Text
-                    style={{
-                      paddingHorizontal: 8,
-                      paddingTop: 20,
-                      fontSize: 13,
-                      color: 'rgba(0,0,0,.2)',
-                      fontWeight: 'bold',
-                    }}>
-                    руб
-                  </Text>
-                </View>
-              </View>
-            </View>
-            <Text style={blockTitle}>Описание услуги</Text>
-            <View
-              style={[
-                Platform.OS === 'ios' ? groupBlockIos : groupBlock,
-               
-                blockInGroup,
-                {flexDirection: 'column', marginBottom: err ? 10 : 0,},
-              ]}>
-              <TextInput
-                placeholder="Расскажите об услуге поподробнее"
-                onChangeText={text => {
-                  setErr('');
-                  setDesc(text);
-                }}
-                value={desc}
-                style={Platform.OS === 'ios' 
-                  ? {width: '100%',  padding:10,
-                height:50}
-                  : {width: '100%'}
-                }
-              />
-              <Text
-                style={{
-                  color: '#FF3D4B',
-                  paddingTop: 3,
-                  fontSize: 10,
-                  alignSelf: 'flex-start',
-                  paddingLeft: 30,
-                }}
-                >
-                {err}
-              </Text>
-            </View>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              width: '85%',
-              alignItems: 'center',
-              alignSelf: 'center',
-              marginVertical: 16,
-            }}>
-            <View>
-              <Image source={require('../../img/girl6.png')} />
-            </View>
-            <View style={{marginLeft: 8}}>
-              <Text style={{fontSize: 13, paddingRight: 25}}>
-                Чтобы клиенты могли начать пользоваться вашей услугой,
-                <Text style={{fontWeight: 'bold'}}>
-                  сначала укажите её детали.
-                </Text>
-              </Text>
-            </View>
-          </View>
-        </ScrollView>
-        <View style={{margin: 8}}>
+  style={{
+    flexDirection: 'row',
+    width: '85%',
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginVertical: 16,
+  }}>
+  <View>
+    <Image source={require('../../img/girl6.png')} />
+  </View>
+  <View style={{marginLeft: 8}}>
+    <Text style={{fontSize: 13, paddingRight: 25}}>
+      Чтобы клиенты могли начать пользоваться вашей услугой,
+      <Text style={{fontWeight: 'bold'}}>
+        сначала укажите её детали.
+      </Text>
+    </Text>
+  </View>
+</View>
+          </ScrollView> 
+
+          <View style={{margin: 8}}>
           {!deleteService && (
             <ButtonDefault
               title={`удалить услугу`}
@@ -298,6 +305,7 @@ const ServiceDescription = ({navigation}) => {
             active={true}
           />
         </View>
+        </KeyboardAvoidingView>
         {deleteModal && (
           <ModalWindow>
             <Text style={{fontSize: 13}}>Вы собираетесь удалить услугу</Text>
