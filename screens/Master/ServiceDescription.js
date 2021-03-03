@@ -226,6 +226,7 @@ const ServiceDescription = ({navigation}) => {
                   setDesc(text);
                 }}
                 value={desc}
+                style={{width: '100%'}}
               />
               <Text
                 style={{
