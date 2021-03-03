@@ -181,9 +181,7 @@ const SelectedServiceDescription = ({navigation}) => {
       {deleteModal && (
         <ModalWindow>
           <Text style={{fontSize: 13}}>Вы собираетесь удалить услугу</Text>
-          <Text style={{fontSize: 13, fontWeight: 'bold'}}>
-            Европейский маникюр
-          </Text>
+          <Text style={{fontSize: 13, fontWeight: 'bold'}}>{service.name}</Text>
           <Image
             style={{marginVertical: 12}}
             source={require('../../img/girl5.png')}

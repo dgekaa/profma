@@ -89,7 +89,9 @@ const ServiceDescription = ({navigation}) => {
           navigation.state.params.reload();
         }
       })
-      .catch(err => console.log(err, '__ERR CREATE_OFFER_mutation'));
+      .catch(err =>
+        console.log(JSON.stringify(err), '__ERR CREATE_OFFER_mutation'),
+      );
   };
 
   if (SERVICES.error) {
@@ -283,15 +285,12 @@ const ServiceDescription = ({navigation}) => {
                 }}
               />
             )}
-            {deleteService && (
-              <SaveSuccess title="🗑 Услуга “Европейский маникюр” успешно удалена." />
-            )}
+            {deleteService && <SaveSuccess title="🗑 Услуга успешно удалена." />}
             <ButtonDefault
               onPress={() => {
                 !howLong || !howMach || !desc
                   ? setErr('Поле обязательно для заполнения')
                   : setErr('');
-
                 SAVE();
               }}
               title={

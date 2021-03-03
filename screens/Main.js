@@ -317,7 +317,7 @@ const Main = ({navigation}) => {
 
   const USER = useQuery(ME),
     users = useQuery(GET_USERS, {
-      variables: {first: 10, type: whoObj.Master},
+      variables: {first: 100, type: whoObj.Master},
     });
 
   const [dates, setDates] = useState(),
