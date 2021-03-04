@@ -47,6 +47,8 @@ const ChangeCity = ({navigation}) => {
     data && data.cities && setFilteredData(data.cities.data);
   }, [data]);
 
+  const USER = useQuery(ME);
+
   useEffect(() => {
     const filteredCities =
       data &&
@@ -68,7 +70,7 @@ const ChangeCity = ({navigation}) => {
   };
 
   const [UPDATE_PROFILE_mutation] = useMutation(UPDATE_PROFILE, refreshObject);
-
+  console.log(USER, '----USER');
   const SAVE = () => {
     UPDATE_PROFILE_mutation({
       variables: {
@@ -78,7 +80,13 @@ const ChangeCity = ({navigation}) => {
       optimisticResponse: null,
     })
       .then(res => {
-        navigation.navigate('ClientProfile', {ID: res.data.updateProfile.id});
+        USER.data.me.type === 'Master'
+          ? navigation.navigate('MasterProfile', {
+              ID: res.data.updateProfile.id,
+            })
+          : navigation.navigate('ClientProfile', {
+              ID: res.data.updateProfile.id,
+            });
         navigation.state.params.reload();
       })
       .catch(err => console.log(err, '__ERR'));
