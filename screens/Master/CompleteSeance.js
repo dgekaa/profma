@@ -199,7 +199,6 @@ const CompleteSeance = ({navigation}) => {
                                 'http://194.87.145.192/storage/' +
                                   responseJson.data.uploadAppointmentPhoto,
                               );
-                              // !!!!!!!!!
                               UPDATE_APPOINTMENT_PHOTO_mutation({
                                 variables: {
                                   id: +navigation.state.params.data.id,

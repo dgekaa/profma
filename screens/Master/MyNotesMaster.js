@@ -165,10 +165,23 @@ const MyNotesMaster = ({navigation}) => {
           </View>
         </View>
       )}
-      {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
-      {!!USER.data && !!USER.data.me.master_appointments.length && (
-        <View style={{flex: 1}}>
-          <BackgroundHeader navigation={navigation} title="Мои записи" />
+
+      <View style={{flex: 1}}>
+        <BackgroundHeader navigation={navigation} title="Мои записи" />
+        {USER.loading && (
+          <View
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <ActivityIndicator size="large" color="#00ff00" />
+          </View>
+        )}
+        {!!USER.data && !!USER.data.me.master_appointments.length && (
           <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
             <Text style={blockTitle}>Активные записи</Text>
             {USER.data.me.master_appointments.map((el, i) => {
@@ -187,8 +200,8 @@ const MyNotesMaster = ({navigation}) => {
               }
             })}
           </ScrollView>
-        </View>
-      )}
+        )}
+      </View>
     </View>
   );
 };

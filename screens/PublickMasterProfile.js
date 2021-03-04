@@ -405,161 +405,186 @@ const PublickMasterProfile = ({navigation}) => {
 
   if (MASTER.error) {
     return <Text>Err</Text>;
-  } else if (MASTER.loading) {
-    return <ActivityIndicator size="large" color="#00ff00" />;
-  } else if (MASTER.data) {
+  } else {
     return (
       <View style={{flex: 1}}>
         <BackgroundHeader
           navigation={navigation}
-          title={MASTER.data.user.profile.name || 'Имя не задано'}
+          title={
+            MASTER.data
+              ? MASTER.data.user.profile.name
+              : MASTER.loading
+              ? ''
+              : 'Имя не задано'
+          }
         />
-        <ScrollView>
-          <View style={container}>
-            {!!allPhoto.length && (
-              <ScrollView
-                style={galerea}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}>
-                {allPhoto.map((el, i) => (
-                  <GalereaBlock
-                    index={i}
-                    key={i}
-                    onPress={() => setActiveImg(i)}
-                    img={el}
-                  />
-                ))}
-              </ScrollView>
-            )}
-            <Text style={textTitle}>Услуги</Text>
-            <View style={groupBlock}>
-              {!!MASTER.data.user.offers.length &&
-                MASTER.data.user.offers.map((el, i) => {
-                  if (i < 3) {
-                    return (
-                      <View key={i}>
-                        <DropdownBlock
-                          index={i}
-                          el={el}
-                          offers={MASTER.data.user.offers}
-                          active={false}
-                          slideBlock={slideBlock}
-                          setSlideBlock={setSlideBlock}
-                          checkboxes={checkboxes}
-                          setCheckboxes={setCheckboxes}
-                          setAllPrice={setAllPrice}
-                        />
-                      </View>
-                    );
-                  }
-                })}
-              <AnotherBlock
-                title="Посмотреть все услуги"
-                onPress={() => setShowAllServices(true)}
-              />
-            </View>
-            <Text style={textTitle}>ближайшее свободное время</Text>
-            <View style={groupBlock}>
-              <View
-                style={[
-                  blockInGroup,
-                  borderBottom,
-                  {
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    paddingRight: 8,
-                  },
-                ]}>
-                <View
-                  style={{
-                    flex:
-                      !!NEXT_FREETIME.data &&
-                      !!NEXT_FREETIME.data.nextFreeTimeByMaster &&
-                      !!NEXT_FREETIME.data.nextFreeTimeByMaster.length
-                        ? 1
-                        : 3,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}>
-                  <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
-                  {!!NEXT_FREETIME.data &&
-                  !!NEXT_FREETIME.data.nextFreeTimeByMaster &&
-                  !!NEXT_FREETIME.data.nextFreeTimeByMaster.length ? (
-                    <Text style={{fontWeight: 'bold'}}>
-                      {
-                        NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
-                          '-',
-                        )[2]
-                      }{' '}
-                      {
-                        shortMonthName[
-                          +NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
-                            '-',
-                          )[1]
-                        ]
-                      }{' '}
-                      {
-                        NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
-                          '-',
-                        )[0]
-                      }
-                    </Text>
-                  ) : (
-                    <Text style={{width: '100%', paddingLeft: 10}}>
-                      Нет свободного времени
-                    </Text>
-                  )}
-                </View>
-
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    flexWrap: 'wrap',
-                    justifyContent: 'space-between',
-                  }}>
-                  {!!NEXT_FREETIME.data &&
-                    !!NEXT_FREETIME.data.nextFreeTimeByMaster.length &&
-                    !!NEXT_FREETIME.data.nextFreeTimeByMaster[0].times.length &&
-                    NEXT_FREETIME.data.nextFreeTimeByMaster[0].times.map(
-                      (el, i) => {
-                        return (
-                          <TimeBlock
-                            key={i}
-                            style={{width: '30%'}}
-                            time={el}
-                            active={choosedActiveTime === i}
-                            onPress={() => {
-                              setChoosedActiveTime(i);
-                              setDates([
-                                NEXT_FREETIME.data.nextFreeTimeByMaster[0].date,
-                              ]);
-                              setActiveTime(el);
-                            }}
+        {MASTER.loading && (
+          <View
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <ActivityIndicator size="large" color="#00ff00" />
+          </View>
+        )}
+        {MASTER.data && (
+          <ScrollView>
+            <View style={container}>
+              {!!allPhoto.length && (
+                <ScrollView
+                  style={galerea}
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}>
+                  {allPhoto.map((el, i) => (
+                    <GalereaBlock
+                      index={i}
+                      key={i}
+                      onPress={() => setActiveImg(i)}
+                      img={el}
+                    />
+                  ))}
+                </ScrollView>
+              )}
+              <Text style={textTitle}>Услуги</Text>
+              <View style={groupBlock}>
+                {!!MASTER.data.user.offers.length &&
+                  MASTER.data.user.offers.map((el, i) => {
+                    if (i < 3) {
+                      return (
+                        <View key={i}>
+                          <DropdownBlock
+                            index={i}
+                            el={el}
+                            offers={MASTER.data.user.offers}
+                            active={false}
+                            slideBlock={slideBlock}
+                            setSlideBlock={setSlideBlock}
+                            checkboxes={checkboxes}
+                            setCheckboxes={setCheckboxes}
+                            setAllPrice={setAllPrice}
                           />
-                        );
-                      },
-                    )}
-                </View>
+                        </View>
+                      );
+                    }
+                  })}
+                <AnotherBlock
+                  title="Посмотреть все услуги"
+                  onPress={() => setShowAllServices(true)}
+                />
               </View>
-              <AnotherBlock
-                title="Выбрать другое время"
-                onPress={() => setIsCalendarVisible(true)}
-              />
-            </View>
-            <Text style={textTitle}>адрес мастера</Text>
-            <View style={groupBlock}>
-              <View style={[blockInGroup, {flexDirection: 'row'}]}>
-                <SvgUri svgXmlData={LocationIcon} style={{marginRight: 8}} />
-                <View style={{flexDirection: 'column'}}>
-                  <Text style={{fontSize: 13, fontWeight: 'bold'}}>
-                    {MASTER.data.user.profile.work_address || 'Адрес не указан'}
-                    ,{' '}
-                    {(MASTER.data.user.profile.city &&
-                      MASTER.data.user.profile.city.name) ||
-                      'город не указан'}
-                  </Text>
-                  {/* <View style={{alignItems: 'center', flexDirection: 'row'}}>
+              <Text style={textTitle}>ближайшее свободное время</Text>
+              <View style={groupBlock}>
+                <View
+                  style={[
+                    blockInGroup,
+                    borderBottom,
+                    {
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      paddingRight: 8,
+                    },
+                  ]}>
+                  <View
+                    style={{
+                      flex:
+                        !!NEXT_FREETIME.data &&
+                        !!NEXT_FREETIME.data.nextFreeTimeByMaster &&
+                        !!NEXT_FREETIME.data.nextFreeTimeByMaster.length
+                          ? 1
+                          : 3,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <SvgUri
+                      width="13"
+                      height="13"
+                      svgXmlData={CalendarSvgIcon}
+                    />
+                    {!!NEXT_FREETIME.data &&
+                    !!NEXT_FREETIME.data.nextFreeTimeByMaster &&
+                    !!NEXT_FREETIME.data.nextFreeTimeByMaster.length ? (
+                      <Text style={{fontWeight: 'bold'}}>
+                        {
+                          NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
+                            '-',
+                          )[2]
+                        }{' '}
+                        {
+                          shortMonthName[
+                            +NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
+                              '-',
+                            )[1]
+                          ]
+                        }{' '}
+                        {
+                          NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
+                            '-',
+                          )[0]
+                        }
+                      </Text>
+                    ) : (
+                      <Text style={{width: '100%', paddingLeft: 10}}>
+                        Нет свободного времени
+                      </Text>
+                    )}
+                  </View>
+
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
+                      justifyContent: 'space-between',
+                    }}>
+                    {!!NEXT_FREETIME.data &&
+                      !!NEXT_FREETIME.data.nextFreeTimeByMaster.length &&
+                      !!NEXT_FREETIME.data.nextFreeTimeByMaster[0].times
+                        .length &&
+                      NEXT_FREETIME.data.nextFreeTimeByMaster[0].times.map(
+                        (el, i) => {
+                          return (
+                            <TimeBlock
+                              key={i}
+                              style={{width: '30%'}}
+                              time={el}
+                              active={choosedActiveTime === i}
+                              onPress={() => {
+                                setChoosedActiveTime(i);
+                                setDates([
+                                  NEXT_FREETIME.data.nextFreeTimeByMaster[0]
+                                    .date,
+                                ]);
+                                setActiveTime(el);
+                              }}
+                            />
+                          );
+                        },
+                      )}
+                  </View>
+                </View>
+                <AnotherBlock
+                  title="Выбрать другое время"
+                  onPress={() => setIsCalendarVisible(true)}
+                />
+              </View>
+              <Text style={textTitle}>адрес мастера</Text>
+              <View style={groupBlock}>
+                <View style={[blockInGroup, {flexDirection: 'row'}]}>
+                  <SvgUri svgXmlData={LocationIcon} style={{marginRight: 8}} />
+                  <View style={{flexDirection: 'column'}}>
+                    <Text style={{fontSize: 13, fontWeight: 'bold'}}>
+                      {MASTER.data.user.profile.work_address ||
+                        'Адрес не указан'}
+                      ,{' '}
+                      {(MASTER.data.user.profile.city &&
+                        MASTER.data.user.profile.city.name) ||
+                        'город не указан'}
+                    </Text>
+                    {/* <View style={{alignItems: 'center', flexDirection: 'row'}}>
                     <View
                       style={{
                         height: 4,
@@ -571,45 +596,50 @@ const PublickMasterProfile = ({navigation}) => {
                     />
                     <Text style={{fontSize: 13}}>?metro?</Text>
                   </View> */}
+                  </View>
                 </View>
               </View>
-            </View>
-            <Text style={textTitle}> О мастере</Text>
-            <View style={[groupBlock, blockInGroup, {marginBottom: 30}]}>
-              <Text
-                style={{
-                  fontSize: 13,
-                  width: '100%',
-                  marginRight: 16,
-                }}>
-                {MASTER.data.user.profile.about_me}
-              </Text>
-            </View>
+              <Text style={textTitle}> О мастере</Text>
+              <View style={[groupBlock, blockInGroup, {marginBottom: 30}]}>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    width: '100%',
+                    marginRight: 16,
+                  }}>
+                  {MASTER.data.user.profile.about_me}
+                </Text>
+              </View>
 
-            {!!USER.data &&
-            USER.data.me.type !== 'Master' &&
-            allPrice &&
-            CHCecked &&
-            activeTime ? (
-              <ButtonDefault
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}
-                title="Подтвердить запись"
-                rightTitle={allPrice + ' руб'}
-                onPress={() => CREATE()}
-                active={true}
-              />
-            ) : !!USER.data && USER.data.me.type !== 'Master' ? (
-              <ButtonDefault
-                style={{flexDirection: 'row', justifyContent: 'space-around'}}
-                title="Вы не указали детали сеанса"
-                onPress={() => {}}
-                active={true}
-              />
-            ) : (
-              <></>
-            )}
-          </View>
-        </ScrollView>
+              {!!USER.data &&
+              USER.data.me.type !== 'Master' &&
+              allPrice &&
+              CHCecked &&
+              activeTime ? (
+                <ButtonDefault
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}
+                  title="Подтвердить запись"
+                  rightTitle={allPrice + ' руб'}
+                  onPress={() => CREATE()}
+                  active={true}
+                />
+              ) : !!USER.data && USER.data.me.type !== 'Master' ? (
+                <ButtonDefault
+                  style={{flexDirection: 'row', justifyContent: 'space-around'}}
+                  title="Вы не указали детали сеанса"
+                  onPress={() => {}}
+                  active={true}
+                />
+              ) : (
+                <></>
+              )}
+            </View>
+          </ScrollView>
+        )}
+
         {(activeImg || activeImg === 0 || activeImg === '0') && (
           <View style={bigImg}>
             <ScrollView

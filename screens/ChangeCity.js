@@ -155,7 +155,11 @@ const ChangeCity = ({navigation}) => {
                     );
                   }
                 })}
-              {loading && <ActivityIndicator size="large" color="#00ff00" />}
+              {loading && (
+                <View style={{marginTop: 100}}>
+                  <ActivityIndicator size="large" color="#00ff00" />
+                </View>
+              )}
             </ScrollView>
           </View>
 

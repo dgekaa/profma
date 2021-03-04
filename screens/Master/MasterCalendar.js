@@ -23,6 +23,7 @@ import {
   Image,
   ScrollView,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 
 const monthNames = [
@@ -281,8 +282,24 @@ const MasterCalendar = ({navigation}) => {
           highlightDateNumberStyle={{color: 'black'}}
         />
       </View>
-      <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
-        {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
+      <ScrollView
+        style={{
+          flex: 1,
+          paddingHorizontal: 8,
+          marginTop: 10,
+        }}>
+        {USER.loading && (
+          <View
+            style={{
+              top: 0,
+              width: '100%',
+              height: Dimensions.get('window').height - 300,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <ActivityIndicator size="large" color="#00ff00" />
+          </View>
+        )}
         {USER.data &&
           (filteredData.length
             ? filteredData.map((el, i) => (

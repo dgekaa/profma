@@ -22,6 +22,7 @@ import {
   ScrollView,
   Switch,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 
 const weekDaysEnShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -386,7 +387,17 @@ const WorkTimeSettings = ({navigation}) => {
         </TouchableOpacity>
       )}
       <ScrollView style={{paddingHorizontal: 8}}>
-        {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
+        {USER.loading && (
+          <View
+            style={{
+              width: '100%',
+              height: Dimensions.get('window').height - 300,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <ActivityIndicator size="large" color="#00ff00" />
+          </View>
+        )}
         {!USER.loading &&
           weekDaysEnShort.map((el, i) => (
             <View key={i}>

@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 
 const Block = ({navigation, deleteService, el, refetch}) => {
@@ -97,7 +98,18 @@ const MyServices = ({navigation}) => {
                   deleteService={bool => deleteOneService(bool)}
                 />
               ))}
-            {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
+            {USER.loading && (
+              <View
+                style={{
+                  width: '100%',
+                  height: Dimensions.get('window').height - 300,
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <ActivityIndicator size="large" color="#00ff00" />
+              </View>
+            )}
           </ScrollView>
           {successDeleted && (
             <SaveSuccess

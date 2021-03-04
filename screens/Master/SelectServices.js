@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     shadowColor: 'rgba(0, 0, 0, 0.17)',
     flexDirection: 'column',
     paddingLeft: 18,
-    backgroundColor:"#fff",
+    backgroundColor: '#fff',
     shadowOffset: {
       width: 0,
       height: 0,
