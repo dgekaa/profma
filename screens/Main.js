@@ -369,9 +369,8 @@ const Main = ({navigation}) => {
           ? 2
           : cases[number % 10 < 5 ? number % 10 : 5]
       ];
-    };
-
-  const reload = () => USER.refetch(),
+    },
+    reload = () => USER.refetch(),
     reloadAppointments = () => nextAppointments.refetch(),
     onRefresh = () => {
       setRefreshing(true);

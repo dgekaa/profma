@@ -769,7 +769,7 @@ const PublickMasterProfile = ({navigation}) => {
               <Text>Нет свободного времени на данный день</Text>
             )}
 
-            {FREETIME.data && (
+            {!FREETIME.loading && FREETIME.data && (
               <View
                 style={{
                   marginBottom: 16,
