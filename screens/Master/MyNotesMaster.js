@@ -136,10 +136,6 @@ const MyNotesMaster = ({navigation}) => {
 
   const reload = () => USER.refetch();
 
-  useEffect(() => {
-    console.log(USER, '===USER');
-  }, [USER]);
-
   return (
     <View style={{flex: 1, backgroundColor: '#fafafa'}}>
       {USER.data && !USER.data.me.master_appointments.length && (

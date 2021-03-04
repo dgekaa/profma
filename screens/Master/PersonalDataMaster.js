@@ -55,7 +55,7 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
         home_address: homeAddressLocal || USER.data.me.profile.home_address,
         work_address: workAddressLocal || USER.data.me.profile.work_address,
         site: siteLocal || USER.data.me.profile.site,
-        about_me: aboutMeLocal || USER.data.me.profile.about_me,
+        about_me: aboutMeLocal,
       },
       optimisticResponse: null,
     })
@@ -70,18 +70,17 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
       .catch(err => console.log(err, '__ERR'));
   };
 
-  const [showBtn, setShowBtn] = useState(false);
-  const [nameLocal, setNameLocal] = useState(null);
-  const [emailLocal, setEmailLocal] = useState(null);
-  const [mobilePhoneLocal, setMobilePhoneLocal] = useState(null);
-  const [additionPhoneLocal, setAdditionPhoneLocal] = useState(null);
-  const [homeAddressLocal, setHomeAddressLocal] = useState(null);
-  const [workAddressLocal, setWorkAddressLocal] = useState(null);
-  const [siteLocal, setSitelocal] = useState(null);
-  const [aboutMeLocal, setAboutMeLocal] = useState(null);
-
-  const [inputLength, setInputLength] = useState(0);
-  const [savedSuccess, setSavedSuccess] = useState(false);
+  const [showBtn, setShowBtn] = useState(false),
+    [nameLocal, setNameLocal] = useState(null),
+    [emailLocal, setEmailLocal] = useState(null),
+    [mobilePhoneLocal, setMobilePhoneLocal] = useState(null),
+    [additionPhoneLocal, setAdditionPhoneLocal] = useState(null),
+    [homeAddressLocal, setHomeAddressLocal] = useState(null),
+    [workAddressLocal, setWorkAddressLocal] = useState(null),
+    [siteLocal, setSitelocal] = useState(null),
+    [aboutMeLocal, setAboutMeLocal] = useState(null),
+    [inputLength, setInputLength] = useState(0),
+    [savedSuccess, setSavedSuccess] = useState(false);
 
   useEffect(() => {
     if (USER.data) {
@@ -92,6 +91,11 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
       setHomeAddressLocal(USER.data.me.profile.home_address);
       setWorkAddressLocal(USER.data.me.profile.work_address);
       setAboutMeLocal(USER.data.me.profile.about_me);
+      setInputLength(
+        USER.data.me.profile.about_me
+          ? USER.data.me.profile.about_me.length
+          : 0,
+      );
     }
   }, [USER]);
 
