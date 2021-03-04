@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import {InputWithText} from '../components/Input';
 import {ButtonDefault} from '../components/Button';
-import ModalWindow from '../components/ModalWindow';
+import {ModalWindowWithKeyboard, ModalWindow} from '../components/ModalWindow';
 import BackgroundHeader from '../components/BackgroundHeader';
 import {FORGOT_PASSWORD, UPDATE_FORGOTTEN_PASSWORD} from '../QUERYES';
 import {useMutation} from 'react-apollo';
 
-import {Text, View, StyleSheet, Image, Keyboard} from 'react-native';
+import {Text, View, StyleSheet, Image, Keyboard, KeyboardAvoidingView,
+TouchableWithoutFeedback} from 'react-native';
 
 const PasswordRecovery = ({navigation}) => {
   const {
@@ -56,8 +57,6 @@ const PasswordRecovery = ({navigation}) => {
         optimisticResponse: null,
       })
         .then(res => {
-          console.log(res, '--res  UPDATE_FORGOTTEN_PASSWORD');
-          console.log(res.status, '--res  STATUS________________________');
           Keyboard.dismiss();
           navigation.navigate('Login');
           setNewPass(false);
@@ -83,145 +82,156 @@ const PasswordRecovery = ({navigation}) => {
     };
 
   return (
-    <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
-      <BackgroundHeader title="Восстановление пароля" navigation={navigation} />
-      <View style={container}>
-        <View style={[inputContainer, {zIndex: 0}]}>
-          <Text style={topText}>Восстановить пароль</Text>
-          <InputWithText
-            text="Введите адрес электронной почты"
-            placeholder="example@site.com"
-            keyboardType="email-address"
-            onChangeText={setAddress}
-          />
-        </View>
-        <View style={instruction}>
-          <View style={image}>
-            <Image source={require('../img/girl.png')} />
-          </View>
-          <View style={textWrap}>
-            <Text style={questionText}>Как восстановить пароль?</Text>
-            <Text style={helpText}>
-              Введите адрес электронной почты, на которую мы отправим ссылку для
-              восстановления пароля
-            </Text>
-          </View>
-        </View>
-        <View style={btnContainer}>
-          {!!btnText && (
-            <ButtonDefault
-              title={btnText}
-              active={activeBtn}
-              onPress={() => sendMessage()}
-            />
-          )}
-        </View>
-      </View>
-      {savePass && (
-        <ModalWindow>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '90%',
-            }}>
-            <Text style={{textAlign: 'center', fontSize: 13}}>
-              Мы отправили вам письмо с ссылкой для восстановления пароля на
-              адрес
-            </Text>
-            <Text
-              style={{
-                textAlign: 'center',
-                fontWeight: 'bold',
-                marginTop: 8,
-                fontSize: 13,
-              }}>
-              {address}
-            </Text>
-            <Image
-              style={{marginVertical: 16}}
-              source={require('../img/girl.png')}
-            />
-            <View style={{width: '100%'}}>
-              <ButtonDefault
-                title="спасибо, закрыть окно"
-                active={true}
-                onPress={() => {
-                  setAddress('');
-                  setSavePass(false);
-                  setNewPass(true);
-                }}
-              />
-            </View>
-          </View>
-        </ModalWindow>
-      )}
+    <TouchableWithoutFeedback onPress={()=>Keyboard.dismiss()}>
+      <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
+        <BackgroundHeader title="Восстановление пароля" navigation={navigation} />
+        <KeyboardAvoidingView
+          style={{flex:1}}
+          // style={[Platform.OS === 'ios' ? keyboardIos : keyboardAndroid]}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'position'}
+        >
 
-      {newPass && (
-        <ModalWindow contaynerStyle={{}} style={{}}>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '90%',
-            }}>
-            <Text style={{textAlign: 'center', fontSize: 13, marginBottom: 20}}>
-              Заполните форму
-            </Text>
-
-            <View
-              style={{
-                width: '100%',
-                backgroundColor: '#eee',
-                padding: 10,
-                paddingVertical: 5,
-                marginBottom: 10,
-              }}>
+          <View style={container}>
+            <View style={[inputContainer, {zIndex: 0}]}>
+              <Text style={topText}>Восстановить пароль</Text>
               <InputWithText
-                style={{width: '100%'}}
                 text="Введите адрес электронной почты"
                 placeholder="example@site.com"
                 keyboardType="email-address"
-                onChangeText={text => {
-                  // setValidationError(false);
-                  setAddress(text);
-                }}
-                validationErr={validationErr}
-              />
-              <InputWithText
-                style={{width: '100%'}}
-                text="Код с вашей почты"
-                placeholder="code"
-                keyboardType="numeric"
-                onChangeText={text => {
-                  // setValidationError(false);
-                  setCode(text);
-                }}
-                validationErr={validationErr}
-              />
-              <InputWithText
-                style={{width: '100%'}}
-                text="Введите новый пароль"
-                placeholder="password"
-                onChangeText={text => {
-                  // setValidationError(false);
-                  setPassword(text);
-                }}
-                validationErr={validationErr}
+                onChangeText={setAddress}
               />
             </View>
-
-            <View style={{width: '100%'}}>
-              <ButtonDefault
-                title="Сохранить"
-                active={true}
-                onPress={() => saveNewData()}
-              />
+            <View style={instruction}>
+              <View style={image}>
+                <Image source={require('../img/girl.png')} />
+              </View>
+              <View style={textWrap}>
+                <Text style={questionText}>Как восстановить пароль?</Text>
+                <Text style={helpText}>
+                  Введите адрес электронной почты, на которую мы отправим ссылку для
+                  восстановления пароля
+                </Text>
+              </View>
+            </View>
+            <View style={btnContainer}>
+              {!!btnText && (
+                <ButtonDefault
+                  title={btnText}
+                  active={activeBtn}
+                  onPress={() => sendMessage()}
+                />
+              )}
             </View>
           </View>
-        </ModalWindow>
-      )}
-    </View>
+      
+        </KeyboardAvoidingView>
+      
+        {savePass && (
+          <ModalWindow>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '90%',
+              }}>
+              <Text style={{textAlign: 'center', fontSize: 13}}>
+                Мы отправили вам письмо с ссылкой для восстановления пароля на
+                адрес
+              </Text>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  marginTop: 8,
+                  fontSize: 13,
+                }}>
+                {address}
+              </Text>
+              <Image
+                style={{marginVertical: 16}}
+                source={require('../img/girl.png')}
+              />
+              <View style={{width: '100%'}}>
+                <ButtonDefault
+                  title="спасибо, закрыть окно"
+                  active={true}
+                  onPress={() => {
+                    setAddress('');
+                    setSavePass(false);
+                    setNewPass(true);
+                  }}
+                />
+              </View>
+            </View>
+          </ModalWindow>
+        )}
+
+        {newPass && (
+          <ModalWindowWithKeyboard contaynerStyle={{}} style={{}}>
+            <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '90%',
+                }}>
+                <Text style={{textAlign: 'center', fontSize: 13, marginBottom: 20}}>
+                  Заполните форму
+                </Text>
+
+                <View
+                  style={{
+                    width: '100%',
+                    backgroundColor: '#eee',
+                    padding: 10,
+                    paddingVertical: 5,
+                    marginBottom: 10,
+                  }}>
+                  <InputWithText
+                    style={{width: '100%'}}
+                    text="Введите адрес электронной почты"
+                    placeholder="example@site.com"
+                    keyboardType="email-address"
+                    onChangeText={text => {
+                      // setValidationError(false);
+                      setAddress(text);
+                    }}
+                    validationErr={validationErr}
+                  />
+                  <InputWithText
+                    style={{width: '100%'}}
+                    text="Код с вашей почты"
+                    placeholder="code"
+                    keyboardType="numeric"
+                    onChangeText={text => {
+                      // setValidationError(false);
+                      setCode(text);
+                    }}
+                    validationErr={validationErr}
+                  />
+                  <InputWithText
+                    style={{width: '100%'}}
+                    text="Введите новый пароль"
+                    placeholder="password"
+                    onChangeText={text => {
+                      // setValidationError(false);
+                      setPassword(text);
+                    }}
+                    validationErr={validationErr}
+                  />
+                </View>
+
+                <View style={{width: '100%'}}>
+                  <ButtonDefault
+                    title="Сохранить"
+                    active={true}
+                    onPress={() => saveNewData()}
+                  />
+                </View>
+              </View>
+          </ModalWindowWithKeyboard>
+        )}
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
