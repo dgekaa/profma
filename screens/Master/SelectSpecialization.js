@@ -57,7 +57,7 @@ const SelectSpecialization = ({navigation}) => {
   const {groupBlock, blockTitle, groupBlockIos} = styles;
 
   const {data, loading, error} = useQuery(GET_SPECIALIZATIONS, {
-    variables: {first: 10},
+    variables: {first: 100},
   });
 
   const [activeSpecialization, setActiveSpecialization] = useState(''),
