@@ -86,10 +86,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    console.log(loading, '----loading');
-  }, [loading]);
-
-  useEffect(() => {
     getAsyncToken();
   }, []);
 

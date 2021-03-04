@@ -82,6 +82,7 @@ const Block = ({el, navigation, archive, reload}) => {
         navigation.navigate('NoteInformation', {
           person: el,
           reload: reload,
+          reloadNearest: navigation.state.params.reloadNearest,
         })
       }>
       <View style={topBlock}>
@@ -194,7 +195,7 @@ const MyNotes = ({navigation}) => {
           {USER.loading && <ActivityIndicator size="large" color="#00ff00" />}
           {USER.data && !!USER.data.me.client_appointments.length && (
             <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
-              <Text style={blockTitle}>Активные записи</Text>
+              <Text style={blockTitle}>Активные записи !!!!!!!!!!</Text>
               {USER.data.me.client_appointments.map((el, i) => {
                 if (el.status) {
                   return (

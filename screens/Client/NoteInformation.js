@@ -139,8 +139,6 @@ const NoteInformation = ({navigation}) => {
     ? navigation.state.params.person
     : navigation.state.params.el;
 
-  console.log(navigation.state, '--state');
-
   const appointment = useQuery(GET_APPOINTMENT, {
     variables: {id: +person.id},
   });
@@ -177,6 +175,7 @@ const NoteInformation = ({navigation}) => {
     })
       .then(res => {
         navigation.state.params.reload();
+        navigation.state.params.reloadNearest();
         navigation.goBack();
         console.log(res, '__res DELETE_APPOINTMENT_mutation');
       })

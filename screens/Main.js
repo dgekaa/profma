@@ -334,7 +334,7 @@ const Main = ({navigation}) => {
 
   const nextAppointments = useQuery(NEXT_APPOINTMENTS, {
     variables: {
-      count: 2,
+      count: 3,
     },
   });
 
@@ -402,7 +402,10 @@ const Main = ({navigation}) => {
                 if (USER.data) {
                   const ME = USER.data.me;
                   ME.type === 'Client'
-                    ? navigation.navigate('ClientProfile', {ID: ME.id})
+                    ? navigation.navigate('ClientProfile', {
+                        ID: ME.id,
+                        reloadNearest: reloadAppointments,
+                      })
                     : navigation.navigate('MasterProfile', {ID: ME.id});
                 }
               }}>

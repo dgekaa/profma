@@ -50,7 +50,11 @@ const ClientProfile = ({navigation, handleChangeLoginState}) => {
           <TouchableOpacity
             style={Platform.OS === 'ios' ? firstIos : first}
             onPress={() =>
-              USER.data && navigation.navigate('MyNotes', {ID: USER.data.me.id})
+              USER.data &&
+              navigation.navigate('MyNotes', {
+                ID: USER.data.me.id,
+                reloadNearest: navigation.state.params.reloadNearest,
+              })
             }>
             <SvgUri width="13" height="13" svgXmlData={CalendarSvgIcon} />
             <Text style={text}>Мои записи</Text>

@@ -114,7 +114,6 @@ const MyServices = ({navigation}) => {
           {!successDeleted && !successSaved && (
             <ButtonDefault
               onPress={() => {
-                console.log(navigation.state.params, '----NAV');
                 navigation.navigate('SelectSpecialization', {
                   refetch: USER.refetch,
                   reload: navigation.state.params.reload,
