@@ -64,12 +64,7 @@ const ClientProfile = ({navigation, handleChangeLoginState}) => {
               onPress={() =>
                 USER.data && navigation.navigate('PersonalData', USER.data.me)
               }>
-              <SvgUri
-                style={{marginRight: 10}}
-                width="13"
-                height="13"
-                svgXmlData={UserIcon}
-              />
+              <SvgUri width="13" height="13" svgXmlData={UserIcon} />
               <Text style={text}>Персональные данные</Text>
             </TouchableOpacity>
             {/* ИЗМЕНИТЬ ПАРОЛЬ*/}
@@ -78,7 +73,6 @@ const ClientProfile = ({navigation, handleChangeLoginState}) => {
               onPress={() => {
                 navigation.navigate('ChangePassword', {
                   onGoBack: isSuccess => onGoBackFromPasword(isSuccess),
-                  // person: navigation.state.params,
                 });
               }}>
               <SvgUri width="13" height="13" svgXmlData={PasswordIcon} />

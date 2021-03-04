@@ -84,9 +84,7 @@ const PersonalData = ({navigation}) => {
   return (
     <TouchableWithoutFeedback
       style={{flex: 1}}
-      onPress={() => {
-        Keyboard.dismiss();
-      }}>
+      onPress={() => Keyboard.dismiss()}>
       <View style={{flex: 1}}>
         <BackgroundHeader
           navigation={navigation}
