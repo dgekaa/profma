@@ -2,11 +2,11 @@ import React from 'react';
 
 import {View, StyleSheet} from 'react-native';
 
-const ModalWindow = ({children, style}) => {
+const ModalWindow = ({children, style, contaynerStyle}) => {
   const {container, modal, bg} = styles;
   return (
-    <View style={container}>
-      <View style={bg}></View>
+    <View style={[container, contaynerStyle]}>
+      <View style={bg} />
       <View style={[modal, style]}>{children}</View>
     </View>
   );

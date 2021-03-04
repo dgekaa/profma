@@ -900,3 +900,24 @@ export const FORGOT_PASSWORD = gql`
     }
   }
 `;
+
+export const UPDATE_FORGOTTEN_PASSWORD = gql`
+  mutation UPDATEFORGOTTENPASSWORD(
+    $email: String!
+    $code: String!
+    $password: String!
+    $password_confirmation: String!
+  ) {
+    updateForgottenPasswordApp(
+      input: {
+        email: $email
+        code: $code
+        password: $password
+        password_confirmation: $password_confirmation
+      }
+    ) {
+      message
+      status
+    }
+  }
+`;

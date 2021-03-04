@@ -3,10 +3,10 @@ import {InputWithText} from '../components/Input';
 import {ButtonDefault} from '../components/Button';
 import ModalWindow from '../components/ModalWindow';
 import BackgroundHeader from '../components/BackgroundHeader';
-import {FORGOT_PASSWORD} from '../QUERYES';
+import {FORGOT_PASSWORD, UPDATE_FORGOTTEN_PASSWORD} from '../QUERYES';
 import {useMutation} from 'react-apollo';
 
-import {Text, View, StyleSheet, Image} from 'react-native';
+import {Text, View, StyleSheet, Image, Keyboard} from 'react-native';
 
 const PasswordRecovery = ({navigation}) => {
   const {
@@ -22,9 +22,13 @@ const PasswordRecovery = ({navigation}) => {
   } = styles;
 
   const [address, setAddress] = useState(''),
+    [code, setCode] = useState(''),
+    [password, setPassword] = useState(''),
     [btnText, setBtnText] = useState(''),
     [activeBtn, setActiveBtn] = useState(false),
-    [savePass, setSavePass] = useState(false);
+    [savePass, setSavePass] = useState(false),
+    [newPass, setNewPass] = useState(false),
+    [validationErr, setValidationError] = useState(false);
 
   useEffect(() => {
     if (address.length > 0) {
@@ -36,22 +40,60 @@ const PasswordRecovery = ({navigation}) => {
     }
   }, [address, btnText]);
 
-  const [FORGOT_PASSWORD_mutation] = useMutation(FORGOT_PASSWORD);
+  const [FORGOT_PASSWORD_mutation] = useMutation(FORGOT_PASSWORD),
+    [UPDATE_FORGOTTEN_PASSWORD_mutation] = useMutation(
+      UPDATE_FORGOTTEN_PASSWORD,
+    );
+
+  const saveNewData = () => {
+      UPDATE_FORGOTTEN_PASSWORD_mutation({
+        variables: {
+          email: address,
+          code: code,
+          password: password,
+          password_confirmation: password,
+        },
+        optimisticResponse: null,
+      })
+        .then(res => {
+          console.log(res, '--res  UPDATE_FORGOTTEN_PASSWORD');
+          console.log(res.status, '--res  STATUS________________________');
+          Keyboard.dismiss();
+          navigation.navigate('Login');
+          setNewPass(false);
+        })
+        .catch(err => {
+          // setValidationError(true);
+          console.log(err, '--err password');
+        });
+    },
+    sendMessage = () => {
+      FORGOT_PASSWORD_mutation({
+        variables: {
+          email: address,
+        },
+        optimisticResponse: null,
+      })
+        .then(res => {
+          console.log(res, '--res pasword');
+          Keyboard.dismiss();
+          setSavePass(true);
+        })
+        .catch(err => console.log(JSON.stringify(err), '--err password'));
+    };
 
   return (
     <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
       <BackgroundHeader title="Восстановление пароля" navigation={navigation} />
       <View style={container}>
-        <View style={inputContainer}>
+        <View style={[inputContainer, {zIndex: 0}]}>
           <Text style={topText}>Восстановить пароль</Text>
-          <View>
-            <InputWithText
-              text="Введите адрес электронной почты"
-              placeholder="example@site.com"
-              keyboardType="email-address"
-              onChangeText={setAddress}
-            />
-          </View>
+          <InputWithText
+            text="Введите адрес электронной почты"
+            placeholder="example@site.com"
+            keyboardType="email-address"
+            onChangeText={setAddress}
+          />
         </View>
         <View style={instruction}>
           <View style={image}>
@@ -70,21 +112,7 @@ const PasswordRecovery = ({navigation}) => {
             <ButtonDefault
               title={btnText}
               active={activeBtn}
-              onPress={() => {
-                FORGOT_PASSWORD_mutation({
-                  variables: {
-                    email: address,
-                  },
-                  optimisticResponse: null,
-                })
-                  .then(res => {
-                    console.log(res, '--res pasword');
-                    setSavePass(true);
-                  })
-                  .catch(err =>
-                    console.log(JSON.stringify(err), '--err password'),
-                  );
-              }}
+              onPress={() => sendMessage()}
             />
           )}
         </View>
@@ -118,7 +146,76 @@ const PasswordRecovery = ({navigation}) => {
               <ButtonDefault
                 title="спасибо, закрыть окно"
                 active={true}
-                onPress={() => setSavePass(false)}
+                onPress={() => {
+                  setAddress('');
+                  setSavePass(false);
+                  setNewPass(true);
+                }}
+              />
+            </View>
+          </View>
+        </ModalWindow>
+      )}
+
+      {newPass && (
+        <ModalWindow contaynerStyle={{}} style={{}}>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '90%',
+            }}>
+            <Text style={{textAlign: 'center', fontSize: 13, marginBottom: 20}}>
+              Заполните форму
+            </Text>
+
+            <View
+              style={{
+                width: '100%',
+                backgroundColor: '#eee',
+                padding: 10,
+                paddingVertical: 5,
+                marginBottom: 10,
+              }}>
+              <InputWithText
+                style={{width: '100%'}}
+                text="Введите адрес электронной почты"
+                placeholder="example@site.com"
+                keyboardType="email-address"
+                onChangeText={text => {
+                  // setValidationError(false);
+                  setAddress(text);
+                }}
+                validationErr={validationErr}
+              />
+              <InputWithText
+                style={{width: '100%'}}
+                text="Код с вашей почты"
+                placeholder="code"
+                keyboardType="numeric"
+                onChangeText={text => {
+                  // setValidationError(false);
+                  setCode(text);
+                }}
+                validationErr={validationErr}
+              />
+              <InputWithText
+                style={{width: '100%'}}
+                text="Введите новый пароль"
+                placeholder="password"
+                onChangeText={text => {
+                  // setValidationError(false);
+                  setPassword(text);
+                }}
+                validationErr={validationErr}
+              />
+            </View>
+
+            <View style={{width: '100%'}}>
+              <ButtonDefault
+                title="Сохранить"
+                active={true}
+                onPress={() => saveNewData()}
               />
             </View>
           </View>

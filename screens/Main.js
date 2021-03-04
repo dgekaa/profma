@@ -233,7 +233,6 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
             });
       }}>
       <View>
-        {console.log(photo, '--photo')}
         <Image
           source={{uri: photo}}
           style={{width: 47, height: 47, marginRight: 8}}
@@ -363,7 +362,6 @@ const Main = ({navigation}) => {
       setRefreshing(true);
 
       users.refetch().then(res => {
-        console.log(res, '--res');
         !res.loading && res.data && setRefreshing(false);
       });
     };
