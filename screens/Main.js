@@ -80,9 +80,8 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
   );
 
   useEffect(() => {
-    photoArr.master_appointments &&
-      photoArr.master_appointments.length &&
-      photoArr.master_appointments.forEach(obj => {
+    photoArr.length &&
+      photoArr.forEach(obj => {
         obj.photos.length &&
           setPhoto('http://194.87.145.192/storage/' + obj.photos[0].src);
       });
@@ -199,7 +198,7 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
 };
 
 const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
-  const {nearestSeansBlock, nearestSeansBlockIos} = styles;
+  const {nearestSeansBlock, nearestSeansBlockIos, dateText} = styles;
 
   const [offersAll, setOffersAll] = useState([]),
     [photo, setPhoto] = useState(
@@ -214,9 +213,8 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
   }, []);
 
   useEffect(() => {
-    photoArr.master_appointments &&
-      photoArr.master_appointments.length &&
-      photoArr.master_appointments.forEach(obj => {
+    photoArr.length &&
+      photoArr.forEach(obj => {
         obj.photos.length &&
           setPhoto('http://194.87.145.192/storage/' + obj.photos[0].src);
       });
@@ -235,6 +233,7 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
             });
       }}>
       <View>
+        {console.log(photo, '--photo')}
         <Image
           source={{uri: photo}}
           style={{width: 47, height: 47, marginRight: 8}}
@@ -255,13 +254,7 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
           <View style={{flex: 1}}>
             <View style={{flexDirection: 'row'}}>
               <SvgUri svgXmlData={CalendarColorIcon} />
-              <Text
-                style={{
-                  fontSize: 13,
-                  color: '#B986DA',
-                  fontWeight: 'bold',
-                  marginLeft: 5,
-                }}>
+              <Text style={dateText}>
                 {el.date.split('-')[2]} {shortMonthName[+el.date.split('-')[1]]}{' '}
                 в {el.time.slice(0, 5)}
               </Text>
@@ -338,8 +331,6 @@ const Main = ({navigation}) => {
     },
   });
 
-  const [photoArr, setPhotoArr] = useState([]);
-
   useEffect(() => {
     setCityid(
       USER.data &&
@@ -350,10 +341,6 @@ const Main = ({navigation}) => {
         : null,
     );
   }, [USER, users]);
-
-  useEffect(() => {
-    users.data && setPhotoArr(users.data.users.data);
-  }, [users]);
 
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
@@ -428,9 +415,7 @@ const Main = ({navigation}) => {
                         navigation={navigation}
                         type={USER.data.me.type}
                         reload={reloadAppointments}
-                        photoArr={
-                          photoArr && photoArr.length ? photoArr[i] : []
-                        }
+                        photoArr={el.master.master_appointments}
                       />
                     </View>
                   ))}
@@ -477,9 +462,7 @@ const Main = ({navigation}) => {
                           navigation={navigation}
                           el={item}
                           reload={reloadAppointments}
-                          photoArr={
-                            photoArr && photoArr.length ? photoArr[index] : []
-                          }
+                          photoArr={item.master_appointments}
                           blockId={index}
                         />
                       )}
@@ -778,6 +761,12 @@ const styles = StyleSheet.create({
       height: 0,
       width: 0,
     },
+  },
+  dateText: {
+    fontSize: 13,
+    color: '#B986DA',
+    fontWeight: 'bold',
+    marginLeft: 5,
   },
 });
 

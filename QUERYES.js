@@ -836,6 +836,13 @@ export const NEXT_APPOINTMENTS = gql`
       master {
         id
         type
+        master_appointments {
+          id
+          photos {
+            id
+            src
+          }
+        }
         offers {
           id
           service {
