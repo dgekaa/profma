@@ -220,11 +220,21 @@ const PasswordRecovery = ({navigation}) => {
                   />
                 </View>
 
-                <View style={{width: '100%'}}>
+                <View style={{width: '100%', marginBottom:10}}>
                   <ButtonDefault
                     title="Сохранить"
                     active={true}
                     onPress={() => saveNewData()}
+                  />
+                </View>
+
+                <View style={{width: '100%'}}>
+                  <ButtonDefault
+                    title="Закрыть"
+                    active={true}
+                    onPress={() => 
+                      setNewPass(false)
+                    }
                   />
                 </View>
               </View>
