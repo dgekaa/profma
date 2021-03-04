@@ -29,6 +29,7 @@ const Block = ({navigation, deleteService, el, refetch}) => {
           deleteService: bool => deleteService(bool),
           service: el,
           refetch: refetch,
+          reloadUserData: navigation.state.params.reloadUserData,
         });
       }}>
       <View>

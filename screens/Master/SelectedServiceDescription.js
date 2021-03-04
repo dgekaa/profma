@@ -44,7 +44,6 @@ const SelectedServiceDescription = ({navigation}) => {
   const [DELETE_OFFER_mutation] = useMutation(DELETE_OFFER, refreshObject);
 
   const DELETE = () => {
-    console.log(id, '____');
     DELETE_OFFER_mutation({
       variables: {
         id: id,
@@ -57,6 +56,7 @@ const SelectedServiceDescription = ({navigation}) => {
         setDeleteModal(true);
         navigation.state.params.refetch();
         navigation.goBack();
+        navigation.state.params.reloadUserData();
       })
       .catch(err => console.log(err, '__ERR'));
   };
@@ -189,9 +189,7 @@ const SelectedServiceDescription = ({navigation}) => {
           <Text style={{marginBottom: 16}}>Вы уверены в своём решении?</Text>
           <View style={{width: '100%'}}>
             <ButtonDefault
-              onPress={() => {
-                setDeleteModal(false);
-              }}
+              onPress={() => setDeleteModal(false)}
               style={{marginBottom: 8}}
               title="нет, не удалять услугу"
               active={true}

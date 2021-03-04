@@ -102,6 +102,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                     navigation.navigate('MyServices', {
                       ID: USER.data.me.id,
                       reload,
+                      reloadUserData: USER.refetch,
                     })
                   }>
                   <SvgUri width="16" height="16" svgXmlData={ManicureIcon} />
