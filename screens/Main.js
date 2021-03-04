@@ -23,6 +23,7 @@ import {
   TextInput,
   ActivityIndicator,
   Platform,
+  RefreshControl,
 } from 'react-native';
 import {useQuery} from 'react-apollo';
 
@@ -321,7 +322,8 @@ const Main = ({navigation}) => {
     });
 
   const [dates, setDates] = useState(),
-    [cityid, setCityid] = useState(null);
+    [cityid, setCityid] = useState(null),
+    [refreshing, setRefreshing] = useState(false);
 
   const findMaster = useQuery(FIND_MASTER, {
     variables: {
@@ -356,29 +358,42 @@ const Main = ({navigation}) => {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   const showMasters = masters => {
-    let arr = [];
-    for (let key in masters) arr.push(key);
-    setDates(arr);
-  };
-
-  function plural(number, titles) {
-    const cases = [2, 0, 1, 1, 1, 2];
-    return titles[
-      number % 100 > 4 && number % 100 < 20
-        ? 2
-        : cases[number % 10 < 5 ? number % 10 : 5]
-    ];
-  }
+      let arr = [];
+      for (let key in masters) arr.push(key);
+      setDates(arr);
+    },
+    plural = (number, titles) => {
+      const cases = [2, 0, 1, 1, 1, 2];
+      return titles[
+        number % 100 > 4 && number % 100 < 20
+          ? 2
+          : cases[number % 10 < 5 ? number % 10 : 5]
+      ];
+    };
 
   const reload = () => USER.refetch(),
-    reloadAppointments = () => nextAppointments.refetch();
+    reloadAppointments = () => nextAppointments.refetch(),
+    onRefresh = () => {
+      setRefreshing(true);
+
+      users.refetch().then(res => {
+        console.log(res, '--res');
+        !res.loading && res.data && setRefreshing(false);
+      });
+    };
 
   if (USER.error) {
     return <ErrorInternetProblems reload={() => reload()} />;
   } else {
     return (
       <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => onRefresh()}
+            />
+          }>
           <ImageBackground
             style={header}
             source={require('../img/headerBGBig.png')}>
@@ -455,19 +470,17 @@ const Main = ({navigation}) => {
                   !!users.data && (
                     <FlatList
                       data={users.data.users.data}
-                      renderItem={({item, index}) => {
-                        return (
-                          <Block
-                            navigation={navigation}
-                            el={item}
-                            reload={reloadAppointments}
-                            photoArr={
-                              photoArr && photoArr.length ? photoArr[index] : []
-                            }
-                            blockId={index}
-                          />
-                        );
-                      }}
+                      renderItem={({item, index}) => (
+                        <Block
+                          navigation={navigation}
+                          el={item}
+                          reload={reloadAppointments}
+                          photoArr={
+                            photoArr && photoArr.length ? photoArr[index] : []
+                          }
+                          blockId={index}
+                        />
+                      )}
                       keyExtractor={item =>
                         dates ? item.user.id : item.id.toString()
                       }
@@ -477,20 +490,18 @@ const Main = ({navigation}) => {
                   !!findMaster.data.findMaster && (
                     <FlatList
                       data={findMaster.data.findMaster}
-                      renderItem={({item, index}) => {
-                        return (
-                          <Block
-                            navigation={navigation}
-                            el={item}
-                            dates={dates}
-                            reload={reloadAppointments}
-                            photoArr={
-                              photoArr && photoArr.length ? photoArr[index] : []
-                            }
-                            blockId={index}
-                          />
-                        );
-                      }}
+                      renderItem={({item, index}) => (
+                        <Block
+                          navigation={navigation}
+                          el={item}
+                          dates={dates}
+                          reload={reloadAppointments}
+                          photoArr={
+                            photoArr && photoArr.length ? photoArr[index] : []
+                          }
+                          blockId={index}
+                        />
+                      )}
                       keyExtractor={item =>
                         dates ? item.user.id : item.id.toString()
                       }
