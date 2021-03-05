@@ -58,7 +58,7 @@ const SelectedServiceDescription = ({navigation}) => {
         navigation.goBack();
         navigation.state.params.reloadUserData();
       })
-      .catch(err => console.log(err, '__ERR'));
+      .catch(err => console.log(JSON.stringify(err), '__ERR'));
   };
 
   return (
