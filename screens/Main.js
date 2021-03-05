@@ -80,7 +80,8 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
   );
 
   useEffect(() => {
-    photoArr && photoArr.length &&
+    photoArr &&
+      photoArr.length &&
       photoArr.forEach(obj => {
         obj.photos.length &&
           setPhoto('http://194.87.145.192/storage/' + obj.photos[0].src);
@@ -213,7 +214,8 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
   }, []);
 
   useEffect(() => {
-    photoArr && photoArr.length &&
+    photoArr &&
+      photoArr.length &&
       photoArr.forEach(obj => {
         obj.photos.length &&
           setPhoto('http://194.87.145.192/storage/' + obj.photos[0].src);
@@ -449,7 +451,7 @@ const Main = ({navigation}) => {
                 </TouchableOpacity>
               </View>
             )}
-            {findMaster.data && alert(findMaster.data.findMaster)}
+
             <View style={{paddingBottom: 80}}>
               {!dates
                 ? !!users &&
@@ -480,9 +482,7 @@ const Main = ({navigation}) => {
                           el={item}
                           dates={dates}
                           reload={reloadAppointments}
-                          photoArr={
-                            item.master_appointments
-                          }
+                          photoArr={item.user.master_appointments}
                           blockId={index}
                         />
                       )}

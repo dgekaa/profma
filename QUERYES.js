@@ -786,6 +786,13 @@ export const FIND_MASTER = gql`
           name
           work_address
         }
+        master_appointments {
+          id
+          photos {
+            id
+            src
+          }
+        }
         offers {
           price_by_pack {
             duration
