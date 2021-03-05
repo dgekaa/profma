@@ -191,7 +191,7 @@ const ServiceDescription = ({navigation}) => {
                           setHowLong(text);
                         }}
                         style={[borderBottom, {flex: 1}]}
-                        err={err}
+                        err={!howLong && err}
                         value={howLong}
                         errStyle={{paddingBottom: 10}}
                         keyboardType={'numeric'}
@@ -213,7 +213,7 @@ const ServiceDescription = ({navigation}) => {
                           setHowMach(text);
                         }}
                         style={{flex: 1}}
-                        err={err}
+                        err={!howMach && err}
                         value={howMach}
                         errStyle={{paddingBottom: 10}}
                         keyboardType={'numeric'}
@@ -260,7 +260,7 @@ const ServiceDescription = ({navigation}) => {
                       alignSelf: 'flex-start',
                       paddingLeft: 30,
                     }}>
-                    {err}
+                    {!desc && err}
                   </Text>
                 </View>
               </View>
