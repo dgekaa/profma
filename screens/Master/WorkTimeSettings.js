@@ -47,7 +47,14 @@ const Block = ({
   setTimeInfo,
   SAVE,
 }) => {
-  const {groupBlock, groupBlockIos ,blockTitle, blockInGroup, textBold, borderBottom} = styles;
+  const {
+    groupBlock,
+    groupBlockIos,
+    blockTitle,
+    blockInGroup,
+    textBold,
+    borderBottom,
+  } = styles;
 
   const [startErr, setStartErr] = useState(''),
     [endErr, setEndErr] = useState('');
@@ -107,8 +114,12 @@ const Block = ({
           />
         </View>
       </View>
-    
-      <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock, {marginBottom: index === 6 ? 16 : 0}]}>
+
+      <View
+        style={[
+          Platform.OS === 'ios' ? groupBlockIos : groupBlock,
+          {marginBottom: index === 6 ? 16 : 0},
+        ]}>
         <View style={[blockInGroup, borderBottom]}>
           <TouchableOpacity
             style={{width: '100%'}}
@@ -175,6 +186,8 @@ const Block = ({
               if (!schedules.start_sessions) {
                 schedules.start_sessions = [];
               }
+
+              console.log(schedules, '----schedules');
 
               SAVE(schedules);
             }
@@ -261,94 +274,107 @@ const WorkTimeSettings = ({navigation}) => {
         });
   };
 
-  const setFirstInputText = (text, schedules, day) => {
-    setChangedData(prev => {
-      return {...prev, [schedules.day]: {...schedules, start_time: text}};
-    });
-  };
-
-  const setSecondInputText = (text, schedules, day) => {
-    setChangedData(prev => {
-      return {...prev, [schedules.day]: {...schedules, end_time: text}};
-    });
-  };
-
-  const SAVE = schedules => {
-    for (let key in changedData) {
-      if (changedData[key]) {
-        if (changedData[key].id) {
-          if (changedData[key].day_off) {
-            console.log(changedData[key], 'РАБ----ВЫХ');
-            DELETE_SCHEDULE_mutation({
-              variables: {
-                id: +changedData[key].id,
-              },
-              optimisticResponse: null,
-            })
-              .then(res => {
-                if (schedules) {
-                  if (!schedules.id) schedules.id = res.data.updateSchedule.id;
-                  navigation.navigate('SelectWorkTime', {schedules: schedules});
-                }
-                console.log(res, '__RES DELETE_SCHEDULE_mutation');
-              })
-              .catch(err => console.log(err, '__ERR DELETE_SCHEDULE_mutation'));
-          } else {
-            console.log(changedData[key], 'РАБ----РАБ');
-
-            UPDATE_SCHEDULE_WORK_TIME_mutation({
-              variables: {
-                id: +changedData[key].id,
-                day: key,
-                start_time: changedData[key].start_time.slice(0, 5),
-                end_time: changedData[key].end_time.slice(0, 5),
-              },
-              optimisticResponse: null,
-            })
-              .then(res => {
-                if (schedules) {
-                  if (!schedules.id) schedules.id = res.data.updateSchedule.id;
-                  navigation.navigate('SelectWorkTime', {schedules: schedules});
-                }
-
-                console.log(res, '__RES UPDATE_SCHEDULE_mutation !!!');
-              })
-              .catch(err => console.log(err, '__ERR UPDATE_SCHEDULE_mutation'));
-          }
-        } else {
-          if (changedData[key].day_off) {
-            console.log(changedData[key], 'ВЫХ----ВЫХ');
-          } else {
-            CREATE_SCHEDULE_mutation({
-              variables: {
-                day: key,
-                start_time: changedData[key].start_time.slice(0, 5),
-                end_time: changedData[key].end_time.slice(0, 5),
-              },
-              optimisticResponse: null,
-            })
-              .then(res => {
-                if (schedules) {
-                  if (!schedules.id) schedules.id = res.data.updateSchedule.id;
-
-                  navigation.navigate('SelectWorkTime', {schedules: schedules});
-                }
-                console.log(res, '__RES  CREATE_SCHEDULE_mutation');
-              })
-              .catch(err =>
-                console.log(err, '__ERR  CREATE_SCHEDULE_mutation'),
-              );
-          }
-        }
-      }
-    }
-  };
-
   const [isValidationErr, setIsValidationErr] = useState(false),
     [date, setDate] = useState(new Date()),
     [timeInfo, setTimeInfo] = useState();
 
-  const validationErr = data => setIsValidationErr(data),
+  const setFirstInputText = (text, schedules, day) => {
+      setChangedData(prev => {
+        return {...prev, [schedules.day]: {...schedules, start_time: text}};
+      });
+    },
+    setSecondInputText = (text, schedules, day) => {
+      setChangedData(prev => {
+        return {...prev, [schedules.day]: {...schedules, end_time: text}};
+      });
+    },
+    SAVE = schedules => {
+      for (let key in changedData) {
+        if (changedData[key]) {
+          if (changedData[key].id) {
+            if (changedData[key].day_off) {
+              console.log(changedData[key], 'РАБ----ВЫХ');
+              DELETE_SCHEDULE_mutation({
+                variables: {
+                  id: +changedData[key].id,
+                },
+                optimisticResponse: null,
+              })
+                .then(res => {
+                  if (schedules) {
+                    if (!schedules.id)
+                      schedules.id = res.data.updateSchedule.id;
+                    navigation.navigate('SelectWorkTime', {
+                      schedules: schedules,
+                      reload: USER.refetch,
+                    });
+                  }
+                  console.log(res, '__RES DELETE_SCHEDULE_mutation');
+                })
+                .catch(err =>
+                  console.log(err, '__ERR DELETE_SCHEDULE_mutation'),
+                );
+            } else {
+              console.log(changedData[key], 'РАБ----РАБ');
+
+              UPDATE_SCHEDULE_WORK_TIME_mutation({
+                variables: {
+                  id: +changedData[key].id,
+                  day: key,
+                  start_time: changedData[key].start_time.slice(0, 5),
+                  end_time: changedData[key].end_time.slice(0, 5),
+                },
+                optimisticResponse: null,
+              })
+                .then(res => {
+                  if (schedules) {
+                    if (!schedules.id)
+                      schedules.id = res.data.updateSchedule.id;
+                    navigation.navigate('SelectWorkTime', {
+                      schedules: schedules,
+                      reload: USER.refetch,
+                    });
+                  }
+
+                  console.log(res, '__RES UPDATE_SCHEDULE_mutation !!!');
+                })
+                .catch(err =>
+                  console.log(err, '__ERR UPDATE_SCHEDULE_mutation'),
+                );
+            }
+          } else {
+            if (changedData[key].day_off) {
+              console.log(changedData[key], 'ВЫХ----ВЫХ');
+            } else {
+              CREATE_SCHEDULE_mutation({
+                variables: {
+                  day: key,
+                  start_time: changedData[key].start_time.slice(0, 5),
+                  end_time: changedData[key].end_time.slice(0, 5),
+                },
+                optimisticResponse: null,
+              })
+                .then(res => {
+                  if (schedules) {
+                    if (!schedules.id)
+                      schedules.id = res.data.updateSchedule.id;
+
+                    navigation.navigate('SelectWorkTime', {
+                      schedules: schedules,
+                      reload: USER.refetch,
+                    });
+                  }
+                  console.log(res, '__RES  CREATE_SCHEDULE_mutation');
+                })
+                .catch(err =>
+                  console.log(err, '__ERR  CREATE_SCHEDULE_mutation'),
+                );
+            }
+          }
+        }
+      }
+    },
+    validationErr = data => setIsValidationErr(data),
     onChangeTime = selectedTime => {
       setShowPicker(Platform.OS === 'ios');
       const hours = selectedTime.getHours(),

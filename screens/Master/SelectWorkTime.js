@@ -9,11 +9,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  ScrollView, ActivityIndicator
+  ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 
 import {ME, UPDATE_SCHEDULE, DELETE_START_SESSION} from '../../QUERYES';
 import {useMutation} from 'react-apollo';
+import {useEffect} from 'react/cjs/react.development';
 
 const SelectWorkTime = ({navigation}) => {
   const {container, topBlock, timeBlock, timeContainer} = styles;
@@ -59,6 +61,7 @@ const SelectWorkTime = ({navigation}) => {
     }
   }
   endMinutes < 15 && timeArr.pop();
+  console.log(schedules, '00000');
 
   for (let i = 0; i < timeArr.length; i++) {
     for (let j = 0; j < schedules.start_sessions.length; j++) {
@@ -68,10 +71,9 @@ const SelectWorkTime = ({navigation}) => {
   }
 
   const [activeArr, setActiveArr] = useState(timeArr),
-   [saveLoading, setSaveLoading] = useState(false);
+    [saveLoading, setSaveLoading] = useState(false);
 
   const saveTime = () => {
-    setSaveLoading(true)
       const objSimple = {},
         objDelete = {},
         objCreate = {};
@@ -94,6 +96,7 @@ const SelectWorkTime = ({navigation}) => {
       for (let key in objCreate) {
         if (!objSimple[key]) {
           console.log(key, 'KEY CREATE');
+          setSaveLoading(true);
           UPDATE_SCHEDULE_mutation({
             variables: {
               id: +schedules.id,
@@ -102,15 +105,19 @@ const SelectWorkTime = ({navigation}) => {
             optimisticResponse: null,
           })
             .then(res => {
-              setSaveLoading(false)
-              console.log(res, '__RES UPDATE_SCHEDULE_mutation')})
+              setSaveLoading(false);
+              navigation.state.params.reload();
+              console.log(res, '__RES UPDATE_SCHEDULE_mutation 111');
+            })
             .catch(err => {
-              setSaveLoading(false)
-              console.log(err, '__ERR UPDATE_SCHEDULE_mutation')});
+              setSaveLoading(false);
+              console.log(err, '__ERR UPDATE_SCHEDULE_mutation 222');
+            });
         }
       }
       for (let key in objDelete) {
         console.log(objDelete[key], '_____KEY DELETE');
+        setSaveLoading(true);
         DELETE_START_SESSION_mutation({
           variables: {
             id:
@@ -121,11 +128,14 @@ const SelectWorkTime = ({navigation}) => {
           optimisticResponse: null,
         })
           .then(res => {
-            setSaveLoading(false)
-            console.log(res, '__RES DELETE_START_SESSION')})
+            setSaveLoading(false);
+            navigation.state.params.reload();
+            console.log(res, '__RES DELETE_START_SESSION 333');
+          })
           .catch(err => {
-            setSaveLoading(false)
-            console.log(err, '__ERR DELETE_START_SESSION')});
+            setSaveLoading(false);
+            console.log(err, '__ERR DELETE_START_SESSION 444');
+          });
       }
     },
     pressBtn = i => {
@@ -134,6 +144,10 @@ const SelectWorkTime = ({navigation}) => {
         : (activeArr[i].active = true);
       setActiveArr([...activeArr]);
     };
+
+  useEffect(() => {
+    console.log(activeArr, '----activeArr');
+  }, [activeArr]);
 
   return (
     <View style={{flex: 1}}>
@@ -194,19 +208,18 @@ const SelectWorkTime = ({navigation}) => {
         active={true}
         onPress={() => saveTime()}
       />
-      {
-        saveLoading && <View
-        style={{
-          position:"absolute",
-          height:"100%",
-          width: '100%',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <ActivityIndicator size="large" color="#00ff00" />
-      </View>
-      }
-       
+      {saveLoading && (
+        <View
+          style={{
+            position: 'absolute',
+            height: '100%',
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator size="large" color="#00ff00" />
+        </View>
+      )}
     </View>
   );
 };
