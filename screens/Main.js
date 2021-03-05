@@ -320,17 +320,16 @@ const Main = ({navigation}) => {
     [refreshing, setRefreshing] = useState(false);
 
   const findMaster = useQuery(FIND_MASTER, {
-    variables: {
-      city_id: +cityid || null,
-      dates: dates || null,
-    },
-  });
-
-  const nextAppointments = useQuery(NEXT_APPOINTMENTS, {
-    variables: {
-      count: 3,
-    },
-  });
+      variables: {
+        city_id: +cityid || null,
+        dates: dates || null,
+      },
+    }),
+    nextAppointments = useQuery(NEXT_APPOINTMENTS, {
+      variables: {
+        count: 5,
+      },
+    });
 
   useEffect(() => {
     setCityid(
@@ -364,7 +363,9 @@ const Main = ({navigation}) => {
       setRefreshing(true);
 
       users.refetch().then(res => {
-        !res.loading && res.data && setRefreshing(false);
+        nextAppointments.refetch().then(res => {
+          !res.loading && res.data && setRefreshing(false);
+        });
       });
     };
 
