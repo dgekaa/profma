@@ -119,15 +119,13 @@ const ServiceDescription = ({navigation}) => {
           </View>
         )}
         {SERVICES.data && (
-         
-            <ScrollView>
-              <KeyboardAvoidingView
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : '15'}
-                style={{flex: 1}}
-                behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
-
-                <View style={{flex:1}}>
-                  <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
+          <ScrollView>
+            <KeyboardAvoidingView
+              keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : '15'}
+              style={{flex: 1}}
+              behavior={Platform.OS === 'ios' ? 'position' : 'position'}>
+              <View style={{flex: 1}}>
+                <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
                   <Text style={blockTitle}>ваша специализация</Text>
                   <View
                     style={[
@@ -267,7 +265,7 @@ const ServiceDescription = ({navigation}) => {
                     </Text>
                   </View>
                 </View>
-                  <View
+                <View
                   style={{
                     flexDirection: 'row',
                     width: '85%',
@@ -288,45 +286,42 @@ const ServiceDescription = ({navigation}) => {
                     </Text>
                   </View>
                 </View>
-                
-                  <View style={{margin: 8}}>
-                    {!deleteService && (
-                      <ButtonDefault
-                        title={`удалить услугу`}
-                        style={{marginBottom: 8}}
-                        onPress={() => {
-                          setDeleteModal(true);
-                        }}
-                      />
-                    )}
 
-                    {deleteService && (
-                      <SaveSuccess title="🗑 Услуга успешно удалена." />
-                    )}
-
+                <View style={{margin: 8}}>
+                  {!deleteService && (
                     <ButtonDefault
+                      title={`удалить услугу`}
+                      style={{marginBottom: 8}}
                       onPress={() => {
-                        !howLong || !howMach || !desc
-                          ? setErr('Поле обязательно для заполнения')
-                          : setErr('');
-                        SAVE();
+                        setDeleteModal(true);
                       }}
-                      title={
-                        false
-                          ? 'ВЫ не указали детали услуги'
-                          : `сохранить услугу (${serviceCount + 1}/${
-                              !!DATA ? DATA.length : ''
-                            })`
-                      }
-                      active={true}
                     />
-                  </View>
+                  )}
+
+                  {deleteService && (
+                    <SaveSuccess title="🗑 Услуга успешно удалена." />
+                  )}
+
+                  <ButtonDefault
+                    onPress={() => {
+                      !howLong || !howMach || !desc
+                        ? setErr('Поле обязательно для заполнения')
+                        : setErr('');
+                      SAVE();
+                    }}
+                    title={
+                      false
+                        ? 'ВЫ не указали детали услуги'
+                        : `сохранить услугу (${serviceCount + 1}/${
+                            !!DATA ? DATA.length : ''
+                          })`
+                    }
+                    active={true}
+                  />
                 </View>
-
-              </KeyboardAvoidingView>
-            </ScrollView>
-
-       
+              </View>
+            </KeyboardAvoidingView>
+          </ScrollView>
         )}
         {deleteModal && (
           <ModalWindow>
