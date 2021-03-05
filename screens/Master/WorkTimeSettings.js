@@ -187,8 +187,6 @@ const Block = ({
                 schedules.start_sessions = [];
               }
 
-              console.log(schedules, '----schedules');
-
               SAVE(schedules);
             }
           }}

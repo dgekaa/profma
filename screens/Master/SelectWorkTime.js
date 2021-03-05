@@ -61,7 +61,6 @@ const SelectWorkTime = ({navigation}) => {
     }
   }
   endMinutes < 15 && timeArr.pop();
-  console.log(schedules, '00000');
 
   for (let i = 0; i < timeArr.length; i++) {
     for (let j = 0; j < schedules.start_sessions.length; j++) {
@@ -144,10 +143,6 @@ const SelectWorkTime = ({navigation}) => {
         : (activeArr[i].active = true);
       setActiveArr([...activeArr]);
     };
-
-  useEffect(() => {
-    console.log(activeArr, '----activeArr');
-  }, [activeArr]);
 
   return (
     <View style={{flex: 1}}>
