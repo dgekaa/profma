@@ -9,7 +9,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  ScrollView,
+  ScrollView, ActivityIndicator
 } from 'react-native';
 
 import {ME, UPDATE_SCHEDULE, DELETE_START_SESSION} from '../../QUERYES';
@@ -67,9 +67,11 @@ const SelectWorkTime = ({navigation}) => {
     }
   }
 
-  const [activeArr, setActiveArr] = useState(timeArr);
+  const [activeArr, setActiveArr] = useState(timeArr),
+   [saveLoading, setSaveLoading] = useState(false);
 
   const saveTime = () => {
+    setSaveLoading(true)
       const objSimple = {},
         objDelete = {},
         objCreate = {};
@@ -99,8 +101,12 @@ const SelectWorkTime = ({navigation}) => {
             },
             optimisticResponse: null,
           })
-            .then(res => console.log(res, '__RES UPDATE_SCHEDULE_mutation'))
-            .catch(err => console.log(err, '__ERR UPDATE_SCHEDULE_mutation'));
+            .then(res => {
+              setSaveLoading(false)
+              console.log(res, '__RES UPDATE_SCHEDULE_mutation')})
+            .catch(err => {
+              setSaveLoading(false)
+              console.log(err, '__ERR UPDATE_SCHEDULE_mutation')});
         }
       }
       for (let key in objDelete) {
@@ -114,8 +120,12 @@ const SelectWorkTime = ({navigation}) => {
           },
           optimisticResponse: null,
         })
-          .then(res => console.log(res, '__RES DELETE_START_SESSION'))
-          .catch(err => console.log(err, '__ERR DELETE_START_SESSION'));
+          .then(res => {
+            setSaveLoading(false)
+            console.log(res, '__RES DELETE_START_SESSION')})
+          .catch(err => {
+            setSaveLoading(false)
+            console.log(err, '__ERR DELETE_START_SESSION')});
       }
     },
     pressBtn = i => {
@@ -184,6 +194,19 @@ const SelectWorkTime = ({navigation}) => {
         active={true}
         onPress={() => saveTime()}
       />
+      {
+        saveLoading && <View
+        style={{
+          position:"absolute",
+          height:"100%",
+          width: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <ActivityIndicator size="large" color="#00ff00" />
+      </View>
+      }
+       
     </View>
   );
 };

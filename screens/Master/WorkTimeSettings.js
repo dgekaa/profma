@@ -47,7 +47,7 @@ const Block = ({
   setTimeInfo,
   SAVE,
 }) => {
-  const {groupBlock, blockTitle, blockInGroup, textBold, borderBottom} = styles;
+  const {groupBlock, groupBlockIos ,blockTitle, blockInGroup, textBold, borderBottom} = styles;
 
   const [startErr, setStartErr] = useState(''),
     [endErr, setEndErr] = useState('');
@@ -107,7 +107,8 @@ const Block = ({
           />
         </View>
       </View>
-      <View style={[groupBlock, {marginBottom: index === 6 ? 16 : 0}]}>
+    
+      <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock, {marginBottom: index === 6 ? 16 : 0}]}>
         <View style={[blockInGroup, borderBottom]}>
           <TouchableOpacity
             style={{width: '100%'}}
@@ -439,6 +440,20 @@ const styles = StyleSheet.create({
     paddingLeft: 18,
     shadowOpacity: 1,
     backgroundColor: '#fff',
+  },
+  groupBlockIos: {
+    marginTop: 8,
+    borderRadius: 2,
+    flexDirection: 'column',
+    paddingLeft: 18,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.5,
+    shadowRadius: 0.1,
+    shadowOffset: {
+      height: 0,
+      width: 0,
+    },
   },
   blockInGroup: {
     borderRadius: 2,
