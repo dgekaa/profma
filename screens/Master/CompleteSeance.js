@@ -4,8 +4,6 @@ import {useMutation} from 'react-apollo';
 import BackgroundHeader from '../../components/BackgroundHeader';
 import {ButtonDefault} from '../../components/Button';
 import SvgUri from 'react-native-svg-uri';
-import GalleryIcon from '../../img/Gallery.svg';
-import TrashIcon from '../../img/Trash.svg';
 import PlusIcon from '../../img/Plus.svg';
 
 import {
@@ -15,6 +13,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 
 import ImagePicker from 'react-native-image-crop-picker';
@@ -24,15 +23,13 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {
   GET_APPOINTMENT,
   UPDATE_APPOINTMENT,
-  LOAD_IMAGE,
   UPDATE_APPOINTMENT_ADD_PHOTO,
 } from '../../QUERYES';
-import {G} from 'react-native-svg';
 import {getToken} from '../../util';
 import {useState} from 'react';
 
 const CompleteSeance = ({navigation}) => {
-  const {groupBlock, blockTitle, blockInGroup, textBold, borderBottom} = styles;
+  const {groupBlock, blockTitle, blockInGroup, textBold} = styles;
 
   const refreshObject = {
     refetchQueries: [
@@ -46,9 +43,9 @@ const CompleteSeance = ({navigation}) => {
     awaitRefetchQueries: true,
   };
 
-  const [photo, setPhoto] = useState('');
-
-  const [LOAD_IMAGE_mutation] = useMutation(LOAD_IMAGE);
+  const [photo, setPhoto] = useState(''),
+    [isPhotoLoading, setPhotoIsLoading] = useState(false),
+    [completeLoading, setCompleteLoading] = useState(false);
 
   const [UPDATE_APPOINTMENT_PHOTO_mutation] = useMutation(
     UPDATE_APPOINTMENT_ADD_PHOTO,
@@ -60,6 +57,7 @@ const CompleteSeance = ({navigation}) => {
   );
 
   const COMPLETE = () => {
+    setCompleteLoading(true);
     const Completed = 'Completed';
     UPDATE_APPOINTMENT_mutation({
       variables: {
@@ -71,18 +69,20 @@ const CompleteSeance = ({navigation}) => {
       optimisticResponse: null,
     })
       .then(res => {
+        setCompleteLoading(false);
         console.log(res, '__RES UPDATE_SCHEDULE_mutation');
         navigation.state.params.complete(true);
         navigation.state.params.refetch();
+        navigation.state.params.reload();
         navigation.goBack();
       })
-      .catch(err => console.log(err, '__ERR UPDATE_SCHEDULE_mutation'));
+      .catch(err => {
+        setCompleteLoading(false);
+        console.log(err, '__ERR UPDATE_SCHEDULE_mutation');
+      });
   };
 
-  const whoObj = {
-    Master: 'Master',
-    Client: 'Client',
-  };
+  console.log(navigation.state.params, '-----------');
 
   return (
     <View style={{flex: 1}}>
@@ -90,18 +90,6 @@ const CompleteSeance = ({navigation}) => {
       <ScrollView>
         <View style={{paddingHorizontal: 8, marginBottom: 8, flex: 1}}>
           <Text style={blockTitle}>итоги сеанса</Text>
-          {/* <View style={[groupBlock, blockInGroup]}>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 13 }}>Полученная от клиента сумма</Text>
-              <Text style={{ fontWeight: 'bold', fontSize: 13 }}>
-                !!!!!!!!!!!
-              </Text>
-            </View>
-            <View>
-              <Text />
-              <Text style={{ fontWeight: 'bold', fontSize: 13 }}>руб</Text>
-            </View>
-          </View> */}
           <View
             style={{
               flexDirection: 'row',
@@ -109,39 +97,12 @@ const CompleteSeance = ({navigation}) => {
               alignItems: 'center',
             }}>
             <Text style={blockTitle}>фотографии законченной работы</Text>
-            <Text style={[blockTitle, {marginRight: 8}]}>
-              {/* {navigation.state.params.data.photo.length}\5 */}
-            </Text>
+            <Text style={[blockTitle, {marginRight: 8}]} />
           </View>
           <View style={[groupBlock]}>
-            {/* {navigation.state.params.data.photo.map((el, i) => (
-              <View
-                key={i}
-                style={[blockInGroup, borderBottom, {paddingRight: 8}]}>
-                <SvgUri svgXmlData={GalleryIcon} />
-                <Text style={{fontSize: 13, flex: 1, marginLeft: 16}}>
-                  {el}
-                </Text>
-                <TouchableOpacity
-                  style={{
-                    padding: 10,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                  onPress={() => {
-                    alert('Удалит фото');
-                  }}>
-                  <SvgUri svgXmlData={TrashIcon} />
-                </TouchableOpacity>
-              </View>
-            ))} */}
             <TouchableOpacity
               style={[blockInGroup]}
               onPress={() => {
-                // navigation.state.params.data.photo.length == 5
-                //   ? alert('Больше добавить нельзя')
-                //   : alert('Прикрепить фото');
-
                 const options = {
                   title: 'Select Image',
                   customButtons: [
@@ -163,6 +124,8 @@ const CompleteSeance = ({navigation}) => {
                   formData.append('operations', operations);
                   const map = '{"0": ["variables.file"]}';
                   formData.append('map', map);
+
+                  setPhotoIsLoading(true);
 
                   ImagePicker.openCropper({
                     path: response.uri,
@@ -191,10 +154,7 @@ const CompleteSeance = ({navigation}) => {
                           })
                             .then(res => res.json())
                             .then(responseJson => {
-                              console.log(
-                                responseJson.data,
-                                '---responseJson.data',
-                              );
+                              setPhotoIsLoading(false);
                               setPhoto(
                                 'http://194.87.145.192/storage/' +
                                   responseJson.data.uploadAppointmentPhoto,
@@ -212,20 +172,6 @@ const CompleteSeance = ({navigation}) => {
                             .catch(err => console.log(err, '===errrrrr'));
                         })
                         .catch(err => console.log(err, '---errr'));
-
-                      // fetch('http://194.87.145.192/graphql', {
-                      //   method: 'post',
-                      //   headers: {
-                      //     'Content-Type': 'multipart/form-data;',
-                      //     authorization: `Bearer ${token}`,
-                      //   },
-                      //   body: formData,
-                      // })
-                      //   .then((res) => res.json())
-                      //   .then((responseJson) => {
-                      //     console.log(responseJson, '-----respJS')
-                      //   })
-                      //   .catch((err) => console.log(err, 'ERR'));
                     })
                     .catch(e => {
                       console.log(e);
@@ -243,10 +189,17 @@ const CompleteSeance = ({navigation}) => {
                 Прикрепить фото
               </Text>
             </TouchableOpacity>
+            {!!isPhotoLoading && (
+              <ActivityIndicator size="large" color="#00ff00" />
+            )}
             {!!photo && (
-              <View style={{width: 100, height: 100}}>
+              <View style={{width: 100, height: 100, marginBottom: 10}}>
                 <Image
-                  style={{width: 100, height: 100, borderRadius: 5}}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 5,
+                  }}
                   source={{
                     uri: photo,
                   }}
@@ -266,6 +219,19 @@ const CompleteSeance = ({navigation}) => {
         title="подтвердить завершение сеанса"
         active={true}
       />
+      {completeLoading && (
+        <View
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator size="large" color="#00ff00" />
+        </View>
+      )}
     </View>
   );
 };
@@ -286,10 +252,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingRight: 16,
-  },
-  borderBottom: {
-    borderBottomColor: '#aaa',
-    borderBottomWidth: 0.4,
   },
   textBold: {
     fontSize: 13,

@@ -425,6 +425,7 @@ const NoteInformationMaster = ({navigation}) => {
                     title="завершить сеанс"
                     onPress={() => {
                       navigation.navigate('CompleteSeance', {
+                        reload: navigation.state.params.reload,
                         complete: bool => {
                           setIsCompleted(bool);
                           setTimeout(() => {
