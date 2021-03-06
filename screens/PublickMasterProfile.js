@@ -320,7 +320,8 @@ const PublickMasterProfile = ({navigation}) => {
     [freeTimeByMaster, setFreeTimeByMaster] = useState([]),
     [choosedActiveTime, setChoosedActiveTime] = useState(null),
     [allPrice, setAllPrice] = useState(0),
-    [CHCecked, setCHCecked] = useState(false);
+    [CHCecked, setCHCecked] = useState(false),
+    [isLoading, setIsLoading] = useState(false);
 
   const FREETIME = useQuery(FREE_TIME, {
       variables: {
@@ -379,7 +380,7 @@ const PublickMasterProfile = ({navigation}) => {
     CREATE = () => {
       const CH = checkboxes.filter(el => +el),
         finishCH = CH.map(el => +el);
-
+      setIsLoading(true);
       CREATE_APPOINTMENT_mutation({
         variables: {
           id: +MASTER.data.user.id,
@@ -390,6 +391,7 @@ const PublickMasterProfile = ({navigation}) => {
         optimisticResponse: null,
       })
         .then(res => {
+          setIsLoading(false);
           setTimeWasSelected(true);
           setChoosedActiveTime(null);
           setAllPrice(0);
@@ -398,9 +400,10 @@ const PublickMasterProfile = ({navigation}) => {
           NEXT_FREETIME.refetch();
           navigation.state.params.reload();
         })
-        .catch(err =>
-          console.log(JSON.stringify(err), '__ERR CREATE_APPOINTMENT'),
-        );
+        .catch(err => {
+          setIsLoading(false);
+          console.log(JSON.stringify(err), '__ERR CREATE_APPOINTMENT');
+        });
     };
 
   if (MASTER.error) {
@@ -418,13 +421,14 @@ const PublickMasterProfile = ({navigation}) => {
               : 'Имя не задано'
           }
         />
-        {MASTER.loading && (
+        {(MASTER.loading || isLoading) && (
           <View
             style={{
               position: 'absolute',
               width: '100%',
               height: '100%',
               flex: 1,
+              zIndex: 1000,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
