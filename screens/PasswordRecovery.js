@@ -6,8 +6,15 @@ import BackgroundHeader from '../components/BackgroundHeader';
 import {FORGOT_PASSWORD, UPDATE_FORGOTTEN_PASSWORD} from '../QUERYES';
 import {useMutation} from 'react-apollo';
 
-import {Text, View, StyleSheet, Image, Keyboard, KeyboardAvoidingView,
-TouchableWithoutFeedback} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+} from 'react-native';
 
 const PasswordRecovery = ({navigation}) => {
   const {
@@ -19,7 +26,6 @@ const PasswordRecovery = ({navigation}) => {
     helpText,
     questionText,
     inputContainer,
-    btnContainer,
   } = styles;
 
   const [address, setAddress] = useState(''),
@@ -82,15 +88,15 @@ const PasswordRecovery = ({navigation}) => {
     };
 
   return (
-    <TouchableWithoutFeedback onPress={()=>Keyboard.dismiss()}>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
-        <BackgroundHeader title="Восстановление пароля" navigation={navigation} />
+        <BackgroundHeader
+          title="Восстановление пароля"
+          navigation={navigation}
+        />
         <KeyboardAvoidingView
-          style={{flex:1}}
-          // style={[Platform.OS === 'ios' ? keyboardIos : keyboardAndroid]}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'position'}
-        >
-
+          style={{flex: 1}}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <View style={container}>
             <View style={[inputContainer, {zIndex: 0}]}>
               <Text style={topText}>Восстановить пароль</Text>
@@ -101,6 +107,7 @@ const PasswordRecovery = ({navigation}) => {
                 onChangeText={setAddress}
               />
             </View>
+
             <View style={instruction}>
               <View style={image}>
                 <Image source={require('../img/girl.png')} />
@@ -108,24 +115,22 @@ const PasswordRecovery = ({navigation}) => {
               <View style={textWrap}>
                 <Text style={questionText}>Как восстановить пароль?</Text>
                 <Text style={helpText}>
-                  Введите адрес электронной почты, на которую мы отправим ссылку для
-                  восстановления пароля
+                  Введите адрес электронной почты, на которую мы отправим ссылку
+                  для восстановления пароля
                 </Text>
               </View>
             </View>
-            <View style={btnContainer}>
-              {!!btnText && (
-                <ButtonDefault
-                  title={btnText}
-                  active={activeBtn}
-                  onPress={() => sendMessage()}
-                />
-              )}
-            </View>
+
+            {!!btnText && (
+              <ButtonDefault
+                title={btnText}
+                active={activeBtn}
+                onPress={() => sendMessage()}
+              />
+            )}
           </View>
-      
         </KeyboardAvoidingView>
-      
+
         {savePass && (
           <ModalWindow>
             <View
@@ -169,75 +174,74 @@ const PasswordRecovery = ({navigation}) => {
         {newPass && (
           <ModalWindowWithKeyboard contaynerStyle={{}} style={{}}>
             <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '90%',
+              }}>
+              <Text
+                style={{textAlign: 'center', fontSize: 13, marginBottom: 20}}>
+                Заполните форму
+              </Text>
+
+              <View
                 style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: '90%',
+                  width: '100%',
+                  backgroundColor: '#eee',
+                  padding: 10,
+                  paddingVertical: 5,
+                  marginBottom: 10,
                 }}>
-                <Text style={{textAlign: 'center', fontSize: 13, marginBottom: 20}}>
-                  Заполните форму
-                </Text>
-
-                <View
-                  style={{
-                    width: '100%',
-                    backgroundColor: '#eee',
-                    padding: 10,
-                    paddingVertical: 5,
-                    marginBottom: 10,
-                  }}>
-                  <InputWithText
-                    style={{width: '100%'}}
-                    text="Введите адрес электронной почты"
-                    placeholder="example@site.com"
-                    keyboardType="email-address"
-                    onChangeText={text => {
-                      // setValidationError(false);
-                      setAddress(text);
-                    }}
-                    validationErr={validationErr}
-                  />
-                  <InputWithText
-                    style={{width: '100%'}}
-                    text="Код с вашей почты"
-                    placeholder="code"
-                    keyboardType="numeric"
-                    onChangeText={text => {
-                      // setValidationError(false);
-                      setCode(text);
-                    }}
-                    validationErr={validationErr}
-                  />
-                  <InputWithText
-                    style={{width: '100%'}}
-                    text="Введите новый пароль"
-                    placeholder="password"
-                    onChangeText={text => {
-                      // setValidationError(false);
-                      setPassword(text);
-                    }}
-                    validationErr={validationErr}
-                  />
-                </View>
-
-                <View style={{width: '100%', marginBottom:10}}>
-                  <ButtonDefault
-                    title="Сохранить"
-                    active={true}
-                    onPress={() => saveNewData()}
-                  />
-                </View>
-
-                <View style={{width: '100%'}}>
-                  <ButtonDefault
-                    title="Закрыть"
-                    active={true}
-                    onPress={() => 
-                      setNewPass(false)
-                    }
-                  />
-                </View>
+                <InputWithText
+                  style={{width: '100%'}}
+                  text="Введите адрес электронной почты"
+                  placeholder="example@site.com"
+                  keyboardType="email-address"
+                  onChangeText={text => {
+                    // setValidationError(false);
+                    setAddress(text);
+                  }}
+                  validationErr={validationErr}
+                />
+                <InputWithText
+                  style={{width: '100%'}}
+                  text="Код с вашей почты"
+                  placeholder="code"
+                  keyboardType="numeric"
+                  onChangeText={text => {
+                    // setValidationError(false);
+                    setCode(text);
+                  }}
+                  validationErr={validationErr}
+                />
+                <InputWithText
+                  style={{width: '100%'}}
+                  text="Введите новый пароль"
+                  placeholder="password"
+                  onChangeText={text => {
+                    // setValidationError(false);
+                    setPassword(text);
+                  }}
+                  validationErr={validationErr}
+                />
               </View>
+
+              <View style={{width: '100%', marginBottom: 10}}>
+                <ButtonDefault
+                  title="Сохранить"
+                  active={true}
+                  onPress={() => saveNewData()}
+                />
+              </View>
+
+              <View style={{width: '100%'}}>
+                <ButtonDefault
+                  title="Закрыть"
+                  active={true}
+                  onPress={() => setNewPass(false)}
+                />
+              </View>
+            </View>
           </ModalWindowWithKeyboard>
         )}
       </View>
