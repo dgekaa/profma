@@ -24,6 +24,7 @@ import {
   ScrollView,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from 'react-native';
 
 const DropdownBlock = ({
@@ -133,7 +134,8 @@ const NoteInformation = ({navigation}) => {
   const {first, firstIos, text, blockTitle, groupBlock, groupBlockIos} = styles;
 
   const [cancelNote, setCancelNote] = useState(false),
-    [canceledNote, setCanceledNote] = useState(false);
+    [canceledNote, setCanceledNote] = useState(false),
+    [isLoading, setIsLoading] = useState(false);
 
   const person = navigation.state.params.person
     ? navigation.state.params.person
@@ -167,6 +169,9 @@ const NoteInformation = ({navigation}) => {
     isAbort = false;
 
   const CANCEL = () => {
+    // !!!!!!!!!!!!!
+    setIsLoading(true);
+
     DELETE_APPOINTMENT_mutation({
       variables: {
         id: +person.id,
@@ -174,12 +179,17 @@ const NoteInformation = ({navigation}) => {
       optimisticResponse: null,
     })
       .then(res => {
+        setIsLoading(false);
+
         navigation.state.params.reload();
         navigation.state.params.reloadNearest();
         navigation.goBack();
         console.log(res, '__res DELETE_APPOINTMENT_mutation');
       })
-      .catch(err => console.log(err, '__ERR DELETE_APPOINTMENT_mutation'));
+      .catch(err => {
+        setIsLoading(false);
+        console.log(err, '__ERR DELETE_APPOINTMENT_mutation');
+      });
   };
 
   const [services, setServices] = useState([]),
@@ -401,6 +411,21 @@ const NoteInformation = ({navigation}) => {
               onPress={() => CANCEL()}
             />
           </View>
+          {isLoading && (
+            <View
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                height: '100%',
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginLeft: 20,
+              }}>
+              <ActivityIndicator size="large" color="#00ff00" />
+            </View>
+          )}
         </ModalWindow>
       )}
       {canceledNote && (
@@ -418,7 +443,6 @@ const NoteInformation = ({navigation}) => {
           </View>
         </ModalWindow>
       )}
-
       {showAllServices && (
         <TouchableWithoutFeedback onPress={() => setShowAllServices(false)}>
           <View
