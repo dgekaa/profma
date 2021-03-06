@@ -44,22 +44,23 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
   const [LOGOUT_mutation] = useMutation(LOGOUT);
 
   const SAVE = () => {
+    setIsLoading(true);
     UPDATE_PROFILE_WITHOUT_CITY_mutation({
       variables: {
         id: USER.data.me.profile.id,
-        name: nameLocal || USER.data.me.profile.name,
-        email: emailLocal || USER.data.me.profile.email,
-        mobile_phone: mobilePhoneLocal || USER.data.me.profile.mobile_phone,
-        addition_phone:
-          additionPhoneLocal || USER.data.me.profile.addition_phone,
-        home_address: homeAddressLocal || USER.data.me.profile.home_address,
-        work_address: workAddressLocal || USER.data.me.profile.work_address,
-        site: siteLocal || USER.data.me.profile.site,
+        name: nameLocal,
+        email: emailLocal,
+        mobile_phone: mobilePhoneLocal,
+        addition_phone: additionPhoneLocal,
+        home_address: homeAddressLocal,
+        work_address: workAddressLocal,
+        site: siteLocal,
         about_me: aboutMeLocal,
       },
       optimisticResponse: null,
     })
       .then(res => {
+        setIsLoading(false);
         console.log(res, '__RES');
         setSavedSuccess(true);
         setTimeout(() => {
@@ -67,7 +68,10 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
           // setShowBtn(false);
         }, 1000);
       })
-      .catch(err => console.log(err, '__ERR'));
+      .catch(err => {
+        setIsLoading(false);
+        console.log(err, '__ERR');
+      });
   };
 
   const [showBtn, setShowBtn] = useState(false),
@@ -80,22 +84,21 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
     [siteLocal, setSitelocal] = useState(null),
     [aboutMeLocal, setAboutMeLocal] = useState(null),
     [inputLength, setInputLength] = useState(0),
-    [savedSuccess, setSavedSuccess] = useState(false);
+    [savedSuccess, setSavedSuccess] = useState(false),
+    [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (USER.data) {
-      setNameLocal(USER.data.me.profile.name);
-      setEmailLocal(USER.data.me.profile.email);
-      setMobilePhoneLocal(USER.data.me.profile.mobile_phone);
-      setAdditionPhoneLocal(USER.data.me.profile.addition_phone);
-      setHomeAddressLocal(USER.data.me.profile.home_address);
-      setWorkAddressLocal(USER.data.me.profile.work_address);
-      setAboutMeLocal(USER.data.me.profile.about_me);
-      setInputLength(
-        USER.data.me.profile.about_me
-          ? USER.data.me.profile.about_me.length
-          : 0,
-      );
+      const me = USER.data.me;
+      setNameLocal(me.profile.name);
+      setEmailLocal(me.profile.email);
+      setMobilePhoneLocal(me.profile.mobile_phone);
+      setAdditionPhoneLocal(me.profile.addition_phone);
+      setSitelocal(me.profile.site);
+      setHomeAddressLocal(me.profile.home_address);
+      setWorkAddressLocal(me.profile.work_address);
+      setAboutMeLocal(me.profile.about_me);
+      setInputLength(me.profile.about_me ? me.profile.about_me.length : 0);
     }
   }, [USER]);
 
@@ -124,13 +127,14 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
   return (
     <View style={{flex: 1}}>
       <BackgroundHeader navigation={navigation} title="Персональные данные" />
-      {USER.loading && (
+      {(USER.loading || isLoading) && (
         <View
           style={{
             position: 'absolute',
             width: '100%',
             height: '100%',
             flex: 1,
+            zIndex: 1000,
             justifyContent: 'center',
             alignItems: 'center',
           }}>
