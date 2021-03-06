@@ -139,11 +139,13 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
       )}
 
       {USER.data && (
-        <ScrollView>
+        <ScrollView style={{backgroundColor: 'gold'}}>
           <KeyboardAvoidingView
-            style={{flex: 1, backgroundColor: '#fff'}}
-            behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
-            <View style={{flex: 1, paddingHorizontal: 8}}>
+            style={{flex: 1, backgroundColor: 'green'}}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -100}
+            behavior={Platform.OS === 'ios' ? 'position' : 'position'}>
+            <View
+              style={{flex: 1, paddingHorizontal: 8, backgroundColor: 'red'}}>
               <Text style={blockTitle}>персональные данные</Text>
 
               <View
@@ -184,16 +186,6 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
 
               <View
                 style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock]}>
-                {/* <InputWithText
-                  text="Город, в котором вы работаете"
-                  placeholder="Начните вводить город"
-                  withoutShadow={true}
-                  value={cityText || city}
-                  onChangeText={text => {
-                    setCity(text);
-                  }}
-                /> */}
-                {/* <Border /> */}
                 <InputWithText
                   text="Домашний адрес (необходим для мастеров, которые работают с выездом)"
                   placeholder="Начните вводить адрес"
