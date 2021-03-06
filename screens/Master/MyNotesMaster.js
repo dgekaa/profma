@@ -19,6 +19,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Dimensions,
+  RefreshControl,
 } from 'react-native';
 
 const Block = ({el, navigation, archive, reload, me}) => {
@@ -135,6 +136,16 @@ const MyNotesMaster = ({navigation}) => {
 
   const USER = useQuery(ME);
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+
+    USER.refetch().then(res => {
+      !res.loading && res.data && setRefreshing(false);
+    });
+  };
+
   const reload = () => USER.refetch();
 
   return (
@@ -191,7 +202,14 @@ const MyNotesMaster = ({navigation}) => {
           </View>
         )}
         {!!USER.data && !!USER.data.me.master_appointments.length && (
-          <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => onRefresh()}
+              />
+            }
+            style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
             <Text style={blockTitle}>Активные записи</Text>
             {USER.data.me.master_appointments.map((el, i) => {
               if (el.status === 'Pending') {
