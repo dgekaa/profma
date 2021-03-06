@@ -35,23 +35,27 @@ const Registration = ({navigation, handleChangeLoginState}) => {
   } = stylesClientRegistration;
 
   const width = Dimensions.get('window').width,
-    height = Dimensions.get('window').height;
+    height = Dimensions.get('window').height,
+    whoObj = {
+      Master: 'Master',
+      Client: 'Client',
+    };
 
   const [textAd, setTextAd] = useState(
-    'Лучшие мастера маникюра по самой низкой цене + Кэшбэк☝',
-  );
-  const [personType, setPersonType] = useState('Client');
-  const [fillErr, setFillErr] = useState(null);
-  const [validationErr, setValidationErr] = useState('');
-  const [regBtnText, setRegBtnText] = useState('');
-  const [iconName, setIconName] = useState('closedEye');
-  const [hidePassword, setHidePassword] = useState(true);
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState(''),
+      'Лучшие мастера маникюра по самой низкой цене + Кэшбэк☝',
+    ),
+    [personType, setPersonType] = useState('Client'),
+    [fillErr, setFillErr] = useState(null),
+    [validationErr, setValidationErr] = useState(''),
+    [regBtnText, setRegBtnText] = useState(''),
+    [iconName, setIconName] = useState('closedEye'),
+    [hidePassword, setHidePassword] = useState(true),
+    [password, setPassword] = useState(''),
+    [email, setEmail] = useState(''),
     [loading, setLoading] = useState(false);
 
-  const [REGISTER_mutation] = useMutation(REGISTER);
-  const [CREATE_PROFILE_mutation] = useMutation(CREATE_PROFILE);
+  const [REGISTER_mutation] = useMutation(REGISTER),
+    [CREATE_PROFILE_mutation] = useMutation(CREATE_PROFILE);
 
   useEffect(() => {
     fillErr
@@ -73,55 +77,47 @@ const Registration = ({navigation, handleChangeLoginState}) => {
         );
   }, [personType]);
 
-  const selectPersonType = type => setPersonType(type);
-
-  const openCloseEye = () => {
-    if (iconName === 'openedEye') {
-      setIconName('closedEye');
-      setHidePassword(true);
-    } else {
-      setIconName('openedEye');
-      setHidePassword(false);
-    }
-  };
-
-  const whoObj = {
-    Master: 'Master',
-    Client: 'Client',
-  };
-
-  const createProfile = token => {
-    CREATE_PROFILE_mutation({
-      variables: {},
-      optimisticResponse: null,
-    })
-      .then(result => navigation.navigate('Main', {ME: token}))
-      .catch(err => {});
-  };
-
-  const register = () => {
-    setLoading(true);
-    REGISTER_mutation({
-      variables: {
-        type: whoObj[personType],
-        email: email,
-        password: password,
-        password_confirmation: password,
-      },
-      optimisticResponse: null,
-    })
-      .then(res => {
-        setLoading(false);
-        handleChangeLoginState(true, res.data.register.tokens.access_token);
-        createProfile(res);
+  const selectPersonType = type => setPersonType(type),
+    openCloseEye = () => {
+      if (iconName === 'openedEye') {
+        setIconName('closedEye');
+        setHidePassword(true);
+      } else {
+        setIconName('openedEye');
+        setHidePassword(false);
+      }
+    },
+    createProfile = token => {
+      CREATE_PROFILE_mutation({
+        variables: {},
+        optimisticResponse: null,
       })
-      .catch(err => {
-        console.log(JSON.stringify(err), 'err register');
+        .then(result => navigation.navigate('Main', {ME: token}))
+        .catch(err => {});
+    },
+    register = () => {
+      setLoading(true);
+      REGISTER_mutation({
+        variables: {
+          type: whoObj[personType],
+          email: email,
+          password: password,
+          password_confirmation: password,
+        },
+        optimisticResponse: null,
+      })
+        .then(res => {
+          setLoading(false);
+          handleChangeLoginState(true, res.data.register.tokens.access_token);
+          createProfile(res);
+        })
+        .catch(err => {
+          console.log(JSON.stringify(err), 'err register');
 
-        setLoading(false);
-        setValidationErr(true);
-      });
-  };
+          setLoading(false);
+          setValidationErr(true);
+        });
+    };
 
   return (
     <TouchableWithoutFeedback
@@ -144,9 +140,10 @@ const Registration = ({navigation, handleChangeLoginState}) => {
             {textAd}
           </Text>
         </View>
+
         <KeyboardAvoidingView
           keyboardVerticalOffset={
-            Platform.OS === 'ios' ? 0 : height > 650 ? -140 : -80
+            Platform.OS === 'ios' ? 0 : height > 650 ? -180 : -80
           }
           style={{
             height: 350,

@@ -40,7 +40,9 @@ const Login = ({navigation, handleChangeLoginState}) => {
     [fillErr, setFillErr] = useState(''),
     [validationErr, setValidationErr] = useState(''),
     [regBtnText, setRegBtnText] = useState(''),
-    [loading, setLoading] = useState(false);
+    [loading, setLoading] = useState(false),
+    [email, setEmail] = useState(''),
+    [password, setPassword] = useState('');
 
   const [LOGIN_mutation] = useMutation(LOGIN);
 
@@ -72,9 +74,6 @@ const Login = ({navigation, handleChangeLoginState}) => {
         setHidePassword(false);
       }
     };
-
-  const [email, setEmail] = useState(''),
-    [password, setPassword] = useState('');
 
   useEffect(() => {
     fillErr
@@ -109,7 +108,10 @@ const Login = ({navigation, handleChangeLoginState}) => {
 
         <KeyboardAvoidingView
           keyboardVerticalOffset={-30}
-          style={[Platform.OS === 'ios' ? keyboardIos : keyboardAndroid]}
+          style={[
+            Platform.OS === 'ios' ? keyboardIos : keyboardAndroid,
+            {backgroundColor: '#fff'},
+          ]}
           behavior={Platform.OS === 'ios' ? 'position' : 'position'}>
           <View
             style={[
@@ -152,14 +154,16 @@ const Login = ({navigation, handleChangeLoginState}) => {
           </View>
 
           <View
-            style={
-              (login,
+            style={[
+              login,
               {
-                height: 150,
                 justifyContent: 'flex-end',
                 backgroundColor: '#fff',
-              })
-            }>
+              },
+              Platform.OS === 'ios'
+                ? {height: 150}
+                : {height: height < 650 ? 150 : 210},
+            ]}>
             <View style={[politic, height < 650 && {paddingHorizontal: 10}]}>
               <Text style={politicText}>
                 Нажимая “Зарегистрироваться”, вы соглашаетесь с нашей
