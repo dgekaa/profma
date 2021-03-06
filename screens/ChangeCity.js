@@ -37,7 +37,8 @@ const ChangeCity = ({navigation}) => {
     ),
     [cityId, setCityID] = useState(null),
     [manualCity, setManualCity] = useState(''),
-    [filteredData, setFilteredData] = useState([]);
+    [filteredData, setFilteredData] = useState([]),
+    [isLoading, setIsLoading] = useState(false);
 
   const cityInputRef = useRef(null);
 
@@ -70,8 +71,9 @@ const ChangeCity = ({navigation}) => {
   };
 
   const [UPDATE_PROFILE_mutation] = useMutation(UPDATE_PROFILE, refreshObject);
-  console.log(USER, '----USER');
+
   const SAVE = () => {
+    setIsLoading(true);
     UPDATE_PROFILE_mutation({
       variables: {
         id: navigation.state.params.id,
@@ -80,6 +82,7 @@ const ChangeCity = ({navigation}) => {
       optimisticResponse: null,
     })
       .then(res => {
+        setIsLoading(false);
         USER.data.me.type === 'Master'
           ? navigation.navigate('MasterProfile', {
               ID: res.data.updateProfile.id,
@@ -89,7 +92,10 @@ const ChangeCity = ({navigation}) => {
             });
         navigation.state.params.reload();
       })
-      .catch(err => console.log(err, '__ERR'));
+      .catch(err => {
+        console.log(err, '__ERR');
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -156,7 +162,20 @@ const ChangeCity = ({navigation}) => {
                   }
                 })}
               {loading && (
-                <View style={{marginTop: 100}}>
+                <View
+                  style={{
+                    marginTop: 100,
+                  }}>
+                  <ActivityIndicator size="large" color="#00ff00" />
+                </View>
+              )}
+              {isLoading && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    marginTop: 100,
+                    alignSelf: 'center',
+                  }}>
                   <ActivityIndicator size="large" color="#00ff00" />
                 </View>
               )}
