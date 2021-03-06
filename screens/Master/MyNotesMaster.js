@@ -18,6 +18,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 
 const Block = ({el, navigation, archive, reload, me}) => {
@@ -166,15 +167,23 @@ const MyNotesMaster = ({navigation}) => {
         </View>
       )}
 
-      <View style={{flex: 1}}>
-        <BackgroundHeader navigation={navigation} title="Мои записи" />
+      <View
+        style={{
+          flex:
+            !!USER.data && !!USER.data.me.master_appointments.length ? 1 : 0,
+        }}>
+        {!!USER.data && !!USER.data.me.master_appointments.length && (
+          <BackgroundHeader navigation={navigation} title="Мои записи" />
+        )}
+
         {USER.loading && (
           <View
             style={{
               position: 'absolute',
               width: '100%',
-              height: '100%',
-              flex: 1,
+              height: Dimensions.get('window').height,
+              top: 0,
+              left: 0,
               justifyContent: 'center',
               alignItems: 'center',
             }}>

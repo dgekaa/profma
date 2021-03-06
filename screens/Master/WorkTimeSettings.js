@@ -22,7 +22,6 @@ import {
   ScrollView,
   Switch,
   ActivityIndicator,
-  Dimensions,
 } from 'react-native';
 
 const weekDaysEnShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -274,7 +273,8 @@ const WorkTimeSettings = ({navigation}) => {
 
   const [isValidationErr, setIsValidationErr] = useState(false),
     [date, setDate] = useState(new Date()),
-    [timeInfo, setTimeInfo] = useState();
+    [timeInfo, setTimeInfo] = useState(),
+    [isLoading, setIsLoading] = useState(false);
 
   const setFirstInputText = (text, schedules, day) => {
       setChangedData(prev => {
@@ -292,6 +292,7 @@ const WorkTimeSettings = ({navigation}) => {
           if (changedData[key].id) {
             if (changedData[key].day_off) {
               console.log(changedData[key], 'РАБ----ВЫХ');
+              setIsLoading(true);
               DELETE_SCHEDULE_mutation({
                 variables: {
                   id: +changedData[key].id,
@@ -299,6 +300,7 @@ const WorkTimeSettings = ({navigation}) => {
                 optimisticResponse: null,
               })
                 .then(res => {
+                  setIsLoading(false);
                   if (schedules) {
                     if (!schedules.id)
                       schedules.id = res.data.updateSchedule.id;
@@ -309,12 +311,13 @@ const WorkTimeSettings = ({navigation}) => {
                   }
                   console.log(res, '__RES DELETE_SCHEDULE_mutation');
                 })
-                .catch(err =>
-                  console.log(err, '__ERR DELETE_SCHEDULE_mutation'),
-                );
+                .catch(err => {
+                  setIsLoading(false);
+                  console.log(err, '__ERR DELETE_SCHEDULE_mutation');
+                });
             } else {
               console.log(changedData[key], 'РАБ----РАБ');
-
+              setIsLoading(true);
               UPDATE_SCHEDULE_WORK_TIME_mutation({
                 variables: {
                   id: +changedData[key].id,
@@ -325,6 +328,7 @@ const WorkTimeSettings = ({navigation}) => {
                 optimisticResponse: null,
               })
                 .then(res => {
+                  setIsLoading(false);
                   if (schedules) {
                     if (!schedules.id)
                       schedules.id = res.data.updateSchedule.id;
@@ -336,14 +340,16 @@ const WorkTimeSettings = ({navigation}) => {
 
                   console.log(res, '__RES UPDATE_SCHEDULE_mutation !!!');
                 })
-                .catch(err =>
-                  console.log(err, '__ERR UPDATE_SCHEDULE_mutation'),
-                );
+                .catch(err => {
+                  setIsLoading(false);
+                  console.log(err, '__ERR UPDATE_SCHEDULE_mutation');
+                });
             }
           } else {
             if (changedData[key].day_off) {
               console.log(changedData[key], 'ВЫХ----ВЫХ');
             } else {
+              setIsLoading(true);
               CREATE_SCHEDULE_mutation({
                 variables: {
                   day: key,
@@ -353,6 +359,7 @@ const WorkTimeSettings = ({navigation}) => {
                 optimisticResponse: null,
               })
                 .then(res => {
+                  setIsLoading(false);
                   if (schedules) {
                     if (!schedules.id)
                       schedules.id = res.data.updateSchedule.id;
@@ -364,9 +371,10 @@ const WorkTimeSettings = ({navigation}) => {
                   }
                   console.log(res, '__RES  CREATE_SCHEDULE_mutation');
                 })
-                .catch(err =>
-                  console.log(err, '__ERR  CREATE_SCHEDULE_mutation'),
-                );
+                .catch(err => {
+                  setIsLoading(false);
+                  console.log(err, '__ERR  CREATE_SCHEDULE_mutation');
+                });
             }
           }
         }
@@ -412,17 +420,6 @@ const WorkTimeSettings = ({navigation}) => {
         </TouchableOpacity>
       )}
       <ScrollView style={{paddingHorizontal: 8}}>
-        {USER.loading && (
-          <View
-            style={{
-              width: '100%',
-              height: Dimensions.get('window').height - 300,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <ActivityIndicator size="large" color="#00ff00" />
-          </View>
-        )}
         {!USER.loading &&
           weekDaysEnShort.map((el, i) => (
             <View key={i}>
@@ -450,6 +447,20 @@ const WorkTimeSettings = ({navigation}) => {
           />
         )}
       </ScrollView>
+      {(USER.loading || isLoading) && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            height: '100%',
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <ActivityIndicator size="large" color="#00ff00" />
+        </View>
+      )}
     </View>
   );
 };
