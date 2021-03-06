@@ -169,9 +169,7 @@ const NoteInformation = ({navigation}) => {
     isAbort = false;
 
   const CANCEL = () => {
-    // !!!!!!!!!!!!!
     setIsLoading(true);
-
     DELETE_APPOINTMENT_mutation({
       variables: {
         id: +person.id,
@@ -180,7 +178,6 @@ const NoteInformation = ({navigation}) => {
     })
       .then(res => {
         setIsLoading(false);
-
         navigation.state.params.reload();
         navigation.state.params.reloadNearest();
         navigation.goBack();
@@ -389,8 +386,10 @@ const NoteInformation = ({navigation}) => {
       {cancelNote && (
         <ModalWindow>
           <Text style={{width: '70%', textAlign: 'center', fontSize: 13}}>
-            Вы собираетесь отменить запись на
-            <Text style={{fontWeight: 'bold'}}> дата</Text>в время к мастеру
+            Вы собираетесь отменить запись
+            {/* на */}
+            <Text style={{fontWeight: 'bold'}}>{/* дата */}</Text>
+            {/* в время */} к мастеру
           </Text>
           <Text style={{paddingVertical: 8, fontWeight: 'bold', fontSize: 13}}>
             <Text style={text}>{person.master.profile.name}</Text>

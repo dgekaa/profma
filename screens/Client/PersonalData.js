@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 
 import {useMutation, useQuery} from 'react-apollo';
@@ -28,12 +29,13 @@ const PersonalData = ({navigation}) => {
 
   const USER = useQuery(ME);
 
-  const [showBtn, setShowBtn] = useState(false);
-  const [nameLocal, setNameLocal] = useState('');
-  const [emailLocal, setEmailLocal] = useState('');
-  const [phoneNumberLocal, setPhoneNumberLocal] = useState('');
-  const [homeAddressLocal, setHomeAddressLocal] = useState('');
-  const [savedSuccess, setSavedSuccess] = useState(false);
+  const [showBtn, setShowBtn] = useState(false),
+    [nameLocal, setNameLocal] = useState(''),
+    [emailLocal, setEmailLocal] = useState(''),
+    [phoneNumberLocal, setPhoneNumberLocal] = useState(''),
+    [homeAddressLocal, setHomeAddressLocal] = useState(''),
+    [savedSuccess, setSavedSuccess] = useState(false),
+    [isLoading, setIsLoading] = useState(false);
 
   const refreshObject = {
     refetchQueries: [
@@ -50,29 +52,41 @@ const PersonalData = ({navigation}) => {
   );
 
   const SAVE = () => {
+    setIsLoading(true);
     UPDATE_PROFILE_WITHOUT_CITY_mutation({
       variables: {
         id: USER.data.me.profile.id,
-        name: nameLocal || USER.data.me.profile.name,
-        email: emailLocal || USER.data.me.profile.email,
-        mobile_phone: phoneNumberLocal || USER.data.me.profile.mobile_phone,
-        home_address: homeAddressLocal || USER.data.me.profile.home_address,
+        name: nameLocal,
+        email: emailLocal,
+        mobile_phone: phoneNumberLocal,
+        home_address: homeAddressLocal,
       },
       optimisticResponse: null,
     })
       .then(res => {
         console.log(res, '__RES');
+        setIsLoading(false);
         setSavedSuccess(true);
         setShowBtn(false);
         setTimeout(() => {
           setSavedSuccess(false);
         }, 1000);
       })
-      .catch(err => console.log(err, '__ERR'));
+      .catch(err => {
+        setIsLoading(false);
+        console.log(err, '__ERR');
+      });
   };
 
   useEffect(() => {
-    USER.data && setNameLocal(USER.data.me.profile.name);
+    console.log(USER.data, '----data');
+    if (USER.data) {
+      const me = USER.data.me;
+      setNameLocal(me.profile.name);
+      setEmailLocal(me.profile.email);
+      setPhoneNumberLocal(me.profile.mobile_phone);
+      setHomeAddressLocal(me.profile.home_address);
+    }
   }, [USER.data]);
 
   useEffect(() => {
@@ -93,8 +107,9 @@ const PersonalData = ({navigation}) => {
         />
 
         <KeyboardAvoidingView
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
           style={[keyboardWrap]}
-          behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
+          behavior={Platform.OS === 'ios' ? 'position' : 'position'}>
           <Text style={[blockTitle]}>персональные данные</Text>
 
           <View style={[Platform.OS === 'ios' ? groupBlockIos : groupBlock]}>
@@ -141,6 +156,21 @@ const PersonalData = ({navigation}) => {
         {showBtn && USER.data && (
           <View style={{padding: 16}}>
             <ButtonDefault title="Сохранить изменения" onPress={() => SAVE()} />
+          </View>
+        )}
+
+        {(isLoading || USER.loading) && (
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              height: '100%',
+              width: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <ActivityIndicator size="large" color="#00ff00" />
           </View>
         )}
       </View>
