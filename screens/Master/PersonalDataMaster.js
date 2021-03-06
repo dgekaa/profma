@@ -139,13 +139,13 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
       )}
 
       {USER.data && (
-        <ScrollView style={{backgroundColor: 'gold'}}>
+        <ScrollView style={{backgroundColor: '#fff'}}>
           <KeyboardAvoidingView
-            style={{flex: 1, backgroundColor: 'green'}}
+            style={{flex: 1, backgroundColor: '#fff'}}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -100}
             behavior={Platform.OS === 'ios' ? 'position' : 'position'}>
             <View
-              style={{flex: 1, paddingHorizontal: 8, backgroundColor: 'red'}}>
+              style={{flex: 1, paddingHorizontal: 8, backgroundColor: '#fff'}}>
               <Text style={blockTitle}>персональные данные</Text>
 
               <View
