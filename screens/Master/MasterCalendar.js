@@ -115,7 +115,7 @@ const Block = ({el, navigation}) => {
           </View>
           <View style={{flex: 1}}>
             <Text style={[textBold]}>{el.client.profile.home_address} </Text>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <View
                 style={{
                   width: 4,
@@ -124,7 +124,7 @@ const Block = ({el, navigation}) => {
                 }}
               />
               <Text style={{fontSize: 10}}> метро </Text>
-            </View>
+            </View> */}
           </View>
         </View>
         <View style={{flex: 1}}>
@@ -163,9 +163,9 @@ const MasterCalendar = ({navigation}) => {
 
   useEffect(() => {
     if (USER.data && USER.data.me.master_appointments.length) {
-      const filtered = USER.data.me.master_appointments.filter((el, i) => {
-        return el.date === currentDate;
-      });
+      const filtered = USER.data.me.master_appointments.filter(
+        el => el.date === currentDate,
+      );
       setFilteredData(filtered);
     }
   }, [USER.data, currentDate]);
