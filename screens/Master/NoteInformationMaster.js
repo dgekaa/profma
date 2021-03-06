@@ -184,6 +184,7 @@ const NoteInformationMaster = ({navigation}) => {
   );
 
   const CANCEL = () => {
+    setisLoading(true);
     DELETE_APPOINTMENT_mutation({
       variables: {
         id: +navigation.state.params.el.id,
@@ -191,10 +192,14 @@ const NoteInformationMaster = ({navigation}) => {
       optimisticResponse: null,
     })
       .then(res => {
+        setisLoading(false);
         navigation.state.params.reload();
         navigation.goBack();
       })
-      .catch(err => console.log(err, '__ERR DELETE_APPOINTMENT_mutation'));
+      .catch(err => {
+        setisLoading(false);
+        console.log(err, '__ERR DELETE_APPOINTMENT_mutation');
+      });
   };
 
   useEffect(() => {
@@ -208,8 +213,9 @@ const NoteInformationMaster = ({navigation}) => {
     }
   }, [appointment]);
 
-  const [services, setServices] = useState([]);
-  const [showAllServices, setShowAllServices] = useState(false);
+  const [services, setServices] = useState([]),
+    [showAllServices, setShowAllServices] = useState(false),
+    [isLoading, setisLoading] = useState(false);
 
   useEffect(() => {
     MASTER.data && setServices(MASTER.data.me.offers);
@@ -256,7 +262,7 @@ const NoteInformationMaster = ({navigation}) => {
             : 'Запись оформлена'
         }
       />
-      {appointment.loading && (
+      {(appointment.loading || isLoading) && (
         <View
           style={{
             position: 'absolute',
