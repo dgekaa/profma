@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 
 import {useQuery} from 'react-apollo';
@@ -148,11 +149,21 @@ const Block = ({el, navigation, archive, reload}) => {
 };
 
 const MyNotes = ({navigation}) => {
-  const {bigText, smallText, textBold, blockTitle, block} = styles;
+  const {bigText, smallText, blockTitle} = styles;
 
   const USER = useQuery(ME);
 
   const reload = () => USER.refetch();
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+
+    USER.refetch().then(res => {
+      !res.loading && res.data && setRefreshing(false);
+    });
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -204,7 +215,14 @@ const MyNotes = ({navigation}) => {
           </View>
         )}
         {USER.data && !!USER.data.me.client_appointments.length && (
-          <ScrollView style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => onRefresh()}
+              />
+            }
+            style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
             <Text style={blockTitle}>Активные записи</Text>
             {USER.data.me.client_appointments.map((el, i) => {
               if (el.status) {

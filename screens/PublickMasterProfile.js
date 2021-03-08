@@ -30,215 +30,212 @@ import {
   Text,
   TouchableWithoutFeedback,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 
 import BackgroundHeader from '../components/BackgroundHeader';
 const screen = Dimensions.get('window');
 
 const GalereaBlock = ({img, index, onPress}) => {
-  const {galereaImgContainer, galereaImgContainerIos, galereaImg} = styles;
-  return (
-    <TouchableOpacity
-      onPress={() => onPress(index)}
-      style={
-        Platform.OS === 'ios' ? galereaImgContainerIos : galereaImgContainer
-      }>
-      <Image
-        style={galereaImg}
-        source={{
-          uri: img,
-        }}
+    const {galereaImgContainer, galereaImgContainerIos, galereaImg} = styles;
+    return (
+      <TouchableOpacity
+        onPress={() => onPress(index)}
+        style={
+          Platform.OS === 'ios' ? galereaImgContainerIos : galereaImgContainer
+        }>
+        <Image
+          style={galereaImg}
+          source={{
+            uri: img,
+          }}
+        />
+      </TouchableOpacity>
+    );
+  },
+  BottomImgIndicator = ({index, showActiveImg}) => {
+    const {bottomIndicator} = styles;
+    return (
+      <View
+        key={index}
+        style={[
+          bottomIndicator,
+          {
+            opacity: showActiveImg == index ? 1 : 0.35,
+            height: showActiveImg == index ? 10 : 7,
+            width: showActiveImg == index ? 10 : 7,
+          },
+        ]}
       />
-    </TouchableOpacity>
-  );
-};
+    );
+  },
+  DropdownBlock = ({
+    el,
+    index,
+    slideBlock,
+    setSlideBlock,
+    checkboxes,
+    setCheckboxes,
+    offers,
+    setAllPrice,
+  }) => {
+    const {blockInGroup, borderBottom, checkbox} = styles;
 
-const BottomImgIndicator = ({index, showActiveImg}) => {
-  const {bottomIndicator} = styles;
-  return (
-    <View
-      key={index}
-      style={[
-        bottomIndicator,
-        {
-          opacity: showActiveImg == index ? 1 : 0.35,
-          height: showActiveImg == index ? 10 : 7,
-          width: showActiveImg == index ? 10 : 7,
-        },
-      ]}
-    />
-  );
-};
+    function plural(number, titles) {
+      const cases = [2, 0, 1, 1, 1, 2];
+      return titles[
+        number % 100 > 4 && number % 100 < 20
+          ? 2
+          : cases[number % 10 < 5 ? number % 10 : 5]
+      ];
+    }
 
-const DropdownBlock = ({
-  el,
-  index,
-  slideBlock,
-  setSlideBlock,
-  checkboxes,
-  setCheckboxes,
-  offers,
-  setAllPrice,
-}) => {
-  const {blockInGroup, borderBottom, checkbox} = styles;
-
-  function plural(number, titles) {
-    const cases = [2, 0, 1, 1, 1, 2];
-    return titles[
-      number % 100 > 4 && number % 100 < 20
-        ? 2
-        : cases[number % 10 < 5 ? number % 10 : 5]
-    ];
-  }
-
-  return (
-    <TouchableOpacity
-      style={[blockInGroup, borderBottom]}
-      onPress={() => {
-        slideBlock[index]
-          ? (slideBlock[index] = false)
-          : (slideBlock[index] = true);
-        setSlideBlock([...slideBlock]);
-      }}>
-      <View style={{flexDirection: 'row'}}>
-        <View style={{flex: 3, flexDirection: 'row', alignItems: 'center'}}>
-          <View>
-            {slideBlock[index] && (
-              <SvgUri svgXmlData={pressedIcon} style={{marginRight: 8}} />
-            )}
-            {!slideBlock[index] && (
-              <SvgUri
-                svgXmlData={DefaultIcon}
+    return (
+      <TouchableOpacity
+        style={[blockInGroup, borderBottom]}
+        onPress={() => {
+          slideBlock[index]
+            ? (slideBlock[index] = false)
+            : (slideBlock[index] = true);
+          setSlideBlock([...slideBlock]);
+        }}>
+        <View style={{flexDirection: 'row'}}>
+          <View style={{flex: 3, flexDirection: 'row', alignItems: 'center'}}>
+            <View>
+              {slideBlock[index] && (
+                <SvgUri svgXmlData={pressedIcon} style={{marginRight: 8}} />
+              )}
+              {!slideBlock[index] && (
+                <SvgUri
+                  svgXmlData={DefaultIcon}
+                  style={{
+                    marginRight: 8,
+                  }}
+                />
+              )}
+            </View>
+            <View>
+              <Text
+                numberOfLines={1}
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: 13,
+                  width: '95%',
+                }}>
+                {el.service.name}
+              </Text>
+              <Text style={{fontSize: 10}}>
+                {el.price_by_pack.duration}{' '}
+                {plural(el.price_by_pack.duration, ['час', 'часа', 'часов'])}
+              </Text>
+            </View>
+          </View>
+          <View style={{flex: 2, flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{flex: 7}}>
+              <Text numberOfLines={1} style={{fontSize: 10}}>
+                Стоимость услуги
+              </Text>
+              <Text style={{fontWeight: 'bold', fontSize: 13}}>
+                {el.price_by_pack.price} руб
+              </Text>
+            </View>
+            <View>
+              <TouchableOpacity
                 style={{
                   marginRight: 8,
+                  width: 30,
+                  height: 30,
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
-              />
-            )}
-          </View>
-          <View>
-            <Text
-              numberOfLines={1}
-              style={{
-                fontWeight: 'bold',
-                fontSize: 13,
-                width: '95%',
-              }}>
-              {el.service.name}
-            </Text>
-            <Text style={{fontSize: 10}}>
-              {el.price_by_pack.duration}{' '}
-              {plural(el.price_by_pack.duration, ['час', 'часа', 'часов'])}
-            </Text>
+                onPress={() => {
+                  checkboxes[index]
+                    ? (checkboxes[index] = false)
+                    : (checkboxes[index] = el.id);
+
+                  setCheckboxes([...checkboxes]);
+
+                  let priceSumm = 0;
+                  checkboxes.forEach(CH => {
+                    if (CH) {
+                      offers.forEach(offer => {
+                        if (+offer.id === +CH) {
+                          priceSumm += offer.price_by_pack.price;
+                        }
+                      });
+                    }
+                  });
+                  setAllPrice(priceSumm);
+                }}>
+                <View
+                  style={[
+                    checkbox,
+                    {
+                      backgroundColor: checkboxes[index] ? '#B986DA' : '#fff',
+                      borderWidth: checkboxes[index] ? 0 : 3,
+                    },
+                  ]}>
+                  <SvgUri svgXmlData={VectorIcon} />
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-        <View style={{flex: 2, flexDirection: 'row', alignItems: 'center'}}>
-          <View style={{flex: 7}}>
-            <Text numberOfLines={1} style={{fontSize: 10}}>
-              Стоимость услуги
-            </Text>
-            <Text style={{fontWeight: 'bold', fontSize: 13}}>
-              {el.price_by_pack.price} руб
-            </Text>
+        {slideBlock[index] && (
+          <View
+            style={{
+              paddingTop: 8,
+              paddingRight: 8,
+              width: '100%',
+            }}>
+            <Text style={{fontSize: 13}}>{el.description}</Text>
           </View>
-          <View>
-            <TouchableOpacity
-              style={{
-                marginRight: 8,
-                width: 30,
-                height: 30,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              onPress={() => {
-                checkboxes[index]
-                  ? (checkboxes[index] = false)
-                  : (checkboxes[index] = el.id);
+        )}
+      </TouchableOpacity>
+    );
+  },
+  AnotherBlock = ({title, onPress}) => {
+    const {blockInGroup} = styles;
 
-                setCheckboxes([...checkboxes]);
-
-                let priceSumm = 0;
-                checkboxes.forEach(CH => {
-                  if (CH) {
-                    offers.forEach(offer => {
-                      if (+offer.id === +CH) {
-                        priceSumm += offer.price_by_pack.price;
-                      }
-                    });
-                  }
-                });
-                setAllPrice(priceSumm);
-              }}>
-              <View
-                style={[
-                  checkbox,
-                  {
-                    backgroundColor: checkboxes[index] ? '#B986DA' : '#fff',
-                    borderWidth: checkboxes[index] ? 0 : 3,
-                  },
-                ]}>
-                <SvgUri svgXmlData={VectorIcon} />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-      {slideBlock[index] && (
-        <View
+    return (
+      <TouchableOpacity
+        style={[
+          blockInGroup,
+          {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingRight: 16,
+          },
+        ]}
+        onPress={() => onPress()}>
+        <Text style={{fontWeight: 'bold'}}>{title}</Text>
+        <SvgUri svgXmlData={ArrowWhiteIcon} />
+      </TouchableOpacity>
+    );
+  },
+  TimeBlock = ({time, active, onPress, style}) => {
+    const {timeBlock} = styles;
+    return (
+      <TouchableOpacity
+        onPress={onPress}
+        style={[
+          timeBlock,
+          {
+            backgroundColor: active ? '#B986DA' : '#fff',
+          },
+          style,
+        ]}>
+        <Text
           style={{
-            paddingTop: 8,
-            paddingRight: 8,
-            width: '100%',
+            color: active ? '#FFF' : '#B986DA',
+            fontWeight: 'bold',
           }}>
-          <Text style={{fontSize: 13}}>{el.description}</Text>
-        </View>
-      )}
-    </TouchableOpacity>
-  );
-};
-
-const AnotherBlock = ({title, onPress}) => {
-  const {blockInGroup} = styles;
-
-  return (
-    <TouchableOpacity
-      style={[
-        blockInGroup,
-        {
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingRight: 16,
-        },
-      ]}
-      onPress={() => onPress()}>
-      <Text style={{fontWeight: 'bold'}}>{title}</Text>
-      <SvgUri svgXmlData={ArrowWhiteIcon} />
-    </TouchableOpacity>
-  );
-};
-
-const TimeBlock = ({time, active, onPress, style}) => {
-  const {timeBlock} = styles;
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={[
-        timeBlock,
-        {
-          backgroundColor: active ? '#B986DA' : '#fff',
-        },
-        style,
-      ]}>
-      <Text
-        style={{
-          color: active ? '#FFF' : '#B986DA',
-          fontWeight: 'bold',
-        }}>
-        {time}
-      </Text>
-    </TouchableOpacity>
-  );
-};
+          {time}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
 const PublickMasterProfile = ({navigation}) => {
   const {
@@ -251,7 +248,6 @@ const PublickMasterProfile = ({navigation}) => {
     blockInGroup,
     borderBottom,
     textTitle,
-    timeBlock,
   } = styles;
 
   const scrollImage = useRef(null);
@@ -263,17 +259,22 @@ const PublickMasterProfile = ({navigation}) => {
     [markedDates, setMarkedDates] = useState({}),
     [isShowTime, setIsShowTime] = useState(false),
     [timeWasSelected, setTimeWasSelected] = useState(false),
-    [todayInfo, setTodayInfo] = useState({});
-
-  const onDayPress = day => {
-    if (markedDates[day.dateString]) {
-      setMarkedDates({});
-    } else {
-      setMarkedDates({
-        [day.dateString]: {selected: true, selectedColor: '#B986DA'},
-      });
-    }
-  };
+    [todayInfo, setTodayInfo] = useState({}),
+    [services, setServices] = useState([]),
+    [slideBlock, setSlideBlock] = useState(
+      new Array(services.length).fill(false),
+    ),
+    [checkboxes, setCheckboxes] = useState(
+      new Array(services.length).fill(false),
+    ),
+    [activeTime, setActiveTime] = useState(''),
+    [dates, setDates] = useState([]),
+    [freeTimeByMaster, setFreeTimeByMaster] = useState([]),
+    [choosedActiveTime, setChoosedActiveTime] = useState(null),
+    [allPrice, setAllPrice] = useState(0),
+    [CHCecked, setCHCecked] = useState(false),
+    [isLoading, setIsLoading] = useState(false),
+    [refreshing, setRefreshing] = useState(false);
 
   const MASTER = useQuery(GET_USER, {
       variables: {id: +navigation.state.params.id},
@@ -281,7 +282,19 @@ const PublickMasterProfile = ({navigation}) => {
     APPOINTMENTS = useQuery(GET_APPOINTMENTS, {
       variables: {first: 30},
     }),
-    USER = useQuery(ME);
+    USER = useQuery(ME),
+    FREETIME = useQuery(FREE_TIME, {
+      variables: {
+        master_id: MASTER.data && MASTER.data.user && MASTER.data.user.id,
+        dates: [dates[0]],
+      },
+    }),
+    NEXT_FREETIME = useQuery(NEXT_FREE_TIME_BY_MASTER, {
+      variables: {
+        master_id: MASTER.data && MASTER.data.user && MASTER.data.user.id,
+        count: 3,
+      },
+    });
 
   useEffect(() => {
     if (!allPhoto.length) {
@@ -303,38 +316,9 @@ const PublickMasterProfile = ({navigation}) => {
     }
   }, [APPOINTMENTS]);
 
-  const [services, setServices] = useState([]);
-
   useEffect(() => {
     MASTER.data && setServices(MASTER.data.user.offers);
   }, [MASTER]);
-
-  const [slideBlock, setSlideBlock] = useState(
-      new Array(services.length).fill(false),
-    ),
-    [checkboxes, setCheckboxes] = useState(
-      new Array(services.length).fill(false),
-    ),
-    [activeTime, setActiveTime] = useState(''),
-    [dates, setDates] = useState([]),
-    [freeTimeByMaster, setFreeTimeByMaster] = useState([]),
-    [choosedActiveTime, setChoosedActiveTime] = useState(null),
-    [allPrice, setAllPrice] = useState(0),
-    [CHCecked, setCHCecked] = useState(false),
-    [isLoading, setIsLoading] = useState(false);
-
-  const FREETIME = useQuery(FREE_TIME, {
-      variables: {
-        master_id: MASTER.data && MASTER.data.user && MASTER.data.user.id,
-        dates: [dates[0]],
-      },
-    }),
-    NEXT_FREETIME = useQuery(NEXT_FREE_TIME_BY_MASTER, {
-      variables: {
-        master_id: MASTER.data && MASTER.data.user && MASTER.data.user.id,
-        count: 3,
-      },
-    });
 
   const refreshObject = {
     refetchQueries: [
@@ -404,6 +388,30 @@ const PublickMasterProfile = ({navigation}) => {
           setIsLoading(false);
           console.log(JSON.stringify(err), '__ERR CREATE_APPOINTMENT');
         });
+    },
+    onRefresh = () => {
+      setRefreshing(true);
+
+      MASTER.refetch().then(res => {
+        !res.loading &&
+          res.data &&
+          NEXT_FREETIME.refetch().then(res => {
+            !res.loading &&
+              res.data &&
+              FREETIME.refetch().then(res => {
+                !res.loading && res.data && setRefreshing(false);
+              });
+          });
+      });
+    },
+    onDayPress = day => {
+      if (markedDates[day.dateString]) {
+        setMarkedDates({});
+      } else {
+        setMarkedDates({
+          [day.dateString]: {selected: true, selectedColor: '#B986DA'},
+        });
+      }
     };
 
   if (MASTER.error) {
@@ -436,7 +444,13 @@ const PublickMasterProfile = ({navigation}) => {
           </View>
         )}
         {MASTER.data && (
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => onRefresh()}
+              />
+            }>
             <View style={container}>
               {!!allPhoto.length && (
                 <ScrollView

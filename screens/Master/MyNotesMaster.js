@@ -132,7 +132,7 @@ const Block = ({el, navigation, archive, reload, me}) => {
 };
 
 const MyNotesMaster = ({navigation}) => {
-  const {bigText, smallText, textBold, blockTitle, block} = styles;
+  const {bigText, smallText, blockTitle} = styles;
 
   const USER = useQuery(ME);
 

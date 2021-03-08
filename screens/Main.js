@@ -400,7 +400,6 @@ const Main = ({navigation}) => {
     });
 
   useEffect(() => {
-    console.log(users, '--users');
     setCityid(
       USER.data &&
         USER.data.me &&
