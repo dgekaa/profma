@@ -295,14 +295,17 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
 };
 
 const Header = ({blockPress}) => (
-  <ImageBackground
-    style={styles.header}
-    source={require('../img/headerBGBig.png')}>
-    <TouchableOpacity style={styles.prifileBtn} onPress={() => blockPress()}>
-      <SvgUri svgXmlData={UserWhiteIcon} />
-      <Text style={{color: '#fff', marginLeft: 5}}>Мой профиль</Text>
-    </TouchableOpacity>
-  </ImageBackground>
+  <View style={{overflow:"hidden"}}>
+    <ImageBackground
+      style={styles.header}
+      source={require('../img/headerBGBig.png')}>
+      <TouchableOpacity style={styles.prifileBtn} onPress={() => blockPress()}>
+        <SvgUri svgXmlData={UserWhiteIcon} />
+        <Text style={{color: '#fff', marginLeft: 5}}>Мой профиль</Text>
+      </TouchableOpacity>
+    </ImageBackground>
+  </View>
+  
 );
 
 const FoundMasters = ({
