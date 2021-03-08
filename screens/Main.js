@@ -294,30 +294,98 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
   );
 };
 
+const Header = ({blockPress}) => (
+  <ImageBackground
+    style={styles.header}
+    source={require('../img/headerBGBig.png')}>
+    <TouchableOpacity style={styles.prifileBtn} onPress={() => blockPress()}>
+      <SvgUri svgXmlData={UserWhiteIcon} />
+      <Text style={{color: '#fff', marginLeft: 5}}>Мой профиль</Text>
+    </TouchableOpacity>
+  </ImageBackground>
+);
+
+const FoundMasters = ({
+  findMaster,
+  plural,
+  dates,
+  shortMonthName,
+  setDates,
+}) => (
+  <View style={styles.foundMasters}>
+    <View style={{flex: 1}}>
+      <Text>{`Найдено ${findMaster.data.findMaster.length}  ${plural(
+        findMaster.data.findMaster.length,
+        ['мастер', 'мастера', 'мастеров'],
+      )} на указанные даты:`}</Text>
+      <Text
+        style={{
+          color: '#B986DA',
+          fontSize: 13,
+          fontWeight: 'bold',
+        }}>
+        {dates.map((el, i) => (
+          <Text key={i}>
+            {el.split('-')[2]}{' '}
+            {shortMonthName[+el.split('-')[1] - 1].toLowerCase()},{' '}
+          </Text>
+        ))}
+      </Text>
+    </View>
+    <TouchableOpacity style={styles.closeBtn} onPress={() => setDates()}>
+      <SvgUri svgXmlData={CrossIcon} />
+    </TouchableOpacity>
+  </View>
+);
+
+const NextAppointments = ({
+  nextAppointments,
+  USER,
+  navigation,
+  reloadAppointments,
+}) => {
+  return nextAppointments.data &&
+    !!nextAppointments.data.nextAppointments.length &&
+    USER.data ? (
+    <ScrollView
+      style={styles.nearestSeans}
+      horizontal={true}
+      showsHorizontalScrollIndicator={false}>
+      {nextAppointments.data.nextAppointments.map((el, i) => (
+        <View key={i}>
+          <NearestSeansBlock
+            el={el}
+            navigation={navigation}
+            type={USER.data.me.type}
+            reload={reloadAppointments}
+            photoArr={el.master.master_appointments}
+          />
+        </View>
+      ))}
+    </ScrollView>
+  ) : (
+    <Text />
+  );
+};
+
 const Main = ({navigation}) => {
-  const {
-    prifileBtn,
-    openCalendarIos,
-    openCalendarAndroid,
-    header,
-    foundMasters,
-    closeBtn,
-    nearestSeans,
-  } = styles;
+  const {openCalendarIos, openCalendarAndroid, foundMasters, closeBtn} = styles;
 
   const whoObj = {
     Master: 'Master',
     Client: 'Client',
   };
 
-  const USER = useQuery(ME),
-    users = useQuery(GET_USERS, {
-      variables: {first: 100, type: whoObj.Master},
-    });
-
   const [dates, setDates] = useState(),
     [cityid, setCityid] = useState(null),
-    [refreshing, setRefreshing] = useState(false);
+    [refreshing, setRefreshing] = useState(false),
+    [first, setFirst] = useState(6),
+    [isCalendarVisible, setIsCalendarVisible] = useState(false);
+
+  const USER = useQuery(ME),
+    users = useQuery(GET_USERS, {
+      variables: {first: first, type: whoObj.Master},
+    });
 
   const findMaster = useQuery(FIND_MASTER, {
       variables: {
@@ -332,6 +400,7 @@ const Main = ({navigation}) => {
     });
 
   useEffect(() => {
+    console.log(users, '--users');
     setCityid(
       USER.data &&
         USER.data.me &&
@@ -341,8 +410,6 @@ const Main = ({navigation}) => {
         : null,
     );
   }, [USER, users]);
-
-  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   const showMasters = masters => {
       let arr = [];
@@ -367,6 +434,21 @@ const Main = ({navigation}) => {
           !res.loading && res.data && setRefreshing(false);
         });
       });
+    },
+    blockPress = () => {
+      if (USER.data) {
+        const ME = USER.data.me;
+        ME.type === 'Client'
+          ? navigation.navigate('ClientProfile', {
+              ID: ME.id,
+              reloadNearest: reloadAppointments,
+            })
+          : navigation.navigate('MasterProfile', {ID: ME.id});
+      }
+    },
+    refetchUsers = () => {
+      setFirst(prev => prev + 6);
+      users.refetch();
     };
 
   if (USER.error) {
@@ -374,151 +456,92 @@ const Main = ({navigation}) => {
   } else {
     return (
       <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => onRefresh()}
-            />
-          }>
-          <ImageBackground
-            style={header}
-            source={require('../img/headerBGBig.png')}>
-            <TouchableOpacity
-              style={prifileBtn}
-              onPress={() => {
-                if (USER.data) {
-                  const ME = USER.data.me;
-                  ME.type === 'Client'
-                    ? navigation.navigate('ClientProfile', {
-                        ID: ME.id,
-                        reloadNearest: reloadAppointments,
-                      })
-                    : navigation.navigate('MasterProfile', {ID: ME.id});
-                }
-              }}>
-              <SvgUri svgXmlData={UserWhiteIcon} />
-              <Text style={{color: '#fff', marginLeft: 5}}>Мой профиль</Text>
-            </TouchableOpacity>
-          </ImageBackground>
-          <View style={{paddingHorizontal: 8}}>
-            {nextAppointments.data &&
-              !!nextAppointments.data.nextAppointments.length &&
-              USER.data && (
-                <ScrollView
-                  style={nearestSeans}
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}>
-                  {nextAppointments.data.nextAppointments.map((el, i) => (
-                    <View key={i}>
-                      <NearestSeansBlock
-                        el={el}
-                        navigation={navigation}
-                        type={USER.data.me.type}
-                        reload={reloadAppointments}
-                        photoArr={el.master.master_appointments}
-                      />
-                    </View>
-                  ))}
-                </ScrollView>
-              )}
-
-            {dates && !!findMaster.data && (
-              <View style={foundMasters}>
-                <View style={{flex: 1}}>
-                  <Text>{`Найдено ${
-                    findMaster.data.findMaster.length
-                  }  ${plural(findMaster.data.findMaster.length, [
-                    'мастер',
-                    'мастера',
-                    'мастеров',
-                  ])} на указанные даты:`}</Text>
-                  <Text
-                    style={{
-                      color: '#B986DA',
-                      fontSize: 13,
-                      fontWeight: 'bold',
-                    }}>
-                    {dates.map((el, i) => (
-                      <Text key={i}>
-                        {el.split('-')[2]}{' '}
-                        {shortMonthName[+el.split('-')[1] - 1].toLowerCase()},{' '}
-                      </Text>
-                    ))}
-                  </Text>
-                </View>
-                <TouchableOpacity style={closeBtn} onPress={() => setDates()}>
-                  <SvgUri svgXmlData={CrossIcon} />
-                </TouchableOpacity>
-              </View>
-            )}
-
-            <View style={{paddingBottom: 80}}>
-              {!dates
-                ? !!users &&
-                  !!users.data && (
-                    <FlatList
-                      data={users.data.users.data}
-                      renderItem={({item, index}) => (
-                        <Block
-                          navigation={navigation}
-                          el={item}
-                          reload={reloadAppointments}
-                          photoArr={item.master_appointments}
-                          blockId={index}
-                        />
-                      )}
-                      keyExtractor={item =>
-                        dates ? item.user.id : item.id.toString()
-                      }
+        <View>
+          {!dates
+            ? !!users &&
+              users.data && (
+                <FlatList
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={refreshing}
+                      onRefresh={() => onRefresh()}
                     />
-                  )
-                : !!findMaster.data &&
-                  !!findMaster.data.findMaster && (
-                    <FlatList
-                      data={findMaster.data.findMaster}
-                      renderItem={({item, index}) => (
-                        <Block
-                          navigation={navigation}
-                          el={item}
-                          dates={dates}
-                          reload={reloadAppointments}
-                          photoArr={item.user.master_appointments}
-                          blockId={index}
-                        />
-                      )}
-                      keyExtractor={item =>
-                        dates ? item.user.id : item.id.toString()
-                      }
+                  }
+                  nestedScrollEnabled={true}
+                  data={users.data.users.data}
+                  onEndReachedThreshold={0.1}
+                  onEndReached={refetchUsers}
+                  ListHeaderComponent={
+                    <>
+                      <Header blockPress={blockPress} />
+                      <NextAppointments
+                        nextAppointments={nextAppointments}
+                        USER={USER}
+                        navigation={navigation}
+                        reloadAppointments={reloadAppointments}
+                      />
+                    </>
+                  }
+                  renderItem={({item, index}) => (
+                    <Block
+                      navigation={navigation}
+                      el={item}
+                      reload={reloadAppointments}
+                      photoArr={item.master_appointments}
+                      blockId={index}
                     />
                   )}
-              {users && users.loading && (
-                <View>
-                  <ActivityIndicator size="large" color="#00ff00" />
-                </View>
+                  keyExtractor={item =>
+                    dates ? item.user.id : item.id.toString()
+                  }
+                />
+              )
+            : !!findMaster.data &&
+              !!findMaster.data.findMaster && (
+                <FlatList
+                  data={findMaster.data.findMaster}
+                  ListHeaderComponent={
+                    <>
+                      <Header blockPress={blockPress} />
+                      <NextAppointments
+                        nextAppointments={nextAppointments}
+                        USER={USER}
+                        navigation={navigation}
+                        reloadAppointments={reloadAppointments}
+                      />
+                      {dates && !!findMaster.data && (
+                        <FoundMasters
+                          findMaster={findMaster}
+                          dates={dates}
+                          shortMonthName={shortMonthName}
+                          plural={plural}
+                          setDates={setDates}
+                        />
+                      )}
+                    </>
+                  }
+                  renderItem={({item, index}) => (
+                    <Block
+                      navigation={navigation}
+                      el={item}
+                      dates={dates}
+                      reload={reloadAppointments}
+                      photoArr={item.user.master_appointments}
+                      blockId={index}
+                    />
+                  )}
+                  keyExtractor={item =>
+                    dates ? item.user.id : item.id.toString()
+                  }
+                />
               )}
+          {users && users.loading && (
+            <View>
+              <ActivityIndicator size="large" color="#00ff00" />
             </View>
-            {/* {!person.my_notes.length && (
-              <View style={{flex: 1}}>
-                <View style={{marginTop: 20, flex: 1}}>
-                  <Text style={{fontSize: 13}}>
-                    Пока на сервисе нет ни одного мастера.
-                  </Text>
-                  <Text style={{fontSize: 13}}>
-                    Станьте первым и попадите на пьедестал лучших.
-                  </Text>
-                </View>
-              </View>
-            )} */}
-          </View>
-        </ScrollView>
-        {/* {!person.my_notes.length && (
-          <ButtonDefault
-            title="заполнить профиль мастера"
-            active={true}
-            style={{margin: 8}}
-          />
-        )} */}
+          )}
+        </View>
+
         {!isCalendarVisible && (
           <TouchableOpacity
             style={[

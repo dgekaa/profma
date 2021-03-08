@@ -537,8 +537,8 @@ export const ME = gql`
 `;
 
 export const GET_USERS = gql`
-  query GETUSERS($first: Int, $type: UserType) {
-    users(first: $first, type: $type) {
+  query GETUSERS($first: Int, $type: UserType, $page: Int) {
+    users(first: $first, type: $type, page: $page) {
       data {
         id
         email
@@ -583,6 +583,12 @@ export const GET_USERS = gql`
       paginatorInfo {
         count
         currentPage
+        firstItem
+        hasMorePages
+        lastItem
+        lastPage
+        perPage
+        total
       }
     }
   }
