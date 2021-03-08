@@ -79,7 +79,6 @@ const PersonalData = ({navigation}) => {
   };
 
   useEffect(() => {
-    console.log(USER.data, '----data');
     if (USER.data) {
       const me = USER.data.me;
       setNameLocal(me.profile.name);
@@ -154,7 +153,7 @@ const PersonalData = ({navigation}) => {
         </KeyboardAvoidingView>
 
         {showBtn && USER.data && (
-          <View style={{padding: 16}}>
+          <View style={{padding: 10}}>
             <ButtonDefault title="Сохранить изменения" onPress={() => SAVE()} />
           </View>
         )}
@@ -182,6 +181,7 @@ const styles = StyleSheet.create({
   keyboardWrap: {
     height: 363,
     width: '100%',
+    paddingHorizontal: 10,
   },
   groupBlockIos: {
     height: 315,

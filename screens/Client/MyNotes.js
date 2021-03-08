@@ -159,7 +159,6 @@ const MyNotes = ({navigation}) => {
 
   const onRefresh = () => {
     setRefreshing(true);
-
     USER.refetch().then(res => {
       !res.loading && res.data && setRefreshing(false);
     });
@@ -222,7 +221,7 @@ const MyNotes = ({navigation}) => {
                 onRefresh={() => onRefresh()}
               />
             }
-            style={{flex: 1, paddingHorizontal: 8, marginTop: 10}}>
+            style={{flex: 1, marginTop: 10}}>
             <Text style={blockTitle}>Активные записи</Text>
             {USER.data.me.client_appointments.map((el, i) => {
               if (el.status) {
@@ -269,12 +268,13 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   block: {
-    flex: 1,
     elevation: 1,
     shadowColor: '#000',
+    backgroundColor: '#fff',
     shadowOpacity: 0.5,
     marginBottom: 8,
     paddingLeft: 8,
+    marginHorizontal: 8,
   },
   blockIos: {
     flex: 1,
@@ -284,6 +284,7 @@ const styles = StyleSheet.create({
     shadowRadius: 0.2,
     marginBottom: 8,
     paddingLeft: 8,
+    marginHorizontal: 8,
     shadowOffset: {
       height: 0,
       width: 0,

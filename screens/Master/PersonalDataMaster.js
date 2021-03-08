@@ -296,6 +296,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 4,
     backgroundColor: '#fff',
     elevation: 1,
+    shadowOffset: {
+      height: 0,
+      width: 0,
+    },
   },
   groupBlockIos: {
     marginBottom: 16,

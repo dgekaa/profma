@@ -391,17 +391,14 @@ const PublickMasterProfile = ({navigation}) => {
     },
     onRefresh = () => {
       setRefreshing(true);
-
       MASTER.refetch().then(res => {
-        !res.loading &&
-          res.data &&
+        if (!res.loading && res.data) {
           NEXT_FREETIME.refetch().then(res => {
-            !res.loading &&
-              res.data &&
-              FREETIME.refetch().then(res => {
-                !res.loading && res.data && setRefreshing(false);
-              });
+            if (!res.loading && res.data) {
+              setRefreshing(false);
+            }
           });
+        }
       });
     },
     onDayPress = day => {

@@ -380,7 +380,8 @@ const Main = ({navigation}) => {
     [cityid, setCityid] = useState(null),
     [refreshing, setRefreshing] = useState(false),
     [first, setFirst] = useState(6),
-    [isCalendarVisible, setIsCalendarVisible] = useState(false);
+    [isCalendarVisible, setIsCalendarVisible] = useState(false),
+    [hasMorePages, setHasMorePages] = useState(true);
 
   const USER = useQuery(ME),
     users = useQuery(GET_USERS, {
@@ -400,6 +401,9 @@ const Main = ({navigation}) => {
     });
 
   useEffect(() => {
+    if (users.data)
+      setHasMorePages(users.data.users.paginatorInfo.hasMorePages);
+
     setCityid(
       USER.data &&
         USER.data.me &&
@@ -446,8 +450,10 @@ const Main = ({navigation}) => {
       }
     },
     refetchUsers = () => {
-      setFirst(prev => prev + 6);
-      users.refetch();
+      if (hasMorePages) {
+        setFirst(prev => prev + 6);
+        users.refetch();
+      }
     };
 
   if (USER.error) {
@@ -455,6 +461,20 @@ const Main = ({navigation}) => {
   } else {
     return (
       <View style={{flex: 1, backgroundColor: '#FAFAFA'}}>
+        {users && users.loading && (
+          <View
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: screen.height,
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 1000,
+            }}>
+            <ActivityIndicator size="large" color="#00ff00" />
+          </View>
+        )}
         <View>
           {!dates
             ? !!users &&
@@ -534,11 +554,6 @@ const Main = ({navigation}) => {
                   }
                 />
               )}
-          {users && users.loading && (
-            <View>
-              <ActivityIndicator size="large" color="#00ff00" />
-            </View>
-          )}
         </View>
 
         {!isCalendarVisible && (

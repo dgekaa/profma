@@ -237,8 +237,6 @@ const MasterCalendar = ({navigation}) => {
         '-' +
         refreshDate(dateSelected[1]);
 
-    console.log(dateNewSelected, '---dateNewSelected');
-
     setCurrentDate(dateNewSelected);
   };
 
