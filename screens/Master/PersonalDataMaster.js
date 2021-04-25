@@ -63,6 +63,7 @@ const PersonalDataMaster = ({navigation, handleChangeLoginState}) => {
         setIsLoading(false);
         console.log(res, '__RES');
         setSavedSuccess(true);
+        navigation.state.params.refetchMasters();
         setTimeout(() => {
           setSavedSuccess(false);
           // setShowBtn(false);

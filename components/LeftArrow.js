@@ -17,11 +17,13 @@ export const LeftArrowBlack = ({onPress}) => (
 );
 
 export const LeftArrowWhite = ({onPress}) => (
-  <TouchableOpacity onPress={onPress} style={{
-    height: 80,
-    width: 80,
-    justifyContent: 'center',
-  }}>
+  <TouchableOpacity
+    onPress={onPress}
+    style={{
+      height: 80,
+      width: 80,
+      justifyContent: 'center',
+    }}>
     <SvgUri width="13" height="13" svgXmlData={LeftArrowIcon} />
   </TouchableOpacity>
 );

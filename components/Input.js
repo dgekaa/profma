@@ -29,7 +29,7 @@ export const InputWithText = ({
   autoFocus,
   onSubmitEditing,
   maxLength,
-  onFocus
+  onFocus,
 }) => {
   const {
     inputWrap,
@@ -38,13 +38,13 @@ export const InputWithText = ({
     topInputTextWrap,
     smallText,
     errStyleLocal,
-    wrapperIos
+    wrapperIos,
   } = styles;
 
   return (
     <View
       style={[
-        Platform.OS === 'ios' ? wrapperIos : wrapper ,
+        Platform.OS === 'ios' ? wrapperIos : wrapper,
         style,
         {
           shadowOpacity: withoutShadow ? 0 : 0.5,
@@ -100,7 +100,7 @@ export const InputWithPassword = ({
     topInputTextWrap,
     forgetTextWrap,
     smallText,
-    wrapperIos
+    wrapperIos,
   } = styles;
 
   const [isShowPlaceholder, setIsShowPlaceholder] = useState(true),
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     flex: 9,
     fontWeight: 'bold',
-    height: 35,
+    height: 40,
     fontSize: 13,
   },
   eye: {

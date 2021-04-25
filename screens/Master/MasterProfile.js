@@ -127,7 +127,11 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                 {/* ПЕРСОНАЛЬНЫЕ ДАННЫЕ*/}
                 <TouchableOpacity
                   style={[blockInGroup, borderBottom]}
-                  onPress={() => navigation.navigate('PersonalDataMaster')}>
+                  onPress={() =>
+                    navigation.navigate('PersonalDataMaster', {
+                      refetchMasters: navigation.state.params.refetchMasters,
+                    })
+                  }>
                   <SvgUri width="16" height="16" svgXmlData={UserIcon} />
                   <Text style={text}>Персональные данные</Text>
                 </TouchableOpacity>

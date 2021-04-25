@@ -105,6 +105,7 @@ const ServiceDescription = ({navigation}) => {
             !!DATA ? DATA.length : ''
           })`}
         />
+
         {SERVICES.loading && (
           <View
             style={{
@@ -118,6 +119,7 @@ const ServiceDescription = ({navigation}) => {
             <ActivityIndicator size="large" color="#00ff00" />
           </View>
         )}
+
         {SERVICES.data && (
           <ScrollView>
             <KeyboardAvoidingView
@@ -146,6 +148,7 @@ const ServiceDescription = ({navigation}) => {
                       {DATA && DATA[serviceCount].name}
                     </Text>
                   </View>
+
                   <View
                     style={[
                       Platform.OS === 'ios' ? groupBlockIos : groupBlock,
@@ -156,20 +159,6 @@ const ServiceDescription = ({navigation}) => {
                         marginBottom: 10,
                       },
                     ]}>
-                    {/* <View
-                    style={{
-                      marginTop: 6,
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <ButtonDefault
-                      onPress={() => {}}
-                      style={{marginRight: 5}}
-                      flex={true}
-                      title="оплата по времени"
-                      active={true}
-                    />
-                  </View> */}
                     <View>
                       <View
                         style={{
@@ -265,64 +254,65 @@ const ServiceDescription = ({navigation}) => {
                     </Text>
                   </View>
                 </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    width: '85%',
-                    alignItems: 'center',
-                    alignSelf: 'center',
-                    marginVertical: 16,
-                    // marginBottom: Platform.OS === 'ios' ? 0 : 16,
-                  }}>
-                  <View>
-                    <Image source={require('../../img/girl6.png')} />
-                  </View>
-                  <View style={{marginLeft: 8}}>
-                    <Text style={{fontSize: 13, paddingRight: 25}}>
-                      Чтобы клиенты могли начать пользоваться вашей услугой,
-                      <Text style={{fontWeight: 'bold'}}>
-                        сначала укажите её детали.
-                      </Text>
-                    </Text>
-                  </View>
-                </View>
-
-                <View style={{margin: 8}}>
-                  {!deleteService && (
-                    <ButtonDefault
-                      title={`удалить услугу`}
-                      style={{marginBottom: 8}}
-                      onPress={() => {
-                        setDeleteModal(true);
-                      }}
-                    />
-                  )}
-
-                  {deleteService && (
-                    <SaveSuccess title="🗑 Услуга успешно удалена." />
-                  )}
-
-                  <ButtonDefault
-                    onPress={() => {
-                      !howLong || !howMach || !desc
-                        ? setErr('Поле обязательно для заполнения')
-                        : setErr('');
-                      SAVE();
-                    }}
-                    title={
-                      false
-                        ? 'ВЫ не указали детали услуги'
-                        : `сохранить услугу (${serviceCount + 1}/${
-                            !!DATA ? DATA.length : ''
-                          })`
-                    }
-                    active={true}
-                  />
-                </View>
               </View>
             </KeyboardAvoidingView>
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '85%',
+                alignItems: 'center',
+                alignSelf: 'center',
+                marginVertical: 16,
+                // marginBottom: Platform.OS === 'ios' ? 0 : 16,
+              }}>
+              <View>
+                <Image source={require('../../img/girl6.png')} />
+              </View>
+              <View style={{marginLeft: 8}}>
+                <Text style={{fontSize: 13, paddingRight: 25}}>
+                  Чтобы клиенты могли начать пользоваться вашей услугой,
+                  <Text style={{fontWeight: 'bold'}}>
+                    сначала укажите её детали.
+                  </Text>
+                </Text>
+              </View>
+            </View>
+
+            <View style={{margin: 8}}>
+              {!deleteService && (
+                <ButtonDefault
+                  title={`удалить услугу`}
+                  style={{marginBottom: 8}}
+                  onPress={() => {
+                    setDeleteModal(true);
+                  }}
+                />
+              )}
+
+              {deleteService && (
+                <SaveSuccess title="🗑 Услуга успешно удалена." />
+              )}
+
+              <ButtonDefault
+                onPress={() => {
+                  !howLong || !howMach || !desc
+                    ? setErr('Поле обязательно для заполнения')
+                    : setErr('');
+                  SAVE();
+                }}
+                title={
+                  false
+                    ? 'ВЫ не указали детали услуги'
+                    : `сохранить услугу (${serviceCount + 1}/${
+                        !!DATA ? DATA.length : ''
+                      })`
+                }
+                active={true}
+              />
+            </View>
           </ScrollView>
         )}
+
         {deleteModal && (
           <ModalWindow>
             <Text style={{fontSize: 13}}>Вы собираетесь удалить услугу</Text>

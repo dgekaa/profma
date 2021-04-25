@@ -146,20 +146,6 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
               <Text style={{fontSize: 10}} numberOfLines={1}>
                 {(el.profile && el.profile.work_address) || '-'}
               </Text>
-              {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                {el.metro && (
-                  <View
-                    style={{
-                      height: 4,
-                      width: 4,
-                      borderRadius: 4,
-                      backgroundColor: '#9155FF',
-                      marginRight: 5,
-                    }}
-                  />
-                )}
-                <Text style={{fontSize: 10}}>{el.metro || ''}</Text>
-              </View> */}
             </View>
           </View>
           <View style={timeBlockWrapp}>
@@ -183,9 +169,11 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
                         +nextFreeTimeByMaster.data.nextFreeTimeByMaster[0].date.split(
                           '-',
                         )[1]
-                      ].toLowerCase()}{' '}
+                      ].toLowerCase()}
                     </Text>
-                    <Text style={{color: '#B986DA', fontSize: 10}}>{el}</Text>
+                    <Text style={{color: '#B986DA', fontSize: 10}}>
+                      {el.slice(0, 5)}
+                    </Text>
                   </View>
                 ),
               )}
@@ -295,7 +283,7 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
 };
 
 const Header = ({blockPress}) => (
-  <View style={{overflow:"hidden"}}>
+  <View style={{overflow: 'hidden'}}>
     <ImageBackground
       style={styles.header}
       source={require('../img/headerBGBig.png')}>
@@ -305,7 +293,6 @@ const Header = ({blockPress}) => (
       </TouchableOpacity>
     </ImageBackground>
   </View>
-  
 );
 
 const FoundMasters = ({
@@ -389,9 +376,8 @@ const Main = ({navigation}) => {
   const USER = useQuery(ME),
     users = useQuery(GET_USERS, {
       variables: {first: first, type: whoObj.Master},
-    });
-
-  const findMaster = useQuery(FIND_MASTER, {
+    }),
+    findMaster = useQuery(FIND_MASTER, {
       variables: {
         city_id: +cityid || null,
         dates: dates || null,
@@ -434,12 +420,29 @@ const Main = ({navigation}) => {
     reloadAppointments = () => nextAppointments.refetch(),
     onRefresh = () => {
       setRefreshing(true);
+      console.log('SSSSS 0');
+      users
+        .refetch()
+        .then(res => {
+          console.log('SSSSS 1');
 
-      users.refetch().then(res => {
-        nextAppointments.refetch().then(res => {
-          !res.loading && res.data && setRefreshing(false);
+          nextAppointments
+            .refetch()
+            .then(res => {
+              console.log('SSSSS 2');
+              !res.loading && res.data && setRefreshing(false);
+            })
+            .catch(err => {
+              console.log('SSSSS 3');
+              console.log(err, '---==');
+              setRefreshing(false);
+            });
+        })
+        .catch(err => {
+          console.log('SSSSS 4');
+
+          setRefreshing(false);
         });
-      });
     },
     blockPress = () => {
       if (USER.data) {
@@ -449,7 +452,10 @@ const Main = ({navigation}) => {
               ID: ME.id,
               reloadNearest: reloadAppointments,
             })
-          : navigation.navigate('MasterProfile', {ID: ME.id});
+          : navigation.navigate('MasterProfile', {
+              ID: ME.id,
+              refetchMasters: users.refetch,
+            });
       }
     },
     refetchUsers = () => {
