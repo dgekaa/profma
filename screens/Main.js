@@ -420,29 +420,17 @@ const Main = ({navigation}) => {
     reloadAppointments = () => nextAppointments.refetch(),
     onRefresh = () => {
       setRefreshing(true);
-      console.log('SSSSS 0');
       users
         .refetch()
         .then(res => {
-          console.log('SSSSS 1');
-
           nextAppointments
             .refetch()
             .then(res => {
-              console.log('SSSSS 2');
               !res.loading && res.data && setRefreshing(false);
             })
-            .catch(err => {
-              console.log('SSSSS 3');
-              console.log(err, '---==');
-              setRefreshing(false);
-            });
+            .catch(err => setRefreshing(false));
         })
-        .catch(err => {
-          console.log('SSSSS 4');
-
-          setRefreshing(false);
-        });
+        .catch(err => setRefreshing(false));
     },
     blockPress = () => {
       if (USER.data) {

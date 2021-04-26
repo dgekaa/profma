@@ -115,6 +115,7 @@ const CalendarCustom = ({
             minDate={moment(now, 'DD/MM/YYYY', true)
               .format()
               .slice(0, 10)}
+            firstDay={1}
             markedDates={markedDates}
             hideExtraDays={true}
             onDayPress={day => onSelectDays(day)}
