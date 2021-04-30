@@ -237,6 +237,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     height: 40,
     fontSize: 13,
+    backgroundColor: '#fff',
   },
   eye: {
     width: 16,

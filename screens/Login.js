@@ -10,6 +10,7 @@ import {
   Keyboard,
   ActivityIndicator,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import {ButtonDefault, ButtonDisabled, ButtonError} from '../components/Button';
 import {InputWithText, InputWithPassword} from '../components/Input';
@@ -112,11 +113,11 @@ const Login = ({navigation, handleChangeLoginState}) => {
             Platform.OS === 'ios' ? keyboardIos : keyboardAndroid,
             {backgroundColor: '#fff'},
           ]}
-          behavior={Platform.OS === 'ios' ? 'position' : 'position'}>
+          behavior={Platform.OS === 'ios' ? 'position' : 'padding'}>
           <View
             style={[
               {
-                height: 190,
+                // height: 190,
                 backgroundColor: '#fff',
                 paddingHorizontal: 8,
               },
@@ -144,8 +145,8 @@ const Login = ({navigation, handleChangeLoginState}) => {
               secureTextEntry={hidePassword}
               icon={iconName}
               onPress={openCloseEye}
-              forgetPassword={true}
               validationErr={validationErr}
+              forgetPassword={true}
               onPressPassRecovery={() =>
                 navigation.navigate('PasswordRecovery')
               }
@@ -258,8 +259,8 @@ const stylesClientRegistration = StyleSheet.create({
     justifyContent: 'space-between',
   },
   keyboardAndroid: {
-    flex: 2.5,
-    backgroundColor: '#fff',
+    height: 400,
+    backgroundColor: 'gold',
     paddingHorizontal: 8,
     justifyContent: 'space-between',
   },
