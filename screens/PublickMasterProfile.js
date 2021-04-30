@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {ButtonDefault} from '../components/Button';
+import React, { useState, useEffect, useRef } from 'react';
+import { ButtonDefault } from '../components/Button';
 import CalendarCustom from '../components/Calendar';
 import ModalWindow from '../components/ModalWindow';
 import SvgUri from 'react-native-svg-uri';
@@ -10,8 +10,8 @@ import ArrowWhiteIcon from '../img/ArrowRight.svg';
 import CalendarSvgIcon from '../img/CalendarSVG.svg';
 import LocationIcon from '../img/Location.svg';
 import CrossWhiteIcon from '../img/CrossWhite.svg';
-import {Query, useMutation, useQuery, useLazyQuery} from 'react-apollo';
-import {shortMonthName} from '../constants';
+import { Query, useMutation, useQuery, useLazyQuery } from 'react-apollo';
+import { shortMonthName } from '../constants';
 import {
   GET_USER,
   FREE_TIME,
@@ -36,25 +36,25 @@ import {
 import BackgroundHeader from '../components/BackgroundHeader';
 const screen = Dimensions.get('window');
 
-const GalereaBlock = ({img, index, onPress}) => {
-    const {galereaImgContainer, galereaImgContainerIos, galereaImg} = styles;
-    return (
-      <TouchableOpacity
-        onPress={() => onPress(index)}
-        style={
-          Platform.OS === 'ios' ? galereaImgContainerIos : galereaImgContainer
-        }>
-        <Image
-          style={galereaImg}
-          source={{
-            uri: img,
-          }}
-        />
-      </TouchableOpacity>
-    );
-  },
-  BottomImgIndicator = ({index, showActiveImg}) => {
-    const {bottomIndicator} = styles;
+const GalereaBlock = ({ img, index, onPress }) => {
+  const { galereaImgContainer, galereaImgContainerIos, galereaImg } = styles;
+  return (
+    <TouchableOpacity
+      onPress={() => onPress(index)}
+      style={
+        Platform.OS === 'ios' ? galereaImgContainerIos : galereaImgContainer
+      }>
+      <Image
+        style={galereaImg}
+        source={{
+          uri: img,
+        }}
+      />
+    </TouchableOpacity>
+  );
+},
+  BottomImgIndicator = ({ index, showActiveImg }) => {
+    const { bottomIndicator } = styles;
     return (
       <View
         key={index}
@@ -79,7 +79,7 @@ const GalereaBlock = ({img, index, onPress}) => {
     offers,
     setAllPrice,
   }) => {
-    const {blockInGroup, borderBottom, checkbox} = styles;
+    const { blockInGroup, borderBottom, checkbox } = styles;
 
     function plural(number, titles) {
       const cases = [2, 0, 1, 1, 1, 2];
@@ -99,11 +99,11 @@ const GalereaBlock = ({img, index, onPress}) => {
             : (slideBlock[index] = true);
           setSlideBlock([...slideBlock]);
         }}>
-        <View style={{flexDirection: 'row'}}>
-          <View style={{flex: 3, flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row' }}>
+          <View style={{ flex: 3, flexDirection: 'row', alignItems: 'center' }}>
             <View>
               {slideBlock[index] && (
-                <SvgUri svgXmlData={pressedIcon} style={{marginRight: 8}} />
+                <SvgUri svgXmlData={pressedIcon} style={{ marginRight: 8 }} />
               )}
               {!slideBlock[index] && (
                 <SvgUri
@@ -124,18 +124,18 @@ const GalereaBlock = ({img, index, onPress}) => {
                 }}>
                 {el.service.name}
               </Text>
-              <Text style={{fontSize: 10}}>
+              <Text style={{ fontSize: 10 }}>
                 {el.price_by_pack.duration}{' '}
                 {plural(el.price_by_pack.duration, ['час', 'часа', 'часов'])}
               </Text>
             </View>
           </View>
-          <View style={{flex: 2, flexDirection: 'row', alignItems: 'center'}}>
-            <View style={{flex: 7}}>
-              <Text numberOfLines={1} style={{fontSize: 10}}>
+          <View style={{ flex: 2, flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flex: 7 }}>
+              <Text numberOfLines={1} style={{ fontSize: 10 }}>
                 Стоимость услуги
               </Text>
-              <Text style={{fontWeight: 'bold', fontSize: 13}}>
+              <Text style={{ fontWeight: 'bold', fontSize: 13 }}>
                 {el.price_by_pack.price} руб
               </Text>
             </View>
@@ -188,14 +188,14 @@ const GalereaBlock = ({img, index, onPress}) => {
               paddingRight: 8,
               width: '100%',
             }}>
-            <Text style={{fontSize: 13}}>{el.description}</Text>
+            <Text style={{ fontSize: 13 }}>{el.description}</Text>
           </View>
         )}
       </TouchableOpacity>
     );
   },
-  AnotherBlock = ({title, onPress}) => {
-    const {blockInGroup} = styles;
+  AnotherBlock = ({ title, onPress }) => {
+    const { blockInGroup } = styles;
 
     return (
       <TouchableOpacity
@@ -209,13 +209,13 @@ const GalereaBlock = ({img, index, onPress}) => {
           },
         ]}
         onPress={() => onPress()}>
-        <Text style={{fontWeight: 'bold'}}>{title}</Text>
+        <Text style={{ fontWeight: 'bold' }}>{title}</Text>
         <SvgUri svgXmlData={ArrowWhiteIcon} />
       </TouchableOpacity>
     );
   },
-  TimeBlock = ({time, active, onPress, style}) => {
-    const {timeBlock} = styles;
+  TimeBlock = ({ time, active, onPress, style }) => {
+    const { timeBlock } = styles;
     return (
       <TouchableOpacity
         onPress={onPress}
@@ -231,13 +231,13 @@ const GalereaBlock = ({img, index, onPress}) => {
             color: active ? '#FFF' : '#B986DA',
             fontWeight: 'bold',
           }}>
-          {time}
+          {time.slice(0, 5)}
         </Text>
       </TouchableOpacity>
     );
   };
 
-const PublickMasterProfile = ({navigation}) => {
+const PublickMasterProfile = ({ navigation }) => {
   const {
     container,
     galerea,
@@ -277,10 +277,10 @@ const PublickMasterProfile = ({navigation}) => {
     [refreshing, setRefreshing] = useState(false);
 
   const MASTER = useQuery(GET_USER, {
-      variables: {id: +navigation.state.params.id},
-    }),
+    variables: { id: +navigation.state.params.id },
+  }),
     APPOINTMENTS = useQuery(GET_APPOINTMENTS, {
-      variables: {first: 30},
+      variables: { first: 30 },
     }),
     USER = useQuery(ME),
     FREETIME = useQuery(FREE_TIME, {
@@ -357,19 +357,20 @@ const PublickMasterProfile = ({navigation}) => {
   }, [checkboxes]);
 
   const showMasters = masters => {
-      let arr = [];
-      for (let key in masters) arr.push(key);
-      setDates(arr);
-    },
+    let arr = [];
+    for (let key in masters) arr.push(key);
+    setDates(arr);
+  },
     CREATE = () => {
       const CH = checkboxes.filter(el => +el),
         finishCH = CH.map(el => +el);
       setIsLoading(true);
+      console.log(activeTime,'---time')
       CREATE_APPOINTMENT_mutation({
         variables: {
           id: +MASTER.data.user.id,
           date: dates[0],
-          time: activeTime,
+          time: activeTime.slice(0,5),
           offers_id: finishCH,
         },
         optimisticResponse: null,
@@ -406,7 +407,7 @@ const PublickMasterProfile = ({navigation}) => {
         setMarkedDates({});
       } else {
         setMarkedDates({
-          [day.dateString]: {selected: true, selectedColor: '#B986DA'},
+          [day.dateString]: { selected: true, selectedColor: '#B986DA' },
         });
       }
     };
@@ -415,15 +416,15 @@ const PublickMasterProfile = ({navigation}) => {
     return <Text>Err</Text>;
   } else {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <BackgroundHeader
           navigation={navigation}
           title={
             MASTER.data
               ? MASTER.data.user.profile.name
               : MASTER.loading
-              ? ''
-              : 'Имя не задано'
+                ? ''
+                : 'Имя не задано'
           }
         />
         {(MASTER.loading || isLoading) && (
@@ -507,8 +508,8 @@ const PublickMasterProfile = ({navigation}) => {
                     style={{
                       flex:
                         !!NEXT_FREETIME.data &&
-                        !!NEXT_FREETIME.data.nextFreeTimeByMaster &&
-                        !!NEXT_FREETIME.data.nextFreeTimeByMaster.length
+                          !!NEXT_FREETIME.data.nextFreeTimeByMaster &&
+                          !!NEXT_FREETIME.data.nextFreeTimeByMaster.length
                           ? 1
                           : 3,
                       flexDirection: 'row',
@@ -520,32 +521,32 @@ const PublickMasterProfile = ({navigation}) => {
                       svgXmlData={CalendarSvgIcon}
                     />
                     {!!NEXT_FREETIME.data &&
-                    !!NEXT_FREETIME.data.nextFreeTimeByMaster &&
-                    !!NEXT_FREETIME.data.nextFreeTimeByMaster.length ? (
-                      <Text style={{fontWeight: 'bold'}}>
-                        {
-                          NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
-                            '-',
-                          )[2]
-                        }{' '}
-                        {
-                          shortMonthName[
+                      !!NEXT_FREETIME.data.nextFreeTimeByMaster &&
+                      !!NEXT_FREETIME.data.nextFreeTimeByMaster.length ? (
+                        <Text style={{ fontWeight: 'bold' }}>
+                          {
+                            NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
+                              '-',
+                            )[2]
+                          }{' '}
+                          {
+                            shortMonthName[
                             +NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
                               '-',
                             )[1]
-                          ]
-                        }{' '}
-                        {
-                          NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
-                            '-',
-                          )[0]
-                        }
-                      </Text>
-                    ) : (
-                      <Text style={{width: '100%', paddingLeft: 10}}>
-                        Нет свободного времени
-                      </Text>
-                    )}
+                            ]
+                          }{' '}
+                          {
+                            NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
+                              '-',
+                            )[0]
+                          }
+                        </Text>
+                      ) : (
+                        <Text style={{ width: '100%', paddingLeft: 10 }}>
+                          Нет свободного времени
+                        </Text>
+                      )}
                   </View>
 
                   <View
@@ -564,7 +565,7 @@ const PublickMasterProfile = ({navigation}) => {
                           return (
                             <TimeBlock
                               key={i}
-                              style={{width: '30%'}}
+                              style={{ width: '30%' }}
                               time={el}
                               active={choosedActiveTime === i}
                               onPress={() => {
@@ -588,10 +589,10 @@ const PublickMasterProfile = ({navigation}) => {
               </View>
               <Text style={textTitle}>адрес мастера</Text>
               <View style={groupBlock}>
-                <View style={[blockInGroup, {flexDirection: 'row'}]}>
-                  <SvgUri svgXmlData={LocationIcon} style={{marginRight: 8}} />
-                  <View style={{flexDirection: 'column'}}>
-                    <Text style={{fontSize: 13, fontWeight: 'bold'}}>
+                <View style={[blockInGroup, { flexDirection: 'row' }]}>
+                  <SvgUri svgXmlData={LocationIcon} style={{ marginRight: 8 }} />
+                  <View style={{ flexDirection: 'column' }}>
+                    <Text style={{ fontSize: 13, fontWeight: 'bold' }}>
                       {MASTER.data.user.profile.work_address ||
                         'Адрес не указан'}
                       ,{' '}
@@ -615,7 +616,7 @@ const PublickMasterProfile = ({navigation}) => {
                 </View>
               </View>
               <Text style={textTitle}> О мастере</Text>
-              <View style={[groupBlock, blockInGroup, {marginBottom: 30}]}>
+              <View style={[groupBlock, blockInGroup, { marginBottom: 30 }]}>
                 <Text
                   style={{
                     fontSize: 13,
@@ -627,30 +628,30 @@ const PublickMasterProfile = ({navigation}) => {
               </View>
 
               {!!USER.data &&
-              USER.data.me.type !== 'Master' &&
-              allPrice &&
-              CHCecked &&
-              activeTime ? (
-                <ButtonDefault
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}
-                  title="Подтвердить запись"
-                  rightTitle={allPrice + ' руб'}
-                  onPress={() => CREATE()}
-                  active={true}
-                />
-              ) : !!USER.data && USER.data.me.type !== 'Master' ? (
-                <ButtonDefault
-                  style={{flexDirection: 'row', justifyContent: 'space-around'}}
-                  title="Вы не указали детали сеанса"
-                  onPress={() => {}}
-                  active={true}
-                />
-              ) : (
-                <></>
-              )}
+                USER.data.me.type !== 'Master' &&
+                allPrice &&
+                CHCecked &&
+                activeTime ? (
+                  <ButtonDefault
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}
+                    title="Подтвердить запись"
+                    rightTitle={allPrice + ' руб'}
+                    onPress={() => CREATE()}
+                    active={true}
+                  />
+                ) : !!USER.data && USER.data.me.type !== 'Master' ? (
+                  <ButtonDefault
+                    style={{ flexDirection: 'row', justifyContent: 'space-around' }}
+                    title="Вы не указали детали сеанса"
+                    onPress={() => { }}
+                    active={true}
+                  />
+                ) : (
+                    <></>
+                  )}
             </View>
           </ScrollView>
         )}
@@ -683,7 +684,7 @@ const PublickMasterProfile = ({navigation}) => {
                         width: screen.width,
                         resizeMode: 'cover',
                       }}
-                      source={{uri: el}}
+                      source={{ uri: el }}
                     />
                   </View>
                 );
@@ -722,7 +723,7 @@ const PublickMasterProfile = ({navigation}) => {
                 backgroundColor: 'rgba(0,0,0,0.2)',
                 justifyContent: 'flex-end',
               }}>
-              <View style={{height: '70%', backgroundColor: '#fff'}}>
+              <View style={{ height: '70%', backgroundColor: '#fff' }}>
                 <Text
                   style={{
                     backgroundColor: '#fafafa',
@@ -736,7 +737,7 @@ const PublickMasterProfile = ({navigation}) => {
                   }}>
                   Все услуги
                 </Text>
-                <ScrollView style={{paddingHorizontal: 8}}>
+                <ScrollView style={{ paddingHorizontal: 8 }}>
                   {!!MASTER.data.user.offers.length &&
                     MASTER.data.user.offers.map((el, i) => {
                       return (
@@ -763,7 +764,7 @@ const PublickMasterProfile = ({navigation}) => {
                     ')'
                   }
                   active={true}
-                  style={{margin: 8}}
+                  style={{ margin: 8 }}
                 />
               </View>
             </View>
@@ -782,7 +783,7 @@ const PublickMasterProfile = ({navigation}) => {
           />
         )}
         {isShowTime && (
-          <ModalWindow style={{padding: 0, paddingBottom: 24}}>
+          <ModalWindow style={{ padding: 0, paddingBottom: 24 }}>
             <View
               style={{
                 backgroundColor: '#C092DE',
@@ -792,7 +793,7 @@ const PublickMasterProfile = ({navigation}) => {
                 alignItems: 'center',
                 marginBottom: 16,
               }}>
-              <Text style={{color: '#fff'}}>
+              <Text style={{ color: '#fff' }}>
                 {todayInfo.dayOfWeek}, {todayInfo.date}{' '}
                 {todayInfo.monthName.toLowerCase()}
               </Text>
@@ -828,7 +829,7 @@ const PublickMasterProfile = ({navigation}) => {
                     <TimeBlock
                       key={i}
                       onPress={() => setActiveTime(el)}
-                      style={{marginBottom: 8}}
+                      style={{ marginBottom: 8 }}
                       time={el}
                       active={activeTime === el ? true : false}
                     />
@@ -836,10 +837,10 @@ const PublickMasterProfile = ({navigation}) => {
               </View>
             )}
 
-            <View style={{width: '100%'}}>
+            <View style={{ width: '100%' }}>
               {!!freeTimeByMaster.length && (
                 <ButtonDefault
-                  style={{marginBottom: 8, marginHorizontal: 24}}
+                  style={{ marginBottom: 8, marginHorizontal: 24 }}
                   onPress={() => setIsShowTime(false)}
                   title="Выбрать это время"
                   active={true}
@@ -847,7 +848,7 @@ const PublickMasterProfile = ({navigation}) => {
               )}
 
               <ButtonDefault
-                style={{marginHorizontal: 24}}
+                style={{ marginHorizontal: 24 }}
                 onPress={() => {
                   setIsShowTime(false);
                   setActiveTime([]);
@@ -862,7 +863,7 @@ const PublickMasterProfile = ({navigation}) => {
             <Text>Вы записаны</Text>
             <Text>
               на{' '}
-              <Text style={{fontWeight: 'bold'}}>
+              <Text style={{ fontWeight: 'bold' }}>
                 {dates[0] && dates[0].split('-')[2]}{' '}
                 {dates[0] && shortMonthName[+dates[0].split('-')[1]]}{' '}
                 {dates[0] && dates[0].split('-')[0]}
@@ -870,15 +871,15 @@ const PublickMasterProfile = ({navigation}) => {
               в {activeTime} к мастеру
             </Text>
             <Image
-              style={{marginTop: 16}}
+              style={{ marginTop: 16 }}
               source={require('../img/girl1.png')}
             />
-            <Text style={{fontWeight: 'bold', marginVertical: 16}}>
+            <Text style={{ fontWeight: 'bold', marginVertical: 16 }}>
               {MASTER.data.user.profile.name}
             </Text>
-            <View style={{width: '100%'}}>
+            <View style={{ width: '100%' }}>
               <ButtonDefault
-                style={{marginBottom: 8}}
+                style={{ marginBottom: 8 }}
                 title="спасибо, закрыть окно"
                 active={true}
                 onPress={() => {
