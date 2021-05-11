@@ -27,95 +27,95 @@ import {
 } from 'react-native';
 
 const monthNames = [
-  'января',
-  'февраля',
-  'марта',
-  'апреля',
-  'мая',
-  'июня',
-  'июля',
-  'августа',
-  'сентября',
-  'октября',
-  'ноября',
-  'декабря',
-];
-const monthsNamesHeader = {
-  Jan: {name: 'Январь', number: 1},
-  Feb: {name: 'Февраль', number: 2},
-  Mar: {name: 'Март', number: 3},
-  Apr: {name: 'Апрель', number: 4},
-  May: {name: 'Май', number: 5},
-  Jun: {name: 'Июнь', number: 6},
-  Jul: {name: 'Июль', number: 7},
-  Aug: {name: 'Август', number: 8},
-  Sep: {name: 'Сентябрь', number: 9},
-  Oct: {name: 'Октябрь', number: 10},
-  Nov: {name: 'Ноябрь', number: 11},
-  Dec: {name: 'Декабрь', number: 12},
-};
+    'января',
+    'февраля',
+    'марта',
+    'апреля',
+    'мая',
+    'июня',
+    'июля',
+    'августа',
+    'сентября',
+    'октября',
+    'ноября',
+    'декабря',
+  ],
+  monthsNamesHeader = {
+    Jan: {name: 'Январь', number: 1},
+    Feb: {name: 'Февраль', number: 2},
+    Mar: {name: 'Март', number: 3},
+    Apr: {name: 'Апрель', number: 4},
+    May: {name: 'Май', number: 5},
+    Jun: {name: 'Июнь', number: 6},
+    Jul: {name: 'Июль', number: 7},
+    Aug: {name: 'Август', number: 8},
+    Sep: {name: 'Сентябрь', number: 9},
+    Oct: {name: 'Октябрь', number: 10},
+    Nov: {name: 'Ноябрь', number: 11},
+    Dec: {name: 'Декабрь', number: 12},
+  };
 
 const Block = ({el, navigation}) => {
-  const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
+    const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
 
-  // useEffect(() => {
-  //   el.services.length > 1
-  //     ? el.services.reduce((el, i) =>
-  //         setPrice(Number(el.how_mach) + Number(i.how_mach)),
-  //       )
-  //     : el.services.length && setPrice(el.services[0].how_mach);
-  // }, []);
+    // useEffect(() => {
+    //   el.services.length > 1
+    //     ? el.services.reduce((el, i) =>
+    //         setPrice(Number(el.how_mach) + Number(i.how_mach)),
+    //       )
+    //     : el.services.length && setPrice(el.services[0].how_mach);
+    // }, []);
 
-  const [price, setPrice] = useState(0),
-    [offersAll, setOffersAll] = useState([]);
+    const [price, setPrice] = useState(0),
+      [offersAll, setOffersAll] = useState([]);
 
-  useEffect(() => {
-    let count = 0;
-    el.offers.length &&
-      el.offers.forEach((elem, i) => {
-        count += elem.price_by_pack.price;
-      });
-    setPrice(count);
+    useEffect(() => {
+      let count = 0;
+      el.offers.length &&
+        el.offers.forEach((elem, i) => {
+          count += elem.price_by_pack.price;
+        });
+      setPrice(count);
 
-    let offersAllLocal = [];
-    el.offers.length &&
-      el.offers.forEach((elem, i) => {
-        offersAllLocal.push(elem.service.name);
-      });
-    setOffersAll(offersAllLocal);
-  }, []);
+      let offersAllLocal = [];
+      el.offers.length &&
+        el.offers.forEach((elem, i) => {
+          offersAllLocal.push(elem.service.name);
+        });
+      setOffersAll(offersAllLocal);
+    }, []);
 
-  return (
-    <TouchableOpacity
-      style={block}
-      onPress={() => navigation.navigate('NoteInformationMaster', el)}>
-      <View style={topBlock}>
-        <View style={{flexDirection: 'row', flex: 6}}>
-          <SvgUri svgXmlData={CalendarColorIcon} style={{marginRight: 5}} />
-          <Text style={[dateText]}>
-            {el.date.split('-')[2]} {shortMonthName[+el.date.split('-')[1]]} в{' '}
-            {el.time.slice(0, 5)}
-          </Text>
-        </View>
-        <View style={{flex: 4}}>
-          <Text style={[textBold]}>{price} руб</Text>
-        </View>
-      </View>
-      <View style={bottomBlock}>
-        <Image
-          style={img}
-          source={{
-            uri: 'https://hornews.com/upload/images/blank-avatar.jpg',
-          }}
-        />
-        <View style={{flex: 1}}>
-          <View style={{flex: 1}}>
-            <Text style={{fontSize: 10}}>Клиент</Text>
-            <Text style={[textBold]}> {el.client.profile.name} </Text>
+    return (
+      <TouchableOpacity
+        style={block}
+        onPress={() => navigation.navigate('NoteInformationMaster', el)}>
+        <View style={topBlock}>
+          <View style={{flexDirection: 'row', flex: 6}}>
+            <SvgUri svgXmlData={CalendarColorIcon} style={{marginRight: 5}} />
+            <Text style={[dateText]}>
+              {el.date.split('-')[2]} {shortMonthName[+el.date.split('-')[1]]} в{' '}
+              {el.time.slice(0, 5)}
+            </Text>
           </View>
+          <View style={{flex: 4}}>
+            <Text style={[textBold]}>{price} руб</Text>
+          </View>
+        </View>
+        <View style={bottomBlock}>
+          <Image
+            style={img}
+            source={{
+              uri: 'https://hornews.com/upload/images/blank-avatar.jpg',
+            }}
+          />
           <View style={{flex: 1}}>
-            <Text style={[textBold]}>{el.client.profile.home_address} </Text>
-            {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{flex: 1}}>
+              <Text style={{fontSize: 10}}>Клиент</Text>
+              <Text style={[textBold]}> {el.client.profile.name} </Text>
+            </View>
+            <View style={{flex: 1}}>
+              <Text style={[textBold]}>{el.client.profile.home_address} </Text>
+              {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <View
                 style={{
                   width: 4,
@@ -125,195 +125,197 @@ const Block = ({el, navigation}) => {
               />
               <Text style={{fontSize: 10}}> метро </Text>
             </View> */}
+            </View>
           </View>
-        </View>
-        <View style={{flex: 1}}>
           <View style={{flex: 1}}>
-            <Text style={{fontSize: 10}}>Услуга</Text>
-            {!!offersAll.length &&
-              offersAll.map((el, i) => (
-                <Text key={i} style={[textBold]}>
-                  {el}
-                </Text>
-              ))}
+            <View style={{flex: 1}}>
+              <Text style={{fontSize: 10}}>Услуга</Text>
+              {!!offersAll.length &&
+                offersAll.map((el, i) => (
+                  <Text key={i} style={[textBold]}>
+                    {el}
+                  </Text>
+                ))}
+            </View>
           </View>
         </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
+      </TouchableOpacity>
+    );
+  },
+  MasterCalendar = ({navigation}) => {
+    const {calendarContainer, arrow, headerText, hederArrowContainer} = styles;
 
-const MasterCalendar = ({navigation}) => {
-  const {calendarContainer, arrow, headerText, hederArrowContainer} = styles;
+    const date = new Date().toLocaleDateString().split('/'),
+      refreshDate = date => {
+        if (('' + date).length === 2) {
+          return date;
+        } else {
+          return '0' + date;
+        }
+      },
+      year = date[2].length === 4 ? date[2] : '20' + date[2],
+      dateNew = year + '-' + refreshDate(date[0]) + '-' + refreshDate(date[1]);
 
-  const date = new Date().toLocaleDateString().split('/'),
-    refreshDate = date => {
-      if (+date > 9) {
-        return date;
-      } else {
-        return '0' + date;
+    const [currentDate, setCurrentDate] = useState(dateNew),
+      [filteredData, setFilteredData] = useState([]);
+
+    const USER = useQuery(ME);
+
+    useEffect(() => {
+      if (USER.data && USER.data.me.master_appointments.length) {
+        const filtered = USER.data.me.master_appointments.filter(
+          el => el.date === currentDate,
+        );
+        setFilteredData(filtered);
       }
-    },
-    dateNew = date[2] + '-' + refreshDate(date[0]) + '-' + refreshDate(date[1]);
+    }, [USER.data, currentDate]);
 
-  const [currentDate, setCurrentDate] = useState(dateNew),
-    [filteredData, setFilteredData] = useState([]);
+    moment.locale('ru', {
+      config: {
+        weekdaysShort: 'Вс_Пн_Вт_Ср_Чт_Пт_Сб'.split('_'),
+      },
+    });
 
-  const USER = useQuery(ME);
+    const locale = {
+      name: 'ru',
+      config: {
+        weekdaysShort: 'Вс_Пн_Вт_Ср_Чт_Пт_Сб'.split('_'),
+      },
+    };
 
-  useEffect(() => {
-    if (USER.data && USER.data.me.master_appointments.length) {
-      const filtered = USER.data.me.master_appointments.filter(
-        el => el.date === currentDate,
-      );
-      setFilteredData(filtered);
-    }
-  }, [USER.data, currentDate]);
+    const [weekFirst, setWeekFirst] = useState(),
+      [weekLast, setWeekLast] = useState(),
+      [month, setMonth] = useState();
 
-  moment.locale('ru', {
-    config: {
-      weekdaysShort: 'Вс_Пн_Вт_Ср_Чт_Пт_Сб'.split('_'),
-    },
-  });
+    const calendarRef = useRef(null);
 
-  const locale = {
-    name: 'ru',
-    config: {
-      weekdaysShort: 'Вс_Пн_Вт_Ср_Чт_Пт_Сб'.split('_'),
-    },
-  };
+    useEffect(() => {
+      if (!weekLast) {
+        calendarRef.current.getPreviousWeek();
+        setTimeout(() => {
+          calendarRef.current.getNextWeek();
+        }, 0);
+      }
+    }, []);
 
-  const [weekFirst, setWeekFirst] = useState(),
-    [weekLast, setWeekLast] = useState(),
-    [month, setMonth] = useState();
+    const onWeekChanged = date => {
+      const dateArr = date._d.toString().split(' ');
 
-  const calendarRef = useRef(null);
+      setMonth(monthsNamesHeader[dateArr[1]].name);
 
-  useEffect(() => {
-    if (!weekLast) {
-      calendarRef.current.getPreviousWeek();
-      setTimeout(() => {
-        calendarRef.current.getNextWeek();
-      }, 0);
-    }
-  }, []);
+      const date1 = new Date(
+          dateArr[3],
+          monthsNamesHeader[dateArr[1]].number - 1,
+          1,
+        ),
+        date2 = new Date(dateArr[3], monthsNamesHeader[dateArr[1]].number, 1),
+        maxDayInMonth = Math.round((date2 - date1) / 1000 / 3600 / 24);
 
-  const onWeekChanged = date => {
-    const dateArr = date._d.toString().split(' ');
+      setWeekFirst(dateArr[2]);
+      if (+dateArr[2] + 6 > maxDayInMonth) {
+        const last = 7 - (maxDayInMonth - dateArr[2] + 1);
+        last < 10 ? setWeekLast('0' + last) : setWeekLast(last);
+      } else {
+        const last = +dateArr[2] + 6,
+          lastNumber = +dateArr[2] + 6;
+        last < 10
+          ? setWeekLast('0' + lastNumber)
+          : setWeekLast(+dateArr[2] + 6);
+      }
+    };
 
-    setMonth(monthsNamesHeader[dateArr[1]].name);
+    const monthNumber = new Date().getMonth(),
+      stringMonth = monthNames[monthNumber],
+      dayNumber = new Date().getDate();
 
-    const date1 = new Date(
-        dateArr[3],
-        monthsNamesHeader[dateArr[1]].number - 1,
-        1,
-      ),
-      date2 = new Date(dateArr[3], monthsNamesHeader[dateArr[1]].number, 1),
-      maxDayInMonth = Math.round((date2 - date1) / 1000 / 3600 / 24);
+    const onDateSelected = date => {
+      const dateSelected = date._d.toLocaleDateString().split('/'),
+        year =
+          dateSelected[2].length === 4
+            ? dateSelected[2]
+            : '20' + dateSelected[2],
+        dateNewSelected =
+          year +
+          '-' +
+          refreshDate(dateSelected[0]) +
+          '-' +
+          refreshDate(dateSelected[1]);
 
-    setWeekFirst(dateArr[2]);
-    if (+dateArr[2] + 6 > maxDayInMonth) {
-      const last = 7 - (maxDayInMonth - dateArr[2] + 1);
-      last < 10 ? setWeekLast('0' + last) : setWeekLast(last);
-    } else {
-      const last = +dateArr[2] + 6,
-        lastNumber = +dateArr[2] + 6;
-      last < 10 ? setWeekLast('0' + lastNumber) : setWeekLast(+dateArr[2] + 6);
-    }
-  };
+      setCurrentDate(dateNewSelected);
+    };
 
-  const monthNumber = new Date().getMonth(),
-    stringMonth = monthNames[monthNumber],
-    dayNumber = new Date().getDate();
-
-  const [sortNotes, setSortNotes] = useState([]);
-
-  const onDateSelected = date => {
-    const dateSelected = date._d.toLocaleDateString().split('/'),
-      dateNewSelected =
-        dateSelected[2] +
-        '-' +
-        refreshDate(dateSelected[0]) +
-        '-' +
-        refreshDate(dateSelected[1]);
-
-    setCurrentDate(dateNewSelected);
-  };
-
-  return (
-    <View style={{flex: 1}}>
-      <BackgroundHeader
-        navigation={navigation}
-        title={`Сегодня ${dayNumber} ${stringMonth}`}
-        settings={true}
-        onSettingsPress={() => alert('Что здесь?')}>
-        <View style={hederArrowContainer}>
-          <TouchableOpacity
-            onPress={() => calendarRef.current.getPreviousWeek()}
-            style={arrow}>
-            <SvgUri svgXmlData={ArrowLIcon} />
-          </TouchableOpacity>
-          <Text style={headerText}>
-            {month} {weekFirst}-{weekLast}
-          </Text>
-          <TouchableOpacity
-            onPress={() => calendarRef.current.getNextWeek()}
-            style={arrow}>
-            <SvgUri svgXmlData={ArrowRIcon} />
-          </TouchableOpacity>
-        </View>
-      </BackgroundHeader>
-      <View style={calendarContainer}>
-        <CalendarStrip
-          locale={locale}
-          onDateSelected={onDateSelected}
-          onWeekChanged={onWeekChanged}
-          ref={calendarRef}
-          style={{height: 60}}
-          calendarHeaderStyle={{color: '#fff', height: 0}}
-          iconStyle={{height: 15, width: 5}}
-          calendarColor={'#fff'}
-          dateNumberStyle={{color: '#A6ADB3'}}
-          dateNameStyle={{color: '#A6ADB3'}}
-          iconStyle={{height: 0, width: 0}}
-          highlightDateNameStyle={{color: 'black'}}
-          highlightDateNumberStyle={{color: 'black'}}
-        />
-      </View>
-      <ScrollView
-        style={{
-          flex: 1,
-          paddingHorizontal: 8,
-          marginTop: 10,
-        }}>
-        {USER.loading && (
-          <View
-            style={{
-              top: 0,
-              width: '100%',
-              height: Dimensions.get('window').height - 300,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <ActivityIndicator size="large" color="#00ff00" />
+    return (
+      <View style={{flex: 1}}>
+        <BackgroundHeader
+          navigation={navigation}
+          title={`Сегодня ${dayNumber} ${stringMonth}`}
+          // settings={true}
+          // onSettingsPress={() => alert('Что здесь?')}
+        >
+          <View style={hederArrowContainer}>
+            <TouchableOpacity
+              onPress={() => calendarRef.current.getPreviousWeek()}
+              style={arrow}>
+              <SvgUri svgXmlData={ArrowLIcon} />
+            </TouchableOpacity>
+            <Text style={headerText}>
+              {month} {weekFirst}-{weekLast}
+            </Text>
+            <TouchableOpacity
+              onPress={() => calendarRef.current.getNextWeek()}
+              style={arrow}>
+              <SvgUri svgXmlData={ArrowRIcon} />
+            </TouchableOpacity>
           </View>
-        )}
-        {USER.data &&
-          (filteredData.length
-            ? filteredData.map((el, i) => (
-                <View key={i}>
-                  <Block navigation={navigation} el={el} />
-                </View>
-              ))
-            : filteredData.map((el, i) => (
-                <View key={i}>
-                  <Block navigation={navigation} el={el} />
-                </View>
-              )))}
-      </ScrollView>
-    </View>
-  );
-};
+        </BackgroundHeader>
+        <View style={calendarContainer}>
+          <CalendarStrip
+            locale={locale}
+            onDateSelected={onDateSelected}
+            onWeekChanged={onWeekChanged}
+            ref={calendarRef}
+            style={{height: 60}}
+            calendarHeaderStyle={{color: '#fff', height: 0}}
+            iconStyle={{height: 15, width: 5}}
+            calendarColor={'#fff'}
+            dateNumberStyle={{color: '#A6ADB3'}}
+            dateNameStyle={{color: '#A6ADB3'}}
+            iconStyle={{height: 0, width: 0}}
+            highlightDateNameStyle={{color: 'black'}}
+            highlightDateNumberStyle={{color: 'black'}}
+          />
+        </View>
+        <ScrollView
+          style={{
+            flex: 1,
+            paddingHorizontal: 8,
+            marginTop: 10,
+          }}>
+          {USER.loading && (
+            <View
+              style={{
+                top: 0,
+                width: '100%',
+                height: Dimensions.get('window').height - 300,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="large" color="#00ff00" />
+            </View>
+          )}
+
+          {USER.data &&
+            (filteredData.length
+              ? filteredData.map((el, i) => (
+                  <View key={i}>
+                    <Block navigation={navigation} el={el} />
+                  </View>
+                ))
+              : null)}
+        </ScrollView>
+      </View>
+    );
+  };
 
 const styles = StyleSheet.create({
   block: {

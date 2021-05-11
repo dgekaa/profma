@@ -71,7 +71,7 @@ const SelectServices = ({navigation}) => {
       });
     }
     if (checkedServicesBack.indexOf(back) == -1) {
-      setCheckedServicesBack(prev => [...prev, back]);
+      setCheckedServicesBack(prev => [...prev, +back]);
     } else {
       checkedServicesBack.forEach((el, i) => {
         if (el === back) {

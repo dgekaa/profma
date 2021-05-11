@@ -11,13 +11,13 @@ import CalendarSvgIcon from '../img/CalendarSVG.svg';
 import LocationIcon from '../img/Location.svg';
 import CrossWhiteIcon from '../img/CrossWhite.svg';
 import {Query, useMutation, useQuery, useLazyQuery} from 'react-apollo';
-import {shortMonthName} from '../constants';
+import {shortMonthName, shortMonthNameChanged} from '../constants';
 import {
   GET_USER,
   FREE_TIME,
   CREATE_APPOINTMENT,
   NEXT_FREE_TIME_BY_MASTER,
-  GET_APPOINTMENTS,
+  GET_APPOINTMENTS_HAS_PHOTOS,
   ME,
 } from '../QUERYES';
 import {
@@ -280,22 +280,26 @@ const PublickMasterProfile = ({navigation}) => {
   const MASTER = useQuery(GET_USER, {
       variables: {id: +navigation.state.params.id},
     }),
-    APPOINTMENTS = useQuery(GET_APPOINTMENTS, {
-      variables: {first: 30},
+    APPOINTMENTS = useQuery(GET_APPOINTMENTS_HAS_PHOTOS, {
+      variables: {value: +navigation.state.params.id},
     }),
     USER = useQuery(ME),
     FREETIME = useQuery(FREE_TIME, {
       variables: {
-        master_id: MASTER.data && MASTER.data.user && MASTER.data.user.id,
+        master_id: MASTER.data && MASTER.data.user && +MASTER.data.user.id,
         dates: [dates[0]],
       },
     }),
     NEXT_FREETIME = useQuery(NEXT_FREE_TIME_BY_MASTER, {
       variables: {
-        master_id: MASTER.data && MASTER.data.user && MASTER.data.user.id,
+        master_id: MASTER.data && MASTER.data.user && +MASTER.data.user.id,
         count: 3,
       },
     });
+
+  useEffect(() => {
+    console.log(NEXT_FREETIME, '-----NEXT_FREETIME');
+  }, [NEXT_FREETIME]);
 
   useEffect(() => {
     if (!allPhoto.length) {
@@ -349,6 +353,8 @@ const PublickMasterProfile = ({navigation}) => {
 
   useEffect(() => {
     FREETIME.data &&
+      FREETIME.data.freeTimeByMaster[0] &&
+      FREETIME.data &&
       FREETIME.data.freeTimeByMaster[0] &&
       setFreeTimeByMaster(FREETIME.data.freeTimeByMaster[0].times);
   }, [FREETIME, freeTimeByMaster]);
@@ -532,7 +538,7 @@ const PublickMasterProfile = ({navigation}) => {
                           )[2]
                         }{' '}
                         {
-                          shortMonthName[
+                          shortMonthNameChanged[
                             +NEXT_FREETIME.data.nextFreeTimeByMaster[0].date.split(
                               '-',
                             )[1]
@@ -870,10 +876,10 @@ const PublickMasterProfile = ({navigation}) => {
                   на{' '}
                   <Text style={{fontWeight: 'bold'}}>
                     {dates[0] && dates[0].split('-')[2]}{' '}
-                    {dates[0] && shortMonthName[+dates[0].split('-')[1]]}{' '}
+                    {dates[0] && shortMonthNameChanged[+dates[0].split('-')[1]]}{' '}
                     {dates[0] && dates[0].split('-')[0]}
                   </Text>{' '}
-                  в {activeTime} к мастеру
+                  в {activeTime.slice(0, 5)} к мастеру
                 </Text>
                 <Image
                   style={{marginTop: 16}}
@@ -903,6 +909,14 @@ const PublickMasterProfile = ({navigation}) => {
                 onPress={() => {
                   setTimeWasSelected(false);
                   setTimeSelectError(false);
+                  console.log(USER);
+                  USER.data.me.type === 'Master'
+                    ? navigation.navigate('MasterProfile', {
+                        ID: USER.data.me.profile.id,
+                      })
+                    : navigation.navigate('ClientProfile', {
+                        ID: USER.data.me.profile.id,
+                      });
                 }}
               />
             </View>
@@ -947,8 +961,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    right: 21,
-    top: 53,
+    right: 10,
+    top: 25,
   },
   imgIndicator: {
     flexDirection: 'row',

@@ -14,6 +14,22 @@ export const shortMonthName = [
   'дек',
 ];
 
+export const shortMonthNameChanged = [
+  'пустой',
+  'янв',
+  'фев',
+  'марта',
+  'апр',
+  'мая',
+  'июн',
+  'июл',
+  'авг',
+  'сент',
+  'окт',
+  'нояб',
+  'дек',
+];
+
 export const shortMonthName12 = [
   'Янв',
   'Фев',

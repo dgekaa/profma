@@ -593,9 +593,28 @@ export const GET_USERS = gql`
     }
   }
 `;
+
 export const GET_APPOINTMENTS = gql`
-  query GETAPPOINTMENTS($first: Int) {
-    appointments(first: $first) {
+  query GETAPPOINTMENTS($value: Mixed) {
+    appointments(where: {column: MASTER_ID, value: $value}) {
+      data {
+        id
+        photos {
+          id
+          src
+        }
+      }
+      paginatorInfo {
+        count
+        currentPage
+      }
+    }
+  }
+`;
+
+export const GET_APPOINTMENTS_HAS_PHOTOS = gql`
+  query GETAPPOINTMENTS($value: Mixed) {
+    appointments(where: {column: MASTER_ID, value: $value}, hasPhotos: {}) {
       data {
         id
         photos {
@@ -782,8 +801,8 @@ export const UPDATE_PASSWORD = gql`
 `;
 
 export const FIND_MASTER = gql`
-  query FINDMASTER($city_id: Int!, $dates: [String!]!) {
-    findMaster(city_id: $city_id, dates: $dates) {
+  query FINDMASTER($dates: [String!]!) {
+    findMaster(dates: $dates) {
       user {
         id
         profile {

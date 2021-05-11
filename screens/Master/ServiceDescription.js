@@ -63,36 +63,38 @@ const ServiceDescription = ({navigation}) => {
   const [CREATE_OFFER_mutation] = useMutation(CREATE_OFFER, refreshObject);
 
   const clearInputs = () => {
-    setHowMach('');
-    setHowLong('');
-    setDesc('');
-  };
-
-  const SAVE = () => {
-    CREATE_OFFER_mutation({
-      variables: {
-        id: +DATA[serviceCount].id,
-        description: desc,
-        duration: howLong,
-        price: howMach,
-      },
-      optimisticResponse: null,
-    })
-      .then(res => {
-        console.log(res, '__RES CREATE_OFFER_mutation');
-        clearInputs();
-        if (serviceCount != DATA.length - 1 && howLong && howMach && desc) {
-          setServiceCount(prev => prev + 1);
-        } else {
-          navigation.navigate('MyServices');
-          navigation.state.params.refetch();
-          navigation.state.params.reload();
-        }
+      setHowMach('');
+      setHowLong('');
+      setDesc('');
+    },
+    SAVE = () => {
+      console.log(desc, '---desc');
+      console.log(howLong, '---howLong');
+      console.log(howMach, '---howMach');
+      CREATE_OFFER_mutation({
+        variables: {
+          id: +DATA[serviceCount].id,
+          description: desc,
+          duration: +howLong,
+          price: +howMach,
+        },
+        optimisticResponse: null,
       })
-      .catch(err =>
-        console.log(JSON.stringify(err), '__ERR CREATE_OFFER_mutation'),
-      );
-  };
+        .then(res => {
+          console.log(res, '__RES CREATE_OFFER_mutation');
+          clearInputs();
+          if (serviceCount != DATA.length - 1 && howLong && howMach && desc) {
+            setServiceCount(prev => prev + 1);
+          } else {
+            navigation.navigate('MyServices');
+            navigation.state.params.refetch();
+            navigation.state.params.reload();
+          }
+        })
+        .catch(err =>
+          console.log(JSON.stringify(err), '__ERR CREATE_OFFER_mutation'),
+        );
+    };
 
   if (SERVICES.error) {
     return <Text />;

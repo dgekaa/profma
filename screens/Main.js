@@ -367,7 +367,6 @@ const Main = ({navigation}) => {
   };
 
   const [dates, setDates] = useState(),
-    [cityid, setCityid] = useState(null),
     [refreshing, setRefreshing] = useState(false),
     [first, setFirst] = useState(6),
     [isCalendarVisible, setIsCalendarVisible] = useState(false),
@@ -379,7 +378,6 @@ const Main = ({navigation}) => {
     }),
     findMaster = useQuery(FIND_MASTER, {
       variables: {
-        city_id: +cityid || null,
         dates: dates || null,
       },
     }),
@@ -390,21 +388,11 @@ const Main = ({navigation}) => {
     });
 
   useEffect(() => {
-    if (users.data)
-      setHasMorePages(users.data.users.paginatorInfo.hasMorePages);
-
-    setCityid(
-      USER.data &&
-        USER.data.me &&
-        USER.data.me.profile &&
-        USER.data.me.profile.city
-        ? USER.data.me.profile.city.id
-        : null,
-    );
+    users.data && setHasMorePages(users.data.users.paginatorInfo.hasMorePages);
   }, [USER, users]);
 
   const showMasters = masters => {
-      let arr = [];
+      const arr = [];
       for (let key in masters) arr.push(key);
       setDates(arr);
     },
@@ -473,32 +461,33 @@ const Main = ({navigation}) => {
           </View>
         )}
         <View>
-          {!dates
-            ? !!users &&
-              users.data && (
-                <FlatList
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={refreshing}
-                      onRefresh={() => onRefresh()}
+          {!dates ? (
+            !!users &&
+            users.data && (
+              <FlatList
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => onRefresh()}
+                  />
+                }
+                nestedScrollEnabled={true}
+                data={users.data.users.data}
+                onEndReachedThreshold={0.1}
+                onEndReached={refetchUsers}
+                ListHeaderComponent={
+                  <>
+                    <Header blockPress={blockPress} />
+                    <NextAppointments
+                      nextAppointments={nextAppointments}
+                      USER={USER}
+                      navigation={navigation}
+                      reloadAppointments={reloadAppointments}
                     />
-                  }
-                  nestedScrollEnabled={true}
-                  data={users.data.users.data}
-                  onEndReachedThreshold={0.1}
-                  onEndReached={refetchUsers}
-                  ListHeaderComponent={
-                    <>
-                      <Header blockPress={blockPress} />
-                      <NextAppointments
-                        nextAppointments={nextAppointments}
-                        USER={USER}
-                        navigation={navigation}
-                        reloadAppointments={reloadAppointments}
-                      />
-                    </>
-                  }
-                  renderItem={({item, index}) => (
+                  </>
+                }
+                renderItem={({item, index}) => (
+                  <>
                     <Block
                       navigation={navigation}
                       el={item}
@@ -506,51 +495,70 @@ const Main = ({navigation}) => {
                       photoArr={item.master_appointments}
                       blockId={index}
                     />
-                  )}
-                  keyExtractor={item =>
-                    dates ? item.user.id : item.id.toString()
-                  }
-                />
-              )
-            : !!findMaster.data &&
-              !!findMaster.data.findMaster && (
-                <FlatList
-                  data={findMaster.data.findMaster}
-                  ListHeaderComponent={
-                    <>
-                      <Header blockPress={blockPress} />
-                      <NextAppointments
-                        nextAppointments={nextAppointments}
-                        USER={USER}
-                        navigation={navigation}
-                        reloadAppointments={reloadAppointments}
-                      />
-                      {dates && !!findMaster.data && (
-                        <FoundMasters
-                          findMaster={findMaster}
-                          dates={dates}
-                          shortMonthName={shortMonthName}
-                          plural={plural}
-                          setDates={setDates}
-                        />
-                      )}
-                    </>
-                  }
-                  renderItem={({item, index}) => (
-                    <Block
-                      navigation={navigation}
-                      el={item}
+                    {users.data.users.data.length - 1 === index && (
+                      <View style={{height: 80}} />
+                    )}
+                  </>
+                )}
+                keyExtractor={item =>
+                  dates ? item.user.id : item.id.toString()
+                }
+              />
+            )
+          ) : !!findMaster.data && !!findMaster.data.findMaster ? (
+            <FlatList
+              data={findMaster.data.findMaster}
+              ListHeaderComponent={
+                <>
+                  <Header blockPress={blockPress} />
+                  <NextAppointments
+                    nextAppointments={nextAppointments}
+                    USER={USER}
+                    navigation={navigation}
+                    reloadAppointments={reloadAppointments}
+                  />
+                  {dates && !!findMaster.data && (
+                    <FoundMasters
+                      findMaster={findMaster}
                       dates={dates}
-                      reload={reloadAppointments}
-                      photoArr={item.user.master_appointments}
-                      blockId={index}
+                      shortMonthName={shortMonthName}
+                      plural={plural}
+                      setDates={setDates}
                     />
                   )}
-                  keyExtractor={item =>
-                    dates ? item.user.id : item.id.toString()
-                  }
-                />
+                </>
+              }
+              renderItem={({item, index}) => (
+                <>
+                  <Block
+                    navigation={navigation}
+                    el={item}
+                    dates={dates}
+                    reload={reloadAppointments}
+                    photoArr={item.user.master_appointments}
+                    blockId={index}
+                  />
+                  {users.data.users.data.length - 1 === index && (
+                    <View style={{height: 80}} />
+                  )}
+                </>
               )}
+              keyExtractor={item => (dates ? item.user.id : item.id.toString())}
+            />
+          ) : (
+            <View
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: screen.height,
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                zIndex: 1000,
+              }}>
+              <ActivityIndicator size="large" color="#00ff00" />
+            </View>
+          )}
         </View>
 
         {!isCalendarVisible && (
