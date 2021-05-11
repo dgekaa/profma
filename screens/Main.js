@@ -184,9 +184,7 @@ const Block = ({el, navigation, dates, reload, photoArr}) => {
   } else {
     return <Text> </Text>;
   }
-};
-
-const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
+}, NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
   const {nearestSeansBlock, nearestSeansBlockIos, dateText} = styles;
 
   const [offersAll, setOffersAll] = useState([]),
@@ -280,9 +278,7 @@ const NearestSeansBlock = ({el, navigation, type, reload, photoArr}) => {
       </View>
     </TouchableOpacity>
   );
-};
-
-const Header = ({blockPress}) => (
+},Header = ({blockPress}) => (
   <View style={{overflow: 'hidden'}}>
     <ImageBackground
       style={styles.header}
@@ -293,9 +289,7 @@ const Header = ({blockPress}) => (
       </TouchableOpacity>
     </ImageBackground>
   </View>
-);
-
-const FoundMasters = ({
+), FoundMasters = ({
   findMaster,
   plural,
   dates,
@@ -326,9 +320,7 @@ const FoundMasters = ({
       <SvgUri svgXmlData={CrossIcon} />
     </TouchableOpacity>
   </View>
-);
-
-const NextAppointments = ({
+), NextAppointments = ({
   nextAppointments,
   USER,
   navigation,
@@ -356,9 +348,7 @@ const NextAppointments = ({
   ) : (
     <Text />
   );
-};
-
-const Main = ({navigation}) => {
+}, Main = ({navigation}) => {
   const {openCalendarIos, openCalendarAndroid, foundMasters, closeBtn} = styles;
 
   const whoObj = {
@@ -386,6 +376,10 @@ const Main = ({navigation}) => {
         count: 5,
       },
     });
+
+    useEffect(()=>{
+      console.log(findMaster,'----findMaster')
+    },[findMaster])
 
   useEffect(() => {
     users.data && setHasMorePages(users.data.users.paginatorInfo.hasMorePages);
@@ -530,6 +524,7 @@ const Main = ({navigation}) => {
               }
               renderItem={({item, index}) => (
                 <>
+                
                   <Block
                     navigation={navigation}
                     el={item}
@@ -545,7 +540,9 @@ const Main = ({navigation}) => {
               )}
               keyExtractor={item => (dates ? item.user.id : item.id.toString())}
             />
-          ) : (
+          ) : findMaster.loading ?(
+            <><Header blockPress={blockPress} />
+            
             <View
               style={{
                 position: 'absolute',
@@ -558,7 +555,13 @@ const Main = ({navigation}) => {
               }}>
               <ActivityIndicator size="large" color="#00ff00" />
             </View>
-          )}
+            </>
+           
+          ):
+          <>
+            <Header blockPress={blockPress} />
+            <Text style={{padding: 10}}>{findMaster.error.message}</Text>
+          </>}
         </View>
 
         {!isCalendarVisible && (

@@ -142,8 +142,8 @@ const NoteInformationMaster = ({navigation}) => {
     firstIos,
   } = styles;
 
-  const [price, setPrice] = useState();
-  const [isCompleted, setIsCompleted] = useState(false);
+  const [price, setPrice] = useState(),
+   [isCompleted, setIsCompleted] = useState(false);
 
   const appointment = useQuery(GET_APPOINTMENT, {
     variables: {id: +navigation.state.params.el.id},

@@ -23,7 +23,7 @@ import {
   Image,
   ScrollView,
   ActivityIndicator,
-  Dimensions,
+  Dimensions, Platform
 } from 'react-native';
 
 const monthNames = [
@@ -56,15 +56,7 @@ const monthNames = [
   };
 
 const Block = ({el, navigation}) => {
-    const {block, topBlock, img, textBold, dateText, bottomBlock} = styles;
-
-    // useEffect(() => {
-    //   el.services.length > 1
-    //     ? el.services.reduce((el, i) =>
-    //         setPrice(Number(el.how_mach) + Number(i.how_mach)),
-    //       )
-    //     : el.services.length && setPrice(el.services[0].how_mach);
-    // }, []);
+    const {block, topBlock, img, textBold, dateText, bottomBlock,blockIos} = styles;
 
     const [price, setPrice] = useState(0),
       [offersAll, setOffersAll] = useState([]);
@@ -85,10 +77,11 @@ const Block = ({el, navigation}) => {
       setOffersAll(offersAllLocal);
     }, []);
 
+
     return (
       <TouchableOpacity
-        style={block}
-        onPress={() => navigation.navigate('NoteInformationMaster', el)}>
+        style={Platform.OS === 'ios' ? blockIos : block}
+        onPress={() => navigation.navigate('NoteInformationMaster', {el:el})}>
         <View style={topBlock}>
           <View style={{flexDirection: 'row', flex: 6}}>
             <SvgUri svgXmlData={CalendarColorIcon} style={{marginRight: 5}} />
@@ -115,16 +108,7 @@ const Block = ({el, navigation}) => {
             </View>
             <View style={{flex: 1}}>
               <Text style={[textBold]}>{el.client.profile.home_address} </Text>
-              {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <View
-                style={{
-                  width: 4,
-                  height: 4,
-                  backgroundColor: '#9155FF',
-                }}
-              />
-              <Text style={{fontSize: 10}}> метро </Text>
-            </View> */}
+             
             </View>
           </View>
           <View style={{flex: 1}}>
@@ -153,8 +137,12 @@ const Block = ({el, navigation}) => {
           return '0' + date;
         }
       },
-      year = date[2].length === 4 ? date[2] : '20' + date[2],
-      dateNew = year + '-' + refreshDate(date[0]) + '-' + refreshDate(date[1]);
+      year = date[2].length === 4 ? date[2] : '20' + date[2];
+      let dateNew = year + '-' + refreshDate(date[0]) + '-' + refreshDate(date[1]);
+
+      if(Platform.OS === 'ios'){
+        dateNew = year + '-' + refreshDate(date[1]) + '-' + refreshDate(date[0]);
+      }
 
     const [currentDate, setCurrentDate] = useState(dateNew),
       [filteredData, setFilteredData] = useState([]);
@@ -233,13 +221,23 @@ const Block = ({el, navigation}) => {
         year =
           dateSelected[2].length === 4
             ? dateSelected[2]
-            : '20' + dateSelected[2],
-        dateNewSelected =
+            : '20' + dateSelected[2];
+
+        let dateNewSelected =
           year +
           '-' +
           refreshDate(dateSelected[0]) +
           '-' +
           refreshDate(dateSelected[1]);
+
+if(Platform.OS === 'ios'){
+  dateNewSelected =
+  year +
+  '-' +
+  refreshDate(dateSelected[1]) +
+  '-' +
+  refreshDate(dateSelected[0]);
+}
 
       setCurrentDate(dateNewSelected);
     };
@@ -327,6 +325,21 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     paddingLeft: 8,
     marginHorizontal: 8,
+  },
+  blockIos: {
+    flex: 1,
+    shadowColor: '#000',
+    backgroundColor: '#fff',
+    marginBottom: 8,
+    paddingLeft: 8,
+    marginHorizontal: 8,
+    shadowOpacity: 0.5,
+    shadowRadius: 0.1,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+
   },
   topBlock: {
     height: 33,
