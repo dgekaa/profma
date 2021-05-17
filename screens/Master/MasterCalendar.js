@@ -23,7 +23,8 @@ import {
   Image,
   ScrollView,
   ActivityIndicator,
-  Dimensions, Platform
+  Dimensions,
+  Platform,
 } from 'react-native';
 
 const monthNames = [
@@ -52,11 +53,19 @@ const monthNames = [
     Sep: {name: 'Сентябрь', number: 9},
     Oct: {name: 'Октябрь', number: 10},
     Nov: {name: 'Ноябрь', number: 11},
-    Dec: {name: 'Декабрь', number: 12},
+    Dec: {name: ' Декабрь', number: 12},
   };
 
 const Block = ({el, navigation}) => {
-    const {block, topBlock, img, textBold, dateText, bottomBlock,blockIos} = styles;
+    const {
+      block,
+      topBlock,
+      img,
+      textBold,
+      dateText,
+      bottomBlock,
+      blockIos,
+    } = styles;
 
     const [price, setPrice] = useState(0),
       [offersAll, setOffersAll] = useState([]);
@@ -77,11 +86,10 @@ const Block = ({el, navigation}) => {
       setOffersAll(offersAllLocal);
     }, []);
 
-
     return (
       <TouchableOpacity
         style={Platform.OS === 'ios' ? blockIos : block}
-        onPress={() => navigation.navigate('NoteInformationMaster', {el:el})}>
+        onPress={() => navigation.navigate('NoteInformationMaster', {el: el})}>
         <View style={topBlock}>
           <View style={{flexDirection: 'row', flex: 6}}>
             <SvgUri svgXmlData={CalendarColorIcon} style={{marginRight: 5}} />
@@ -108,7 +116,6 @@ const Block = ({el, navigation}) => {
             </View>
             <View style={{flex: 1}}>
               <Text style={[textBold]}>{el.client.profile.home_address} </Text>
-             
             </View>
           </View>
           <View style={{flex: 1}}>
@@ -138,11 +145,12 @@ const Block = ({el, navigation}) => {
         }
       },
       year = date[2].length === 4 ? date[2] : '20' + date[2];
-      let dateNew = year + '-' + refreshDate(date[0]) + '-' + refreshDate(date[1]);
+    let dateNew =
+      year + '-' + refreshDate(date[0]) + '-' + refreshDate(date[1]);
 
-      if(Platform.OS === 'ios'){
-        dateNew = year + '-' + refreshDate(date[1]) + '-' + refreshDate(date[0]);
-      }
+    if (Platform.OS === 'ios') {
+      dateNew = year + '-' + refreshDate(date[1]) + '-' + refreshDate(date[0]);
+    }
 
     const [currentDate, setCurrentDate] = useState(dateNew),
       [filteredData, setFilteredData] = useState([]);
@@ -223,21 +231,21 @@ const Block = ({el, navigation}) => {
             ? dateSelected[2]
             : '20' + dateSelected[2];
 
-        let dateNewSelected =
+      let dateNewSelected =
+        year +
+        '-' +
+        refreshDate(dateSelected[0]) +
+        '-' +
+        refreshDate(dateSelected[1]);
+
+      if (Platform.OS === 'ios') {
+        dateNewSelected =
           year +
           '-' +
-          refreshDate(dateSelected[0]) +
+          refreshDate(dateSelected[1]) +
           '-' +
-          refreshDate(dateSelected[1]);
-
-if(Platform.OS === 'ios'){
-  dateNewSelected =
-  year +
-  '-' +
-  refreshDate(dateSelected[1]) +
-  '-' +
-  refreshDate(dateSelected[0]);
-}
+          refreshDate(dateSelected[0]);
+      }
 
       setCurrentDate(dateNewSelected);
     };
@@ -339,7 +347,6 @@ const styles = StyleSheet.create({
       width: 0,
       height: 0,
     },
-
   },
   topBlock: {
     height: 33,

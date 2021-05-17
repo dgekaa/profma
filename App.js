@@ -64,12 +64,23 @@ const App = () => {
 
   const link = authLink.concat(httpLink);
 
+  const defaultOptions = {
+    watchQuery: {
+      fetchPolicy: 'network-only',
+      errorPolicy: 'ignore',
+    },
+    query: {
+      fetchPolicy: 'network-only',
+      errorPolicy: 'all',
+    },
+  };
+
   const client = new ApolloClient({
     cache: new InMemoryCache(),
     link: link,
     defaultOptions: {
       watchQuery: {
-        fetchPolicy: 'no-cache',
+        fetchPolicy: defaultOptions,
       },
     },
   });

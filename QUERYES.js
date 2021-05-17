@@ -543,12 +543,21 @@ export const GET_USERS = gql`
         id
         email
         type
-        master_appointments {
+
+        master_appointments(
+          hasPhotos: {}
+          orderBy: [{column: DATE, order: DESC}]
+          limit: 1
+        ) {
           id
           photos {
             id
             src
           }
+        }
+        nextFreeTime(count: 6) {
+          date
+          times
         }
         profile {
           id
@@ -631,6 +640,65 @@ export const GET_APPOINTMENTS_HAS_PHOTOS = gql`
 `;
 
 export const GET_USER = gql`
+  query GETUSER($id: ID!) {
+    user(id: $id) {
+      id
+      profile {
+        id
+        name
+        email
+        mobile_phone
+        addition_phone
+        home_address
+        work_address
+        about_me
+        site
+        city {
+          name
+          id
+        }
+      }
+
+      master_appointments(hasPhotos: {}) {
+        id
+        photos {
+          id
+          src
+        }
+      }
+
+      schedules {
+        id
+        day
+        start_time
+        end_time
+        start_sessions {
+          id
+          time
+        }
+      }
+      offers {
+        id
+        description
+        service {
+          id
+          name
+          specialization {
+            id
+            name
+          }
+        }
+        price_by_pack {
+          id
+          duration
+          price
+        }
+      }
+    }
+  }
+`;
+
+export const GET_USER_WTH_PHOTO = gql`
   query GETUSER($id: ID!) {
     user(id: $id) {
       id
@@ -817,6 +885,10 @@ export const FIND_MASTER = gql`
             id
             src
           }
+        }
+        nextFreeTime(count: 6) {
+          date
+          times
         }
         offers {
           price_by_pack {

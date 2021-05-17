@@ -298,6 +298,10 @@ const PublickMasterProfile = ({navigation}) => {
     });
 
   useEffect(() => {
+    console.log(MASTER, '-----MASTER');
+  }, [MASTER]);
+
+  useEffect(() => {
     console.log(NEXT_FREETIME, '-----NEXT_FREETIME');
   }, [NEXT_FREETIME]);
 
