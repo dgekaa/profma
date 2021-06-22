@@ -19,12 +19,14 @@ import {
   FlatList,
   ImageBackground,
   Dimensions,
+  PermissionsAndroid,
   TextInput,
   ActivityIndicator,
   Platform,
   RefreshControl,
 } from 'react-native';
 import {useQuery} from 'react-apollo';
+import Geolocation from '@react-native-community/geolocation';
 
 import {GET_USERS, ME, FIND_MASTER, NEXT_APPOINTMENTS} from '../QUERYES';
 
@@ -394,6 +396,48 @@ const Block = ({el, navigation, dates, reload, photoArr, nextFreeTime}) => {
           users.refetch();
         }
       };
+
+    const requestLocationPermission = async () => {
+      const chckLocationPermission = PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+
+      if (chckLocationPermission === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log(chckLocationPermission, '___chckLocationPermission');
+      } else {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            {
+              title: 'Cool Location App required Location permission',
+              message:
+                'We required Location permission in order to get device location ' +
+                'Please grant us.',
+            },
+          );
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            Geolocation.getCurrentPosition(
+              info => {
+                console.log(info, '___INFO___');
+              },
+              error => {
+                console.log(error, '__ERR GEOLOCATION');
+              },
+              {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+            );
+            console.log(granted, '___granted 1');
+          } else {
+            console.log(granted, '___granted 2');
+          }
+        } catch (err) {
+          console.log(err, '___err');
+        }
+      }
+    };
+
+    useEffect(() => {
+      requestLocationPermission();
+    }, []);
 
     if (USER.error) {
       return <ErrorInternetProblems reload={() => reload()} />;
