@@ -38,6 +38,7 @@
     "react-native-calendar-strip": "^1.4.0",
     "react-native-calendars": "^1.220.0",
     "react-native-fast-image": "^7.0.2",
+    "react-native-geocoding": "^0.5.0",
     "react-native-gesture-handler": "^1.5.2",
     "react-native-image-crop-picker": "^0.35.2",
     "react-native-image-picker": "^3.1.3",

@@ -27,10 +27,65 @@ import {
 } from 'react-native';
 import {useQuery} from 'react-apollo';
 import Geolocation from '@react-native-community/geolocation';
+import Geocoder from 'react-native-geocoding';
 
 import {GET_USERS, ME, FIND_MASTER, NEXT_APPOINTMENTS} from '../QUERYES';
 
 const screen = Dimensions.get('window');
+
+const requestLocationPermission = async () => {
+  const chckLocationPermission = PermissionsAndroid.check(
+    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+  );
+
+  if (chckLocationPermission === PermissionsAndroid.RESULTS.GRANTED) {
+    console.log(chckLocationPermission, '___chckLocationPermission');
+  } else {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Cool Location App required Location permission',
+          message:
+            'We required Location permission in order to get device location ' +
+            'Please grant us.',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        Geolocation.getCurrentPosition(
+          info => {
+            console.log(info, '___INFO___');
+
+            const {longitude, latitude} = info.coords;
+
+            fetch(
+              'https://geocode-maps.yandex.ru/1.x/?geocode={53.9094331718573,27.497328563590926}&kind=metro&format=json&results=1',
+            )
+              .then(res => res.json())
+              .then(data => {
+                console.log(data, '_DATA.yandex');
+              })
+              .catch(err => console.log(err, '__err.yandex'));
+            // Geocoder.from(latitude, longitude)
+            //   .then(json => {
+            //     console.log(json, '___JSON____');
+            //   })
+            //   .catch(error => console.log(error, 'GEO'));
+          },
+          error => {
+            console.log(error, '__ERR GEOLOCATION');
+          },
+          {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+        );
+        console.log(granted, '___granted 1');
+      } else {
+        console.log(granted, '___granted 2');
+      }
+    } catch (err) {
+      console.log(err, '___err');
+    }
+  }
+};
 
 const Block = ({el, navigation, dates, reload, photoArr, nextFreeTime}) => {
     const {
@@ -397,45 +452,10 @@ const Block = ({el, navigation, dates, reload, photoArr, nextFreeTime}) => {
         }
       };
 
-    const requestLocationPermission = async () => {
-      const chckLocationPermission = PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-
-      if (chckLocationPermission === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log(chckLocationPermission, '___chckLocationPermission');
-      } else {
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-            {
-              title: 'Cool Location App required Location permission',
-              message:
-                'We required Location permission in order to get device location ' +
-                'Please grant us.',
-            },
-          );
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            Geolocation.getCurrentPosition(
-              info => {
-                console.log(info, '___INFO___');
-              },
-              error => {
-                console.log(error, '__ERR GEOLOCATION');
-              },
-              {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-            );
-            console.log(granted, '___granted 1');
-          } else {
-            console.log(granted, '___granted 2');
-          }
-        } catch (err) {
-          console.log(err, '___err');
-        }
-      }
-    };
-
     useEffect(() => {
+      Geocoder.init('AIzaSyAAcvrFmEi8o7u-zXHe6geXvjRey4Qj6tg', {
+        language: 'ru',
+      });
       requestLocationPermission();
     }, []);
 
