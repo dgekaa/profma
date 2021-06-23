@@ -372,13 +372,20 @@ const Block = ({el, navigation, dates, reload, photoArr, nextFreeTime}) => {
     );
   },
   Main = ({navigation}) => {
-    const {openCalendarIos, openCalendarAndroid} = styles;
+    const {
+      openCalendarIos,
+      openCalendarAndroid,
+      allMasters,
+      allMastersText,
+      metroWrap,
+    } = styles;
 
     const [dates, setDates] = useState(),
       [refreshing, setRefreshing] = useState(false),
       [first, setFirst] = useState(6),
       [isCalendarVisible, setIsCalendarVisible] = useState(false),
-      [hasMorePages, setHasMorePages] = useState(true);
+      [hasMorePages, setHasMorePages] = useState(true),
+      [isClickedAllMasters, setIsClickedAllMasters] = useState(false);
 
     const USER = useQuery(ME),
       users = useQuery(GET_USERS, {
@@ -493,6 +500,29 @@ const Block = ({el, navigation, dates, reload, photoArr, nextFreeTime}) => {
                         navigation={navigation}
                         reloadAppointments={reloadAppointments}
                       />
+                      <TouchableOpacity
+                        onPress={() => setIsClickedAllMasters(prev => !prev)}
+                        style={allMasters}>
+                        <Text style={allMastersText}>Все мастера</Text>
+                        {isClickedAllMasters && (
+                          <View style={metroWrap}>
+                            {/* <ScrollView> */}
+                            <TouchableOpacity>
+                              <Text>Метро1</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity>
+                              <Text>Метро2</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity>
+                              <Text>Метро3</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity>
+                              <Text>Метро4</Text>
+                            </TouchableOpacity>
+                            {/* </ScrollView> */}
+                          </View>
+                        )}
+                      </TouchableOpacity>
                     </>
                   }
                   renderItem={({item, index}) => (
@@ -853,6 +883,22 @@ const styles = StyleSheet.create({
     color: '#B986DA',
     fontSize: 10,
     fontWeight: 'bold',
+  },
+  allMasters: {},
+  allMastersText: {
+    fontWeight: '600',
+    fontSize: 16,
+    paddingHorizontal: 10,
+  },
+  metroWrap: {
+    flex: 1,
+    position: 'absolute',
+    zIndex: 4,
+    backgroundColor: 'red',
+    top: 20,
+    width: 200,
+    left: 10,
+    elevation: 5,
   },
 });
 

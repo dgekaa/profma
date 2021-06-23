@@ -36,6 +36,7 @@ import PersonalDataMaster from './screens/Master/PersonalDataMaster';
 import loaderPage from './loaderPage';
 
 import ChangeCity from './screens/ChangeCity';
+import ChangeMetro from './screens/ChangeMetro';
 import PublickMasterProfile from './screens/PublickMasterProfile';
 import ErrorSomethingWentWrong from './screens/ErrorSomethingWentWrong';
 import ErrorInternetProblems from './screens/ErrorInternetProblems';
@@ -186,6 +187,10 @@ const App = () => {
       },
       ChangeCity: {
         screen: ChangeCity,
+        navigationOptions: navOptionHandler,
+      },
+      ChangeMetro: {
+        screen: ChangeMetro,
         navigationOptions: navOptionHandler,
       },
       NoteInformation: {

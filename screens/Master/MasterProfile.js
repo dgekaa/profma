@@ -74,7 +74,6 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
             </View>
             <View>
               <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock}>
-                {/* КАЛЕНДАРЬ*/}
                 <TouchableOpacity
                   style={[
                     blockInGroup,
@@ -94,7 +93,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                     <View style={insideCircle} />
                   </View>
                 </TouchableOpacity>
-                {/* МОИ УСЛУГИ*/}
+
                 <TouchableOpacity
                   style={[blockInGroup, borderBottom]}
                   onPress={() =>
@@ -110,7 +109,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                     Мои услуги {!!USER.data && USER.data.me.offers.length}
                   </Text>
                 </TouchableOpacity>
-                {/* НАСТРОИТЬ РАСПИСАНИЕ*/}
+
                 <TouchableOpacity
                   style={blockInGroup}
                   onPress={() => {
@@ -123,8 +122,8 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                   <Text style={text}>Настроить рабочее расписание</Text>
                 </TouchableOpacity>
               </View>
+
               <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock}>
-                {/* ПЕРСОНАЛЬНЫЕ ДАННЫЕ*/}
                 <TouchableOpacity
                   style={[blockInGroup, borderBottom]}
                   onPress={() =>
@@ -135,7 +134,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                   <SvgUri width="16" height="16" svgXmlData={UserIcon} />
                   <Text style={text}>Персональные данные</Text>
                 </TouchableOpacity>
-                {/* ИЗМЕНИТЬ ПАРОЛЬ*/}
+
                 <TouchableOpacity
                   style={[blockInGroup]}
                   onPress={() => {
@@ -149,9 +148,9 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                 </TouchableOpacity>
               </View>
             </View>
+
             <View style={{marginBottom: 8}}>
               <View style={Platform.OS === 'ios' ? groupBlockIos : groupBlock}>
-                {/* ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ*/}
                 <TouchableOpacity
                   style={[blockInGroup, borderBottom]}
                   onPress={() => alert('Политика конфиденциальности')}>
@@ -159,7 +158,7 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                     Политика конфиденциальности и Условия использования
                   </Text>
                 </TouchableOpacity>
-                {/* ВАШ ГОРОД*/}
+
                 <TouchableOpacity
                   onPress={() => {
                     USER.data &&
@@ -188,6 +187,32 @@ const MasterProfile = ({navigation, handleChangeLoginState}) => {
                     </Text>
                   </View>
                 </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    USER.data &&
+                      navigation.navigate('ChangeMetro', {
+                        metro: USER.data.me.profile.metro
+                          ? USER.data.me.profile.metro
+                          : '',
+                        id: USER.data.me.profile.id,
+                        reload,
+                      });
+                  }}>
+                  <View
+                    style={[
+                      blockInGroup,
+                      borderBottom,
+                      {
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      },
+                    ]}>
+                    <Text style={{fontSize: 13}}>Ваше метро</Text>
+                    <Text style={{fontWeight: 'bold'}}>...</Text>
+                  </View>
+                </TouchableOpacity>
+
                 <TouchableOpacity
                   style={blockInGroup}
                   onPress={() => alert('Связь с поддержкой')}>
